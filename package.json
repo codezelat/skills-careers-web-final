@@ -1,0 +1,35 @@
+{
+  "name": "skillscareers",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"node scripts/setup-elasticsearch.js && next dev\" \"node scripts/sync-elasticsearch.js\"",
+    "setup-elastic": "node scripts/setup-elasticsearch.js",
+    "sync-elastic": "node scripts/sync-elasticsearch.js",
+    "build": "node scripts/setup-elasticsearch.js && node scripts/sync-elasticsearch.js && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.17.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
+    "dotenv": "^16.4.7",
+    "mongodb": "^6.12.0",
+    "next": "15.0.3",
+    "next-auth": "^4.24.10",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.3",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
+  }
+}
