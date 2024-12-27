@@ -1,6 +1,11 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Pagination, Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 function JobCard(props) {
   const router = useRouter();
@@ -15,7 +20,7 @@ function JobCard(props) {
   } = props.job;
 
   const date = new Date(createdAt).getDate();
-  const monthName = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const d = new Date(createdAt);
   let month = monthName[d.getMonth()];
   const year = new Date(createdAt).getFullYear();
@@ -29,11 +34,9 @@ function JobCard(props) {
 
   useEffect(() => {
     if (recruiterId) {
-      const fetchRecruiterDetails = async (e) => {
+      const fetchRecruiterDetails = async () => {
         try {
-          const response = await fetch(
-            `/api/recruiterdetails/get?id=${recruiterId}`
-          );
+          const response = await fetch(`/api/recruiterdetails/get?id=${recruiterId}`);
           if (response.ok) {
             const data = await response.json();
             setRecruiterDetails(data);
@@ -58,8 +61,14 @@ function JobCard(props) {
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-8 m-2">
-      <p className="text-base font-bold text-black text-right">{postedDate}</p>
+    <div
+      className="bg-white hover:bg-[#CAD1F1] p-6 m-3 rounded-lg shadow-lg"
+    >
+      <div className="flex justify-between items-center mb-4">
+        <p className="w-full text-right text-[#000000] text-sm font-bold">
+          {postedDate}
+        </p>
+      </div>
       <Image
         src={recruiterDetails.logo || "/images/default-image.jpg"}
         alt="Logo"
@@ -67,34 +76,29 @@ function JobCard(props) {
         height={100}
         className="rounded-full object-cover mb-8 shadow-lg"
       />
-      <p className="text-sm text-gray-600">Job Name</p>
-      <p className="text-base font-bold text-black mb-3">{jobTitle}</p>
-      <p className="text-sm text-gray-600">Job Type</p>
-      <p className="text-base font-bold text-black mb-3">{jobTypes}</p>
-      <p className="text-sm text-gray-600">Company Name</p>
-      <p className="text-base font-bold text-black mb-3">
+      <h2 className="text-xl font-bold text-[#001571] mb-1 text-center sm:text-left">
+        {jobTitle}
+      </h2>
+      <div className="flex items-center gap-2 mb-4 justify-center sm:justify-start">
+        <span className="bg-[#001571] text-white px-2 py-1 rounded-full text-xs font-semibold">
+          {jobTypes}
+        </span>
+      </div>
+      <p className="text-xl font-bold text-[#000000] text-center sm:text-left">
         {recruiterDetails.recruiterName}
       </p>
-      <p className="text-sm text-gray-600">Company Email</p>
-      <p className="text-base font-bold text-black mb-3">
-        {recruiterDetails.email}
+      <p className="text-xl font-bold text-[#000000] mb-4 text-center sm:text-left">
+        {location}
       </p>
-      <p className="text-sm text-gray-600">Location</p>
-      <p className="text-base font-bold text-black mb-3">{location}</p>
-      <p className="text-sm text-gray-600">Job Description</p>
-      <p className="text-base font-bold text-black mb-3">{jobDescription}</p>
-      <div className="flex justify-between mt-7">
-        <button
-          className="px-4 py-2 border-2 w-6/12 bg-blue-500 border-blue-500 text-white hover:border-black hover:bg-black rounded transition-colors"
-          onClick={handleViewApplication}
-        >
+      <p className="text-[#000000] text-sm mb-4 text-center sm:text-left">
+        {jobDescription}
+      </p>
+      <div className="flex gap-4 flex-wrap justify-center sm:justify-start">
+        <button className="bg-[#001571] text-white px-3 py-2 rounded-lg font-semibold" onClick={handleViewApplication}>
           Apply Now
         </button>
-        <button
-          className="px-4 py-2 border-2 w-5/12 bg-white border-blue-500 text-blue-500 hover:border-black hover:text-black rounded transition-colors"
-          onClick={handleViewJob}
-        >
-          View Now
+        <button onClick={handleViewJob} className="border border-2 border-[#001571] text-[#001571] px-3 py-2 rounded-lg font-bold hover:bg-blue-800 hover:text-white transition">
+          Quick View
         </button>
       </div>
     </div>

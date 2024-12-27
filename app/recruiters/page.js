@@ -108,39 +108,39 @@ function Recruiters() {
   };
 
   return (
-    <div className="p-4">
-      <div className="grid justify-center">
-        <NavBar />
-      </div>
-      <div className="grid justify-items-center">
-        <h1 className="text-2xl font-bold mb-4">Recruiters</h1>
+    <>
+      <NavBar />
+      <div className="p-4">
+        <div className="grid justify-items-center">
+          <h1 className="text-2xl font-bold mb-4">Recruiters</h1>
 
-        <div className="mb-4">
-          <input
-            type="search"
-            placeholder="Search by company name, industry, location"
-            className="px-2 py-1 w-96 text-center border-solid border-2 border-white outline-none"
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
+          <div className="mb-4">
+            <input
+              type="search"
+              placeholder="Search by company name, industry, location"
+              className="px-2 py-1 w-96 text-center border-solid border-2 border-white outline-none"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
         </div>
-      </div> 
 
-      {isLoading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+        {isLoading && <p>Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
-      <div className="container mx-auto w-full">
-        {filteredRecruiters.length > 0 ? (
-          filteredRecruiters.map((recruiter, index) => (
-            <RecruiterCard key={index} recruiter={recruiter} />
-          ))
-        ) : (
-          <p className="text-lg text-center font-bold text-red-500 py-20">
-            No recruiters found.
-          </p>
-        )}
+        <div className="container mx-auto w-full">
+          {filteredRecruiters.length > 0 ? (
+            filteredRecruiters.map((recruiter, index) => (
+              <RecruiterCard key={index} recruiter={recruiter} />
+            ))
+          ) : (
+            <p className="text-lg text-center font-bold text-red-500 py-20">
+              No recruiters found.
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

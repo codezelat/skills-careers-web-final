@@ -7,7 +7,7 @@ import NavBar from "@/components/navBar";
 import { useRouter } from "next/navigation";
 import Button from "../../../components/Button";
 import Link from "next/link";
- 
+
 async function createJobSeeker(
   firstName,
   lastName,
@@ -85,90 +85,96 @@ function AuthForm() {
 
   return (
     <form className="space-y-4 text-blue-900" onSubmit={submitHandler}>
-    {/* First Name and Last Name in parallel */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* First Name and Last Name in parallel */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label className="block">
+          <input
+            type="text"
+            id="firstname"
+            required
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
+            placeholder="First Name"
+          />
+        </label>
+        <label className="block">
+          <input
+            type="text"
+            id="lastname"
+            required
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
+            placeholder="Last Name"
+          />
+        </label>
+      </div>
+
+      {/* Remaining form fields */}
       <label className="block">
         <input
-          type="text"
-          id="firstname"
+          type="email"
+          id="email"
           required
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
-          placeholder="First Name"
+          placeholder="Email"
         />
       </label>
       <label className="block">
         <input
           type="text"
-          id="lastname"
+          id="contactnumber"
           required
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          value={contactNumber}
+          onChange={(e) => setContactNumber(e.target.value)}
           className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
-          placeholder="Last Name"
+          placeholder="Contact Number"
         />
       </label>
-    </div>
+      <label className="block">
+        <input
+          type="password"
+          id="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
+          placeholder="Password"
+        />
+      </label>
+      <label className="block">
+        <input
+          type="password"
+          id="confirmPassword"
+          required
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium mb-4"
+          placeholder="Confirm Password"
+        />
+      </label>
+      <Button className="w-full py-3 mt-8 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <span className="flex items-center justify-center ">
 
-    {/* Remaining form fields */}
-    <label className="block">
-      <input
-        type="email"
-        id="email"
-        required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
-        placeholder="Email"
-      />
-    </label>
-    <label className="block">
-      <input
-        type="text"
-        id="contactnumber"
-        required
-        value={contactNumber}
-        onChange={(e) => setContactNumber(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
-        placeholder="Contact Number"
-      />
-    </label>
-    <label className="block">
-      <input
-        type="password"
-        id="password"
-        required
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
-        placeholder="Password"
-      />
-    </label>
-    <label className="block">
-      <input
-        type="password"
-        id="confirmPassword"
-        required
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium mb-4"
-        placeholder="Confirm Password"
-      />
-    </label>
-    <Button variant="primary" className="w-full py-3 mt-8">
-    <span className="flex items-center justify-center ">
+          <p>Register </p>
+          <img
+            src="/images/arrow-up.png"
+            alt="Register"
+            className="h-5 w-5 ml-4"
+          />
+        </span>
 
-      <Link href="/login">Register </Link>
-      <img
-                src="/images/arrow-up.png"
-                alt="Register"
-                className="h-5 w-5 ml-4"
-              />
-            </span>
-
-    </Button>
-  </form>
+      </Button>
+      <p className="text-md font-medium text-center mt-1 text-black ">
+        Don’t have an account?{" "}
+        <a href="/login" className="text-blue-900 font-bold ">
+          Login
+        </a>
+      </p>
+    </form>
   );
 }
 

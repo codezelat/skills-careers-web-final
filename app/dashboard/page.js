@@ -298,7 +298,7 @@ function DashBoard() {
       };
       fetchRecruiterDetails();
     }
-  }, [session]); 
+  }, [session]);
 
   useEffect(() => {
     if (recruiterDetails.id) {
@@ -369,108 +369,107 @@ function DashBoard() {
   };
 
   return (
-    <div className="p-4">
-      <div className="grid justify-center">
-        <NavBar />
-      </div>
+    <>
+      <NavBar />
+      <div className="mx-auto max-w-screen-xl space-y-5 px-4 pb-8 pt-16 sm:px-6">
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
-        >
-          Sign out
-        </button>
-      </div>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
+          >
+            Sign out
+          </button>
+        </div>
 
-      {session ? (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-start gap-6">
-              {/* Logo */}
-              <div className="flex flex-col items-center space-y-2">
-                {recruiterDetails.logo ? (
-                  <Image
-                    src={recruiterDetails.logo}
-                    alt="Logo"
-                    width={100}
-                    height={100}
-                    className="rounded-full object-cover mb-4 shadow-lg"
-                    onError={(e) => {
-                      console.error("Error loading image:", e);
-                      e.target.src = "/fallback-logo-image.png";
-                    }}
-                  />
-                ) : (
-                  <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center">
-                    <span className="text-gray-500">No Image</span>
+        {session ? (
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="flex items-start gap-6">
+                {/* Logo */}
+                <div className="flex flex-col items-center space-y-2">
+                  {recruiterDetails.logo ? (
+                    <Image
+                      src={recruiterDetails.logo}
+                      alt="Logo"
+                      width={100}
+                      height={100}
+                      className="rounded-full object-cover mb-4 shadow-lg"
+                      onError={(e) => {
+                        console.error("Error loading image:", e);
+                        e.target.src = "/fallback-logo-image.png";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
+
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                      id="logo-image-input"
+                    />
+                    <label
+                      htmlFor="logo-image-input"
+                      className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 inline-block"
+                    >
+                      {recruiterDetails.logo ? "Change Logo" : "Upload Logo"}
+                    </label>
                   </div>
-                )}
+                </div>
 
-                <div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                    id="logo-image-input"
-                  />
-                  <label
-                    htmlFor="logo-image-input"
-                    className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 inline-block"
+                <div className="flex-1 space-y-2">
+                  <p className="text-xl font-semibold">
+                    {recruiterDetails.recruiterName}
+                  </p>
+                  <p className="text-gray-600">{session.user.email}</p>
+                  <Link
+                    href="/dashboard/edit"
+                    className="text-green-500 hover:text-green-700 hover:underline inline-block mt-2"
                   >
-                    {recruiterDetails.logo ? "Change Logo" : "Upload Logo"}
-                  </label>
+                    Edit Profile
+                  </Link>
                 </div>
               </div>
+            </div>
 
-              <div className="flex-1 space-y-2">
-                <p className="text-xl font-semibold">
-                  {recruiterDetails.recruiterName}
-                </p>
-                <p className="text-gray-600">{session.user.email}</p>
-                <Link
-                  href="/dashboard/edit"
-                  className="text-green-500 hover:text-green-700 hover:underline inline-block mt-2"
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold">Open Jobs</h2>
+                <button
+                  onClick={handleOpenForm(setIsFormVisible)}
+                  className="px-4 py-2 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors"
                 >
-                  Edit Profile
-                </Link>
+                  Add Job
+                </button>
               </div>
-            </div>
-          </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">Open Jobs</h2>
-              <button
-                onClick={handleOpenForm(setIsFormVisible)}
-                className="px-4 py-2 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors"
-              >
-                Add Job
-              </button>
-            </div>
-
-            {isFormVisible && (
-              <CreateJobPost
-                onClose={handleCloseForm(setIsFormVisible)}
-                recruiterId={recruiterDetails.id}
-              />
-            )}
-
-            {error && <p className="text-red-500 text-center">{error}</p>}
-
-            <div className="grid grid-cols-1">
-            {jobs.length > 0 ? (
-                jobs.map((job, index) => <PostedJob key={index} job={job} />)
-              ) : (
-                <p className="col-span-full text-center text-gray-500 py-4">
-                  No jobs posted yet. Click Add Job to post your first job.
-                </p>
+              {isFormVisible && (
+                <CreateJobPost
+                  onClose={handleCloseForm(setIsFormVisible)}
+                  recruiterId={recruiterDetails.id}
+                />
               )}
-            </div>
 
-            {/* <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+              {error && <p className="text-red-500 text-center">{error}</p>}
+
+              <div className="grid grid-cols-1">
+                {jobs.length > 0 ? (
+                  jobs.map((job, index) => <PostedJob key={index} job={job} />)
+                ) : (
+                  <p className="col-span-full text-center text-gray-500 py-4">
+                    No jobs posted yet. Click Add Job to post your first job.
+                  </p>
+                )}
+              </div>
+
+              {/* <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
               {jobs.length > 0 ? (
                 jobs.map((job, index) => <JobCard key={index} job={job} />)
               ) : (
@@ -479,12 +478,13 @@ function DashBoard() {
                 </p>
               )}
             </div> */}
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="text-center py-4">Loading...</div>
-      )}
-    </div>
+        ) : (
+          <div className="text-center py-4">Loading...</div>
+        )}
+      </div>
+    </>
   );
 }
 

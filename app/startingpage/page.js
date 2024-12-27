@@ -1,10 +1,24 @@
+"use client"
 // import JobCard from "@/components/jobCard";
 import NavBar from "@/components/navBar";
 import NewsLetter from "@/components/newsletter";
 import Image from "next/image";
 import { countries } from "../../lib/countries";
+import JobCard from "@/components/jobCard";
 import { IoMdArrowDropdown, IoMdSearch } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Pagination, Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import CategoryComponent from "@/components/CategoryComponent";
+import PackageComponent from "@/components/PackageComponent";
+import Footer from "@/components/Footer";
+import StoryComponent from "@/components/StoryComponent";
+import NewsComponent from "@/components/NewsComponent";
+import FaqComponent from "@/components/FaqComponent";
 
 function StartingPage() {
 
@@ -14,6 +28,46 @@ function StartingPage() {
   const handleSelect = (country) => {
     setSelectedCountry(country);
     setIsOpen(false);
+  };
+
+  const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Fetch jobs data
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const response = await fetch("/api/job/all"); // Adjust endpoint as needed
+        if (!response.ok) {
+          throw new Error("Failed to fetch jobs.");
+        }
+        const data = await response.json();
+        setJobs(data.jobs);
+        setFilteredJobs(data.jobs);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setIsLoading(false);
+      }
+    }
+
+    fetchJobs();
+  }, []);
+
+  // Handle search query change
+  const handleSearchChange = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    setFilteredJobs(
+      jobs.filter(
+        (job) =>
+          job.jobTitle.toLowerCase().includes(query) ||
+          job.location.toLowerCase().includes(query)
+      )
+    );
   };
 
   return (
@@ -191,6 +245,67 @@ function StartingPage() {
           </div>
         </div>
       </div>
+      <div className="w-full bg-[#EDF0FF] mt-20 h-auto py-10">
+        <div className="container mx-auto w-full">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold md:py-10">
+            <button className="text-lg md:text-xl font-bold text-[#001571] cursor-pointer md:mb-0">
+              Featured Jobs
+            </button>
+            <button className="flex items-center text-right text-[#001571] cursor-pointer">
+              <a href="/jobs">View All</a>
+              <ArrowOutwardIcon className="w-4 md:w-5 h-4 md:h-5 ml-1" />
+            </button>
+          </div>
+          <div className="">
+            {Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
+              <Swiper
+                modules={[Pagination, Navigation]}
+                slidesPerView={4}
+                spaceBetween={0}
+                pagination={{ clickable: true }}
+                navigation
+                loop
+                breakpoints={{
+                  640: { slidesPerView: 1, spaceBetween: 15 },
+                  768: { slidesPerView: 2, spaceBetween: 20 },
+                  1024: { slidesPerView: 3, spaceBetween: 30 },
+                }}
+                className="w-full"
+              >
+                {filteredJobs.map((job, index) => (
+                  <SwiperSlide key={index}>
+                    <JobCard job={job} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <CategoryComponent />
+      <PackageComponent />
+      <div className="bg-[#EDF0FF] pt-8" >
+        <div style={{
+            backgroundImage: "url('/landing/bbg.png')",
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat", // Prevent repeating for both images
+            backgroundPosition: "10% 80%",
+            backgroundBlendMode: "overlay",
+            backgroundtransform: "rotate(45deg)",
+          }}>
+        <div
+          className="min-h-screen p-4 mx-auto max-w-screen-xl space-y-5 px-4 py-4 sm:px-6">
+          <StoryComponent />
+          <NewsComponent />
+          <FaqComponent />
+          </div>
+        </div>
+      </div>
+      
+      <Footer />
     </>
   );
 }

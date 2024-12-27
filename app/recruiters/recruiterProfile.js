@@ -76,61 +76,61 @@ function RecruiterProfile({ slug }) {
   }
 
   return (
-    <div className="p-4">
-      <div className="grid justify-center">
-        <NavBar />
-      </div>
+    <>
+      <NavBar />
+      <div className="mx-auto max-w-screen-xl space-y-5 px-4 pb-8 pt-16 sm:px-6">
 
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <Image
-          src={recruiterDetails.logo || "/images/default-image.jpg"}
-          alt="Logo"
-          width={100}
-          height={100}
-          className="rounded-full object-cover mb-4 shadow-lg"
-        />
-        <h1 className="text-3xl font-bold mb-6">
-          {recruiterDetails.recruiterName}
-        </h1>
-        <div>
-          <p className="text-sm text-gray-600">Website</p>
-          <p className="text-base font-bold text-black mb-3">{recruiterDetails.website}</p>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <Image
+            src={recruiterDetails.logo || "/images/default-image.jpg"}
+            alt="Logo"
+            width={100}
+            height={100}
+            className="rounded-full object-cover mb-4 shadow-lg"
+          />
+          <h1 className="text-3xl font-bold mb-6">
+            {recruiterDetails.recruiterName}
+          </h1>
+          <div>
+            <p className="text-sm text-gray-600">Website</p>
+            <p className="text-base font-bold text-black mb-3">{recruiterDetails.website}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Industry</p>
+            <p className="text-base font-bold text-black mb-3">{recruiterDetails.industry}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Employee Range</p>
+            <p className="text-base font-bold text-black mb-3">{recruiterDetails.employeeRange}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Description</p>
+            <p className="text-base font-bold text-black mb-3">{recruiterDetails.companyDescription}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Contact Number</p>
+            <p className="text-base font-bold text-black mb-3">{recruiterDetails.contactNumber}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Email</p>
+            <p className="text-base font-bold text-black mb-3">{recruiterDetails.email}</p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm text-gray-600">Industry</p>
-          <p className="text-base font-bold text-black mb-3">{recruiterDetails.industry}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-600">Employee Range</p>
-          <p className="text-base font-bold text-black mb-3">{recruiterDetails.employeeRange}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-600">Description</p>
-          <p className="text-base font-bold text-black mb-3">{recruiterDetails.companyDescription}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-600">Contact Number</p>
-          <p className="text-base font-bold text-black mb-3">{recruiterDetails.contactNumber}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-600">Email</p>
-          <p className="text-base font-bold text-black mb-3">{recruiterDetails.email}</p>
-        </div>
-      </div>
 
-      <div className="bg-white shadow-lg rounded-lg p-6 my-2">
-        <h1 className="text-2xl font-bold mb-4">Open Jobs</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {jobs.length > 0 ? (
-            jobs.map((job, index) => <JobCard key={index} job={job} />)
-          ) : (
-            <p className="col-span-full text-center text-gray-500">
-              No open jobs available at this time.
-            </p>
-          )}
+        <div className="bg-white shadow-lg rounded-lg p-6 my-2">
+          <h1 className="text-2xl font-bold mb-4">Open Jobs</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {jobs.length > 0 ? (
+              jobs.map((job, index) => <JobCard key={index} job={job} />)
+            ) : (
+              <p className="col-span-full text-center text-gray-500">
+                No open jobs available at this time.
+              </p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

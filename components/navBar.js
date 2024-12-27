@@ -24,8 +24,17 @@ function NavBar() {
             <nav className="flex space-x-6 font-mono">
               <Link href="/">HOME</Link>
               <Link href="/recruiters">EXPLORE RECRUITERS</Link>
+              {session?.user?.role === "recruiter" && (
+                <Link href="/dashboard">DASHBOARD</Link>
+              )}
+              {session?.user?.role === "jobseeker" && (
+                <Link href="/profile">PROFILE</Link>
+              )}
               <Link href="/about-us">ABOUT US</Link>
               <Link href="/contact-us">CONTACT US</Link>
+              {status === "unauthenticated" && (
+                <Link href="/login">LOGIN</Link>
+              )}
             </nav>
           </div>
           <div className="hidden md:block">

@@ -49,7 +49,7 @@ function ApplicationForm({ jobid }) {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [contactNumber, setContactNumber] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null); 
+  const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState("");
 
   // Redirect recruiters from accessing this page
@@ -199,7 +199,7 @@ function ApplicationForm({ jobid }) {
         setEmail("");
         setContactNumber("");
         setSelectedFile(null);
-        
+
         router.push(`/jobs/${jobid}`);
       } catch (error) {
         console.log(error.message);
@@ -217,135 +217,135 @@ function ApplicationForm({ jobid }) {
   };
 
   return (
-    <div className="p-4">
-      <div className="grid justify-center">
-        <NavBar />
-      </div>
+    <>
+      <NavBar />
+      <div className="p-4">
 
-      <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">
-        <button
-          onClick={handleCloseForm}
-          className="px-2 py-1 ml-auto border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
-        >
-          close
-        </button>
-        <h1 className="text-2xl font-bold mb-8">
-          Applying for {recruiterDetails.recruiterName}
-        </h1>
-        <p className="text-base font-bold text-gray-600 mb-1">
-          Job Name: {jobDetails.jobTitle}
-        </p>
-
-        <form onSubmit={submitHandler}>
-          <div>
-            <p
-              htmlFor="jobname"
-              className="text-base font-bold text-black mb-1"
-            >
-              Job Name
-            </p>
-            <input
-              type="text"
-              id="jobname"
-              required
-              disabled
-              value={jobDetails.jobTitle}
-              className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            />
-          </div>
-
-          <div className="mb-4">
-            <p htmlFor="cv" className="text-base font-bold text-black mb-1">
-              Upload Resume/CV
-            </p>
-            <input
-              type="file"
-              id="cv"
-              onChange={handleFileChange}
-              accept=".pdf,.doc,.docx"
-              className="w-96"
-            />
-            {fileError && (
-              <p className="text-red-500 text-sm mt-1">{fileError}</p>
-            )}
-            {selectedFile && (
-              <p className="text-green-500 text-sm mt-1">
-                Selected file: {selectedFile.name}
-              </p>
-            )}
-          </div>
-          
-          <div>
-            <p
-              htmlFor="firstname"
-              className="text-base font-bold text-black mb-1"
-            >
-              First Name
-            </p>
-            <input
-              type="text"
-              id="firstname"
-              required
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            />
-          </div>
-
-          <div>
-            <p
-              htmlFor="lastname"
-              className="text-base font-bold text-black mb-1"
-            >
-              Last Name
-            </p>
-            <input
-              type="text"
-              id="lastname"
-              required
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            />
-          </div>
-
-          <div>
-            <p htmlFor="email" className="text-base font-bold text-black mb-1">
-              Email
-            </p>
-            <input
-              type="email"
-              id="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            />
-          </div>
-
-          <div>
-            <p
-              htmlFor="contactnumber"
-              className="text-base font-bold text-black mb-1"
-            >
-              Contact Number
-            </p>
-            <input
-              type="text"
-              id="contactnumber"
-              required
-              value={contactNumber}
-              onChange={(e) => setContactNumber(e.target.value)}
-              className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            />
-          </div>
-
-          <button className="w-96 px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors">
-            Submit
+        <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">
+          <button
+            onClick={handleCloseForm}
+            className="px-2 py-1 ml-auto border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
+          >
+            close
           </button>
-        </form>
+          <h1 className="text-2xl font-bold mb-8">
+            Applying for {recruiterDetails.recruiterName}
+          </h1>
+          <p className="text-base font-bold text-gray-600 mb-1">
+            Job Name: {jobDetails.jobTitle}
+          </p>
+
+          <form onSubmit={submitHandler}>
+            <div>
+              <p
+                htmlFor="jobname"
+                className="text-base font-bold text-black mb-1"
+              >
+                Job Name
+              </p>
+              <input
+                type="text"
+                id="jobname"
+                required
+                disabled
+                value={jobDetails.jobTitle}
+                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+              />
+            </div>
+
+            <div className="mb-4">
+              <p htmlFor="cv" className="text-base font-bold text-black mb-1">
+                Upload Resume/CV
+              </p>
+              <input
+                type="file"
+                id="cv"
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx"
+                className="w-96"
+              />
+              {fileError && (
+                <p className="text-red-500 text-sm mt-1">{fileError}</p>
+              )}
+              {selectedFile && (
+                <p className="text-green-500 text-sm mt-1">
+                  Selected file: {selectedFile.name}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <p
+                htmlFor="firstname"
+                className="text-base font-bold text-black mb-1"
+              >
+                First Name
+              </p>
+              <input
+                type="text"
+                id="firstname"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+              />
+            </div>
+
+            <div>
+              <p
+                htmlFor="lastname"
+                className="text-base font-bold text-black mb-1"
+              >
+                Last Name
+              </p>
+              <input
+                type="text"
+                id="lastname"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+              />
+            </div>
+
+            <div>
+              <p htmlFor="email" className="text-base font-bold text-black mb-1">
+                Email
+              </p>
+              <input
+                type="email"
+                id="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+              />
+            </div>
+
+            <div>
+              <p
+                htmlFor="contactnumber"
+                className="text-base font-bold text-black mb-1"
+              >
+                Contact Number
+              </p>
+              <input
+                type="text"
+                id="contactnumber"
+                required
+                value={contactNumber}
+                onChange={(e) => setContactNumber(e.target.value)}
+                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+              />
+            </div>
+
+            <button className="w-96 px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors">
+              Submit
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

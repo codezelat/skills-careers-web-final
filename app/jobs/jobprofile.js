@@ -4,6 +4,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import NavBar from "@/components/navBar";
+import SwiperComponent from "../../components/jobCard";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import Footer from "@/components/Footer";
+import JobCard from "../../components/jobCard";
 
 function JobProfile({ slug }) {
   const router = useRouter();
@@ -25,8 +35,32 @@ function JobProfile({ slug }) {
     logo: "",
   });
 
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
+
+  // Fetch jobs data
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const response = await fetch("/api/job/all"); // Adjust endpoint as needed
+        if (!response.ok) {
+          throw new Error("Failed to fetch jobs.");
+        }
+        const data = await response.json();
+        setJobs(data.jobs);
+        setFilteredJobs(data.jobs);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setIsLoading(false);
+      }
+    }
+
+    fetchJobs();
+  }, []);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -99,90 +133,171 @@ function JobProfile({ slug }) {
   const handleViewApplication = () => {
     router.push(`/jobs/${jobDetails.id}/apply`);
   };
-  
+
   const handleViewRecruiter = () => {
     router.push(`/recruiters/${recruiterDetails.id}`);
   };
 
+  
+
   return (
-    <div className="p-4">
-      <div className="grid justify-center">
-        <NavBar />
-      </div>
-
-      <div className="bg-white shadow-lg rounded-lg p-6">
-          <Image
-            src={recruiterDetails.logo || "/images/default-image.jpg"}
-            alt="Logo"
-            width={100}
-            height={100}
-            className="rounded-full object-cover mb-4 shadow-lg"
-          />
-        
-        <h1 className="text-3xl font-bold mb-1">{jobDetails.jobTitle}</h1>
-        <h2 className="text-xl font-semibold mb-4">
-          {recruiterDetails.recruiterName}
+    <>
+      <NavBar />
+      <div className="min-h-screen p-8 mx-auto max-w-screen-xl space-y-5 px-4 py-8 sm:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 pt-5">
+          <div className="flex justify-center lg:justify-start md:justify-start sm:justify-start gap-4 mb-8 text-[#33448D] font-semibold text-lg">
+            <Image
+              src={recruiterDetails.logo || "/images/default-image.jpg"}
+              width={180}
+              height={180}
+              alt="detail logo"
+              className="w-50 h-50 lg:w-auto lg:h-auto md:w-auto md:h-auto sm:w-auto sm:h-auto"
+            />
+          </div>
+          <div className="flex justify-end gap-4 mb-8 text-black font-bold text-base lg:text-lg md:text-lg sm:text-lg">
+            <p>{new Date(jobDetails.createdAt).toLocaleDateString()}</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap justify-between items-center mb-4">
+          <div className="flex flex-wrap items-center">
+            <h1 className="text-2xl font-bold text-[#001571] mb-0 mr-4">
+              {jobDetails.jobTitle}
+            </h1>
+            <div className="flex items-center">
+              <span className="bg-[#001571] text-white px-2 py-1/2 rounded-lg mr-2">
+                {jobDetails.jobTypes}
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-4 mt-4 sm:mt-0">
+            <button onClick={handleViewRecruiter} className="flex border border-2 border-[#001571] hover:bg-blue-700 text-[#001571] font-bold py-2 px-4 rounded mr-4">
+              View Company Profile
+              <span className="pl-3 mt-1">
+                <BsArrowUpRightCircleFill />
+              </span>
+            </button>
+            <button onClick={handleViewApplication} className="bg-[#001571] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Apply Now
+            </button>
+          </div>
+        </div>
+        <h2 className="text-lg font-bold text-black mb-20">
+          {recruiterDetails.recruiterName} | {jobDetails.location}
         </h2>
-        <div className="flex">
 
-        <button
-          onClick={handleViewApplication}
-          className="bg-blue-500 border-2 border-blue-500 hover:bg-blue-900 hover:border-blue-900 transition-colors rounded-md text-white px-5 py-2 mb-6"
-        >
-          Apply Now
-        </button>
-        <button
-          onClick={handleViewRecruiter}
-          className="bg-white border-2 border-blue-500 hover:border-blue-900 hover:text-blue-900 transition-colors rounded-md text-blue-500 px-5 py-2 mb-6 ml-2"
-        >
-          View Company Profile
-        </button>
-        </div>
+        <hr className="border-b-2 border-[#B0B6D3] mb-5" />
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h2 className="text-gray-600">Location</h2>
-              <p className="font-medium">{jobDetails.location}</p>
-            </div>
-            <div>
-              <h2 className="text-gray-600">Job Type</h2>
-              <p className="font-medium">{jobDetails.jobTypes}</p>
-            </div>
-          </div>
+        <div className="bg-white">
+          <h3 className="text-xl font-bold mb-2">Job Description</h3>
+          <p className="font-Montserrat">
+            {jobDetails.jobDescription}
+          </p>
 
-          {jobDetails.jobDescription && (
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Job Description</h2>
-              <p className="whitespace-pre-wrap">{jobDetails.jobDescription}</p>
-            </div>
-          )}
+          <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
-          {jobDetails.keyResponsibilities && (
-            <div>
-              <h2 className="text-xl font-semibold mb-2">
-                Key Responsibilities
-              </h2>
-              <p className="whitespace-pre-wrap">
-                {jobDetails.keyResponsibilities}
-              </p>
-            </div>
-          )}
+          <h3 className="text-xl font-bold mb-2">Key Responsibilities</h3>
+          <ul className="list-disc list-inside p-2 m-2 space-y-3">
+            <li>
+              Design engaging and user-friendly interfaces for web and mobile
+              applications.
+            </li>
+            <li>
+              Conduct user research, wireframing, prototyping, and usability
+              testing to improve designs.
+            </li>
+            <li>
+              Collaborate with cross-functional teams including developers,
+              product managers, and marketers.
+            </li>
+            <li>
+              Maintain and evolve design systems to ensure consistency across
+              all platforms.
+            </li>
+            <li>
+              Stay updated with the latest design trends, tools, and
+              technologies.
+            </li>
+          </ul>
 
-          <div className="mt-6 pt-4 border-t">
-            <p className="text-gray-600">
-              Posted by: {recruiterDetails.recruiterName} |{" "}
-              {recruiterDetails.email}
-            </p>
-            {jobDetails.createdAt && (
-              <p className="text-gray-600">
-                Posted on: {new Date(jobDetails.createdAt).toLocaleDateString()}
-              </p>
-            )}
-          </div>
+          <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
+
+          <h3 className="text-xl font-bold mb-2">Required Qualifications</h3>
+          <ul className="list-disc list-inside p-2 m-2 space-y-3">
+            <li>5+ years of experience in UX/UI design.</li>
+            <li>
+              Strong portfolio showcasing user-centered design and
+              problem-solving skills.
+            </li>
+            <li>
+              Proficiency in design tools like Figma, Sketch, and Adobe Creative
+              Suite.
+            </li>
+            <li>
+              Experience with HTML/CSS and front-end frameworks is a plus.
+            </li>
+            <li>
+              Excellent communication skills and ability to work in a team
+              environment.
+            </li>
+          </ul>
+
+          <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
+
+          <h3 className="text-xl font-bold mb-2">Perks & Benefits</h3>
+          <ul className="list-disc list-inside p-2 m-2 space-y-3">
+            <li>Remote work flexibility.</li>
+            <li>Health, dental, and vision insurance.</li>
+            <li>401(k) plan with company match.</li>
+            <li>Professional development opportunities.</li>
+            <li>Flexible vacation policy.</li>
+          </ul>
         </div>
       </div>
-    </div>
+
+      <div className="bg-[#e6e8f1]">
+
+        <div className="w-full bg-[#EDF0FF] mt-20 h-auto py-10">
+          <div className="container mx-auto w-full">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold md:py-10">
+              <button className="text-lg md:text-xl font-bold text-[#001571] cursor-pointer md:mb-0">
+                Featured Jobs
+              </button>
+              <button className="flex items-center text-right text-[#001571] cursor-pointer">
+                <a href="/jobs">View All</a>
+                <ArrowOutwardIcon className="w-4 md:w-5 h-4 md:h-5 ml-1" />
+              </button>
+            </div>
+            <div className="">
+              {Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
+                <Swiper
+                  modules={[Pagination, Navigation]}
+                  slidesPerView={4}
+                  spaceBetween={0}
+                  pagination={{ clickable: true }}
+                  navigation
+                  loop
+                  breakpoints={{
+                    640: { slidesPerView: 1, spaceBetween: 15 },
+                    768: { slidesPerView: 2, spaceBetween: 20 },
+                    1024: { slidesPerView: 3, spaceBetween: 30 },
+                  }}
+                  className="w-full"
+                >
+                  {filteredJobs.map((job, index) => (
+                    <SwiperSlide key={index}>
+                      <JobCard job={job} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              ) : (
+                <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
+              )}
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    </>
   );
 }
 
