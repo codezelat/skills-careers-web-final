@@ -46,8 +46,8 @@ const Register = () => {
             <button
               onClick={() => setIsRecruiter(false)}
               className={` w-full border-2 border-gray-300 rounded-lg ${!isRecruiter
-                  ? "bg-blue-900 text-white"
-                  : "bg-gray-50 text-blue-900"
+                ? "bg-blue-900 text-white"
+                : "bg-gray-50 text-blue-900"
                 }`}
             >
               <span className="flex items-center justify-center ">
@@ -67,8 +67,8 @@ const Register = () => {
             <button
               onClick={() => setIsRecruiter(true)}
               className={`p-4 w-full border-2 border-gray-300 rounded-lg ${isRecruiter
-                  ? "bg-blue-900 text-white"
-                  : "bg-gray-50 text-blue-900"
+                ? "bg-blue-900 text-white"
+                : "bg-gray-50 text-blue-900"
                 }`}
             >
               <span className="flex items-center justify-center ">

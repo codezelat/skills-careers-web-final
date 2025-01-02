@@ -286,32 +286,32 @@ function StartingPage() {
               </Swiper>
             ) : (
               // <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
-              <ProductLoading/>
+              <ProductLoading />
             )}
           </div>
         </div>
       </div>
-      
+
       <CategoryComponent />
       <PackageComponent />
       <div className="bg-[#EDF0FF] pt-8" >
         <div style={{
-            backgroundImage: "url('/landing/bbg.png')",
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat", // Prevent repeating for both images
-            backgroundPosition: "10% 80%",
-            backgroundBlendMode: "overlay",
-            backgroundtransform: "rotate(45deg)",
-          }}>
-        <div
-          className="min-h-screen p-4 mx-auto max-w-screen-xl space-y-5 px-4 py-4 sm:px-6">
-          <StoryComponent />
-          <NewsComponent />
-          <FaqComponent />
+          backgroundImage: "url('/landing/bbg.png')",
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat", // Prevent repeating for both images
+          backgroundPosition: "10% 80%",
+          backgroundBlendMode: "overlay",
+          backgroundtransform: "rotate(45deg)",
+        }}>
+          <div
+            className="min-h-screen p-4 mx-auto max-w-screen-xl space-y-5 px-4 py-4 sm:px-6">
+            <StoryComponent />
+            <NewsComponent />
+            <FaqComponent />
           </div>
         </div>
       </div>
-      
+
       <Footer />
     </>
   );

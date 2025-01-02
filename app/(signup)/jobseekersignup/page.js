@@ -169,7 +169,7 @@ function AuthForm() {
 
       </Button>
       <p className="text-md font-medium text-center mt-1 text-black ">
-        Don’t have an account?{" "}
+        Already have an account?{" "}
         <a href="/login" className="text-blue-900 font-bold ">
           Login
         </a>

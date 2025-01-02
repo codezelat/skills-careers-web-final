@@ -92,18 +92,21 @@ function Login() {
 
   if (loading) {
     return (
-      <Loading/>
+      <Loading />
     );
   }
 
   return (
     <>
-      <div className="flex flex-col md:flex-row min-h-screen">
+      <div className="flex flex-col md:flex-row h-screen">
         {/* Left Side with Image and Intro Text */}
         <div
-          className="relative hidden md:flex md:w-3/5 bg-cover bg-center"
+          className="relative hidden h-full md:flex md:w-3/5 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/loginscrn.jpg')" }}
         >
+
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white via-transparent to-transparent opacity-70"></div>
 
           {/* Content */}
           <div className="flex flex-col items-start justify-end p-10 bg-blue-800 bg-opacity-20 text-white h-full w-full ">

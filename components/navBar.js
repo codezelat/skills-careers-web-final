@@ -24,17 +24,15 @@ function NavBar() {
             <nav className="flex space-x-6 font-mono">
               <Link href="/">HOME</Link>
               <Link href="/recruiters">EXPLORE RECRUITERS</Link>
+              <Link href="/jobs">EXPLORE JOBS</Link>
               {session?.user?.role === "recruiter" && (
                 <Link href="/dashboard">DASHBOARD</Link>
               )}
               {session?.user?.role === "jobseeker" && (
                 <Link href="/profile">PROFILE</Link>
               )}
-              <Link href="/about-us">ABOUT US</Link>
-              <Link href="/contact-us">CONTACT US</Link>
-              {status === "unauthenticated" && (
-                <Link href="/login">LOGIN</Link>
-              )}
+              <Link href="/about">ABOUT US</Link>
+              <Link href="/contact">CONTACT US</Link>
             </nav>
           </div>
           <div className="hidden md:block">
@@ -56,6 +54,7 @@ function NavBar() {
             <nav className="flex flex-col space-y-4 font-semibold">
               <Link href="/">Home</Link>
               <Link href="/recruiters">Explore Recruiters</Link>
+              <Link href="/jobs">EXPLORE JOBS</Link>
               <Link href="/about-us">About Us</Link>
               <Link href="/contact-us">Contact Us</Link>
               <Link href="/register">
