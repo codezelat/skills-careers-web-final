@@ -7,10 +7,10 @@ import RecruiterRegister from "../(signup)/recruitersignup/page";
 const Register = () => {
   const [isRecruiter, setIsRecruiter] = useState(false);
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row h-screen">
       {/* Left Side with Image and Intro Text */}
       <div
-        className="relative hidden md:flex md:w-3/5 bg-cover bg-center"
+        className="relative hidden h-full md:flex md:w-3/5 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/loginscrn.jpg')" }}
       >
         {/* Gradient Overlay */}
@@ -32,24 +32,23 @@ const Register = () => {
         </div>
       </div>
       {/* Right Side with Form */}
-      <div className="flex flex-col justify-center md:w-2/5 p-4">
-        <div className="flex flex-col items-center my-3">
-          <p className="text-blue-900 text-center text-md font-semibold  mb-2 ">
+      <div className="flex flex-col overflow-y-auto py-24 px-10 md:w-2/5">
+        <div className="flex flex-col items-center">
+          <p className="text-blue-900 text-center text-md font-semibold">
             Create your free account to explore job listings, connect with
             recruiters, and take the next step in your career.{" "}
           </p>
         </div>
 
-        <div className="flex flex-col justify-center p-4">
+        <div className="flex flex-col justify-center mt-12">
           {/* Job Seeker / Recruiter Selection */}
-          <div className="flex space-x-4 mb-3">
+          <div className="flex space-x-4">
             <button
               onClick={() => setIsRecruiter(false)}
-              className={` w-full border-2 border-gray-300 rounded-lg ${
-                !isRecruiter
+              className={` w-full border-2 border-gray-300 rounded-lg ${!isRecruiter
                   ? "bg-blue-900 text-white"
                   : "bg-gray-50 text-blue-900"
-              }`}
+                }`}
             >
               <span className="flex items-center justify-center ">
                 <img
@@ -67,11 +66,10 @@ const Register = () => {
             </button>
             <button
               onClick={() => setIsRecruiter(true)}
-              className={`p-4 w-full border-2 border-gray-300 rounded-lg ${
-                isRecruiter
+              className={`p-4 w-full border-2 border-gray-300 rounded-lg ${isRecruiter
                   ? "bg-blue-900 text-white"
                   : "bg-gray-50 text-blue-900"
-              }`}
+                }`}
             >
               <span className="flex items-center justify-center ">
                 <img
@@ -88,7 +86,7 @@ const Register = () => {
               </span>
             </button>
           </div>
-          <h2 className="text-medium text-center text-blue-900 font-bold mb-6 p-4">
+          <h2 className="text-medium text-center text-blue-900 font-bold my-10">
             Join Skill Careers and Unlock New Opportunities!{" "}
           </h2>
           {/* Conditional Form Rendering */}

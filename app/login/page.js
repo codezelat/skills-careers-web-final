@@ -7,6 +7,7 @@ import Image from "next/image";
 import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import NavBar from "@/components/navBar";
+import Loading from "../loading";
 
 function Login() {
   const router = useRouter();
@@ -18,6 +19,8 @@ function Login() {
   const { data: session, status } = useSession();
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const emailFromParams = searchParams.get("email"); // Get email from query parameters
 
@@ -31,6 +34,7 @@ function Login() {
   // Handle session-based redirects
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
+      setLoading(true);
       if (session.user.role === "jobseeker") {
         router.push("/startingpage");
       } else if (session.user.role === "recruiter") {
@@ -43,6 +47,7 @@ function Login() {
 
   async function submitHandler(event) {
     event.preventDefault();
+    setLoading(true);
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
@@ -81,8 +86,14 @@ function Login() {
   };
 
   // If still loading, you might want to show a loading state
-  if (status === "loading") {
-    return <div>Loading...</div>;
+  // if (status === "loading") {
+  //   return <Loading/>;
+  // }
+
+  if (loading) {
+    return (
+      <Loading/>
+    );
   }
 
   return (
