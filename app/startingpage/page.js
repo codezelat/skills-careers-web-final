@@ -19,6 +19,8 @@ import Footer from "@/components/Footer";
 import StoryComponent from "@/components/StoryComponent";
 import NewsComponent from "@/components/NewsComponent";
 import FaqComponent from "@/components/FaqComponent";
+import Loading from "../loading";
+import ProductLoading from "../productLoading";
 
 function StartingPage() {
 
@@ -73,7 +75,9 @@ function StartingPage() {
   return (
     <>
       <NavBar />
-      <div className="relative">
+
+      {/* Hero section */}
+      <div className="relative flex items-center justify-center">
         <Image
           src="/images/bg.jpg"
           alt="line"
@@ -82,7 +86,7 @@ function StartingPage() {
           className="absolute top-0 right-0 w-fit h-full object-cover z-[-1] opacity-5 items-end"
         />
 
-        <div className="pt-8 pl-8 pr-8 mx-auto max-w-screen-xl px-4 sm:px-10">
+        <div className="pt-8 w-[1280px]">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="md:col-span-2">
               <div className="mb-8">
@@ -155,7 +159,7 @@ function StartingPage() {
                 </div>
               </div>
 
-              <div className="p-6 sm:p-8">
+              <div className="mt-24 mb-12">
                 <div className="flex flex-col md:flex-row items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex -space-x-4">
@@ -192,7 +196,7 @@ function StartingPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 mt-6">
+                <div className="flex flex-wrap gap-10 mt-10">
                   <div className="flex items-center">
                     <Image
                       src="/images/worldsearch.png"
@@ -245,9 +249,11 @@ function StartingPage() {
           </div>
         </div>
       </div>
-      <div className="w-full bg-[#EDF0FF] mt-20 h-auto py-10">
-        <div className="container mx-auto w-full">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold md:py-10">
+
+      {/* Featured jobs section */}
+      <div className="w-full bg-[#F5F5F5] h-auto flex items-center justify-center py-24">
+        <div className="container w-[1280px]">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold">
             <button className="text-lg md:text-xl font-bold text-[#001571] cursor-pointer md:mb-0">
               Featured Jobs
             </button>
@@ -267,10 +273,10 @@ function StartingPage() {
                 loop
                 breakpoints={{
                   640: { slidesPerView: 1, spaceBetween: 15 },
-                  768: { slidesPerView: 2, spaceBetween: 20 },
-                  1024: { slidesPerView: 3, spaceBetween: 30 },
+                  768: { slidesPerView: 2, spaceBetween: 10 },
+                  1024: { slidesPerView: 4, spaceBetween: 15 },
                 }}
-                className="w-full"
+                className="w-[1280px] mt-16"
               >
                 {filteredJobs.map((job, index) => (
                   <SwiperSlide key={index}>
@@ -279,7 +285,8 @@ function StartingPage() {
                 ))}
               </Swiper>
             ) : (
-              <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
+              // <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
+              <ProductLoading/>
             )}
           </div>
         </div>

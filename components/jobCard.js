@@ -62,7 +62,7 @@ function JobCard(props) {
 
   return (
     <div
-      className="bg-white hover:bg-[#CAD1F1] p-6 m-3 rounded-lg shadow-lg"
+      className="bg-white hover:bg-[#CAD1F1] p-6 rounded-lg shadow-lg"
     >
       <div className="flex justify-between items-center mb-4">
         <p className="w-full text-right text-[#000000] text-sm font-bold">

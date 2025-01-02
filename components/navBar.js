@@ -15,8 +15,8 @@ function NavBar() {
 
   return (
     <>
-      <header className="bg-white text-blue-950 py-3 px-14">
-        <div className="container mx-auto flex justify-between items-center">
+      <header className="bg-white text-blue-950 py-4 flex   items-center justify-center">
+        <div className="container flex justify-between items-center w-[1280px]">
           <Link href="/">
             <img src="/images/logo.png" alt="Logo" className="w-30" />
           </Link>
@@ -67,7 +67,7 @@ function NavBar() {
           </div>
         )}
       </header>
-      <hr className="border-t-4 border-blue-900" />
+      <hr className="border-t-[3px] border-blue-900" />
     </>
 
     // <nav className="flex gap-4 mb-6">
