@@ -37,9 +37,9 @@ function contactPage() {
             <ContactBanner />
             <ContactSection />
             {/* Map Section */}
-            {/* <div className="w-full  flex flex-col items-center gap-3">
+            <div className="w-full  flex flex-col items-center gap-3">
                 <MapWithNoSSR />
-            </div>{" "} */}
+            </div>{" "}
             <Footer />
         </>
     );

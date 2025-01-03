@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 
 // Fix for the default marker icon issue in Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -14,10 +15,19 @@ L.Icon.Default.mergeOptions({
 const position = [6.9271, 79.8612];
 
 export default function LeafletMap() {
+  useEffect(() => {
+    return () => {
+      const mapContainer = document.querySelector(".leaflet-container");
+      if (mapContainer && mapContainer._leaflet_id) {
+        mapContainer._leaflet_id = null; // Reset Leaflet ID to prevent duplication
+      }
+    };
+  }, []);
+
   return (
     <MapContainer
       center={position}
-      zoom={16}  // Adjust zoom level as needed
+      zoom={16}
       scrollWheelZoom={true}
       style={{ height: "300px", width: "100%" }}
     >
