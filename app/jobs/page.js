@@ -136,7 +136,7 @@ function Jobs() {
             />
           </div>
         </div>
-        <div className="container w-[1280px]">
+        <div className="container w-[1280px] mt-20">
           {filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {filteredJobs.map((job, index) => (
