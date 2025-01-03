@@ -15,13 +15,13 @@ function NavBar() {
 
   return (
     <>
-      <header className="bg-white text-blue-950 py-4 flex   items-center justify-center">
+      <header className="bg-white text-blue-950 py-4 flex items-center justify-center">
         <div className="container flex justify-between items-center w-[1280px]">
           <Link href="/">
             <img src="/images/logo.png" alt="Logo" className="w-30" />
           </Link>
-          <div className="hidden md:flex flex-1 justify-center font-semibold">
-            <nav className="flex space-x-6 font-mono">
+          <div className="hidden md:flex flex-1 justify-center font-bold">
+            <nav className="flex space-x-5 text-sm">
               <Link href="/">HOME</Link>
               <Link href="/recruiters">EXPLORE RECRUITERS</Link>
               <Link href="/jobs">EXPLORE JOBS</Link>
@@ -38,7 +38,7 @@ function NavBar() {
           <div className="hidden md:block">
             <Link href="/register">
               <Button>
-                <p className="py-2 px-6 font-mono">JOIN AS RECRUITER</p>
+                <p className="py-2 px-6">JOIN AS RECRUITER</p>
               </Button>
             </Link>
           </div>

@@ -8,6 +8,8 @@ import { countries } from "../../lib/countries";
 import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
 import DropdownButton from "../../components/dropDownButton";
+import ProductLoading from "../productLoading";
+import Footer from "@/components/Footer";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -66,7 +68,7 @@ function Jobs() {
   return (
     <>
       <NavBar />
-      <section className="">
+      <section className="w-full flex flex-col items-center justify-center pb-24">
         <Image
           src="/landing/bg.jpg"
           alt="line"
@@ -74,7 +76,7 @@ function Jobs() {
           height={30}
           className="absolute top-0 right-0 w-fit h-full object-cover z-[-1] opacity-5 items-end translate-y-[5px]"
         />
-        <div className="mx-auto max-w-screen-xl space-y-5 px-4 pb-8 pt-16 sm:px-6">
+        <div className="w-[1280px] space-y-5 pb-8 pt-16">
           <div className="mb-8">
             <h1 className="text-4xl sm:text-6xl font-bold text-[#8A93BE] mt-20 text-center sm:text-left">
               Find Your{" "}
@@ -134,16 +136,22 @@ function Jobs() {
             />
           </div>
         </div>
-        <div className="container mx-auto w-full">
-          <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-            {filteredJobs.length > 0 ? (
-              filteredJobs.map((job, index) => <JobCard key={index} job={job} />)
-            ) : (
-              <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
-            )}
-          </div>
+        <div className="container w-[1280px]">
+          {filteredJobs.length > 0 ? (
+            <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
+              {filteredJobs.map((job, index) => (
+                <JobCard key={index} job={job} />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full">
+              <ProductLoading />
+            </div>
+          )}
         </div>
+
       </section>
+      <Footer/>
     </>
   );
 }
