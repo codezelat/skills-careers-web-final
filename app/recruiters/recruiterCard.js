@@ -152,7 +152,7 @@ function RecruiterCard(props) {
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 mt-4 justify-end">
-            <button className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md">
+            <button onClick={handleViewProfile} className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md">
               <Link href="">
                 <p className="flex text-lg font-bold justify-center">
                   View Profile
