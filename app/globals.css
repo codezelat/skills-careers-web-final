@@ -15,3 +15,67 @@ body {
   background: var(--background);
   font-family: "Montserrat", serif;
 }
+
+
+
+/* custom pagination */
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.custom-pagination .swiper-pagination-bullet {
+  background-color: #E8E8E8; 
+  width: 15px;
+  height: 15px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.custom-pagination .swiper-pagination-bullet-active {
+  background-color: #001571; 
+  width: 15px; 
+  height: 15px;
+  opacity: 1;
+}
+
+.custom-pagination .swiper-pagination-bullet-active {
+  opacity: 1; 
+}
+
+.slider-wrapper {
+  position: relative;
+  overflow: visible; /* Ensure content can overflow */
+}
+/* Swiper container */
+.swiper-container {
+  position: relative;
+  overflow: visible;
+}
+
+/* Arrows */
+.swiper-button-prev-custom {
+  position: absolute;
+  left: 0px;
+  width: calc((100% - 1280px) / 2);
+  height: 100%;
+  color: #001571;
+}
+
+.swiper-button-next-custom {
+  position: absolute;
+  right: 0px;
+  width: calc((100% - 1280px) / 2);
+  height: 100%;
+  color: #001571;
+}
+
+/* Adjust size */
+.swiper-container .swiper-button-prev-custom,
+.swiper-container .swiper-button-next-custom {
+  width: 40px;
+  height: 40px;
+}
+

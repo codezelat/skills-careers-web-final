@@ -252,8 +252,8 @@ function StartingPage() {
 
       {/* Featured jobs section */}
       <div className="w-full bg-[#F5F5F5] h-auto flex items-center justify-center py-24">
-        <div className="container w-[1280px]">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold">
+        <div className="w-full flex flex-col items-center justify-center">
+          <div className="w-[1280px] flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold">
             <button className="text-lg md:text-xl font-bold text-[#001571] cursor-pointer md:mb-0">
               Featured Jobs
             </button>
@@ -262,35 +262,63 @@ function StartingPage() {
               <ArrowOutwardIcon className="w-4 md:w-5 h-4 md:h-5 ml-1" />
             </button>
           </div>
-          <div className="">
-            {Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
-              <Swiper
-                modules={[Pagination, Navigation]}
-                slidesPerView={4}
-                spaceBetween={0}
-                pagination={{ clickable: true }}
-                navigation
-                loop
-                breakpoints={{
-                  640: { slidesPerView: 1, spaceBetween: 15 },
-                  768: { slidesPerView: 2, spaceBetween: 10 },
-                  1024: { slidesPerView: 4, spaceBetween: 15 },
-                }}
-                className="w-[1280px] mt-16"
-              >
-                {filteredJobs.map((job, index) => (
-                  <SwiperSlide key={index}>
-                    <JobCard job={job} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+          <div className="w-full flex items-center justify-center">
+            {isLoading ? (
+              <div className="w-[1280px]">
+                <ProductLoading />
+              </div>
+            ) : Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
+
+              <div className="flex items-center justify-between relative w-full">
+
+                <div className="swiper-button-prev-custom flex items-center justify-center">
+                  <img src="/left.png" />
+                </div>
+
+                <Swiper
+                  modules={[Pagination, Navigation]}
+                  slidesPerView={4}
+                  spaceBetween={0}
+                  pagination={{
+                    clickable: true,
+                    el: ".custom-pagination", // Attach custom pagination
+                  }}
+                  navigation={{
+                    nextEl: ".swiper-button-next-custom",
+                    prevEl: ".swiper-button-prev-custom",
+                  }}
+                  loop
+                  breakpoints={{
+                    640: { slidesPerView: 1, spaceBetween: 15 },
+                    768: { slidesPerView: 2, spaceBetween: 10 },
+                    1024: { slidesPerView: 4, spaceBetween: 15 },
+                  }}
+                  className="swiper-container w-[1280px] mt-16 pb-16"
+                >
+                  {filteredJobs.map((job, index) => (
+                    <SwiperSlide key={index}>
+                      <JobCard job={job} />
+                    </SwiperSlide>
+                  ))}
+
+                  <div className="custom-pagination mt-16" />
+                </Swiper>
+
+                <div className="swiper-button-next-custom flex items-center justify-center">
+                  <img src="/right.png" />
+                </div>
+
+              </div>
             ) : (
-              // <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
-              <ProductLoading />
+              // Display "No Jobs found" if no jobs are available
+              <p className="text-lg text-center font-bold text-red-500 py-20">
+                No Jobs found.
+              </p>
             )}
           </div>
         </div>
       </div>
+
 
       <CategoryComponent />
       <PackageComponent />

@@ -74,7 +74,7 @@ function JobCard(props) {
         alt="Logo"
         width={100}
         height={100}
-        className="rounded-full object-cover mb-8 shadow-lg"
+        className="rounded-full object-cover mb-8 "
       />
       <h2 className="text-xl font-bold text-[#001571] mb-1 text-center sm:text-left">
         {jobTitle}

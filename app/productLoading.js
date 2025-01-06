@@ -1,7 +1,7 @@
 function productLoading() {
     return (
         <>
-            <div className="flex gap-x-[15px] mt-16 h-[400px]">
+            <div className="flex gap-x-[15px] mt-16">
                 <div className="border border-slate-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
                     <div className="animate-pulse flex flex-col">
                         <div className="rounded-full bg-slate-300 h-20 w-20"></div>
