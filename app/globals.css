@@ -18,7 +18,7 @@ body {
 
 
 
-/* custom pagination */
+/* custom swiper styles for featured jobs */
 
 .custom-pagination {
   display: flex;
@@ -47,15 +47,15 @@ body {
 
 .slider-wrapper {
   position: relative;
-  overflow: visible; /* Ensure content can overflow */
+  overflow: visible; 
 }
-/* Swiper container */
+
+
 .swiper-container {
   position: relative;
   overflow: visible;
 }
 
-/* Arrows */
 .swiper-button-prev-custom {
   position: absolute;
   left: 0px;
@@ -72,7 +72,6 @@ body {
   color: #001571;
 }
 
-/* Adjust size */
 .swiper-container .swiper-button-prev-custom,
 .swiper-container .swiper-button-next-custom {
   width: 40px;

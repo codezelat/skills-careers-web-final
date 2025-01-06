@@ -13,8 +13,8 @@ import { BsArrowUpRightCircleFill } from "react-icons/bs";
 export default function StoryComponent() {
   return (
     <>
-      <div className=" bg-custom-double grid grid-cols-1 sm:grid-cols-2 pt-5 gap-y-4 sm:gap-y-0">
-        
+      <div className="w-[1280px] bg-custom-double grid grid-cols-1 sm:grid-cols-2 pt-5 gap-y-4 sm:gap-y-0">
+
         <div className="flex justify-start gap-4 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
           <p>Success Stories from Our Community</p>
         </div>
@@ -29,7 +29,7 @@ export default function StoryComponent() {
           </Link>
         </div>
       </div>
-      <div className="mb-4">
+      <div className="w-[1280px] mt-16">
         <div className="flex items-center justify-between relative w-full">
           {/* Left navigation button */}
           <div className="swiper-button-prev-custom mr-2 sm:mr-6 hidden sm:block">
@@ -46,7 +46,10 @@ export default function StoryComponent() {
               nextEl: ".swiper-button-next-custom",
               prevEl: ".swiper-button-prev-custom",
             }}
-            pagination={{ clickable: true }}
+            pagination={{
+              clickable: true,
+              el: ".custom-pagination",
+            }}
             loop={true}
             className="w-full"
             modules={[Pagination, Navigation]}
@@ -88,6 +91,7 @@ export default function StoryComponent() {
                 </div>
               </SwiperSlide>
             ))}
+            <div className="custom-pagination mt-16" />
           </Swiper>
           {/* Right navigation button */}
           <div className="swiper-button-next-custom ml-2 sm:ml-6 hidden sm:block">

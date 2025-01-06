@@ -4,7 +4,7 @@ const { default: Image } = require("next/image");
 export default function NewsComponent() {
   return (
     <>
-      <div className="grid grid-cols-2 pt-5">
+      <div className="w-[1280px] mt-28 grid grid-cols-2 pt-5">
         <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-xl">
           <p>Latest News</p>
         </div>
@@ -19,8 +19,8 @@ export default function NewsComponent() {
           </Link>
         </div>
       </div>
-      <div className="container mx-auto p-8">
-        <div className="h-screen w-auto grid grid-cols-5 grid-rows-2 space-x-6 ">
+      <div className="w-[1280px] container mt-8">
+        <div className="h-screen grid grid-cols-5 grid-rows-2 space-x-6 ">
           {/* Red Section */}
           <div className="col-span-3 row-span-2 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg">
             <div className="bg-white p-3">

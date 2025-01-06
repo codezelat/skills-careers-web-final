@@ -16,8 +16,8 @@ const categories = [
 
 export default function CategoryComponent() {
   return (
-    <section className="bg-white pt-8">
-        <div className=" pb-3 mx-auto max-w-screen-xl space-y-5 px-4 sm:px-6">
+    <section className="bg-white pt-8 flex items-center justify-center">
+        <div className=" pb-3 w-[1280px]">
           <div className="grid grid-cols-2 pt-5">
             <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
               <p>Categories</p>
@@ -49,10 +49,12 @@ export default function CategoryComponent() {
             
             <p className="text-lg font-medium text-gray-800">{category.name}</p>
           </div>
+          
           {(index + 1) % 3 === 0 && index + 1 !== categories.length && (
             <div className="col-span-full border-t border-gray-300 "></div>
           )}
         </React.Fragment>
+        
       ))}
       </div>
     </div>

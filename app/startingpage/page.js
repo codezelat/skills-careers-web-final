@@ -281,7 +281,7 @@ function StartingPage() {
                   spaceBetween={0}
                   pagination={{
                     clickable: true,
-                    el: ".custom-pagination", // Attach custom pagination
+                    el: ".custom-pagination", 
                   }}
                   navigation={{
                     nextEl: ".swiper-button-next-custom",
@@ -322,7 +322,7 @@ function StartingPage() {
 
       <CategoryComponent />
       <PackageComponent />
-      <div className="bg-[#EDF0FF] pt-8" >
+      <div className="bg-[#F5F5F5] w-full">
         <div style={{
           backgroundImage: "url('/landing/bbg.png')",
           backgroundSize: "100% 100%",
@@ -332,7 +332,7 @@ function StartingPage() {
           backgroundtransform: "rotate(45deg)",
         }}>
           <div
-            className="min-h-screen p-4 mx-auto max-w-screen-xl space-y-5 px-4 py-4 sm:px-6">
+            className="w-[full] py-28 flex flex-col items-center justify-center">
             <StoryComponent />
             <NewsComponent />
             <FaqComponent />

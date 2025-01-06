@@ -3,9 +3,10 @@ import Link from "next/link";
 
 export default function ContactSection() {
   return (
-    <div className="p-4 md:p-10 flex flex-col md:flex-row justify-between gap-8 md:gap-20 mt-8 mx-4 md:mx-10 mb-10">
+    <div className="w-full flex flex-col items-center justify-center">
+    <div className="w-[1280px] flex flex-col md:flex-row justify-between my-24">
       {/* Contact Form */}
-      <div className="w-full md:w-1/3 sm:2/5">
+      <div className="md:w-1/3 sm:2/5 lg:w-1/2 pr-10">
         <h3 className="text-blue-900 text-lg md:text-xl font-semibold mb-3">
           STILL YOU ARE IN TROUBLE? LET'S REACH US.
         </h3>
@@ -59,8 +60,8 @@ export default function ContactSection() {
       </div>
 
       {/* Images Section */}
-      <div className="w-full md:w-2/3 sm:3/5 flex flex-wrap justify-center md:justify-end gap-3">
-        <div className="flex flex-wrap justify-center gap-1">
+      <div className="md:w-2/3 sm:3/5 lg:w-1/2 flex flex-wrap justify-center md:justify-end">
+        <div className="flex flex-wrap justify-center gap-2">
           <Image
             src="/images/ppl4.png"
             alt="Person 1"
@@ -95,6 +96,7 @@ export default function ContactSection() {
           />
         </div>
       </div>
+    </div>
     </div>
   );
 }

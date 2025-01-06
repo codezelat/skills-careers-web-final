@@ -65,60 +65,51 @@ function aboutPage() {
       </div>
 
       {/* Who We Are */}
-      <div className="bg-[#000C3E] w-full flex flex-col items-center justify-center">
+      <div className="bg-[#000C3E] w-full flex flex-col items-center justify-center gap-28 py-28">
 
-        <div className="container pt-20 w-[1280px]">
-          <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2">
-            <div className="col-span-2 w-full text-left text-white">
-              <h1 className="text-2xl text-center font-bold mb-4 lg:text-left md:text-left sm:text-center font-sans">
-                Who We Are
-              </h1>
-              <p className="text-lg mb-8 font-sans">
-                At Skill Careers, we believe that finding the right job or the
-                right talent should be seamless and efficient. Founded with
-                the mission to bridge the gap between job seekers and
-                recruiters, we are committed to offering a platform that is
-                both easy to use and highly effective. Whether you're a job
-                seeker looking to advance your career or a recruiter seeking
-                top talent, Skill Careers is here to support you every step of
-                the way.
-              </p>
-            </div>
-            <div className="flex justify-between flex-wrap mb-5 items-center gap-3">
-              <div className="flex flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px] ">
-                <Image
-                  src={"/images/people1.png"}
-                  width={100}
-                  height={80}
-                  className="w-full h-auto"
-                  alt="Doctor"
-                />
-              </div>
-              <div className="flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px] flex justify-center">
-                <Image
-                  src={"/images/people2.png"}
-                  width={100}
-                  height={80}
-                  className="w-full h-auto"
-                  alt="Girl"
-                />
-              </div>
-              <div className="flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px] flex justify-center">
-                <Image
-                  src={"/images/people3.png"}
-                  width={100}
-                  height={80}
-                  className="w-full h-auto"
-                  alt="Robo"
-                />
-              </div>
-            </div>
+        <div className="w-[1280px] text-white grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-20">
+          <div className="gap-8">
+            <h1 className="text-xl sm:text-2xl md:text-4xl font-semibold mb-4">
+              Who We Are
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg leading-6 sm:leading-8">
+              At Skill Careers, we believe that finding the right job or the right
+              talent should be seamless and efficient. Founded with the mission
+              to bridge the gap between job seekers and recruiters, we are
+              committed to offering a platform that is both easy to use and
+              highly effective. Whether you're a job seeker looking to advance
+              your career or a recruiter seeking top talent, Skill Careers is
+              here to support you every step of the way.
+            </p>
+          </div>
+          <div className="flex justify-center flex-wrap gap-4 sm:gap-6">
+            <Image
+              src={"/images/people1.png"}
+              width={100}
+              height={80}
+              className="w-24 sm:w-32 md:w-40"
+              alt="Doctor"
+            />
+            <Image
+              src={"/images/people2.png"}
+              width={100}
+              height={80}
+              className="w-24 sm:w-32 md:w-40"
+              alt="Girl"
+            />
+            <Image
+              src={"/images/people3.png"}
+              width={100}
+              height={80}
+              className="w-24 sm:w-32 md:w-40"
+              alt="Robo"
+            />
           </div>
         </div>
 
 
         {/* What We Offer */}
-        <div className=" text-gray-100 py-8 px-4 md:p-20">
+        <div className="w-[1280px] text-gray-100">
           <h3 className="text-xl md:text-2xl font-semibold mb-6">
             What We Offer
           </h3>
@@ -154,9 +145,10 @@ function aboutPage() {
           </div>
         </div>
       </div>
+
       {/* Why Choose Us */}
-      <div className="py-8 px-4 md:p-10">
-        <section className="p-6 md:p-12 bg-gray-50">
+      <div className="w-full flex flex-col items-center lg:py-28 lg:p-0 md:p-10 bg-gray-50">
+        <section className="w-[1280px] lg:p-0 md:p-12 ">
           <h2 className="text-lg md:text-2xl font-extrabold text-blue-900 mb-6">
             Why Choose Us
           </h2>
@@ -186,11 +178,11 @@ function aboutPage() {
       </div>
 
       {/* Vision & Mission */}
-      <div className="bg-[#000C3E] text-gray-100 py-8 px-4 md:p-20">
-        <h3 className="text-xl md:text-3xl font-semibold mb-20">
+      <div className="w-full bg-[#000C3E] text-gray-100 flex flex-col items-center py-28">
+        <h3 className="w-[1280px] text-xl md:text-3xl font-semibold mb-20">
           Vision & Mission
         </h3>
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-[1280px] flex flex-col md:flex-row gap-6">
           <div className="bg-white text-blue-950 rounded-lg shadow-md p-6 w-full md:w-1/2">
             <div className="flex items-center mb-4">
               <Image src="/images/vission.png" alt="icon search" width={50} height={50} />
@@ -220,10 +212,11 @@ function aboutPage() {
           </div>
         </div>
       </div>
-      {/* Commitment Section */}
-      <div className="bg-gray-50 text-blue-900 p-12 ">
 
-        <div className=" mx-auto flex flex-col md:flex-row items-center justify-between gap-10 px-6 md:px-10">
+      {/* Commitment Section */}
+      <div className="w-full bg-gray-50 text-blue-900 flex flex-col items-center py-28">
+
+        <div className="w-[1280px] flex flex-col md:flex-row items-center justify-between gap-10">
           {/* Text Content */}
           <div className="md:w-1/2 justify-start">
             <h3 className="text-2xl font-bold text-start mb-8 font-sans ">Commitment to a Sustainable Future</h3>

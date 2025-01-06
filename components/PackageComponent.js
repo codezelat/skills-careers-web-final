@@ -75,8 +75,8 @@ export default function PackageComponent() {
   ];
 
   return (
-    <section className="min-h-screen px-4 py-8">
-      <div className="pb-3 mx-auto max-w-screen-xl space-y-5 px-4 sm:px-6">
+    <section className="py-16 w-full flex items-center justify-center">
+      <div className="pb-3 w-[1280px]">
       <h2 className="text-2xl mb-5 font-bold text-center text-[#001571] pt-12">
         For Recruiters
       </h2>
@@ -84,7 +84,7 @@ export default function PackageComponent() {
         Empower your hiring and assessment process with comprehensive tools
         designed to meet your goals.
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 m-8">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {packages.map((pkg, index) => (
           <PackageCard
             key={index}

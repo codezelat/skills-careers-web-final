@@ -14,7 +14,7 @@ export default function FaqComponent() {
   };
   return (
     <>
-      <div className="grid grid-cols-2 pt-5">
+      <div className="w-[1280px] grid grid-cols-2 mt-32">
         <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
           <p>FAQ</p>
         </div>
@@ -29,7 +29,7 @@ export default function FaqComponent() {
           </Link>
         </div>
       </div>
-      <div className="max-w-full py-8">
+      <div className="w-[1280px] mt-6">
         <div className="space-y-4">
           {faqs.map((faq, index) => (
             <div key={index} className="border-b border-gray-300">
