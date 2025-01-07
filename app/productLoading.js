@@ -38,7 +38,7 @@ function productLoading() {
                         </div>
                     </div>
                 </div>
-                <div className="border border-slate-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
+                <div className="border border-slate-300 shadow rounded-md p-4 max-w-sm w-full mx-auto hidden md:block">
                     <div className="animate-pulse flex flex-col">
                         <div className="rounded-full bg-slate-300 h-20 w-20"></div>
                         <div className="flex-1 space-y-4 pt-5">
@@ -56,7 +56,7 @@ function productLoading() {
                         </div>
                     </div>
                 </div>
-                <div className="border border-slate-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
+                <div className="border border-slate-300 shadow rounded-md p-4 max-w-sm w-full mx-auto hidden md:block">
                     <div className="animate-pulse flex flex-col">
                         <div className="rounded-full bg-slate-300 h-20 w-20"></div>
                         <div className="flex-1 space-y-4 pt-5">

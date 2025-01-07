@@ -14,45 +14,47 @@ export default function FaqComponent() {
   };
   return (
     <>
-      <div className="w-[1280px] grid grid-cols-2 mt-32">
-        <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
-          <p>FAQ</p>
-        </div>
-        <div className="flex justify-end -2 gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
-          <Link href="">
-            <p className="flex">
-              View All
-              <span className="ml-3">
-                <BsArrowUpRightCircleFill />
-              </span>
-            </p>
-          </Link>
-        </div>
-      </div>
-      <div className="w-[1280px] mt-6">
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <div key={index} className="border-b border-gray-300">
-              <button
-                className="w-full text-left py-3 text-lg text-black font-bold flex justify-between items-center"
-                onClick={() => toggleFAQ(index)}
-              >
-                {faq.question}
-                <span>
-                  {activeIndex === index ? (
-                    <FontAwesomeIcon icon={faAngleUp} />
-                  ) : (
-                    <FontAwesomeIcon icon={faAngleDown} />
-                  )}
+      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
+        <div className="w-full flex justify-between">
+          <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
+            <p>FAQ</p>
+          </div>
+          <div className="flex justify-end -2 gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
+            <Link href="">
+              <p className="flex">
+                View All
+                <span className="ml-3">
+                  <BsArrowUpRightCircleFill />
                 </span>
-              </button>
-              {activeIndex === index && (
-                <div className="text-black font-semibold text-base mb-4 px-4">
-                  {faq.answer || "Content for this question is not available."}
-                </div>
-              )}
-            </div>
-          ))}
+              </p>
+            </Link>
+          </div>
+        </div>
+        <div className="w-full mt-2">
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div key={index} className="border-b border-gray-300">
+                <button
+                  className="w-full text-left py-3 text-lg text-black font-bold flex justify-between items-center"
+                  onClick={() => toggleFAQ(index)}
+                >
+                  {faq.question}
+                  <span>
+                    {activeIndex === index ? (
+                      <FontAwesomeIcon icon={faAngleUp} />
+                    ) : (
+                      <FontAwesomeIcon icon={faAngleDown} />
+                    )}
+                  </span>
+                </button>
+                {activeIndex === index && (
+                  <div className="text-black font-semibold text-base mb-4 px-4">
+                    {faq.answer || "Content for this question is not available."}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

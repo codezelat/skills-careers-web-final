@@ -16,8 +16,8 @@ const categories = [
 
 export default function CategoryComponent() {
   return (
-    <section className="bg-white pt-8 flex items-center justify-center">
-        <div className=" pb-3 w-[1280px]">
+    <section className="bg-white pt-8 flex items-center justify-center w-full">
+        <div className=" pb-3 w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
           <div className="grid grid-cols-2 pt-5">
             <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
               <p>Categories</p>

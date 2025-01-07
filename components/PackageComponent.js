@@ -76,7 +76,7 @@ export default function PackageComponent() {
 
   return (
     <section className="py-16 w-full flex items-center justify-center">
-      <div className="pb-3 w-[1280px]">
+      <div className="pb-3 w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
       <h2 className="text-2xl mb-5 font-bold text-center text-[#001571] pt-12">
         For Recruiters
       </h2>

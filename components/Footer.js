@@ -3,7 +3,7 @@ export default function Footer() {
   return (
     <>
       <footer className="bg-[#00092F] w-full flex flex-col items-center">
-      <div className="w-[1280px] py-8 lg:space-y-8">
+      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] py-8 lg:space-y-8">
         {/* Logo and Description */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="text-white mb-4 sm:mb-0">

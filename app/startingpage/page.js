@@ -77,7 +77,7 @@ function StartingPage() {
       <NavBar />
 
       {/* Hero section */}
-      <div className="relative flex items-center justify-center">
+      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex items-center justify-center">
         <Image
           src="/images/bg.jpg"
           alt="line"
@@ -253,7 +253,7 @@ function StartingPage() {
       {/* Featured jobs section */}
       <div className="w-full bg-[#F5F5F5] h-auto flex items-center justify-center py-24">
         <div className="w-full flex flex-col items-center justify-center">
-          <div className="w-[1280px] flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold">
+          <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold">
             <button className="text-lg md:text-xl font-bold text-[#001571] cursor-pointer md:mb-0">
               Featured Jobs
             </button>
@@ -264,12 +264,12 @@ function StartingPage() {
           </div>
           <div className="w-full flex items-center justify-center">
             {isLoading ? (
-              <div className="w-[1280px]">
+              <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
                 <ProductLoading />
               </div>
             ) : Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
 
-              <div className="flex items-center justify-between relative w-full">
+              <div className="flex items-center justify-between relative w-full px-[20px] xl:px-[0px] ">
 
                 <div className="swiper-button-prev-custom flex items-center justify-center">
                   <img src="/left.png" />
@@ -277,11 +277,11 @@ function StartingPage() {
 
                 <Swiper
                   modules={[Pagination, Navigation]}
-                  slidesPerView={4}
-                  spaceBetween={0}
+                  slidesPerView={2}
+                  spaceBetween={10}
                   pagination={{
                     clickable: true,
-                    el: ".custom-pagination", 
+                    el: ".custom-pagination",
                   }}
                   navigation={{
                     nextEl: ".swiper-button-next-custom",
@@ -289,7 +289,7 @@ function StartingPage() {
                   }}
                   loop
                   breakpoints={{
-                    640: { slidesPerView: 1, spaceBetween: 15 },
+                    640: { slidesPerView: 2, spaceBetween: 15 },
                     768: { slidesPerView: 2, spaceBetween: 10 },
                     1024: { slidesPerView: 4, spaceBetween: 15 },
                   }}
@@ -322,17 +322,17 @@ function StartingPage() {
 
       <CategoryComponent />
       <PackageComponent />
-      <div className="bg-[#F5F5F5] w-full">
-        <div style={{
+      <div className="bg-[#F5F5F5] w-full flex items-center justify-center">
+        <div className="w-full flex items-center justify-center" style={{
           backgroundImage: "url('/landing/bbg.png')",
           backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat", // Prevent repeating for both images
+          backgroundRepeat: "no-repeat", 
           backgroundPosition: "10% 80%",
           backgroundBlendMode: "overlay",
           backgroundtransform: "rotate(45deg)",
         }}>
           <div
-            className="w-[full] py-28 flex flex-col items-center justify-center">
+            className="w-full py-28 flex flex-col items-center justify-center gap-24">
             <StoryComponent />
             <NewsComponent />
             <FaqComponent />
