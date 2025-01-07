@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import JobSeekerRegister from "../(signup)/jobseekersignup/page";
 import RecruiterRegister from "../(signup)/recruitersignup/page";
 import Loading from "../loading";
+import Image from "next/image";
 
 const Register = () => {
   const [isRecruiter, setIsRecruiter] = useState(false);
@@ -47,8 +48,15 @@ const Register = () => {
             </div>
           </div>
           {/* Right Side with Form */}
-          <div className="flex flex-col overflow-y-auto py-24 px-10 md:w-2/5">
+          <div className="flex flex-col overflow-y-auto py-16 px-10 md:w-2/5">
             <div className="flex flex-col items-center">
+              <Image
+                src="/images/logo.png"
+                alt="logo"
+                width={140}
+                height={40}
+                className="mb-8 ml-10 md:hidden"
+              />
               <p className="text-blue-900 text-center text-md font-semibold">
                 Create your free account to explore job listings, connect with
                 recruiters, and take the next step in your career.{" "}

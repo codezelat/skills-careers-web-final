@@ -23,10 +23,10 @@ function Login() {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false); 
+      setIsLoading(false);
     }, 500);
 
-    return () => clearTimeout(timer); 
+    return () => clearTimeout(timer);
   }, []);
 
   const emailFromParams = searchParams.get("email"); // Get email from query parameters
@@ -95,7 +95,7 @@ function Login() {
   return (
     <>
       {isLoading ? (
-        <Loading/>
+        <Loading />
       ) : (
         <div className="flex flex-col md:flex-row h-screen">
           {/* Left Side with Image and Intro Text */}
@@ -125,13 +125,13 @@ function Login() {
           {/* Right Side with Form */}
           <div className="flex flex-col justify-center md:w-2/5 p-8">
             <div className="flex flex-col items-center mb-4">
-              {/* <Image
-              src="/images/logo.png"
-              alt="logo"
-              width={140}
-              height={40}
-              className="mb-5 ml-10"
-            /> */}
+              <Image
+                src="/images/logo.png"
+                alt="logo"
+                width={140}
+                height={40}
+                className="mb-5 ml-10 md:hidden"
+              />
               <h2 className="text-xl text-blue-900 font-semibold text-center mb-2 ">
                 Welcome Back! Let's Get You Started.
               </h2>
