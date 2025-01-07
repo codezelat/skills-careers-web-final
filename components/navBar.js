@@ -25,22 +25,39 @@ function NavBar() {
               <Link href="/">HOME</Link>
               <Link href="/recruiters">EXPLORE RECRUITERS</Link>
               <Link href="/jobs">EXPLORE JOBS</Link>
-              {session?.user?.role === "recruiter" && (
-                <Link href="/dashboard">DASHBOARD</Link>
-              )}
-              {session?.user?.role === "jobseeker" && (
-                <Link href="/profile">PROFILE</Link>
-              )}
               <Link href="/about">ABOUT US</Link>
               <Link href="/contact">CONTACT US</Link>
             </nav>
           </div>
           <div className="hidden md:block">
-            <Link href="/register">
-              <Button>
-                <p className="py-2 px-6">JOIN AS RECRUITER</p>
-              </Button>
-            </Link>
+            {status === "unauthenticated" && (
+              <Link href="/register">
+                <Button>
+                  <p className="py-2 px-6">JOIN AS RECRUITER</p>
+                </Button>
+              </Link>
+            )}
+            {session?.user?.role === "recruiter" && (
+              <Link href="/dashboard">
+                <Button>
+                  <p className="py-2 px-6">My Dashboard</p>
+                </Button>
+              </Link>
+            )}
+            {session?.user?.role === "jobseeker" && (
+              <Link href="/profile">
+                <Button>
+                  <p className="py-2 px-6">My Profile</p>
+                </Button>
+              </Link>
+            )}
+            {session?.user?.role === "admin" && (
+              <Link href="/admindashboard">
+                <Button>
+                  <p className="py-2 px-6">My Dashboard</p>
+                </Button>
+              </Link>
+            )}
           </div>
           <div className="md:hidden">
             <button id="menu-toggle" onClick={toggleMenu}>
@@ -110,7 +127,7 @@ function NavBar() {
     //       DashBoard
     //     </Link>
     //   )}
-      
+
     //   {session?.user?.role === "admin" && (
     //     <Link href="/admindashboard" className="text-blue-500 hover:underline">
     //       Admin DashBoard
