@@ -1,4 +1,4 @@
-import ApplicationForm from "./applicationForm";
+import ApplicationForm from "./JobApplicationForm";
 
 async function JobApply({params}){
     const jobid = (await params).jobid;

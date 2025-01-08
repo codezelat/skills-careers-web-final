@@ -11,6 +11,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import JobApplicationForm from './[jobid]/apply/JobApplicationForm';
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 import Footer from "@/components/Footer";
 import JobCard from "../../components/jobCard";
@@ -37,6 +38,8 @@ function JobProfile({ slug }) {
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
 
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
@@ -138,7 +141,7 @@ function JobProfile({ slug }) {
     router.push(`/recruiters/${recruiterDetails.id}`);
   };
 
-  
+
 
   return (
     <>
@@ -176,7 +179,12 @@ function JobProfile({ slug }) {
                 <BsArrowUpRightCircleFill />
               </span>
             </button>
-            <button onClick={handleViewApplication} className="bg-[#001571] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button
+              onClick={() => {
+                setShowApplicationForm(true);
+              }}
+              className="bg-[#001571] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
               Apply Now
             </button>
           </div>
@@ -295,6 +303,25 @@ function JobProfile({ slug }) {
             </div>
           </div>
         </div>
+
+        {/* Job Application Form Popup */}
+        {showApplicationForm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+            <div className="relative bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
+              <button
+                onClick={() => setShowApplicationForm(false)}
+                className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+              >
+                Close
+              </button>
+              <JobApplicationForm
+                jobid={jobDetails.id}
+                onClose={() => setShowApplicationForm(false)}
+              />
+            </div>
+          </div>
+        )}
+
         <Footer />
       </div>
     </>

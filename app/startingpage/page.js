@@ -277,7 +277,7 @@ function StartingPage() {
 
                 <Swiper
                   modules={[Pagination, Navigation]}
-                  slidesPerView={2}
+                  slidesPerView={1}
                   spaceBetween={10}
                   pagination={{
                     clickable: true,
