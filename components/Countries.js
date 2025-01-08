@@ -40,13 +40,13 @@ export default function Countries() {
   }, []);
 
   return (
-    <div className="flex flex-col px-0 pb-2 pt-1 lg:px-0 md:px-0 sm:px-0 relative">
+    <div className="w-auto items-end justify-end flex flex-col px-0 pb-2 pt-1 lg:px-0 md:px-0 sm:px-0 relative text-[14px] md:text-[16px]">
       <div className="w-full">
         <div className="relative" ref={dropdownRef}>
           {/* Dropdown button */}
           <button
             onClick={toggleDropdown}
-            className="w-auto lg:w-auto bg-[#e6e8f1] border-2 border-[#B0B6D3] text-[#5462A0] px-4 py-3 lg:px-20 lg:py-3 font-semibold rounded-md flex items-center justify-between"
+            className="w-full lg:w-auto bg-[#e6e8f1] border-2 border-[#B0B6D3] text-[#5462A0] px-[6px] py-3 lg:px-20 lg:py-3 font-semibold rounded-md flex items-center justify-between"
           >
             <span className="flex items-center">
               {selectedCountry ? (

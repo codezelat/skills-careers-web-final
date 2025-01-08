@@ -68,17 +68,19 @@ function Jobs() {
   return (
     <>
       <NavBar />
-      <section className="w-full flex flex-col items-center justify-center pb-24">
-        <Image
-          src="/landing/bg.jpg"
-          alt="line"
-          width={100}
-          height={30}
-          className="absolute top-0 right-0 w-fit h-full object-cover z-[-1] opacity-5 items-end translate-y-[5px]"
-        />
-        <div className="w-[1280px] space-y-5 pb-8 pt-16">
-          <div className="mb-8">
-            <h1 className="text-4xl sm:text-6xl font-bold text-[#8A93BE] mt-20 text-center sm:text-left">
+      <section className="bg-[#F5F5F5] w-full flex flex-col items-center pb-24">
+        <div className="h-screen w-full absolute bg-white">
+          <Image src="/images/bg.jpg" alt="Background Image"
+            layout="fill"
+            objectFit="contain"
+            objectPosition="right top"
+            quality={100}
+            priority
+            className="w-full h-full opacity-5 " />
+        </div>
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 pb-8 pt-16 z-[2]">
+          <div className="mb-8 sm:justify-center">
+            <h1 className="text-4xl font-bold text-[#8A93BE] mt-28">
               Find Your{" "}
               <span className="font-bold text-[#001571]">Perfect </span>
               Job.
@@ -86,26 +88,26 @@ function Jobs() {
           </div>
 
           <div className="bg-[#e6e8f1] lg:p-2 md:p-2 sm:p-2 rounded-md">
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex gap-1 md:gap-4 items-center">
               <input
                 type="search"
                 placeholder="Search by job title, keywords, or company."
-                className="bg-[#e6e8f1] text-[#8A93BE] text-base lg:text-lg md:text-lg sm:text-base flex-grow px-4 py-2 focus:outline-none w-full rounded-md sm:w-auto font-bold placeholder-[#5462A0]"
+                className="bg-[#e6e8f1] text-[#8A93BE] text-[14px] lg:text-lg md:text-lg sm:text-base flex-grow px-4 py-2 focus:outline-none w-full rounded-md sm:w-auto font-bold placeholder-[#5462A0]"
                 value={searchQuery}
                 onChange={handleSearchChange}
               />
               <Countries />
 
-              <button className="flex bg-[#001571] text-white px-4 py-3 w-full justify-center lg:justify-end md:justify-end sm:justify-end mt-1 sm:w-auto rounded-md font-semibold text-base sm:text-lg">
-                <span className="mt-1 mr-4">
-                  <IoSearchSharp size={20} />
+              <button className="flex items-center justify-center w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 rounded-md font-semibold text-[12px] md:text-[16px]">
+                <span className="md:mt-1 mr-2 md:mr-4">
+                  <IoSearchSharp size={15} />
                 </span>
                 Search
               </button>
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-4 md:frid-cols-4 sm:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-4 gap-4 mb-8">
             <DropdownButton
               buttonName="Industry"
               dropdownItems={["Industry 1", "Industry 2", "Industry 3"]}
@@ -136,7 +138,7 @@ function Jobs() {
             />
           </div>
         </div>
-        <div className="container w-[1280px] mt-20">
+        <div className="container w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[2]">
           {filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {filteredJobs.map((job, index) => (
@@ -151,7 +153,7 @@ function Jobs() {
         </div>
 
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 }

@@ -76,24 +76,24 @@ function JobCard(props) {
         height={100}
         className="rounded-full object-cover mb-8 "
       />
-      <h2 className="text-xl font-bold text-[#001571] mb-1 text-center sm:text-left">
+      <h2 className="text-xl font-bold text-[#001571] mb-1 text-left sm:text-left">
         {jobTitle}
       </h2>
-      <div className="flex items-center gap-2 mb-4 justify-center sm:justify-start">
+      <div className="flex items-center gap-2 mb-4 justify-start sm:justify-start">
         <span className="bg-[#001571] text-white px-2 py-1 rounded-full text-xs font-semibold">
           {jobTypes}
         </span>
       </div>
-      <p className="text-xl font-bold text-[#000000] text-center sm:text-left">
+      <p className="text-xl font-bold text-[#000000] text-left sm:text-left">
         {recruiterDetails.recruiterName}
       </p>
-      <p className="text-xl font-bold text-[#000000] mb-4 text-center sm:text-left">
+      <p className="text-xl font-bold text-[#000000] mb-4 text-left sm:text-left">
         {location}
       </p>
-      <p className="text-[#000000] text-sm mb-4 text-center sm:text-left">
+      <p className="text-[#000000] text-sm mb-4 text-left sm:text-left">
         {jobDescription}
       </p>
-      <div className="flex gap-4 flex-wrap justify-center sm:justify-start">
+      <div className="flex gap-4 flex-wrap justify-between sm:justify-start">
         <button className="bg-[#001571] text-white px-3 py-2 rounded-lg font-semibold" onClick={handleViewApplication}>
           Apply Now
         </button>

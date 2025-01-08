@@ -82,7 +82,7 @@ function RecruiterCard(props) {
             </div>
 
             <div className="flex-grow">
-              <div className="flex flex-col lg:flex-row md:flex-row justify-between items-end lg:items-center md:items-center ">
+              <div className="flex flex-row lg:flex-row md:flex-row justify-between items-end lg:items-center md:items-center mt-4 md:mt-0">
                 <h3 className="flex text-xl text-center font-bold text-[#001571]">
                   {recruiterName}
                   <span className="ml-2 mt-1">
@@ -113,7 +113,7 @@ function RecruiterCard(props) {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4 mt-2">
+              <div className="flex flex-wrap gap-4 mt-4 md:mt-2">
                 <div className="flex items-center gap-2">
                   <FaLocationDot size={20} className="text-[#001571]" />
                   <p className="text-black font-semibold">
