@@ -13,7 +13,7 @@ export default function ContactBanner() {
     <>
       {/* Contact Banner */}
       <div className="w-full bg-[#001571] flex flex-col items-center justify-center">
-        <div className="w-[1280px] flex flex-col items-center justify-center lg:flex-row lg:justify-between lg:items-center gap-10 py-6">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-col items-center justify-center lg:flex-row lg:justify-between lg:items-center gap-10 py-6">
           {/* Contact Info Section */}
           <div className="flex flex-col sm:space-y-1 lg:flex-row sm:flex-row sm:flex-wrap lg:flex-wrap justify-center md:justify-start gap-6 lg:gap-40 px-4 lg:px-0">
             {/* Email Section */}

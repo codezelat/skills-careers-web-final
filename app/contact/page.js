@@ -24,8 +24,8 @@ function contactPage() {
             >
                 {/* Content */}
                 <div className="flex flex-col items-center justify-end bg-[#001571] bg-opacity-50 text-white h-full w-full pb-8">
-                    <div className="w-[1280px]">
-                        <h1 className="text-5xl font-bold mb-2 ">
+                    <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
+                        <h1 className="text-3xl md:text-5xl font-bold mb-2 ">
                             Get In Touch With Us.
                         </h1>
                         <h2 className="font-normal mb-4 ">

@@ -53,7 +53,7 @@ function aboutPage() {
         style={{ backgroundImage: "url('/images/aboutUsBanner.png')" }}
       >
         <div className="flex flex-col justify-center items-center bg-black bg-opacity-40 text-white h-full w-full">
-          <div className="flex flex-col items-start justify-center w-[1280px]">
+          <div className="flex flex-col items-start justify-center w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
             <h1 className="text-2xl md:text-4xl font-bold mb-1">
               Empowering Careers,
             </h1>
@@ -67,7 +67,7 @@ function aboutPage() {
       {/* Who We Are */}
       <div className="bg-[#000C3E] w-full flex flex-col items-center justify-center gap-28 py-28">
 
-        <div className="w-[1280px] text-white grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-20">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] text-white grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-20">
           <div className="gap-8">
             <h1 className="text-xl sm:text-2xl md:text-4xl font-semibold mb-4">
               Who We Are
@@ -109,7 +109,7 @@ function aboutPage() {
 
 
         {/* What We Offer */}
-        <div className="w-[1280px] text-gray-100">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] text-gray-100">
           <h3 className="text-xl md:text-2xl font-semibold mb-6">
             What We Offer
           </h3>
@@ -147,8 +147,8 @@ function aboutPage() {
       </div>
 
       {/* Why Choose Us */}
-      <div className="w-full flex flex-col items-center lg:py-28 lg:p-0 md:p-10 bg-gray-50">
-        <section className="w-[1280px] lg:p-0 md:p-12 ">
+      <div className="w-full flex flex-col items-center py-20 md:py-28 bg-gray-50">
+        <section className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] lg:p-0 md:p-12 ">
           <h2 className="text-lg md:text-2xl font-extrabold text-blue-900 mb-6">
             Why Choose Us
           </h2>
@@ -178,11 +178,11 @@ function aboutPage() {
       </div>
 
       {/* Vision & Mission */}
-      <div className="w-full bg-[#000C3E] text-gray-100 flex flex-col items-center py-28">
-        <h3 className="w-[1280px] text-xl md:text-3xl font-semibold mb-20">
+      <div className="w-full bg-[#000C3E] text-gray-100 flex flex-col items-center py-20 md:py-28">
+        <h3 className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] text-xl md:text-3xl font-semibold mb-10">
           Vision & Mission
         </h3>
-        <div className="w-[1280px] flex flex-col md:flex-row gap-6">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-col md:flex-row gap-6">
           <div className="bg-white text-blue-950 rounded-lg shadow-md p-6 w-full md:w-1/2">
             <div className="flex items-center mb-4">
               <Image src="/images/vission.png" alt="icon search" width={50} height={50} />
@@ -214,9 +214,9 @@ function aboutPage() {
       </div>
 
       {/* Commitment Section */}
-      <div className="w-full bg-gray-50 text-blue-900 flex flex-col items-center py-28">
+      <div className="w-full bg-gray-50 text-blue-900 flex flex-col items-center py-20 md:py-28">
 
-        <div className="w-[1280px] flex flex-col md:flex-row items-center justify-between gap-10">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-col md:flex-row items-center justify-between gap-10">
           {/* Text Content */}
           <div className="md:w-1/2 justify-start">
             <h3 className="text-2xl font-bold text-start mb-8 font-sans ">Commitment to a Sustainable Future</h3>
