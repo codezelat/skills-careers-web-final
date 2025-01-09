@@ -78,13 +78,15 @@ function StartingPage() {
 
       {/* Hero section */}
       <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex items-center justify-center">
-        <Image
-          src="/images/bg.jpg"
-          alt="line"
-          width={100}
-          height={30}
-          className="absolute top-0 right-0 w-fit h-full object-cover z-[-1] opacity-5 items-end"
-        />
+        <div className="h-screen w-full absolute bg-white z-[-1]">
+          <Image src="/images/bg.jpg" alt="Background Image"
+            layout="fill"
+            objectFit="contain"
+            objectPosition="right top"
+            quality={100}
+            priority
+            className="w-full h-full opacity-5 " />
+        </div>
 
         <div className="pt-8 w-[1280px]">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -242,6 +244,7 @@ function StartingPage() {
               <Image
                 src="/images/girlPic.png"
                 alt="Illustration"
+                quality={100}
                 fill
                 className="object-cover rounded-md"
               />
@@ -326,7 +329,7 @@ function StartingPage() {
         <div className="w-full flex items-center justify-center" style={{
           backgroundImage: "url('/landing/bbg.png')",
           backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat", 
+          backgroundRepeat: "no-repeat",
           backgroundPosition: "10% 80%",
           backgroundBlendMode: "overlay",
           backgroundtransform: "rotate(45deg)",
