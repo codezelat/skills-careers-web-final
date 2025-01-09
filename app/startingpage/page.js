@@ -20,7 +20,7 @@ import StoryComponent from "@/components/StoryComponent";
 import NewsComponent from "@/components/NewsComponent";
 import FaqComponent from "@/components/FaqComponent";
 import Loading from "../loading";
-import ProductLoading from "../productLoading";
+import JobLoading from "../jobLoading";
 
 function StartingPage() {
 
@@ -268,7 +268,7 @@ function StartingPage() {
           <div className="w-full flex items-center justify-center">
             {isLoading ? (
               <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
-                <ProductLoading />
+                <JobLoading />
               </div>
             ) : Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
 

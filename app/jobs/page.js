@@ -8,7 +8,7 @@ import { countries } from "../../lib/countries";
 import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
 import DropdownButton from "../../components/dropDownButton";
-import ProductLoading from "../productLoading";
+import JobLoading from "../jobLoading";
 import Footer from "@/components/Footer";
 
 function Jobs() {
@@ -152,7 +152,7 @@ function Jobs() {
         </div>
         <div className="container w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[2]">
           {isLoading ? (
-            <ProductLoading />
+            <JobLoading />
           ) : filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {filteredJobs.map((job, index) => (
