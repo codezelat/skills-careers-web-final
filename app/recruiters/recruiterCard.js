@@ -82,38 +82,38 @@ function RecruiterCard(props) {
             </div>
 
             <div className="flex-grow">
-              <div className="flex flex-row lg:flex-row md:flex-row justify-between items-end lg:items-center md:items-center mt-4 md:mt-0">
-                <h3 className="flex text-xl text-center font-bold text-[#001571]">
+              <div className="flex flex-col lg:flex-row md:flex-row justify-between items-start lg:items-center md:items-center mt-4 md:mt-0">
+                <h3 className="flex items-center text-xl text-center font-bold text-[#001571]">
                   {recruiterName}
                   <span className="ml-2 mt-1">
                     <PiSealCheckFill size={20} />
                   </span>
                 </h3>
-                <div className="flex space-x-3 text-[#001571]">
+                <div className="flex space-x-3 mt-2 md:mt-0 text-[#001571]">
                   {linkedin && (
                     <Link href={linkedin} target="_blank" rel="noopener noreferrer">
-                      <LinkedIn fontSize="medium" aria-label="LinkedIn" />
+                      <LinkedIn fontSize="large" aria-label="LinkedIn" />
                     </Link>
                   )}
                   {instagram && (
                     <Link href={instagram} target="_blank" rel="noopener noreferrer">
-                      <Instagram fontSize="medium" aria-label="Instagram" />
+                      <Instagram fontSize="large" aria-label="Instagram" />
                     </Link>
                   )}
                   {facebook && (
                     <Link href={facebook} target="_blank" rel="noopener noreferrer">
-                      <Facebook fontSize="medium" aria-label="Facebook" />
+                      <Facebook fontSize="large" aria-label="Facebook" />
                     </Link>
                   )}
                   {x && (
                     <Link href={x} target="_blank" rel="noopener noreferrer">
-                      <XIcon fontSize="medium" aria-label="X (formerly Twitter)" />
+                      <XIcon fontSize="large" aria-label="X (formerly Twitter)" />
                     </Link>
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4 mt-4 md:mt-2">
+              <div className="flex flex-col md:flex-row gap-4 mt-4 md:mt-2">
                 <div className="flex items-center gap-2">
                   <FaLocationDot size={20} className="text-[#001571]" />
                   <p className="text-black font-semibold">

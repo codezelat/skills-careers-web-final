@@ -80,10 +80,17 @@ function JobCard(props) {
         {jobTitle}
       </h2>
       <div className="flex items-center gap-2 mb-4 justify-start sm:justify-start">
-        <span className="bg-[#001571] text-white px-2 py-1 rounded-full text-xs font-semibold">
-          {jobTypes}
-        </span>
+        {jobTypes && jobTypes.map((type, index) => (
+          <span
+            key={index}
+            className={`px-2 py-1 rounded-[5px] text-xs font-semibold text-white ${index % 2 === 0 ? 'bg-[#001571]' : 'bg-[#00B6B4]'
+              }`}
+          >
+            {type}
+          </span>
+        ))}
       </div>
+
       <p className="text-xl font-bold text-[#000000] text-left sm:text-left">
         {recruiterDetails.recruiterName}
       </p>

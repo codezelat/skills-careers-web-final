@@ -40,7 +40,7 @@ export default function Countries() {
   }, []);
 
   return (
-    <div className="w-auto items-end justify-end flex flex-col px-0 pb-2 pt-1 lg:px-0 md:px-0 sm:px-0 relative text-[14px] md:text-[16px]">
+    <div className="w-full md:w-auto items-end justify-end flex flex-col px-0 pb-2 pt-1 lg:px-0 md:px-0 sm:px-0 relative text-[14px] md:text-[16px]">
       <div className="w-full">
         <div className="relative" ref={dropdownRef}>
           {/* Dropdown button */}

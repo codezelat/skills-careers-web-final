@@ -87,8 +87,8 @@ function Jobs() {
             </h1>
           </div>
 
-          <div className="bg-[#e6e8f1] lg:p-2 md:p-2 sm:p-2 rounded-md">
-            <div className="flex gap-1 md:gap-4 items-center">
+          <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md">
+            <div className="flex flex-col md:flex-row gap-1 md:gap-4 items-center">
               <input
                 type="search"
                 placeholder="Search by job title, keywords, or company."
@@ -98,7 +98,7 @@ function Jobs() {
               />
               <Countries />
 
-              <button className="flex items-center justify-center w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 rounded-md font-semibold text-[12px] md:text-[16px]">
+              <button className="flex items-center justify-center w-full md:w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 rounded-md font-semibold text-[12px] md:text-[16px]">
                 <span className="md:mt-1 mr-2 md:mr-4">
                   <IoSearchSharp size={15} />
                 </span>
@@ -107,40 +107,52 @@ function Jobs() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-4 gap-4 mb-8">
-            <DropdownButton
-              buttonName="Industry"
-              dropdownItems={["Industry 1", "Industry 2", "Industry 3"]}
-              onSelect={handleSelect}
-            />
-            <DropdownButton
-              buttonName="Experience Level"
-              dropdownItems={[
-                "Experience Level 1",
-                "Experience Level 2",
-                "Experience Level 3",
-              ]}
-              onSelect={handleSelect}
-            />
-            <DropdownButton
-              buttonName="Salary Range"
-              dropdownItems={[
-                "Salary Range 1",
-                "Salary Range 2",
-                "Salary Range 3",
-              ]}
-              onSelect={handleSelect}
-            />
-            <DropdownButton
-              buttonName="Job Type"
-              dropdownItems={["Job Type 1", "Job Type 2", "Job Type 3"]}
-              onSelect={handleSelect}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-8">
+            <div className="col-span-1">
+              <DropdownButton
+                buttonName="Industry"
+                dropdownItems={["Industry 1", "Industry 2", "Industry 3"]}
+                onSelect={handleSelect}
+              />
+            </div>
+
+            <div className="col-span-1">
+              <DropdownButton
+                buttonName="Experience Level"
+                dropdownItems={[
+                  "Experience Level 1",
+                  "Experience Level 2",
+                  "Experience Level 3",
+                ]}
+                onSelect={handleSelect}
+              />
+            </div>
+
+            <div className="col-span-1 sm:col-span-1 flex sm:flex-none gap-2 md:gap-0">
+              <DropdownButton
+                buttonName="Salary Range"
+                dropdownItems={[
+                  "Salary Range 1",
+                  "Salary Range 2",
+                  "Salary Range 3",
+                ]}
+                onSelect={handleSelect}
+              />
+              <DropdownButton
+                buttonName="Job Type"
+                dropdownItems={["Job Type 1", "Job Type 2", "Job Type 3"]}
+                onSelect={handleSelect}
+              />
+            </div>
+
+            <div className="col-span-1 sm:col-span-1 flex sm:flex-none">
+            </div>
           </div>
+
         </div>
         <div className="container w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[2]">
           {isLoading ? (
-              <ProductLoading/>
+            <ProductLoading />
           ) : filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {filteredJobs.map((job, index) => (

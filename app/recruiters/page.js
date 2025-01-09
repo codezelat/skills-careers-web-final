@@ -81,7 +81,7 @@ function Recruiters() {
             </h1>
           </div>
 
-          <div className="bg-[#e6e8f1] h-auto p-2">
+          <div className="bg-[#e6e8f1] h-auto p-2 rounded-md">
             <div className="flex items-center gap-4 w-full">
               {/* Input Field */}
               <input
@@ -94,8 +94,8 @@ function Recruiters() {
 
 
               {/* Search Button */}
-              <button className="flex w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 rounded-md font-semibold">
-                <span className="mt-1 mr-4 ">
+              <button className="flex w-wrap justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold">
+                <span className="mt-1 mr-2 md:mr-4 ">
                   <IoSearchSharp size={20} />
                 </span>
                 Search
@@ -104,12 +104,14 @@ function Recruiters() {
           </div>
 
 
-          <div className="grid grid-cols-3 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 flex-wrap justify-center gap-4 mb-8 text-[14px] md:text-[16px]">
-            <DropdownButton
-              buttonName="Industry"
-              dropdownItems={["Industry 1", "Industry 2", "Industry 3"]}
-              onSelect={handleSelect}
-            />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-4 mb-8 text-[14px] md:text-[16px]">
+            <div className="col-span-2 md:col-span-1">
+              <DropdownButton
+                buttonName="Industry"
+                dropdownItems={["Industry 1", "Industry 2", "Industry 3"]}
+                onSelect={handleSelect}
+              />
+            </div>
             <DropdownButton
               buttonName="Experience Level"
               dropdownItems={["Experience Level 1", "Experience Level 2", "Experience Level 3"]}
@@ -121,6 +123,7 @@ function Recruiters() {
               onSelect={handleSelect}
             />
           </div>
+
 
           <div className="w-full pt-20">
             {isLoading ? (

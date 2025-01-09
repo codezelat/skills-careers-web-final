@@ -117,7 +117,7 @@ function JobProfile({ slug }) {
   }, [jobDetails.recruiterId]);
 
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (error) {
@@ -147,174 +147,200 @@ function JobProfile({ slug }) {
   return (
     <>
       <NavBar />
-      <div className="min-h-screen p-8 mx-auto max-w-screen-xl space-y-5 px-4 py-8 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 pt-5">
-          <div className="flex justify-center lg:justify-start md:justify-start sm:justify-start gap-4 mb-8 text-[#33448D] font-semibold text-lg">
-            <Image
-              src={recruiterDetails.logo || "/images/default-image.jpg"}
-              width={180}
-              height={180}
-              alt="detail logo"
-              className="w-50 h-50 lg:w-auto lg:h-auto md:w-auto md:h-auto sm:w-auto sm:h-auto"
-            />
-          </div>
-          <div className="flex justify-end gap-4 mb-8 text-black font-bold text-base lg:text-lg md:text-lg sm:text-lg">
-            <p>{new Date(jobDetails.createdAt).toLocaleDateString()}</p>
-          </div>
-        </div>
-        <div className="flex flex-wrap justify-between items-center mb-4">
-          <div className="flex flex-wrap items-center">
-            <h1 className="text-2xl font-bold text-[#001571] mb-0 mr-4">
-              {jobDetails.jobTitle}
-            </h1>
-            <div className="flex items-center">
-              <span className="bg-[#001571] text-white px-2 py-1/2 rounded-lg mr-2">
-                {jobDetails.jobTypes}
-              </span>
+      <div className="w-full">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 pt-5">
+            <div className="flex justify-center lg:justify-start md:justify-start sm:justify-start gap-4 mb-8 text-[#33448D] font-semibold text-lg">
+              <Image
+                src={recruiterDetails.logo || "/images/default-image.jpg"}
+                width={180}
+                height={180}
+                alt="detail logo"
+                className="w-50 h-50 lg:w-auto lg:h-auto md:w-auto md:h-auto sm:w-auto sm:h-auto"
+              />
+            </div>
+            <div className="flex justify-end gap-4 mb-8 text-black font-bold text-base lg:text-lg md:text-lg sm:text-lg">
+              <p>{new Date(jobDetails.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-4 mt-4 sm:mt-0">
-            <button onClick={handleViewRecruiter} className="flex border border-2 border-[#001571] hover:bg-blue-700 text-[#001571] font-bold py-2 px-4 rounded mr-4">
-              View Company Profile
-              <span className="pl-3 mt-1">
-                <BsArrowUpRightCircleFill />
-              </span>
-            </button>
-            <button
-              onClick={() => {
-                setShowApplicationForm(true);
-              }}
-              className="bg-[#001571] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Apply Now
-            </button>
+          <div className="flex flex-wrap justify-between items-center mb-4">
+            <div className="flex flex-wrap items-center">
+              <h1 className="text-2xl font-bold text-[#001571] mb-0 mr-4">
+                {jobDetails.jobTitle}
+              </h1>
+              <div className="flex items-center">
+                {jobDetails.jobTypes && jobDetails.jobTypes.map((type, index) => (
+                  <span
+                    key={index}
+                    className={`px-2 py-1/2 rounded-lg mr-2 text-white ${index % 2 === 0 ? 'bg-[#001571]' : 'bg-[#00B6B4]'
+                      }`}
+                  >
+                    {type}
+                  </span>
+                ))}
+              </div>
+
+            </div>
+            <div className="flex flex-wrap gap-4 mt-4 sm:mt-0">
+              <button onClick={handleViewRecruiter} className="flex border border-2 border-[#001571] hover:bg-blue-700 text-[#001571] font-bold py-2 px-4 rounded mr-4">
+                View Company Profile
+                <span className="pl-3 mt-1">
+                  <BsArrowUpRightCircleFill />
+                </span>
+              </button>
+              <button
+                onClick={() => {
+                  setShowApplicationForm(true);
+                }}
+                className="bg-[#001571] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Apply Now
+              </button>
+            </div>
           </div>
-        </div>
-        <h2 className="text-lg font-bold text-black mb-20">
-          {recruiterDetails.recruiterName} | {jobDetails.location}
-        </h2>
+          <h2 className="text-lg font-bold text-black mb-20">
+            {recruiterDetails.recruiterName} | {jobDetails.location}
+          </h2>
 
-        <hr className="border-b-2 border-[#B0B6D3] mb-5" />
+          <hr className="border-b-2 border-[#B0B6D3] mb-5" />
 
-        <div className="bg-white">
-          <h3 className="text-xl font-bold mb-2">Job Description</h3>
-          <p className="font-Montserrat">
-            {jobDetails.jobDescription}
-          </p>
+          <div className="bg-white">
+            <h3 className="text-xl font-bold mb-2">Job Description</h3>
+            <p className="font-Montserrat">
+              {jobDetails.jobDescription}
+            </p>
 
-          <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
+            <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
-          <h3 className="text-xl font-bold mb-2">Key Responsibilities</h3>
-          <ul className="list-disc list-inside p-2 m-2 space-y-3">
-            <li>
-              Design engaging and user-friendly interfaces for web and mobile
-              applications.
-            </li>
-            <li>
-              Conduct user research, wireframing, prototyping, and usability
-              testing to improve designs.
-            </li>
-            <li>
-              Collaborate with cross-functional teams including developers,
-              product managers, and marketers.
-            </li>
-            <li>
-              Maintain and evolve design systems to ensure consistency across
-              all platforms.
-            </li>
-            <li>
-              Stay updated with the latest design trends, tools, and
-              technologies.
-            </li>
-          </ul>
+            <h3 className="text-xl font-bold mb-2">Key Responsibilities</h3>
+            <ul className="list-disc list-inside p-2 m-2 space-y-3">
+              <li>
+                Design engaging and user-friendly interfaces for web and mobile
+                applications.
+              </li>
+              <li>
+                Conduct user research, wireframing, prototyping, and usability
+                testing to improve designs.
+              </li>
+              <li>
+                Collaborate with cross-functional teams including developers,
+                product managers, and marketers.
+              </li>
+              <li>
+                Maintain and evolve design systems to ensure consistency across
+                all platforms.
+              </li>
+              <li>
+                Stay updated with the latest design trends, tools, and
+                technologies.
+              </li>
+            </ul>
 
-          <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
+            <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
-          <h3 className="text-xl font-bold mb-2">Required Qualifications</h3>
-          <ul className="list-disc list-inside p-2 m-2 space-y-3">
-            <li>5+ years of experience in UX/UI design.</li>
-            <li>
-              Strong portfolio showcasing user-centered design and
-              problem-solving skills.
-            </li>
-            <li>
-              Proficiency in design tools like Figma, Sketch, and Adobe Creative
-              Suite.
-            </li>
-            <li>
-              Experience with HTML/CSS and front-end frameworks is a plus.
-            </li>
-            <li>
-              Excellent communication skills and ability to work in a team
-              environment.
-            </li>
-          </ul>
+            <h3 className="text-xl font-bold mb-2">Required Qualifications</h3>
+            <ul className="list-disc list-inside p-2 m-2 space-y-3">
+              <li>5+ years of experience in UX/UI design.</li>
+              <li>
+                Strong portfolio showcasing user-centered design and
+                problem-solving skills.
+              </li>
+              <li>
+                Proficiency in design tools like Figma, Sketch, and Adobe Creative
+                Suite.
+              </li>
+              <li>
+                Experience with HTML/CSS and front-end frameworks is a plus.
+              </li>
+              <li>
+                Excellent communication skills and ability to work in a team
+                environment.
+              </li>
+            </ul>
 
-          <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
+            <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
-          <h3 className="text-xl font-bold mb-2">Perks & Benefits</h3>
-          <ul className="list-disc list-inside p-2 m-2 space-y-3">
-            <li>Remote work flexibility.</li>
-            <li>Health, dental, and vision insurance.</li>
-            <li>401(k) plan with company match.</li>
-            <li>Professional development opportunities.</li>
-            <li>Flexible vacation policy.</li>
-          </ul>
+            <h3 className="text-xl font-bold mb-2">Perks & Benefits</h3>
+            <ul className="list-disc list-inside p-2 m-2 space-y-3">
+              <li>Remote work flexibility.</li>
+              <li>Health, dental, and vision insurance.</li>
+              <li>401(k) plan with company match.</li>
+              <li>Professional development opportunities.</li>
+              <li>Flexible vacation policy.</li>
+            </ul>
+          </div>
         </div>
       </div>
 
-      <div className="bg-[#e6e8f1]">
+      {/* Featured jobs section */}
+      <div className="w-full bg-[#F5F5F5] h-auto flex items-center justify-center py-24">
+        <div className="w-full flex flex-col items-center justify-center">
+          <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold">
+            <button className="text-lg md:text-xl font-bold text-[#001571] cursor-pointer md:mb-0">
+              Featured Jobs
+            </button>
+            <button className="flex items-center text-right text-[#001571] cursor-pointer">
+              <a href="/jobs">View All</a>
+              <ArrowOutwardIcon className="w-4 md:w-5 h-4 md:h-5 ml-1" />
+            </button>
+          </div>
+          <div className="w-full flex items-center justify-center">
+            {isLoading ? (
+              <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
+                <ProductLoading />
+              </div>
+            ) : Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
 
-        <div className="w-full bg-[#EDF0FF] mt-20 h-auto py-10">
-          <div className="container mx-auto w-full">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center text-[#001571] text-lg md:text-xl font-bold md:py-10">
-              <button className="text-lg md:text-xl font-bold text-[#001571] cursor-pointer md:mb-0">
-                Featured Jobs
-              </button>
-              <button className="flex items-center text-right text-[#001571] cursor-pointer">
-                <a href="/jobs">View All</a>
-                <ArrowOutwardIcon className="w-4 md:w-5 h-4 md:h-5 ml-1" />
-              </button>
-            </div>
-            <div className="">
-              {Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
+              <div className="flex items-center justify-between relative w-full px-[20px] xl:px-[0px] ">
+
+                <div className="swiper-button-prev-custom flex items-center justify-center">
+                  <img src="/left.png" />
+                </div>
+
                 <Swiper
                   modules={[Pagination, Navigation]}
-                  slidesPerView={4}
-                  spaceBetween={0}
-                  pagination={{ clickable: true }}
-                  navigation
+                  slidesPerView={1}
+                  spaceBetween={10}
+                  pagination={{
+                    clickable: true,
+                    el: ".custom-pagination",
+                  }}
+                  navigation={{
+                    nextEl: ".swiper-button-next-custom",
+                    prevEl: ".swiper-button-prev-custom",
+                  }}
                   loop
                   breakpoints={{
-                    640: { slidesPerView: 1, spaceBetween: 15 },
-                    768: { slidesPerView: 2, spaceBetween: 20 },
-                    1024: { slidesPerView: 3, spaceBetween: 30 },
+                    640: { slidesPerView: 2, spaceBetween: 15 },
+                    768: { slidesPerView: 2, spaceBetween: 10 },
+                    1024: { slidesPerView: 4, spaceBetween: 15 },
                   }}
-                  className="w-full"
+                  className="swiper-container w-[1280px] mt-16 pb-16"
                 >
                   {filteredJobs.map((job, index) => (
                     <SwiperSlide key={index}>
                       <JobCard job={job} />
                     </SwiperSlide>
                   ))}
+
+                  <div className="custom-pagination mt-16" />
                 </Swiper>
-              ) : (
-                <p className="text-lg text-center font-bold text-red-500 py-20">No Jobs found.</p>
-              )}
-            </div>
+
+                <div className="swiper-button-next-custom flex items-center justify-center">
+                  <img src="/right.png" />
+                </div>
+
+              </div>
+            ) : (
+              // Display "No Jobs found" if no jobs are available
+              <p className="text-lg text-center font-bold text-red-500 py-20">
+                No Jobs found.
+              </p>
+            )}
           </div>
         </div>
-
-        {/* Job Application Form Popup */}
-        {showApplicationForm && (
-          <JobApplicationForm
-          jobid={jobDetails.id}
-          onClose={() => setShowApplicationForm(false)}
-        />
-        )}
-
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 }
