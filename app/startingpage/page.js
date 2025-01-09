@@ -21,6 +21,7 @@ import NewsComponent from "@/components/NewsComponent";
 import FaqComponent from "@/components/FaqComponent";
 import Loading from "../loading";
 import JobLoading from "../jobLoading";
+import { IoSearchSharp } from "react-icons/io5";
 
 function StartingPage() {
 
@@ -145,15 +146,15 @@ function StartingPage() {
                 </div>
 
                 <div className="bg-gray-200 rounded-md">
-                  <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center mt-5 gap-4 mb-8 rounded-md lg:px-2 md:px-4 sm:px-4">
+                  <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center mt-5 gap-4 mb-8 rounded-md py-1 md:py-2 px-1 md:px-4">
                     <input
                       type="text"
                       placeholder="Search by job title, keywords, or company."
-                      className="bg-gray-200 flex-grow text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
+                      className="bg-gray-200 w-full text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
                     />
-                    <button className="flex px-4 lg:w-1/4 md:w-1/4 sm:w-1/4 justify-center bg-[#001571] text-white py-2 rounded-md font-semibold">
-                      <span className="mt-1 mr-2 sm:mb-1">
-                        <IoMdSearch size={20} />
+                    <button className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold">
+                      <span className="mt-1 mr-2 md:mr-4 ">
+                        <IoSearchSharp size={20} />
                       </span>
                       Search
                     </button>

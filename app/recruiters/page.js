@@ -81,7 +81,7 @@ function Recruiters() {
             </h1>
           </div>
 
-          <div className="bg-[#e6e8f1] h-auto p-2 rounded-md">
+          <div className="bg-[#e6e8f1] h-auto p-1 md:p-2 rounded-md">
             <div className="flex items-center gap-4 w-full">
               {/* Input Field */}
               <input
@@ -89,7 +89,7 @@ function Recruiters() {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Search by job title, keywords, or company."
-                className="bg-gray-200 text-[14px] md:text-[18px] px-4 py-2 flex-grow rounded-md focus:outline-none font-semibold placeholder-[#5462A0]"
+                className="bg-gray-200 text-[14px] md:text-[18px] px-4 py-2 w-full rounded-md focus:outline-none font-semibold placeholder-[#5462A0]"
               />
 
 
