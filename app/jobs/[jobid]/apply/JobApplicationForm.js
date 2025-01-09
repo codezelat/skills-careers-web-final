@@ -128,9 +128,9 @@ export default function JobApplicationForm({ onClose, jobid }) {
     }
   }, [jobDetails.recruiterId]);
 
-  if (isLoading) {
-    return <div className="text-center py-4">Loading Application Form ...</div>;
-  }
+  // if (isLoading) {
+  //   return <div className="text-center py-4">Loading Application Form ...</div>;
+  // }
 
   if (error) {
     return (
@@ -230,146 +230,156 @@ export default function JobApplicationForm({ onClose, jobid }) {
           <FaTimes size={24} />
         </button>
 
-        <h2 className="text-center text-2xl font-semibold mb-6 text-blue-900">
-          Apply for {recruiterDetails.recruiterName}
-        </h2>
-
-        <form onSubmit={submitHandler}>
-          <div className="mb-4 mt-4">
-            <label className="block text-sm font-semibold text-blue-900">
-              Select Job
-            </label>
-            <input
-              type="text"
-              id="jobname"
-              required
-              disabled
-              value={jobDetails.jobTitle}
-              className="mt-1 block w-full rounded-md border-gray-300 border-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg font-medium"
-            >
-            </input>
+        {isLoading ? (
+          // Display loading indicator while content is loading
+          <div className="flex justify-center items-center h-full">
+            <p className="text-lg font-bold text-blue-900">Loading...</p>
           </div>
+        ) : (
+          // Display content when loading is complete
+          <>
+            <h2 className="text-center text-2xl font-semibold mb-6 text-blue-900">
+              Apply for {recruiterDetails.recruiterName}
+            </h2>
 
-          <div className="mb-4 mt-4">
-            <label className="block text-sm font-semibold text-blue-900">
-              Resume/CV
-            </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-              <div className="space-y-3 text-center">
-                {/* File upload UI */}
-                <div className="flex justify-center items-center">
-                  <Image
-                    src="/images/downloadIcon.png"
-                    alt="download"
-                    width={40}
-                    height={40}
-                    className=""
-                  />
-                </div>
-                <div className="text-sm text-blue-900">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md font-medium text-blue-900 hover:text-indigo-500"
-                  >
-                    <span>
-                      Click or drag file to this area to upload your Resume
-                    </span>
-                    <input
-                      type="file"
-                      id="cv"
-                      onChange={handleFileChange}
-                      accept=".pdf,.doc,.docx"
-                    />
-                    {fileError && (
-                      <p className="text-red-500 text-sm mt-1">{fileError}</p>
-                    )}
-                    {selectedFile && (
-                      <p className="text-green-500 text-sm mt-1">
-                        Selected file: {selectedFile.name}
-                      </p>
-                    )}
-                  </label>
-                </div>
-                <p className="text-xs text-blue-900">
-                  Please make sure to upload a PDF
-                </p>
+            <form onSubmit={submitHandler}>
+              <div className="mb-4 mt-4">
+                <label className="block text-sm font-semibold text-blue-900">
+                  Select Job
+                </label>
+                <input
+                  type="text"
+                  id="jobname"
+                  required
+                  disabled
+                  value={jobDetails.jobTitle}
+                  className="mt-1 block w-full rounded-md border-gray-300 border-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg font-medium"
+                />
               </div>
-            </div>
-          </div>
-          {/* Input fields for first name, last name, etc. */}
-          <div>
-            <label className="block text-sm mt-4 font-semibold text-blue-900">
-              First Name
-            </label>
-            <input
-              type="text"
-              id="firstname"
-              required
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-m focus:ring-blue-900 focus:border-blue-900 sm:text-lg"
-            />
-          </div>
 
-          <div>
-            <label className="block mt-4 text-sm  font-semibold text-blue-900">
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="lastname"
-              required
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-2 sm:text-lg"
-            />
-          </div>
+              <div className="mb-4 mt-4">
+                <label className="block text-sm font-semibold text-blue-900">
+                  Resume/CV
+                </label>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                  <div className="space-y-3 text-center">
+                    {/* File upload UI */}
+                    <div className="flex justify-center items-center">
+                      <Image
+                        src="/images/downloadIcon.png"
+                        alt="download"
+                        width={40}
+                        height={40}
+                      />
+                    </div>
+                    <div className="text-sm text-blue-900">
+                      <label
+                        htmlFor="file-upload"
+                        className="relative cursor-pointer rounded-md font-medium text-blue-900 hover:text-indigo-500"
+                      >
+                        <span>
+                          Click or drag file to this area to upload your Resume
+                        </span>
+                        <input
+                          type="file"
+                          id="cv"
+                          onChange={handleFileChange}
+                          accept=".pdf,.doc,.docx"
+                        />
+                        {fileError && (
+                          <p className="text-red-500 text-sm mt-1">{fileError}</p>
+                        )}
+                        {selectedFile && (
+                          <p className="text-green-500 text-sm mt-1">
+                            Selected file: {selectedFile.name}
+                          </p>
+                        )}
+                      </label>
+                    </div>
+                    <p className="text-xs text-blue-900">
+                      Please make sure to upload a PDF
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-          <div className="mb-4 mt-4">
-            <label className="block text-sm font-semibold text-blue-900">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-2 sm:text-lg"
-            />
-          </div>
+              {/* Input fields for first name, last name, etc. */}
+              <div>
+                <label className="block text-sm mt-4 font-semibold text-blue-900">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  id="firstname"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-m focus:ring-blue-900 focus:border-blue-900 sm:text-lg"
+                />
+              </div>
 
-          <div className="mb-6 mt-4">
-            <label className="block text-sm font-semibold text-blue-900">
-              Contact Number
-            </label>
-            <input
-              type="text"
-              id="contactnumber"
-              required
-              value={contactNumber}
-              onChange={(e) => setContactNumber(e.target.value)}
-              className="mt-2 block w-full border-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
-            />
-          </div>
+              <div>
+                <label className="block mt-4 text-sm font-semibold text-blue-900">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastname"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-2 sm:text-lg"
+                />
+              </div>
 
-          <div className="flex justify-start gap-4">
-            <button
-              type="submit"
-              className="bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700"
-            >
-              Submit Application
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-200 text-blue-900 px-4 py-2 rounded-md font-medium hover:bg-gray-300 border-blue-900 border-2"
-            >
-              Back to Profile
-            </button>
-          </div>
-        </form>
+              <div className="mb-4 mt-4">
+                <label className="block text-sm font-semibold text-blue-900">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-2 sm:text-lg"
+                />
+              </div>
+
+              <div className="mb-6 mt-4">
+                <label className="block text-sm font-semibold text-blue-900">
+                  Contact Number
+                </label>
+                <input
+                  type="text"
+                  id="contactnumber"
+                  required
+                  value={contactNumber}
+                  onChange={(e) => setContactNumber(e.target.value)}
+                  className="mt-2 block w-full border-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
+                />
+              </div>
+
+              <div className="flex justify-start gap-4">
+                <button
+                  type="submit"
+                  className="bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700"
+                >
+                  Submit Application
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-gray-200 text-blue-900 px-4 py-2 rounded-md font-medium hover:bg-gray-300 border-blue-900 border-2"
+                >
+                  Back to Profile
+                </button>
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </div>
+
   );
 }

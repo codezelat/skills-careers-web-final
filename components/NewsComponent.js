@@ -57,7 +57,7 @@ export default function NewsComponent() {
                   alt="Small Article"
                   width={200}
                   height={200}
-                  className="w-full h-auto object-cover rounded-lg"
+                  className="w-full h-[200px] object-cover rounded-lg"
                 />
               </div>
               <div className="p-4 flex-grow">
@@ -85,7 +85,7 @@ export default function NewsComponent() {
                   alt="Small Article"
                   width={400}
                   height={200}
-                  className="w-full h-auto object-cover rounded-lg"
+                  className="w-full h-[200px] object-cover rounded-lg"
                 />
               </div>
               <div className="p-4 flex-grow">

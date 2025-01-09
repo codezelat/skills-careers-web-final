@@ -15,6 +15,7 @@ import JobApplicationForm from './[jobid]/apply/JobApplicationForm';
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 import Footer from "@/components/Footer";
 import JobCard from "../../components/jobCard";
+import Loading from "../loading";
 
 function JobProfile({ slug }) {
   const router = useRouter();
@@ -116,7 +117,7 @@ function JobProfile({ slug }) {
   }, [jobDetails.recruiterId]);
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading job details...</div>;
+    return <Loading/>;
   }
 
   if (error) {
@@ -306,20 +307,10 @@ function JobProfile({ slug }) {
 
         {/* Job Application Form Popup */}
         {showApplicationForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-            <div className="relative bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
-              <button
-                onClick={() => setShowApplicationForm(false)}
-                className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-              >
-                Close
-              </button>
-              <JobApplicationForm
-                jobid={jobDetails.id}
-                onClose={() => setShowApplicationForm(false)}
-              />
-            </div>
-          </div>
+          <JobApplicationForm
+          jobid={jobDetails.id}
+          onClose={() => setShowApplicationForm(false)}
+        />
         )}
 
         <Footer />

@@ -77,8 +77,8 @@ function StartingPage() {
       <NavBar />
 
       {/* Hero section */}
-      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex items-center justify-center">
-        <div className="h-screen w-full absolute bg-white z-[-1]">
+      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex justify-center">
+        <div className="h-screen w-full absolute z-[-1]">
           <Image src="/images/bg.jpg" alt="Background Image"
             layout="fill"
             objectFit="contain"
@@ -144,14 +144,14 @@ function StartingPage() {
                   )}
                 </div>
 
-                <div className="bg-gray-200">
-                  <div className="flex flex-wrap sm:flex-nowrap flex-col sm:flex-row justify-between items-center mt-5 gap-4 mb-8 rounded-md lg:px-2 md:px-4 sm:px-4">
+                <div className="bg-gray-200 rounded-md">
+                  <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center mt-5 gap-4 mb-8 rounded-md lg:px-2 md:px-4 sm:px-4">
                     <input
                       type="text"
                       placeholder="Search by job title, keywords, or company."
-                      className="bg-gray-200 flex-grow text-base lg:text-lg md:text-lg sm:text-lg  py-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
+                      className="bg-gray-200 flex-grow text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
                     />
-                    <button className="flex w-full lg:w-1/4 md:w-1/4 sm:w-1/4 justify-center bg-[#001571] text-white py-2 rounded-md font-semibold">
+                    <button className="flex px-4 lg:w-1/4 md:w-1/4 sm:w-1/4 justify-center bg-[#001571] text-white py-2 rounded-md font-semibold">
                       <span className="mt-1 mr-2 sm:mb-1">
                         <IoMdSearch size={20} />
                       </span>
@@ -198,7 +198,7 @@ function StartingPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-10 mt-10">
+                <div className="w-full flex flex-col md:flex-row items-center gap-10 mt-10">
                   <div className="flex items-center">
                     <Image
                       src="/images/worldsearch.png"

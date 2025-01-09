@@ -139,18 +139,21 @@ function Jobs() {
           </div>
         </div>
         <div className="container w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[2]">
-          {filteredJobs.length > 0 ? (
+          {isLoading ? (
+              <ProductLoading/>
+          ) : filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {filteredJobs.map((job, index) => (
                 <JobCard key={index} job={job} />
               ))}
             </div>
           ) : (
-            <div className="w-full">
-              <ProductLoading />
+            <div className="w-full text-center py-20">
+              <p className="text-lg font-bold">No jobs found.</p>
             </div>
           )}
         </div>
+
 
       </section>
       <Footer />

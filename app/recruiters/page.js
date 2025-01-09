@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import NavBar from "@/components/navBar";
 import { IoSearchSharp } from "react-icons/io5";
 import DropdownButton from "@/components/dropDownButton";
+import RecruiterLoading from "@/components/RecruiterLoading";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 
@@ -12,6 +13,7 @@ function Recruiters() {
   const { data: session, status } = useSession();
 
   const [recruiters, setRecruiters] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
   // const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,14 +26,15 @@ function Recruiters() {
         const response = await fetch("/api/recruiterdetails/all"); // Adjust endpoint as needed
         if (!response.ok) {
           throw new Error("Failed to fetch recruiters.");
+          setIsLoading(false);
         }
         const data = await response.json();
         setRecruiters(data.recruiters);
         setFilteredRecruiters(data.recruiters);
-        // setIsLoading(false);
+        setIsLoading(false);
       } catch (error) {
         setError(error.message);
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     }
 
@@ -67,7 +70,7 @@ function Recruiters() {
             objectPosition="right top"
             quality={100}
             priority
-            className="w-full h-full opacity-5 "/>
+            className="w-full h-full opacity-5 " />
         </div>
         <div className="z-[2] min-h-screen w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-16">
           <div className="mb-8 sm:justify-center">
@@ -119,14 +122,16 @@ function Recruiters() {
             />
           </div>
 
-          <div className="w-full pt-20 ">
-            {filteredRecruiters.length > 0 ? (
+          <div className="w-full pt-20">
+            {isLoading ? (
+              <RecruiterLoading />
+            ) : filteredRecruiters.length > 0 ? (
               filteredRecruiters.map((recruiter, index) => (
                 <RecruiterCard key={index} recruiter={recruiter} />
               ))
             ) : (
-              <p className="text-lg text-center font-bold  py-20">
-                Loading recruiters...
+              <p className="text-lg text-center font-bold py-20">
+                No recruiters found.
               </p>
             )}
           </div>

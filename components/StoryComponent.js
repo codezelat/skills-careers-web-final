@@ -13,8 +13,8 @@ import { BsArrowUpRightCircleFill } from "react-icons/bs";
 export default function StoryComponent() {
   return (
     <>
-      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
-        <div className="w-full flex justify-between">
+      <div className="w-full">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex justify-between">
 
           <div className="flex justify-start gap-4 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
             <p>Success Stories from Our Community</p>
@@ -31,10 +31,10 @@ export default function StoryComponent() {
           </div>
         </div>
         <div className="w-full mt-16">
-          <div className="flex items-center justify-between relative w-full">
+          <div className="flex items-center justify-between relative w-full px-[20px] xl:px-[0px]">
             {/* Left navigation button */}
-            <div className="swiper-button-prev-custom mr-2 sm:mr-6 hidden sm:block">
-              <img src="/left.png" alt="Previous" />
+            <div className="swiper-button-prev-custom flex items-center justify-center">
+              <img src="/left.png" />
             </div>
             <Swiper
               spaceBetween={20}
@@ -52,7 +52,7 @@ export default function StoryComponent() {
                 el: ".custom-pagination",
               }}
               loop={true}
-              className="w-full"
+              className="w-[1280px] swiper-container"
               modules={[Pagination, Navigation]}
             >
               {storyData.map((story) => (
@@ -95,8 +95,8 @@ export default function StoryComponent() {
               <div className="custom-pagination mt-16" />
             </Swiper>
             {/* Right navigation button */}
-            <div className="swiper-button-next-custom ml-2 sm:ml-6 hidden sm:block">
-              <img src="/right.png" alt="Next" />
+            <div className="swiper-button-next-custom flex items-center justify-center">
+              <img src="/right.png" />
             </div>
           </div>
         </div>

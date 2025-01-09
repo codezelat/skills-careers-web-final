@@ -6,6 +6,7 @@ import Image from "next/image";
 import JobCard from "@/components/jobCard";
 import NavBar from "@/components/navBar";
 import Footer from "@/components/Footer";
+import Loading from "../loading";
 
 function RecruiterProfile({ slug }) {
   const router = useRouter();
@@ -61,7 +62,7 @@ function RecruiterProfile({ slug }) {
   }, [slug]);
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading Recruiter details...</div>;
+    return <Loading/>;
   }
 
   if (error) {

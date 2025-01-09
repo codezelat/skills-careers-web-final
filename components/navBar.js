@@ -3,15 +3,21 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Button from "./Button";
 import { useState } from "react";
+import Loading from "@/app/loading";
 
 function NavBar() {
   const { data: session, status } = useSession();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  // if (isLoading) {
+  //   return <Loading/>;
+  // }
 
   return (
 
@@ -29,30 +35,35 @@ function NavBar() {
           <Link
             href="/"
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            prefetch={true}
           >
             HOME
           </Link>
           <Link
             href="/recruiters"
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            prefetch={true}
           >
             EXPLORE RECRUITERS
           </Link>
           <Link
             href="/jobs"
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            prefetch={true}
           >
             EXPLORE JOBS
           </Link>
           <Link
             href="/about"
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            prefetch={true}
           >
             ABOUT US
           </Link>
           <Link
             href="/contact"
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            prefetch={true}
           >
             CONTACT US
           </Link>
