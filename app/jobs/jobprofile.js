@@ -288,7 +288,7 @@ function JobProfile({ slug }) {
           <div className="w-full flex items-center justify-center">
             {isLoading ? (
               <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
-                <JobLoading/>
+                <JobLoading />
               </div>
             ) : Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
 
@@ -341,6 +341,14 @@ function JobProfile({ slug }) {
           </div>
         </div>
       </div>
+
+      {/* Job Application Form Popup */}
+      {showApplicationForm && (
+        <JobApplicationForm
+          jobid={jobDetails.id}
+          onClose={() => setShowApplicationForm(false)}
+        />
+      )}
       <Footer />
     </>
   );
