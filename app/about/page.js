@@ -87,6 +87,7 @@ function aboutPage() {
               src={"/images/people1.png"}
               width={100}
               height={80}
+              quality={100}
               className="w-24 sm:w-32 md:w-40"
               alt="Doctor"
             />
@@ -94,6 +95,7 @@ function aboutPage() {
               src={"/images/people2.png"}
               width={100}
               height={80}
+              quality={100}
               className="w-24 sm:w-32 md:w-40"
               alt="Girl"
             />
@@ -101,6 +103,7 @@ function aboutPage() {
               src={"/images/people3.png"}
               width={100}
               height={80}
+              quality={100}
               className="w-24 sm:w-32 md:w-40"
               alt="Robo"
             />

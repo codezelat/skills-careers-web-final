@@ -116,16 +116,16 @@ function Jobs() {
               />
             </div>
 
-            <div className="col-span-1">
-              <DropdownButton
-                buttonName="Experience Level"
-                dropdownItems={[
-                  "Experience Level 1",
-                  "Experience Level 2",
-                  "Experience Level 3",
-                ]}
-                onSelect={handleSelect}
-              />
+              <div className="col-span-1">
+                <DropdownButton
+                  buttonName="Experience Level"
+                  dropdownItems={[
+                    "Experience Level 1",
+                    "Experience Level 2",
+                    "Experience Level 3",
+                  ]}
+                  onSelect={handleSelect}
+                />
             </div>
 
             <div className="col-span-1 sm:col-span-1 flex sm:flex-none gap-2 md:gap-0">
@@ -138,14 +138,14 @@ function Jobs() {
                 ]}
                 onSelect={handleSelect}
               />
+            </div>
+
+            <div className="col-span-1 sm:col-span-1 flex sm:flex-none">
               <DropdownButton
                 buttonName="Job Type"
                 dropdownItems={["Job Type 1", "Job Type 2", "Job Type 3"]}
                 onSelect={handleSelect}
               />
-            </div>
-
-            <div className="col-span-1 sm:col-span-1 flex sm:flex-none">
             </div>
           </div>
 
