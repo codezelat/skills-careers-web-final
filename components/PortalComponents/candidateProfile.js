@@ -150,81 +150,97 @@ export default function CandidateProfile() {
             <div className="bg-white rounded-3xl p-6 ">
                 <h1 className="font-bold mb-16 text-[#001571]">My Profile</h1>
                 <div>
-                    <div className="relative">
+                    <div className="">
                         {/* Background Image */}
-                        <Image
-                            src="/recruiterbg.png"
-                            alt="Background"
-                            width={1200}
-                            height={400}
-                            className="w-full h-auto sm:h-48 object-cover rounded-t-3xl"
-                        />
-                        {/* Edit Image */}
-                        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white rounded-full overflow-hidden w-[30px] sm:w-[30px] h-[30px] sm:h-[30px] flex items-center justify-center shadow-md">
+                        <div className="bg-red-300 relative w-full h-[300px] rounded-t-3xl overflow-hidden flex items-top justify-end">
                             <Image
-                                src="/editiconwhite.png"
-                                alt="Edit Icon"
-                                width={40}
-                                height={40}
+                                src="/recruiterbg.png"
+                                alt="Background"
+                                layout="fill"
+                                priority
+                                objectFit="cover"
+                                quality={100}
                             />
-                        </div>
-                        {/* Profile Image */}
-                        <div className="relative">
-                            {/* DP Image */}
-                            <div className="absolute transform -mt-10 sm:-mt-16 ml-4 sm:ml-10 lg:ml-10 border-4 border-[#001571] bg-white rounded-full overflow-hidden w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px] flex items-center justify-center">
-                                {jobSeekerDetails.profileImage ? (
-                                    <Image
-                                        src={jobSeekerDetails.profileImage}
-                                        alt="Profile"
-                                        width={300}
-                                        height={190}
-                                        className="fill"
-                                    />
-                                ) : (
-                                    <Image
-                                        src="/default-avatar.jpg"
-                                        alt="Profile"
-                                        width={300}
-                                        height={190}
-                                        className="fill"
-                                    />
-                                )}
 
-                            </div>
-
-                            {/* Edit Icon */}
-                            <div className="absolute -top-9 left-[155px] transform translate-x-1/2 -translate-y-1/2 w-20 h-8 sm:w-10 sm:h-30  rounded-full  items-center justify-center shadow-md">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    id="profile-image-input"
-                                    className="absolute inset-0 opacity-0 cursor-pointer"
-                                />
-                                {/* Edit Icon */}
+                            {/* cover image edit btn */}
+                            <div className="z-10 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
                                 <Image
                                     src="/editiconwhite.png"
                                     alt="Edit Icon"
-                                    width={40}
-                                    height={20}
-                                    className="z-10" // Ensure the icon stays on top
+                                    layout="fill"
+                                    objectFit="contain"
+                                    quality={100}
                                 />
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Social Media Icons */}
-                    <div className="pr-8 sm:pr-6 flex justify-end mt-4 space-x-2 sm:space-x-4 text-blue-900">
-                        <FaLinkedin size={30} className="cursor-pointer" />
-                        <FaTwitter size={30} className="cursor-pointer" />
-                        <FaInstagram size={30} className="cursor-pointer" />
-                        <FaFacebook size={30} className="cursor-pointer" />
-                        <FaGithub size={30} className="cursor-pointer" />
-                        <FaDribbble size={30} className="cursor-pointer" />
+                        </div>
+                        {/* Profile Image */}
+                        <div className="relative flex flex-row justify-between">
+
+                            {/* DP Image */}
+                            <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px] mt-[-92px] ml-10 flex items-top justify-center relative">
+
+                                {/* Profile picture container */}
+                                <div className="relative border-4 border-[#001571] bg-white rounded-full overflow-hidden w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px]">
+                                    {jobSeekerDetails.profileImage ? (
+                                        <Image
+                                            src={jobSeekerDetails.profileImage}
+                                            alt="Profile"
+                                            layout="fill"
+                                            priority
+                                            objectFit="cover"
+                                            quality={100}
+                                            className="fill"
+                                        />
+                                    ) : (
+                                        <Image
+                                            src="/default-avatar.jpg"
+                                            alt="Profile"
+                                            layout="fill"
+                                            priority
+                                            objectFit="cover"
+                                            quality={100}
+                                            className="fill"
+                                        />
+                                    )}
+                                </div>
+
+                                {/* Profile picture edit icon */}
+                                <div className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-20 bg-white">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        id="profile-image-input"
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                    />
+                                    {/* Edit Icon */}
+                                    <Image
+                                        src="/editiconwhite.png"
+                                        alt="Edit Icon"
+                                        width={40}
+                                        height={40}
+                                        objectFit="contain"
+                                        quality={100}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Social Links */}
+                            <div className="pr-8 sm:pr-6 flex justify-end mt-4 space-x-2 sm:space-x-4 text-blue-900 ">
+                                <FaLinkedin size={30} className="cursor-pointer" />
+                                <FaTwitter size={30} className="cursor-pointer" />
+                                <FaInstagram size={30} className="cursor-pointer" />
+                                <FaFacebook size={30} className="cursor-pointer" />
+                                <FaGithub size={30} className="cursor-pointer" />
+                                <FaDribbble size={30} className="cursor-pointer" />
+                            </div>
+                        </div>
+
                     </div>
 
                     {/* Profile Info */}
-                    <div className="p-0 sm:p-0 text-left mt-28">
+                    <div className="p-0 sm:p-0 text-left mt-10">
                         <div>
                             <div className="flex flex-row justify-between items-center">
                                 <div>
