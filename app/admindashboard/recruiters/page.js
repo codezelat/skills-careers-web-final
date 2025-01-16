@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import AdminNavBar from "../AdminNav";
-import RecruiterCard from "./RecruiterCard";
 import RecruiterProfile from "./RecruiterProfile";
 import AddRecruiter from "./AddRecruiter";
+import AllRecruiterData from "@/components/RecruiterComponents/AllRecruiterData";
 
 function RecruitersPanel() {
   const router = useRouter();
@@ -21,6 +21,29 @@ function RecruitersPanel() {
   const [loading, setLoading] = useState(true);
   const [selectedRecruiterId, setSelectedRecruiterId] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [selectedRecruiters, setSelectedRecruiters] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Handle the "Select All" checkbox
+  const handleSelectAll = (isChecked) => {
+    setSelectAll(isChecked);
+    if (isChecked) {
+      setSelectedRecruiters(
+        filteredRecruiters.map((recruiter) => recruiter._id)
+      );
+    } else {
+      setSelectedRecruiters([]);
+    }
+  };
+
+  // Handle individual row selection
+  const handleRowSelect = (id, isChecked) => {
+    setSelectedRecruiters((prev) =>
+      isChecked
+        ? [...prev, id]
+        : prev.filter((recruiterId) => recruiterId !== id)
+    );
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -58,6 +81,7 @@ function RecruitersPanel() {
       )
     );
   };
+
 
   const handleRecruiterSelect = (id) => {
     setSelectedRecruiterId(id);
@@ -126,21 +150,44 @@ function RecruitersPanel() {
                 onClose={handleCloseProfile}
               />
             )}
-
-            <div className="grid gap-4 grid-cols-1">
-              {filteredRecruiters.length > 0 ? (
-                filteredRecruiters.map((recruiter) => (
-                  <RecruiterCard
-                    key={recruiter._id}
-                    recruiter={recruiter}
-                    onViewRecruiter={() => handleRecruiterSelect(recruiter._id)}
+            {/* Recruiter List */}
+            <div className="p-4">
+              {/* Header Row */}
+              <div className="bg-gray-100 p-4 rounded-t-lg flex items-center font-semibold text-sm">
+                {/* "Select All" Checkbox */}
+                <div className="w-[5%] flex justify-center">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-[#001571] border-gray-300 rounded"
+                    checked={selectAll}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
                   />
-                ))
-              ) : (
-                <p className="text-lg text-center font-bold text-red-500 py-20">
-                  No recruiters found.
-                </p>
-              )}
+                </div>
+                <div className="w-1/4">Recruiter Name</div>
+                <div className="w-1/4">Email</div>
+                <div className="w-1/4">Contact Number</div>
+                <div className="w-1/4">Actions</div>
+              </div>
+
+              {/* Data Rows */}
+              <div className="grid gap-4">
+                {filteredRecruiters.length > 0 ? (
+                  filteredRecruiters.map((recruiter) => (
+                    <AllRecruiterData
+                      key={recruiter._id}
+                      recruiter={recruiter}
+                      isSelected={selectedRecruiters.includes(recruiter._id)}
+                      onSelect={(isChecked) =>
+                        handleRowSelect(recruiter._id, isChecked)
+                      }
+                    />
+                  ))
+                ) : (
+                  <p className="text-lg text-center font-bold text-red-500 py-20">
+                    No recruiters found.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
