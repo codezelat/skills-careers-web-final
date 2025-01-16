@@ -20,12 +20,12 @@ import BarChart from "@/components/PortalComponents/barChart";
 
 export default function DashBoard() {
   return (
-    <div className="flex h-screen bg-[#F7F7F7]">
+    <div className="flex bg-[#F7F7F7] p-6 gap-6">
       {/* Sidebar */}
       <SideBar/>
 
       {/* Main Content */}
-      <div className="flex-1 bg-[#F7F7F7] p-6 h-screen overflow-y-auto no-scrollbar">
+      <div className="flex-1 bg-[#F7F7F7] h-[calc(100vh-48px)] overflow-y-auto no-scrollbar">
         {/* Header */}
         <PortalHeader />
 

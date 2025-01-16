@@ -10,29 +10,29 @@ export default function HeaderSection() {
     return (
         <>
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4 h-[60px] ">
                 {/* Left Section */}
-                <div className="bg-[#001571] text-white py-4 px-8 rounded-xl font-semibold">
+                <div className="bg-[#001571] flex items-center justify-center text-white h-full px-8 rounded-2xl font-semibold text-[18px]">
                     SKILLS CAREERS
                 </div>
 
                 {/* Middle Section */}
-                <div className="flex-grow mx-8">
-                    <div className="bg-white flex items-center pl-8 pr-4 py-4 rounded-lg shadow-sm w-full">
+                <div className="flex-grow mx-8 h-full">
+                    <div className="bg-white flex items-center pl-8 pr-4 h-full rounded-2xl shadow-sm w-full">
                         <IoSearchSharp size={25} />
                         <input
                             type="text"
                             placeholder="Search Job Listings..."
-                            className="ml-2 text-gray-500 outline-none w-full"
+                            className="ml-2 text-gray-500 outline-none w-full text-[16px]"
                         />
                     </div>
                 </div>
 
                 {/* Right Section */}
-                <div className="flex items-center bg-white px-5 py-1 rounded-lg shadow-sm">
-                    <div className="text-left mr-4">
-                        <p className="font-semibold text-[#001571]">{session?.user?.name}</p>
-                        <p className="text-sm text-gray-400">{session?.user?.role}</p>
+                <div className="flex items-center bg-white px-8 h-full rounded-2xl shadow-sm gap-4">
+                    <div className="text-left">
+                        <p className="font-bold text-[#001571] text-[16px]">{session?.user?.name}</p>
+                        <p className="text-sm font-bold text-gray-400">{session?.user?.role}</p>
                     </div>
                     <Image
                         src="/dashboard/profile.png"

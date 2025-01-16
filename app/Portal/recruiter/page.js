@@ -39,10 +39,10 @@ export default function Recruiters() {
       <SideBar />
 
       {/* Main Content */}
-      <div className="flex-1 bg-[#F7F7F7] p-6 h-screen overflow-y-auto no-scrollbar">
+      <div className="flex-1 bg-[#F7F7F7] p-6">
         {/* Header */}
         <PortalHeader />
-        <div className="min-h-screen bg-white rounded-lg p-5">
+<div className="min-h-screen bg-white rounded-lg p-5">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-xl font-bold text-[#001571]">Recruiters</h1>
