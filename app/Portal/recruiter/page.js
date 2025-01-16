@@ -34,96 +34,86 @@ export default function Recruiters() {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[#F7F7F7]">
-      {/* Sidebar */}
-      <SideBar />
+    <div className="min-h-screen bg-white rounded-lg p-5">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-bold text-[#001571]">Recruiters</h1>
+        <button
+          className="bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+          onClick={() => setShowApplicationForm(true)}
+        >
+          + Add New
+        </button>
+      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 bg-[#F7F7F7] p-6">
-        {/* Header */}
-        <PortalHeader />
-<div className="min-h-screen bg-white rounded-lg p-5">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl font-bold text-[#001571]">Recruiters</h1>
-            <button
-              className="bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-              onClick={() => setShowApplicationForm(true)}
-            >
-              + Add New
+      <div className="flex items-center justify-center p-2 mb-5 bg-[#E6E8F1] rounded-2xl w-max">
+        {/* All Recruiters Button */}
+        <button
+          onClick={() => setActiveTab("all")}
+          className={`px-4 py-2 flex rounded-xl text-sm font-semibold ${activeTab === "all"
+            ? "bg-[#001571] text-white"
+            : "text-[#B0B6D3] bg-[#E6E8F1]"
+            }`}
+        >
+          All Recruiters
+          {activeTab === "all" && (
+            <span className="ml-2">
+              <PiCheckCircle size={20} />
+            </span>
+          )}
+        </button>
+
+        {/* Restricted Recruiters Button */}
+        <button
+          onClick={() => setActiveTab("restricted")}
+          className={`px-4 py-2 flex rounded-xl text-sm font-semibold ${activeTab === "restricted"
+            ? "bg-[#001571] text-white"
+            : "text-[#B0B6D3] bg-[#E6E8F1]"
+            }`}
+        >
+          Restricted Recruiters
+          {activeTab === "restricted" && (
+            <span className="ml-2">
+              <PiCheckCircle size={20} />
+            </span>
+          )}
+        </button>
+      </div>
+
+      {activeTab === "all" ? (
+        <>
+          <div className="flex-grow ">
+            <div className="bg-[#E6E8F1] flex items-center pl-4 pr-4 mb-5 py-4 rounded-lg shadow-sm w-full">
+              <IoSearchSharp size={25} className="text-[#001571]" />
+              <input
+                type="text"
+                placeholder="Search Recruiters..."
+                className="ml-2 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
+              />
+            </div>
+          </div>
+          {/* Action Buttons */}
+          <div className="flex gap-4 mb-4 items-center bg-green">
+            <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
+              <span className="mr-2">
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-4 w-4 text-blue-600 rounded"
+                />
+              </span>
+              Select More
+            </button>
+
+            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+              <span className="mr-2">
+                <RiDeleteBinFill size={20} />
+              </span>
+              Delete
             </button>
           </div>
 
-          <div className="flex items-center justify-center p-2 mb-5 bg-[#E6E8F1] rounded-2xl w-max">
-            {/* All Recruiters Button */}
-            <button
-              onClick={() => setActiveTab("all")}
-              className={`px-4 py-2 flex rounded-xl text-sm font-semibold ${
-                activeTab === "all"
-                  ? "bg-[#001571] text-white"
-                  : "text-[#B0B6D3] bg-[#E6E8F1]"
-              }`}
-            >
-              All Recruiters
-              {activeTab === "all" && (
-                <span className="ml-2">
-                  <PiCheckCircle size={20} />
-                </span>
-              )}
-            </button>
-
-            {/* Restricted Recruiters Button */}
-            <button
-              onClick={() => setActiveTab("restricted")}
-              className={`px-4 py-2 flex rounded-xl text-sm font-semibold ${
-                activeTab === "restricted"
-                  ? "bg-[#001571] text-white"
-                  : "text-[#B0B6D3] bg-[#E6E8F1]"
-              }`}
-            >
-              Restricted Recruiters
-              {activeTab === "restricted" && (
-                <span className="ml-2">
-                  <PiCheckCircle size={20} />
-                </span>
-              )}
-            </button>
-          </div>
-
-          {activeTab === "all" ? (
-            <>
-              <div className="flex-grow ">
-                <div className="bg-[#E6E8F1] flex items-center pl-4 pr-4 mb-5 py-4 rounded-lg shadow-sm w-full">
-                  <IoSearchSharp size={25} className="text-[#001571]" />
-                  <input
-                    type="text"
-                    placeholder="Search Recruiters..."
-                    className="ml-2 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
-                  />
-                </div>
-              </div>
-              {/* Action Buttons */}
-              <div className="flex gap-4 mb-4 items-center bg-green">
-                <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                  <span className="mr-2">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox h-4 w-4 text-blue-600 rounded"
-                    />
-                  </span>
-                  Select More
-                </button>
-
-                <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                  <span className="mr-2">
-                    <RiDeleteBinFill size={20} />
-                  </span>
-                  Delete
-                </button>
-              </div>
-
-              {/* Table */}
-              {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
+          {/* Table */}
+          {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
                 <table className="w-full table-auto">
                   <thead>
                     <tr className="text-[#8A93BE] text-base font-semibold text-left">
@@ -212,8 +202,8 @@ export default function Recruiters() {
                 </table>
               </div> */}
 
-              {/* Pagination */}
-              {/* <div className="flex justify-center mt-4">
+          {/* Pagination */}
+          {/* <div className="flex justify-center mt-4">
                 <nav className="flex gap-2">
                   <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
                     &lt;
@@ -238,48 +228,48 @@ export default function Recruiters() {
                   </button>
                 </nav>
               </div> */}
-            </>
-          ) : (
-            <>
-              <div className="flex-grow ">
-                <div className="bg-[#E6E8F1] flex items-center pl-4 pr-4 mb-5 py-4 rounded-lg shadow-sm w-full">
-                  <IoSearchSharp size={25} className="text-[#001571]" />
-                  <input
-                    type="text"
-                    placeholder="Search Recruiters..."
-                    className="ml-2 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
-                  />
-                </div>
-              </div>
-              {/* Action Buttons */}
-              <div className="flex gap-4 mb-4 items-center bg-green">
-                <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                  <span className="mr-2">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox h-4 w-4 text-blue-600 rounded"
-                    />
-                  </span>
-                  Select More
-                </button>
+        </>
+      ) : (
+        <>
+          <div className="flex-grow ">
+            <div className="bg-[#E6E8F1] flex items-center pl-4 pr-4 mb-5 py-4 rounded-lg shadow-sm w-full">
+              <IoSearchSharp size={25} className="text-[#001571]" />
+              <input
+                type="text"
+                placeholder="Search Recruiters..."
+                className="ml-2 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
+              />
+            </div>
+          </div>
+          {/* Action Buttons */}
+          <div className="flex gap-4 mb-4 items-center bg-green">
+            <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
+              <span className="mr-2">
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-4 w-4 text-blue-600 rounded"
+                />
+              </span>
+              Select More
+            </button>
 
-                <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                  <span className="mr-2">
-                    <BsFillEyeFill size={20} />
-                  </span>
-                  Unrestricted
-                </button>
+            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+              <span className="mr-2">
+                <BsFillEyeFill size={20} />
+              </span>
+              Unrestricted
+            </button>
 
-                <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                  <span className="mr-2">
-                    <RiDeleteBinFill size={20} />
-                  </span>
-                  Delete
-                </button>
-              </div>
+            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+              <span className="mr-2">
+                <RiDeleteBinFill size={20} />
+              </span>
+              Delete
+            </button>
+          </div>
 
-              {/* Table */}
-              {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
+          {/* Table */}
+          {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
                 <table className="w-full table-auto">
                   <thead>
                     <tr className="text-[#8A93BE] text-base font-semibold text-left">
@@ -341,8 +331,8 @@ export default function Recruiters() {
                 </table>
               </div> */}
 
-              {/* Pagination */}
-              {/* <div className="flex justify-center mt-4">
+          {/* Pagination */}
+          {/* <div className="flex justify-center mt-4">
                 <nav className="flex gap-2">
                   <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
                     &lt;
@@ -367,10 +357,8 @@ export default function Recruiters() {
                   </button>
                 </nav>
               </div> */}
-            </>
-          )}
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

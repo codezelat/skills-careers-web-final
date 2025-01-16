@@ -17,84 +17,24 @@ import SideBar from "@/components/PortalComponents/PortalSidebar";
 import PortalHeader from "@/components/PortalComponents/PortalHeader";
 import LineChart from "@/components/PortalComponents/lineChart";
 import BarChart from "@/components/PortalComponents/barChart";
+import DashboardStats from "@/components/PortalComponents/dashboardStats";
+import PortalLayout from "../layout";
 
 export default function DashBoard() {
   return (
-    <div className="flex bg-[#F7F7F7] p-6 gap-6">
-      {/* Sidebar */}
-      <SideBar/>
-
-      {/* Main Content */}
-      <div className="flex-1 bg-[#F7F7F7] h-[calc(100vh-48px)] overflow-y-auto no-scrollbar">
-        {/* Header */}
-        <PortalHeader />
-
-        {/* Stats Section */}
-        <div className="grid grid-cols-4 gap-6 mb-6">
-          {[
-            {
-              title: "Jobs",
-              count: 28,
-              growth: "+2.5% ",
-              since: "Since Yesterday",
-              icon: "/dashboard/flag.png",
-            },
-            {
-              title: "Applications",
-              count: 1889,
-              growth: "+6.5% ",
-              since: "Since Yesterday",
-              icon: "/dashboard/document.png",
-            },
-            {
-              title: "Recruiters",
-              count: 428,
-              growth: "+1.5% ",
-              since: " Since Last Month",
-              icon: "/dashboard/buliding.png",
-            },
-            {
-              title: "Candidates",
-              count: 5670,
-              growth: "+1.5% ",
-              since: "Since Last Month",
-              icon: "/dashboard/people.png",
-            },
-          ].map((item, idx) => (
-            <div key={idx} className="bg-gray-100 p-4 rounded-lg shadow-md">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-[#8A93BE] flex items-center">
-                  {item.title}
-                  <span className="ml-2">
-                    <IoIosArrowDroprightCircle />
-                  </span>
-                </h2>
-                <Image src={item.icon} alt="Flag icon" width={35} height={35} />
-              </div>
-              <div className="text-4xl font-bold text-[#001571]">
-                {item.count}
-              </div>
-              <p className="flex text-[#1AB810] mt-2 font-bold">
-                <span className="mt-1 text-[#000000]">
-                  <GoArrowUp />
-                </span>
-                {item.growth}
-                <span className="ml-2 text-[#000000]">{item.since}</span>
-              </p>
-            </div>
-          ))}
-        </div>
+      <>
+        <DashboardStats />
 
         {/* Charts and Tables */}
         <div className="grid grid-cols-2 gap-6">
           {/* Job Posts Chart */}
-          <div className="bg-white shadow-md rounded-lg p-4">
+          <div className="bg-white shadow-md rounded-3xl p-4">
             <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
               <p>Job Posts</p>
               <Link href="">
                 <p className="flex">
                   This Week
-                  
+
                 </p>
               </Link>
             </div>
@@ -103,12 +43,12 @@ export default function DashBoard() {
 
           {/* Active Users Chart */}
           <div className="bg-white shadow-md rounded-lg p-4">
-          <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
+            <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
               <p>Active Users</p>
               <Link href="">
                 <p className="flex">
                   This Week
-                  
+
                 </p>
               </Link>
             </div>
@@ -180,7 +120,6 @@ export default function DashBoard() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </>
   );
 }
