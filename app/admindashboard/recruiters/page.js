@@ -155,7 +155,7 @@ function RecruitersPanel() {
               {/* Header Row */}
               <div className="bg-gray-100 p-4 rounded-t-lg flex items-center font-semibold text-sm">
                 {/* "Select All" Checkbox */}
-                <div className="w-[5%] flex justify-center">
+                <div className="w-[10%] flex justify-center">
                   <input
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-[#001571] border-gray-300 rounded"
