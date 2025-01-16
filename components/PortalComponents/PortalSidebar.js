@@ -15,7 +15,7 @@ export default function SideMenuSection() {
                     <div className="flex flex-col space-y-3 overflow-y-auto no-scrollbar">
 
                         {/* Dashboard */}
-                        <Link href="/Portal/admin-dashboard">
+                        <Link href="/Portal/dashboard">
                             <button
                                 onClick={() => setActiveButton("Dashboard")}
                                 className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Dashboard"
@@ -181,7 +181,7 @@ export default function SideMenuSection() {
                         </Link>
 
                         {/* My profile */}
-                        <Link href="/adminPortal/myProfile">
+                        <Link href="/Portal/profile">
                             <button
                                 onClick={() => setActiveButton("My Profile")}
                                 className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "My Profile"
