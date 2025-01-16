@@ -17,6 +17,8 @@ function AdminNavBar({ activeSection, setActiveSection }) {
     },
     { id: "jobs", label: "Jobs", href: "/admindashboard/jobs" },
     { id: "settings", label: "Settings", href: "#" },
+    { id: "pressRelease", label: "Press Release", href: "/admindashboard/pressRelease" },
+
   ];
 
   return (
