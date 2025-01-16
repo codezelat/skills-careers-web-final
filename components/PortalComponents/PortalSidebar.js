@@ -3,7 +3,7 @@ import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 
 export default function SideMenuSection() {
-    const [activeButton, setActiveButton] = useState("Dashboard");
+    const [activeButton, setActiveButton] = useState("");
     const { data: session, status } = useSession();
 
     return (
@@ -15,241 +15,229 @@ export default function SideMenuSection() {
                     <div className="flex flex-col space-y-3 overflow-y-auto no-scrollbar">
 
                         {/* Dashboard */}
-                        <button
-                            onClick={() => setActiveButton("Dashboard")}
-                            className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Dashboard"
-                                ? "bg-[#001571] text-white"
-                                : "bg-white text-[#001571] hover:bg-gray-100"
-                                }`}
-                        >
-                            <img
-                                src="/sidebar/dashboard.png"
-                                alt="Dashboard"
-                                className={`h-5 w-5 mr-6 ${activeButton === "Dashboard" ? "filter invert brightness-0" : ""
-                                    }`}
-                            />
-                            <Link href="/Portal/admin-dashboard" className="text-md font-medium">
-                                Dashboard
-                            </Link>
-                        </button>
-
-                        {/* Recruiters */}
-                        {(session?.user?.role === "admin" || session?.user?.role === "jobseeker") && (
+                        <Link href="/Portal/admin-dashboard">
                             <button
-                                onClick={() => setActiveButton("Recruiters")}
-                                className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Recruiters"
+                                onClick={() => setActiveButton("Dashboard")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Dashboard"
                                     ? "bg-[#001571] text-white"
                                     : "bg-white text-[#001571] hover:bg-gray-100"
                                     }`}
                             >
                                 <img
-                                    src="/sidebar/recruiters.png"
-                                    alt="Recruiters"
-                                    className={`h-5 w-5 mr-6 ${activeButton === "Recruiters" ? "filter invert brightness-0" : ""
+                                    src="/sidebar/dashboard.png"
+                                    alt="Dashboard"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "Dashboard" ? "filter invert brightness-0" : ""
                                         }`}
                                 />
-                                <Link href="/Portal/recruiter" className="text-md font-medium">
-                                    Recruiters
-                                </Link>
+                                Dashboard
                             </button>
+                        </Link>
+
+                        {/* Recruiters */}
+                        {(session?.user?.role === "admin" || session?.user?.role === "jobseeker") && (
+                            <Link href="/Portal/recruiter">
+                                <button
+                                    onClick={() => setActiveButton("Recruiters")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Recruiters"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                                        }`}
+                                >
+                                    <img
+                                        src="/sidebar/recruiters.png"
+                                        alt="Recruiters"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Recruiters" ? "filter invert brightness-0" : ""
+                                            }`}
+                                    />
+                                    Recruiters
+                                </button>
+                            </Link>
                         )}
 
                         {/* Candidates */}
                         {(session?.user?.role === "admin" || session?.user?.role === "recruiter") && (
-                            <button
-                                onClick={() => setActiveButton("Candidates")}
-                                className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Candidates"
-                                    ? "bg-[#001571] text-white"
-                                    : "bg-white text-[#001571] hover:bg-gray-100"
-                                    }`}
-                            >
-                                <img
-                                    src="/sidebar/candidates.png"
-                                    alt="Candidates"
-                                    className={`h-5 w-5 mr-6 ${activeButton === "Candidates" ? "filter invert brightness-0" : ""
+                            <Link href="/adminPortal/candidates">
+                                <button
+                                    onClick={() => setActiveButton("Candidates")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Candidates"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
                                         }`}
-                                />
-                                <Link href="/adminPortal/candidates" className="text-md font-medium">
+                                >
+                                    <img
+                                        src="/sidebar/candidates.png"
+                                        alt="Candidates"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Candidates" ? "filter invert brightness-0" : ""
+                                            }`}
+                                    />
                                     Candidates
-                                </Link>
-                            </button>
+                                </button>
+                            </Link>
                         )}
 
                         {/* Jobs */}
-                        <button
-                            onClick={() => setActiveButton("Job Posts")}
-                            className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Job Posts"
-                                ? "bg-[#001571] text-white"
-                                : "bg-white text-[#001571] hover:bg-gray-100"
-                                }`}
-                        >
-                            <img
-                                src="/sidebar/jobposts.png"
-                                alt="Job Posts"
-                                className={`h-5 w-5 mr-6 ${activeButton === "Job Posts" ? "filter invert brightness-0" : ""
-                                    }`}
-                            />
-                            <Link href="/jobs" className="text-md font-medium">
-                                Job Posts
-                            </Link>
-                        </button>
-
-                        {/* Analytics */}
-                        {session?.user?.role === "admin" && (
+                        <Link href="/jobs">
                             <button
-                                onClick={() => setActiveButton("Analytics")}
-                                className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Analytics"
+                                onClick={() => setActiveButton("Job Posts")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Job Posts"
                                     ? "bg-[#001571] text-white"
                                     : "bg-white text-[#001571] hover:bg-gray-100"
                                     }`}
                             >
                                 <img
-                                    src="/sidebar/analytics.png"
-                                    alt="Analytics"
-                                    className={`h-5 w-5 mr-6 ${activeButton === "Analytics" ? "filter invert brightness-0" : ""
+                                    src="/sidebar/jobposts.png"
+                                    alt="Job Posts"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "Job Posts" ? "filter invert brightness-0" : ""
                                         }`}
                                 />
-                                <Link href="/adminPortal/analytics" className="text-md font-medium">
-                                    Analytics
-                                </Link>
+                                Job Posts
                             </button>
+                        </Link>
+
+                        {/* Analytics */}
+                        {session?.user?.role === "admin" && (
+                            <Link href="/adminPortal/analytics">
+                                <button
+                                    onClick={() => setActiveButton("Analytics")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Analytics"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                                        }`}
+                                >
+                                    <img
+                                        src="/sidebar/analytics.png"
+                                        alt="Analytics"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Analytics" ? "filter invert brightness-0" : ""
+                                            }`}
+                                    />
+                                    Analytics
+                                </button>
+                            </Link>
                         )}
 
                         {/* Membership */}
                         {session?.user?.role === "admin" && (
+                            <Link href="/adminPortal/membership" >
+                                <button
+                                    onClick={() => setActiveButton("Memberships")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Memberships"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                                        }`}
+                                >
+                                    <img
+                                        src="/sidebar/membership.png"
+                                        alt="Memberships"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Memberships"
+                                            ? "filter invert brightness-0"
+                                            : ""
+                                            }`}
+                                    />
+                                    Memberships
+                                </button>
+                            </Link>
+                        )}
+
+                        {/* Annoucements */}
+                        <Link href="/adminPortal/annoucement">
                             <button
-                                onClick={() => setActiveButton("Memberships")}
-                                className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Memberships"
+                                onClick={() => setActiveButton("Announcements")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Announcements"
                                     ? "bg-[#001571] text-white"
                                     : "bg-white text-[#001571] hover:bg-gray-100"
                                     }`}
                             >
                                 <img
-                                    src="/sidebar/membership.png"
-                                    alt="Memberships"
-                                    className={`h-5 w-5 mr-6 ${activeButton === "Memberships"
+                                    src="/sidebar/annoucements.png"
+                                    alt="Announcements"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "Announcements"
                                         ? "filter invert brightness-0"
                                         : ""
                                         }`}
                                 />
-                                <Link
-                                    href="/adminPortal/membership"
-                                    className="text-md font-medium"
-                                >
-                                    Memberships
-                                </Link>
-                            </button>
-                        )}
-
-                        {/* Annoucements */}
-                        <button
-                            onClick={() => setActiveButton("Announcements")}
-                            className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Announcements"
-                                ? "bg-[#001571] text-white"
-                                : "bg-white text-[#001571] hover:bg-gray-100"
-                                }`}
-                        >
-                            <img
-                                src="/sidebar/annoucements.png"
-                                alt="Announcements"
-                                className={`h-5 w-5 mr-6 ${activeButton === "Announcements"
-                                    ? "filter invert brightness-0"
-                                    : ""
-                                    }`}
-                            />
-                            <Link
-                                href="/adminPortal/annoucement"
-                                className="text-md font-medium"
-                            >
                                 Announcements
-                            </Link>
-                        </button>
+                            </button>
+                        </Link>
 
                         {/* Press release */}
-                        <button
-                            onClick={() => setActiveButton("Press Releases")}
-                            className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Press Releases"
-                                ? "bg-[#001571] text-white"
-                                : "bg-white text-[#001571] hover:bg-gray-100"
-                                }`}
-                        >
-                            <img
-                                src="/sidebar/pressrelease.png"
-                                alt="Press Releases"
-                                className={`h-5 w-5 mr-6 ${activeButton === "Press Releases"
-                                    ? "filter invert brightness-0"
-                                    : ""
+                        <Link href="/adminPortal/pressRelease">
+                            <button
+                                onClick={() => setActiveButton("Press Releases")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Press Releases"
+                                    ? "bg-[#001571] text-white"
+                                    : "bg-white text-[#001571] hover:bg-gray-100"
                                     }`}
-                            />
-                            <Link
-                                href="/adminPortal/pressRelease"
-                                className="text-md font-medium"
                             >
+                                <img
+                                    src="/sidebar/pressrelease.png"
+                                    alt="Press Releases"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "Press Releases"
+                                        ? "filter invert brightness-0"
+                                        : ""
+                                        }`}
+                                />
                                 Press Releases
-                            </Link>
-                        </button>
+                            </button>
+                        </Link>
 
                         {/* My profile */}
-                        <button
-                            onClick={() => setActiveButton("My Profile")}
-                            className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "My Profile"
-                                ? "bg-[#001571] text-white"
-                                : "bg-white text-[#001571] hover:bg-gray-100"
-                                }`}
-                        >
-                            <img
-                                src="/sidebar/myprofile.png"
-                                alt="My Profile"
-                                className={`h-5 w-5 mr-6 ${activeButton === "My Profile" ? "filter invert brightness-0" : ""
+                        <Link href="/adminPortal/myProfile">
+                            <button
+                                onClick={() => setActiveButton("My Profile")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "My Profile"
+                                    ? "bg-[#001571] text-white"
+                                    : "bg-white text-[#001571] hover:bg-gray-100"
                                     }`}
-                            />
-                            <Link href="/adminPortal/myProfile" className="text-md font-medium">
+                            >
+                                <img
+                                    src="/sidebar/myprofile.png"
+                                    alt="My Profile"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "My Profile" ? "filter invert brightness-0" : ""
+                                        }`}
+                                />
                                 My Profile
-                            </Link>
-                        </button>
+                            </button>
+                        </Link>
 
                         {/* Help & contact */}
-                        <button
-                            onClick={() => setActiveButton("Help & Contact")}
-                            className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Help & Contact"
-                                ? "bg-[#001571] text-white"
-                                : "bg-white text-[#001571] hover:bg-gray-100"
-                                }`}
-                        >
-                            <img
-                                src="/sidebar/helpandcontact.png"
-                                alt="Help & Contact"
-                                className={`h-5 w-5 mr-6 ${activeButton === "Help & Contact"
-                                    ? "filter invert brightness-0"
-                                    : ""
+                        <Link href="/adminPortal/helpContact">
+                            <button
+                                onClick={() => setActiveButton("Help & Contact")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Help & Contact"
+                                    ? "bg-[#001571] text-white"
+                                    : "bg-white text-[#001571] hover:bg-gray-100"
                                     }`}
-                            />
-                            <Link
-                                href="/adminPortal/helpContact"
-                                className="text-md font-medium"
                             >
+                                <img
+                                    src="/sidebar/helpandcontact.png"
+                                    alt="Help & Contact"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "Help & Contact"
+                                        ? "filter invert brightness-0"
+                                        : ""
+                                        }`}
+                                />
                                 Help & Contact
-                            </Link>
-                        </button>
+                            </button>
+                        </Link>
 
                         {/* Settings */}
-                        <button
-                            onClick={() => setActiveButton("Settings")}
-                            className={`flex items-center py-4 px-6 rounded-2xl font-sans ${activeButton === "Settings"
-                                ? "bg-[#001571] text-white"
-                                : "bg-white text-[#001571] hover:bg-gray-100"
-                                }`}
-                        >
-                            <img
-                                src="/sidebar/settings.png"
-                                alt="Settings"
-                                className={`h-5 w-5 mr-6 ${activeButton === "Settings" ? "filter invert brightness-0" : ""
+                        <Link href="/adminPortal/setting">
+                            <button
+                                onClick={() => setActiveButton("Settings")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Settings"
+                                    ? "bg-[#001571] text-white"
+                                    : "bg-white text-[#001571] hover:bg-gray-100"
                                     }`}
-                            />
-                            <Link href="/adminPortal/setting" className="text-md font-medium">
+                            >
+                                <img
+                                    src="/sidebar/settings.png"
+                                    alt="Settings"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "Settings" ? "filter invert brightness-0" : ""
+                                        }`}
+                                />
                                 Settings
-                            </Link>
-                        </button>
+                            </button>
+                        </Link>
                     </div>
 
                     {/* Logout */}
@@ -266,7 +254,7 @@ export default function SideMenuSection() {
                             className={`h-5 w-5 mr-6 ${activeButton === "Logout" ? "filter invert brightness-0" : ""
                                 }`}
                         />
-                            Logout
+                        Logout
                     </button>
                 </div>
             </div>
