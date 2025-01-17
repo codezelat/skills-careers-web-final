@@ -139,54 +139,52 @@ function JobCard(props) {
 
   return (
     <div className="gap-1 bg-white rounded-lg hover:shadow-md">
+      <div className="w-full">
+        <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex">
+          {/* First Column - Small */}
+          <div className="px-4 py-3 w-[5%] flex items-center">
+            <input type="checkbox" />
+          </div>
 
-  
-  <div className="w-full">
-    <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex">
-      {/* First Column - Small */}
-      <div className="px-4 py-3 w-[5%] flex items-center">
-        <input type="checkbox" />
-      </div>
-      
-      {/* Other Columns - Equal Width */}
-      <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
-        {jobTitle}
-      </div>
-      <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
-        {recruiterDetails.recruiterName}
-      </div>
-      <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
-        {postedDate}
-      </div>
-      <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[23.75%] items-center">
-        <button
-          onClick={handlePublishToggle}
-          disabled={isLoading}
-          className={`flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 ${
-            isPublished
-              ? "bg-[#001571] text-white hover:bg-yellow-600"
-              : "bg-green-500 text-white hover:bg-green-600"
-          }`}
-        >
-          <span className="mr-2">
-            <BsFillEyeFill size={15} />
-          </span>
-          {isLoading
-            ? "Loading..."
-            : isPublished
-            ? "Restricted"
-            : "Unrestricted"}
-        </button>
-        <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-          <span className="mr-2">
-            <RiDeleteBinFill size={20} />
-          </span>
-          Delete
-        </button>
+          {/* Other Columns - Equal Width */}
+          <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+            {jobTitle}
+          </div>
+          <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+            {recruiterDetails.recruiterName}
+          </div>
+          <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+            {postedDate}
+          </div>
+          <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[23.75%] items-center">
+            <button
+              onClick={handlePublishToggle}
+              disabled={isLoading}
+              className={`flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 ${
+                isPublished
+                  ? "bg-[#001571] text-white hover:bg-yellow-600"
+                  : "bg-green-500 text-white hover:bg-green-600"
+              }`}
+            >
+              <span className="mr-2">
+                <BsFillEyeFill size={15} />
+              </span>
+              {isLoading
+                ? "Loading..."
+                : isPublished
+                ? "Restricted"
+                : "Unrestricted"}
+            </button>
+            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+              <span className="mr-2">
+                <RiDeleteBinFill size={20} />
+              </span>
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
   );
 }
 

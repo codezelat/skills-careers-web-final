@@ -129,37 +129,41 @@ function AdminJobseekersPanel() {
               />
             )}
 
-            
-              <div className="overflow-x-auto rounded-lg">
+            <div className="overflow-x-auto rounded-lg">
               <div className="w-full">
-  <div className="text-[#8A93BE] text-base font-semibold text-left flex">
-    <div className="w-[5%] py-3 pl-3 flex items-center"></div>
-    <div className="py-3 flex items-center w-[10%]"></div>
-    <div className="py-3 w-[20%] flex items-center justify-start pl-0">Candidate Name</div>
-    <div className="px-4 py-3 w-[10%]">Email</div>
-    <div className="px-16 py-3 w-[20%] ml-auto justify-start">Phone</div>
-    <div className=" py-3 w-[25%] ml-auto justify-start">Actions</div>
-  </div>
-</div>
+                <div className="text-[#8A93BE] text-base font-semibold text-left flex">
+                  <div className="w-[5%] py-3 pl-3 flex items-center"></div>
+                  <div className="py-3 flex items-center w-[10%]"></div>
+                  <div className="py-3 w-[20%] flex items-center justify-start pl-0">
+                    Candidate Name
+                  </div>
+                  <div className="px-4 py-3 w-[10%]">Email</div>
+                  <div className="px-16 py-3 w-[20%] ml-auto justify-start">
+                    Phone
+                  </div>
+                  <div className=" py-3 w-[25%] ml-auto justify-start">
+                    Actions
+                  </div>
+                </div>
               </div>
-
-              {filteredJobseekers.length > 0 ? (
-                filteredJobseekers.map((jobseeker) => (
-                  <JobseekerCard
-                    key={jobseeker._id}
-                    jobseeker={jobseeker}
-                    onViewJobSeeker={() => handleJobseekerSelect(jobseeker._id)}
-                  />
-                ))
-              ) : (
-                <p className="text-lg text-center font-bold text-red-500 py-20">
-                  No jobseekers found.
-                </p>
-              )}
             </div>
+
+            {filteredJobseekers.length > 0 ? (
+              filteredJobseekers.map((jobseeker) => (
+                <JobseekerCard
+                  key={jobseeker._id}
+                  jobseeker={jobseeker}
+                  onViewJobSeeker={() => handleJobseekerSelect(jobseeker._id)}
+                />
+              ))
+            ) : (
+              <p className="text-lg text-center font-bold text-red-500 py-20">
+                No jobseekers found.
+              </p>
+            )}
           </div>
         </div>
-      
+      </div>
     </div>
   );
 }

@@ -136,6 +136,24 @@ function Announcements() {
 
             {/* Announcement Cards */}
             <div className="grid gap-4 grid-cols-1">
+
+            <div className="overflow-x-auto rounded-lg">
+              <div className="w-full">
+                <div className="text-[#8A93BE] text-base font-semibold text-left flex">
+                  <div className="w-[10%] py-3 pl-3 flex items-center"></div>
+                  
+                  <div className="py-3 w-[30%] flex items-center justify-start pl-0">
+                    Title
+                  </div>
+                  <div className="px-4 py-3 w-[30%]">Date Posted</div>
+                 
+                  <div className=" py-3 w-[30%] ml-auto justify-start">
+                    Actions
+                  </div>
+                </div>
+              </div>
+            </div>
+
               {filteredAnnouncements.length > 0 ? (
                 filteredAnnouncements
                   .map((announcement, index) => (
