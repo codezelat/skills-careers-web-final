@@ -3,22 +3,18 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import AdminNavBar from "../AdminNav";
 import { useRouter } from "next/navigation";
-import { handleCloseForm, handleOpenForm } from "@/handlers";
-import AddPressrelease from "./AddPressrelease";
-import PressreleaseCard from "../../../components/PressreleaseCard";
-import ViewPressrelease from "./ViewPressrelease";
-import PressReleasePage from "@/components/PressReleaseComponent/PressReleasePage";
+import UpdateInquiryForm from "./UpdateInquiryForm";
+import InquiryCard from "./InquiryCard";
 
-function PressReleases() {
+function HelpandContact() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [activeSection, setActiveSection] = useState("pressreleases");
+  const [activeSection, setActiveSection] = useState("helpandcontact");
 
-  const [pressreleases, setPressreleases] = useState([]); // Original Pressreleases
-  const [filteredPressreleases, setFilteredPressreleases] = useState([]);
+  const [inquiries, setInquiries] = useState([]); // Original Inquirys
+  const [filteredInquiries, setFilteredInquiries] = useState([]);
 
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [selectedPressrelease, setSelectedPressrelease] = useState(null);
+  const [selectedInquiry, setSelectedInquiry] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,18 +24,18 @@ function PressReleases() {
       router.push("/admin");
     }
   });
-  const fetchPressreleases = async () => {
+  const fetchInquiries = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/pressrelease/all");
+      const response = await fetch("/api/inquiry/all");
 
       if (!response.ok) {
-        throw new Error("Failed to fetch Pressreleases.");
+        throw new Error("Failed to fetch Inquiries.");
       }
 
       const data = await response.json();
-      setPressreleases(data.pressreleases);
-      setFilteredPressreleases(data.pressreleases);
+      setInquiries(data.inquiries);
+      setFilteredInquiries(data.inquiries);
       setIsLoading(false);
     } catch (error) {
       setError(error.message);
@@ -47,31 +43,32 @@ function PressReleases() {
     }
   };
 
+  //   To refresh all data fetching every 60 seconds
   useEffect(() => {
     const fetchAllData = async () => {
-      await Promise.all([fetchPressreleases()]);
+      await Promise.all([fetchInquiries()]);
     };
     fetchAllData();
     const intervalId = setInterval(fetchAllData, 60000);
     return () => clearInterval(intervalId);
   }, []);
 
-  const handlePressreleaseSelect = (pressrelease) => {
-    setSelectedPressrelease(pressrelease);
+  const handleInquirySelect = (inquiry) => {
+    setSelectedInquiry(inquiry);
   };
 
-  const handleClosePressrelease = () => {
-    setSelectedPressrelease(null);
+  const handleCloseInquiry = () => {
+    setSelectedInquiry(null);
   };
 
   return (
     <div className="p-4">
       {/* Title Bar */}
       <div className="h-[10vh] flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Press Releases</h1>
+        <h1 className="text-2xl font-bold">Help & Contact</h1>
         <input
           type="search"
-          placeholder="Search by pressrelease name"
+          placeholder="Search by inquiry name"
           className="px-2 py-2 w-96 text-center bg-slate-100 border-solid border-2 border-slate-100 outline-none rounded-lg"
         />
         <p className="text-purple-600 font-semibold">
@@ -94,35 +91,31 @@ function PressReleases() {
           <div className="lg:col-span-4 md:col-span-4 sm:col-span-1 bg-slate-100 mb-4 p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl text-purple-600 font-semibold">
-                Press Release
+                Inquiries
               </h2>
-              <button
-                onClick={handleOpenForm(setIsFormVisible)}
-                className="px-4 py-2 bg-purple-600 border-2 border-purple-600 text-white font-semibold hover:border-purple-600 hover:bg-white hover:text-purple-600 rounded transition-colors"
-              >
-                Add New Press Release
-              </button>
-              {isFormVisible && (
-                <AddPressrelease onClose={handleCloseForm(setIsFormVisible)} />
-              )}
             </div>
 
-            <div className="grid gap-4 grid-cols-4">
-              {filteredPressreleases.length > 0 ? (
-                filteredPressreleases
-                  .map((pressrelease, index) => (
-                    <PressreleaseCard
+            {selectedInquiry && (
+              <UpdateInquiryForm 
+                inquiry={selectedInquiry}
+                onClose={handleCloseInquiry}
+              />
+            )}
+
+            <div className="grid grid-cols-1">
+              {filteredInquiries.length > 0 ? (
+                filteredInquiries
+                  .map((inquiry, index) => (
+                    <InquiryCard
                       key={index}
-                      pressrelease={pressrelease}
-                      onViewPressrelease={() =>
-                        handlePressreleaseSelect(pressrelease)
-                      }
+                      inquiry={inquiry}
+                      onViewInquiry={() => handleInquirySelect(inquiry)}
                     />
                   ))
                   .reverse()
               ) : (
                 <p className="col-span-4 text-lg text-center font-bold text-red-500 py-20">
-                  No pressreleases found.
+                  No Inquiries found.
                 </p>
               )}
             </div>
@@ -132,4 +125,4 @@ function PressReleases() {
     </div>
   );
 }
-export default PressReleases;
+export default HelpandContact;

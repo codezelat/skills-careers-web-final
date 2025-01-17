@@ -93,15 +93,16 @@ function UpdatePressrelease({ pressrelease, onClose }) {
             onClick={onClose}
             className="text-gray-500 hover:text-red-500 focus:outline-none"
           >
-            <FaTimes size={24} />
+            ✕
           </button>
         </div>
         <div className="border-t-2 border-gray-200 mb-4" />
 
-
       <form className="space-y-6" onSubmit={submitHandler}>
         <div>
-          <p className="text-base font-bold text-black mb-1">Title</p>
+        <label className="block text-sm font-semibold text-[#001571]">
+              Title
+            </label>
           <input
             type="text"
             name="title"
@@ -137,42 +138,45 @@ function UpdatePressrelease({ pressrelease, onClose }) {
               <Image
                 src={pressreleaseDetails.image}
                 alt="Current"
-                width={100}
-                height={100}
-                className="w-64 h-auto rounded"
-              />
+                width={40}
+                height={40}
+                className=""
+                />
+                </div>
+                <div className="text-sm text-blue-900">
+                  <label
+                    htmlFor="image-upload"
+                    className="relative cursor-pointer rounded-md font-semibold text-[#8A93BE]"
+                  >
+                    <span>
+                      Click or drag file to this area to upload your Image
+                    </span>
+                    <input
+                      id="image-upload"
+                      name="image-upload"
+                      type="file"
+                      className="sr-only"
+                      accept="image/jpeg, image/png, image/jpg"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                </div>
+                <p className="text-xs text-[#8A93BE]">
+                  Please make sure to upload a JPEG, PNG & JPG
+                </p>
+              </div>
+            </div>
+            {selectedImage && (
+              <div className="mt-4">
+                <p className="text-sm text-blue-900">Selected File:</p>
+                <p className="text-sm text-gray-600">{selectedImage.name}</p>
+              </div>
+            )}
           </div>
-          <div className="text-sm text-blue-900">
-            <label
-              htmlFor="image-upload"
-              className="relative cursor-pointer rounded-md font-semibold text-[#8A93BE]"
-            >
-              <span>
-                Click or drag file to this area to upload your Image
-              </span>
-              <input
-                id="image-upload"
-                name="image-upload"
-                type="file"
-                className="sr-only"
-                accept="image/jpeg, image/png, image/jpg"
-                onChange={handleImageChange}
-              />
-            </label>
-          </div>
-          <p className="text-xs text-[#8A93BE]">
-            Please make sure to upload a JPEG, PNG & JPG
-          </p>
-        </div>
-      </div>
-      {selectedImage && (
-        <div className="mt-4">
-          <p className="text-sm text-blue-900">Selected File:</p>
-          <p className="text-sm text-gray-600">{selectedImage.name}</p>
-        </div>
-      )}
-    </div>
-
+      
+      
+                <div className="border-t-2 border-gray-200 mb-4" />
+      
         <div>
           <button className="w-full px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors">
             {isSubmitting ? "Updating..." : "Update Press Release"}
