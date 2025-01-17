@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import { useSession } from "next-auth/react";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
 
 function JobCard(props) {
+    const { data: session, status } = useSession();
     const [applicationCount, setApplicationCount] = useState(0);
     const [recruiterDetails, setRecruiterDetails] = useState({
         email: "",
@@ -25,6 +26,23 @@ function JobCard(props) {
         jobTypes,
         jobDescription,
     } = props.job;
+
+    useEffect(() => {
+        const fetchApplicationCount = async () => {
+            try {
+                const response = await fetch(
+                    `/api/applications?jobId=${_id}&recruiterId=${recruiterId}`
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    setApplicationCount(data.count);
+                }
+            } catch (error) {
+                console.error("Error fetching application count:", error);
+            }
+        };
+        fetchApplicationCount();
+    }, [_id, recruiterId]);
 
     useEffect(() => {
         if (recruiterId) {
@@ -141,48 +159,95 @@ function JobCard(props) {
         <div className="gap-1 bg-white rounded-lg hover:shadow-md">
 
 
-            <div className="w-full">
-                <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex">
+            <div className="w-full items-center">
+                <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex items-center">
                     {/* First Column - Small */}
-                    <div className="px-4 py-3 w-[5%] flex items-center">
+                    <div className="px-4 py-3 w-[3%] flex items-center">
                         <input type="checkbox" />
                     </div>
 
                     {/* Other Columns - Equal Width */}
-                    <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
-                        {jobTitle}
-                    </div>
-                    <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
-                        {recruiterDetails.recruiterName}
-                    </div>
-                    <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
-                        {postedDate}
-                    </div>
-                    <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[23.75%] items-center">
-                        <button
-                            onClick={handlePublishToggle}
-                            disabled={isLoading}
-                            className={`flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
-                                    ? "bg-[#001571] text-white hover:bg-yellow-600"
-                                    : "bg-green-500 text-white hover:bg-green-600"
-                                }`}
-                        >
-                            <span className="mr-2">
-                                <BsFillEyeFill size={15} />
-                            </span>
-                            {isLoading
-                                ? "Loading..."
-                                : isPublished
-                                    ? "Restricted"
-                                    : "Unrestricted"}
-                        </button>
-                        <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                            <span className="mr-2">
-                                <RiDeleteBinFill size={20} />
-                            </span>
-                            Delete
-                        </button>
-                    </div>
+
+                    {/* For Admin */}
+                    {session?.user?.role === "admin" && (
+                        <>
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
+                                {jobTitle}
+                            </div>
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
+                                {recruiterDetails.recruiterName}
+                            </div>
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
+                                {postedDate}
+                            </div>
+                            <div className=" py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+                                <button
+                                    onClick={handlePublishToggle}
+                                    disabled={isLoading}
+                                    className={`flex items-center justify-center w-1/2 bg-[#001571] text-white py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
+                                        ? "bg-[#001571] text-white hover:bg-blue-600"
+                                        : "bg-[#EC221F] text-white hover:bg-red-700"
+                                        }`}
+                                >
+                                    <span className="mr-2">
+                                        <BsFillEyeFill size={15} />
+                                    </span>
+                                    {isLoading
+                                        ? "Loading..."
+                                        : isPublished
+                                            ? "Unrestricted"
+                                            : "Restricted"}
+                                </button>
+                                <button className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
+                                    <span className="mr-2">
+                                        <RiDeleteBinFill size={20} />
+                                    </span>
+                                    Delete
+                                </button>
+                            </div>
+                        </>
+                    )}
+
+
+                    {/* For Recruiter */}
+                    {session?.user?.role === "recruiter" && (
+                        <>
+                            <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+                                {jobTitle}
+                            </div>
+                            <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+                                {postedDate}
+                            </div>
+                            <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+                                {applicationCount}
+                            </div>
+                            <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[23.75%] items-center">
+                                <button
+                                    onClick={handlePublishToggle}
+                                    disabled={isLoading}
+                                    className={`flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
+                                        ? "bg-[#001571] text-white hover:bg-yellow-600"
+                                        : "bg-green-500 text-white hover:bg-green-600"
+                                        }`}
+                                >
+                                    <span className="mr-2">
+                                        <BsFillEyeFill size={15} />
+                                    </span>
+                                    {isLoading
+                                        ? "Loading..."
+                                        : isPublished
+                                            ? "Restricted"
+                                            : "Unrestricted"}
+                                </button>
+                                <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+                                    <span className="mr-2">
+                                        <RiDeleteBinFill size={20} />
+                                    </span>
+                                    Delete
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>
