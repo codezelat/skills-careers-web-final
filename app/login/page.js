@@ -72,9 +72,9 @@ function Login() {
       if (userRole === "jobseeker") {
         router.push("/startingpage");
       } else if (userRole === "recruiter") {
-        router.push("/dashboard");
+        router.push("/Portal/dashboard");
       } else if (userRole === "admin") {
-        router.push("/admindashboard")
+        router.push("/Portal/dashboard")
       }
     } else {
       alert("Login failed. Please check your email and password.");

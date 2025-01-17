@@ -79,21 +79,21 @@ function NavBar() {
             </Link>
           )}
           {session?.user?.role === "recruiter" && (
-            <Link href="/dashboard">
+            <Link href="/Portal/dashboard">
               <Button>
                 <p className="py-2 px-6">My Dashboard</p>
               </Button>
             </Link>
           )}
           {session?.user?.role === "jobseeker" && (
-            <Link href="/profile">
+            <Link href="/Portal/profile">
               <Button>
                 <p className="py-2 px-6">My Profile</p>
               </Button>
             </Link>
           )}
           {session?.user?.role === "admin" && (
-            <Link href="/admindashboard">
+            <Link href="/Portal/dashboard">
               <Button>
                 <p className="py-2 px-6">My Dashboard</p>
               </Button>
@@ -186,21 +186,21 @@ function NavBar() {
                 </Link>
               )}
               {session?.user?.role === "recruiter" && (
-                <Link href="/dashboard">
+                <Link href="/Portal/dashboard">
                   <Button>
                     <p className="py-2 px-6">My Dashboard</p>
                   </Button>
                 </Link>
               )}
               {session?.user?.role === "jobseeker" && (
-                <Link href="/profile">
+                <Link href="/Portal/profile">
                   <Button>
                     <p className="py-2 px-6">My Profile</p>
                   </Button>
                 </Link>
               )}
               {session?.user?.role === "admin" && (
-                <Link href="/admindashboard">
+                <Link href="/Portal/dashboard">
                   <Button>
                     <p className="py-2 px-6">My Dashboard</p>
                   </Button>
