@@ -21,7 +21,7 @@ function AnnouncementCard({
         <div className="w-full">
           <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex">
             {/* First Column - Small */}
-            <div className="px-4 py-3 w-[10%] flex items-center">
+            <div className="px-4  w-[10%] flex items-center">
               <input type="checkbox" />
             </div>
 

@@ -1,5 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { PiCheckCircle } from "react-icons/pi";
+import { IoCloseSharp } from "react-icons/io5";
+import { FaRegCircle, FaRegCircleDot } from "react-icons/fa6";
 
 async function createJob(
   jobTitle,
@@ -34,6 +37,7 @@ async function createJob(
 
   return data;
 }
+
 function AddJob({ onClose }) {
   const [jobTitle, setJobTitle] = useState("");
   const [recruiterName, setRecruiterName] = useState("");
@@ -45,6 +49,7 @@ function AddJob({ onClose }) {
 
   const [emailSuggestions, setEmailSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState([]); // Define the selected state
 
   // Function to fetch recruiters based on email search
   const fetchRecruiters = async (searchTerm) => {
@@ -102,6 +107,14 @@ function AddJob({ onClose }) {
     );
   };
 
+  const handleSelect = (label) => {
+    setSelected((prevSelected) =>
+      prevSelected.includes(label)
+        ? prevSelected.filter((item) => item !== label)
+        : [...prevSelected, label]
+    );
+  };
+
   async function submitHandler(event) {
     event.preventDefault();
 
@@ -125,6 +138,7 @@ function AddJob({ onClose }) {
       setJobTypes([]);
       setJobDescription("");
       setKeyResponsibilities("");
+      setSelected([]); // Reset selected state
 
       onClose();
 
@@ -136,157 +150,186 @@ function AddJob({ onClose }) {
   }
 
   return (
-    <div className="absolute top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 h-[90vh] w-1/2 overflow-hidden overflow-y-auto bg-white shadow-2xl rounded-lg p-6 mb-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Add Job</h2>
-        <button
-          onClick={onClose}
-          className="px-2 py-1 h-12 ml-auto border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
-        >
-          Close ✕
-        </button>
-      </div>
-
-      <form onSubmit={submitHandler}>
-        <div className="relative">
-          <p
-            htmlFor="recruiteremail"
-            className="text-base font-bold text-black mb-1"
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white w-full max-w-4xl h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-2xl font-semibold text-[#001571]">Add Job Posts</h4>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-red-500 focus:outline-none"
           >
-            Recruiter Email
-          </p>
-          <input
-            type="email"
-            id="recruiteremail"
-            value={recruiterEmail}
-            onChange={handleEmailChange}
-            placeholder="Start typing recruiter email..."
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-          {loading && <div className="text-sm text-gray-500">Loading...</div>}
-          {emailSuggestions.length > 0 && (
-            <ul className="absolute z-10 w-96 border border-gray-300 rounded shadow-lg bg-white max-h-48 overflow-auto">
-              {emailSuggestions.map((recruiter, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleRecruiterSelect(recruiter)}
-                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                >
-                  <div className="font-medium">{recruiter.email}</div>
-                  <div className="text-sm text-gray-600">{recruiter.recruiterName}</div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div>
-          <p htmlFor="jobtitle" className="text-base font-bold text-black mb-1">
-            Job Title
-          </p>
-          <input
-            type="text"
-            id="jobtitle"
-            required
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-        </div>
-
-        <div>
-          <p
-            htmlFor="recruitername"
-            className="text-base font-bold text-black mb-1"
-          >
-            Recruiter Name
-          </p>
-          <input
-            type="text"
-            id="recruitername"
-            value={recruiterName}
-            onChange={(e) => setRecruiterName(e.target.value)}
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-        </div>
-
-        <div>
-          <p htmlFor="location" className="text-base font-bold text-black mb-1">
-            Location
-          </p>
-          <input
-            type="text"
-            id="location"
-            required
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-        </div>
-
-        <div className="mb-4">
-          <p className="text-base font-bold text-black mb-1">Job Type:</p>
-          {[
-            "Onsite ",
-            "Hybrid ",
-            "Remote ",
-            "Full Time ",
-            "Part Time ",
-            "Freelance ",
-          ].map((type) => (
-            <label key={type} className="mr-4 text-base">
-              <input
-                type="checkbox"
-                value={type}
-                checked={jobTypes.includes(type)}
-                onChange={handleCheckboxChange}
-                className="mr-1"
-              />
-              {type}
-            </label>
-          ))}
-        </div>
-
-        <div>
-          <p
-            htmlFor="jobdescription"
-            className="text-base font-bold text-black mb-1"
-          >
-            Job Description
-          </p>
-          <textarea
-            type="text"
-            id="jobdescription"
-            required
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-        </div>
-
-        <div>
-          <p
-            htmlFor="keyresponsibilities"
-            className="text-base font-bold text-black mb-1"
-          >
-            Key Responsibilities
-          </p>
-          <textarea
-            type="text"
-            id="keyresponsibilities"
-            required
-            value={keyResponsibilities}
-            onChange={(e) => setKeyResponsibilities(e.target.value)}
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-        </div>
-
-        <div>
-          <button className="w-96 px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors">
-            Create Job
+            <IoCloseSharp size={24} />
           </button>
         </div>
-      </form>
+        <div className="border-2 border-gray-200 mb-4" />
+
+        <form className="space-y-6" onSubmit={submitHandler}>
+<div>
+              <label
+                htmlFor="recruiteremail"
+                className="block text-sm font-semibold text-[#001571]"
+              >
+                Recruiter Email
+              </label>
+              <input
+                type="email"
+                id="recruiteremail"
+                value={recruiterEmail}
+                onChange={handleEmailChange}
+                placeholder="Start typing recruiter email..."
+                className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+              />
+{loading && <div className="text-sm text-gray-500">Loading...</div>}
+            {emailSuggestions.length > 0 && (
+              <ul className="absolute z-10 w-96 border border-gray-300 rounded shadow-lg bg-white max-h-48 overflow-auto">
+                {emailSuggestions.map((recruiter, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleRecruiterSelect(recruiter)}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    <div className="font-medium">{recruiter.email}</div>
+                    <div className="text-sm text-gray-600">
+                      {recruiter.recruiterName}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#001571]">
+              Job Title
+            </label>
+            <input
+              type="text"
+              id="jobtitle"
+              required
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#001571]">
+              Recruiter Name
+            </label>
+            <input
+              type="text"
+              id="recruitername"
+              value={recruiterName}
+              onChange={(e) => setRecruiterName(e.target.value)}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#001571]">
+              Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              required
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-sm font-bold text-[#001571] pb-2">Job Types</h2>
+            <div className="flex flex-wrap gap-4">
+              {[
+                { id: 1, label: "Onsite" },
+                { id: 2, label: "Hybrid" },
+                { id: 3, label: "Remote" },
+                { id: 4, label: "Full Time" },
+                { id: 5, label: "Part Time" },
+                { id: 6, label: "Freelance" },
+              ].map((type) => (
+                <button
+                  key={type.id}
+                  onClick={() => handleSelect(type.label)}
+                  className={`flex px-5 py-2 border rounded-lg transition ${
+                    selected.includes(type.label)
+                      ? "bg-[#001571] text-white text-sm"
+                      : "bg-white text-gray-700 text-sm border-[#B0B6D3]"
+                  }`}
+                >
+                  {type.label}
+                  {selected.includes(type.label) ? (
+                    <span className="ml-2 mt-1">
+                      <FaRegCircleDot width={20} height={10} />
+                    </span>
+                  ) : (
+                    <span className="ml-2 mt-1">
+                      <FaRegCircle width={20} height={10} />
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#001571]">
+              Job Description
+            </label>
+            <textarea
+              type="text"
+              id="jobdescription"
+              required
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#001571]">
+              Key Responsibilities
+            </label>
+            <textarea
+              type="text"
+              id="keyresponsibilities"
+              required
+              value={keyResponsibilities}
+              onChange={(e) => setKeyResponsibilities(e.target.value)}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#001571]">
+              Required & Qualifications
+            </label>
+            <textarea
+              name="qualifications"
+              rows="10"
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#001571]">
+              Perks & Benefits
+            </label>
+            <textarea
+              name="keyResponsibilities"
+              rows="10"
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div className="border-2 border-gray-200 mb-4" />
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+            >
+              <div className="flex items-center space-x-3">
+                <p>Save</p>
+                <PiCheckCircle width={20} height={10} />
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
