@@ -67,6 +67,21 @@ export default function Jobs() {
     setSelectedJobId(null);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 6;
+
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
   if (loading) {
     return <PortalLoading />;
   }
@@ -163,16 +178,14 @@ export default function Jobs() {
             </table>
           </div>
           <div className="grid gap-4 grid-cols-1">
-            {filteredJobs.length > 0 ? (
-              filteredJobs
-                .map((job, index) => (
-                  <JobCard
-                    key={job._id}
-                    job={job}
-                    onViewJob={() => handleJobSelect(job._id)}
-                  />
-                ))
-                .reverse()
+            {currentJobs.length > 0 ? (
+              currentJobs.map((job) => (
+                <JobCard
+                  key={job._id}
+                  job={job}
+                  onViewJob={() => handleJobSelect(job._id)}
+                />
+              ))
             ) : (
               <p className="text-lg text-center font-bold text-red-500 py-20">
                 No jobs found.
@@ -180,32 +193,9 @@ export default function Jobs() {
             )}
           </div>
 
-          {/* Pagination */}
-          <div className="flex justify-center mt-4">
-            <nav className="flex gap-2">
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                &lt;
-              </button>
-              <button className="px-3 py-2 bg-blue-700 text-white rounded-lg">
-                1
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                2
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                3
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                ...
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                15
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                &gt;
-              </button>
-            </nav>
-          </div>
+
+
+
         </>
       ) : (
         <>
@@ -337,6 +327,35 @@ export default function Jobs() {
               </div> */}
         </>
       )}
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        <nav className="flex gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
+          >
+            &lt;
+          </button>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handlePageChange(index + 1)}
+              className={`px-3 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-blue-700 text-white' : 'bg-gray-200 hover:bg-gray-400'}`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
+          >
+            &gt;
+          </button>
+        </nav>
+      </div>
     </div>
   );
 }

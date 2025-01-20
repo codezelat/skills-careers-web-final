@@ -87,9 +87,9 @@ export default function RecruiterPostedJobs(props) {
         }
     }, [recruiterDetails.id]);
 
-    // if (loading) {
-    //     return <PortalLoading />;
-    // }
+    if (loading) {
+        return <PortalLoading />;
+    }
 
     return (
         <div className="min-h-screen bg-white rounded-3xl p-5">
@@ -264,93 +264,93 @@ export default function RecruiterPostedJobs(props) {
 
                     {/* Table */}
                     {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
-                <table className="w-full table-auto">
-                  <thead>
-                    <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                      <th className="px-4 py-3"></th>
-                      <th className="px-2 py-3"></th>
-                      <th className="px-4 py-3">Recruiter Name</th>
-                      <th className="px-4 py-3">Email</th>
-                      <th className="px-4 py-3">Phone</th>
-                      <th className="px-24 py-3">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {RecruitersList.filter(
-                      (recruiter) => recruiter.type === "Restricted"
-                    ).map((recruiter, id) => (
-                      <tr
-                        key={id}
-                        className="text-gray-700 hover:bg-gray-50 border-b text-sm"
-                      >
-                        <td className="px-4 py-3">
-                          <input type="checkbox" />
-                        </td>
-                        <td className="px-2 py-3 flex items-left gap-3">
-                          <div className="w-8 h-8 text-white flex justify-center items-center rounded-full">
-                            <Image
-                              src={recruiter.logo}
-                              width={35}
-                              height={35}
-                              alt="logo"
-                            />
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-black font-semibold">
-                          {recruiter.name}
-                        </td>
-                        <td className="px-4 py-3 text-black font-semibold">
-                          {recruiter.email}
-                        </td>
-                        <td className="px-4 py-3 text-black font-semibold">
-                          {recruiter.phone}
-                        </td>
-                        <td className="px-4 py-3 flex gap-2 justify-end">
-                          <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                            <span className="mr-2">
-                              <BsFillEyeFill size={15} />
-                            </span>
-                            Unrestricted
-                          </button>
-                          <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                            <span className="mr-2">
-                              <RiDeleteBinFill size={20} />
-                            </span>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div> */}
+                        <table className="w-full table-auto">
+                            <thead>
+                                <tr className="text-[#8A93BE] text-base font-semibold text-left">
+                                    <th className="px-4 py-3"></th>
+                                    <th className="px-2 py-3"></th>
+                                    <th className="px-4 py-3">Recruiter Name</th>
+                                    <th className="px-4 py-3">Email</th>
+                                    <th className="px-4 py-3">Phone</th>
+                                    <th className="px-24 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {RecruitersList.filter(
+                                    (recruiter) => recruiter.type === "Restricted"
+                                ).map((recruiter, id) => (
+                                    <tr
+                                        key={id}
+                                        className="text-gray-700 hover:bg-gray-50 border-b text-sm"
+                                    >
+                                        <td className="px-4 py-3">
+                                            <input type="checkbox" />
+                                        </td>
+                                        <td className="px-2 py-3 flex items-left gap-3">
+                                            <div className="w-8 h-8 text-white flex justify-center items-center rounded-full">
+                                                <Image
+                                                    src={recruiter.logo}
+                                                    width={35}
+                                                    height={35}
+                                                    alt="logo"
+                                                />
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-3 text-black font-semibold">
+                                            {recruiter.name}
+                                        </td>
+                                        <td className="px-4 py-3 text-black font-semibold">
+                                            {recruiter.email}
+                                        </td>
+                                        <td className="px-4 py-3 text-black font-semibold">
+                                            {recruiter.phone}
+                                        </td>
+                                        <td className="px-4 py-3 flex gap-2 justify-end">
+                                            <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
+                                                <span className="mr-2">
+                                                    <BsFillEyeFill size={15} />
+                                                </span>
+                                                Unrestricted
+                                            </button>
+                                            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+                                                <span className="mr-2">
+                                                    <RiDeleteBinFill size={20} />
+                                                </span>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div> */}
 
                     {/* Pagination */}
                     {/* <div className="flex justify-center mt-4">
-                <nav className="flex gap-2">
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    &lt;
-                  </button>
-                  <button className="px-3 py-2 bg-blue-700 text-white rounded-lg">
-                    1
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    2
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    3
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    ...
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    15
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    &gt;
-                  </button>
-                </nav>
-              </div> */}
+                        <nav className="flex gap-2">
+                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                &lt;
+                            </button>
+                            <button className="px-3 py-2 bg-blue-700 text-white rounded-lg">
+                                1
+                            </button>
+                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                2
+                            </button>
+                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                3
+                            </button>
+                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                ...
+                            </button>
+                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                15
+                            </button>
+                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                &gt;
+                            </button>
+                        </nav>
+                    </div> */}
                 </>
             )}
         </div>

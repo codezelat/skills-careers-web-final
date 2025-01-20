@@ -6,12 +6,18 @@ export async function GET(req) {
   let client;
   try {
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get("userId");
+    const userId = searchParams.get("userId");
+    const _id = searchParams.get("id");
 
     // Validate ID format
-    if (!id || !ObjectId.isValid(id)) {
+    let query = {};
+    if (_id && ObjectId.isValid(_id)) {
+      query._id = new ObjectId(_id);
+    } else if (userId && ObjectId.isValid(userId)) {
+      query.userId = new ObjectId(userId);
+    } else {
       return NextResponse.json(
-        { message: "Invalid job ID format" },
+        { message: "Invalid or missing ID format" },
         { status: 400 }
       );
     }
@@ -21,7 +27,7 @@ export async function GET(req) {
 
     const recruiter = await db
       .collection("recruiters")
-      .findOne({ userId: new ObjectId(id) });
+      .findOne(query);
 
     if (!recruiter) {
       return NextResponse.json({ message: "Job not found" }, { status: 404 });
