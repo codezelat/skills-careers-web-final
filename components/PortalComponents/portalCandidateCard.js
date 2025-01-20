@@ -1,28 +1,54 @@
-import RecruiterProfile from "@/app/admindashboard/recruiters/RecruiterProfile";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 
-export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
-    const { recruiterName, email, contactNumber, logo } = recruiter;
-    const [showRecruiter, setShowRecruiter] = useState(false);
+export default function PortalCandidateCard(props, isSelected, onSelect) {
+
+    const {
+        _id,
+        firstName,
+        lastName,
+        email,
+        contactNumber,
+        position,
+        personalProfile,
+        dob,
+        nationality,
+        maritalStatus,
+        languages,
+        religion,
+        address,
+        ethnicity,
+        experience,
+        education,
+        licensesCertifications,
+        softSkills,
+        professionalExpertise,
+        profileImage,
+    } = props.jobseeker;
+
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleViewJobSeeker = () => {
+        props.onViewJobSeeker?.();
+    };
+
     const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this recruiter?")) {
+        if (window.confirm("Are you sure you want to delete this jobseeker?")) {
             try {
                 setIsDeleting(true);
-                const response = await fetch(`/api/recruiter/delete?id=${_id}`, {
+                const response = await fetch(`/api/jobseekerdetails/delete?id=${_id}`, {
                     method: "DELETE",
                 });
 
                 if (response.ok) {
-                    alert("Recruiter Deleted Successfully!!!");
+                    alert("Jobseeker Deleted Successfully!!!");
                 } else {
-                    alert("Failed to delete recruiter...");
+                    alert("Failed to delete jobseeker...");
                 }
             } catch (error) {
-                console.error("Error deleting recruiter:", error);
-                alert("Error deleting recruiter");
+                console.error("Error deleting Job:", error);
+                alert("Error deleting Jobseeker");
             } finally {
                 setIsDeleting(false);
             }
@@ -44,7 +70,7 @@ export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
                 {/* Recruiter Logo */}
                 <div className="">
                     <Image
-                        src={logo || "/images/default-image.jpg"}
+                        src={profileImage || "/images/default-image.jpg"}
                         alt="Recruiter Logo"
                         width={40}
                         height={40}
@@ -52,7 +78,7 @@ export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
                     />
                 </div>
                 {/* Recruiter Name */}
-                <div className="items-center">{recruiterName}</div>
+                <div className="items-center">{firstName}</div>
             </div>
             {/* Email */}
             <div className="px-4 py-3 font-semibold w-[24.25%] flex items-center">{email}</div>
@@ -81,13 +107,14 @@ export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
                 </button>
             </div>
             {/* Edit Profile Form Popup */}
-            {showRecruiter && (
+            {/* {showRecruiter && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
                     <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
                         <RecruiterProfile onClose={() => setShowRecruiter(false)} />
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
+
 }

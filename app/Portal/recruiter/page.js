@@ -8,6 +8,7 @@ import { BsChevronLeft, BsChevronRight, BsFillEyeFill, BsPlus } from "react-icon
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import RecruiterCard from "@/components/PortalComponents/portalRecruiterCard";
+import PortalLoading from "../loading";
 
 export default function Recruiters() {
   const [activeTab, setActiveTab] = useState("all");
@@ -86,6 +87,10 @@ export default function Recruiters() {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <PortalLoading />;
+  }
 
   return (
     <div className="min-h-screen bg-white rounded-lg p-5">
