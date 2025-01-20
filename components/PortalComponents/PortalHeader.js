@@ -31,16 +31,26 @@ export default function HeaderSection() {
                 {/* Right Section */}
                 <div className="flex items-center bg-white px-8 h-full rounded-2xl shadow-sm gap-4">
                     <div className="text-left">
-                        <p className="font-bold text-[#001571] text-[16px]">{session?.user?.name}</p>
+                        <p className="font-bold text-[#001571] text-[16px]">{session?.user?.firstName} {session?.user?.lastName}</p>
                         <p className="text-sm font-bold text-gray-400">{session?.user?.role}</p>
                     </div>
-                    <Image
-                        src="/dashboard/profile.png"
-                        alt="Admin Profile"
-                        width={50}
-                        height={50}
-                        className="rounded-md border-2 border-[#001571]"
-                    />
+                    {session?.user?.profileImage ? (
+                        <Image
+                            src={session?.user?.profileImage}
+                            alt="Admin Profile"
+                            width={50}
+                            height={50}
+                            className="rounded-md border-2 border-[#001571]"
+                        />
+                    ) : (
+                        <Image
+                            src="/default-avatar.jpg"
+                            alt="Admin Profile"
+                            width={50}
+                            height={50}
+                            className="rounded-md border-2 border-[#001571]"
+                        />
+                    )}
                 </div>
             </div>
         </>

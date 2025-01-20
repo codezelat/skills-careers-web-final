@@ -1,6 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
 import { ObjectId } from "mongodb";
-import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function PUT(req) {

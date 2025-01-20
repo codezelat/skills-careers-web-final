@@ -48,13 +48,13 @@ export default function RecruiterPostedJobs(props) {
             const fetchRecruiterDetails = async () => {
                 try {
                     const response = await fetch(
-                        `/api/recruiterdetails/get?id=${session.user.id}`
+                        `/api/recruiterdetails/get?userId=${session.user.id}`
                     );
                     if (response.ok) {
                         const data = await response.json();
                         setRecruiterDetails(data);
                     } else {
-                        console.error("Failed to fetch recruiter details");
+                        console.error("Failed to fetch recruiter details lol");
                     }
                 } catch (error) {
                     console.error("Error fetching recruiter details:", error);
@@ -87,9 +87,9 @@ export default function RecruiterPostedJobs(props) {
         }
     }, [recruiterDetails.id]);
 
-    if (loading) {
-        return <PortalLoading />;
-    }
+    // if (loading) {
+    //     return <PortalLoading />;
+    // }
 
     return (
         <div className="min-h-screen bg-white rounded-3xl p-5">

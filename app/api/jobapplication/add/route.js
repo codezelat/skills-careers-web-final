@@ -104,15 +104,6 @@ export async function POST(req) {
       appliedAt: new Date(),
     });
 
-    if (result.insertedId) {
-      await db
-        .collection("jobapplication")
-        .updateOne(
-          { _id: result.insertedId },
-          { $set: { jobapplicationId: new ObjectId(result.insertedId) } }
-        );
-    }
-
     revalidatePath("/dashboard");
 
     return NextResponse.json(
@@ -128,4 +119,4 @@ export async function POST(req) {
   } finally {
     await client.close();
   }
-} 
+}

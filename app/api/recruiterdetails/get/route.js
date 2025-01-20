@@ -6,7 +6,7 @@ export async function GET(req) {
   let client;
   try {
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+    const id = searchParams.get("userId");
 
     // Validate ID format
     if (!id || !ObjectId.isValid(id)) {
@@ -21,7 +21,7 @@ export async function GET(req) {
 
     const recruiter = await db
       .collection("recruiters")
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ userId: new ObjectId(id) });
 
     if (!recruiter) {
       return NextResponse.json({ message: "Job not found" }, { status: 404 });
@@ -30,18 +30,21 @@ export async function GET(req) {
     return NextResponse.json({
       id: recruiter._id.toString(),
       recruiterName: recruiter.recruiterName,
-      employeeRange: recruiter.employeeRange,
       email: recruiter.email,
+      employeeRange: recruiter.employeeRange,
       contactNumber: recruiter.contactNumber,
-      website: recruiter.website,
-      companyDescription: recruiter.companyDescription,
-      industry: recruiter.industry,
-      location: recruiter.location,
-      logo: recruiter.logo,
-      facebook: recruiter.facebook,
-      instagram: recruiter.instagram,
-      linkedin: recruiter.linkedin,
-      x: recruiter.x,
+      userId: recruiter.userId.toString(),
+      createdAt: recruiter.createdAt,
+      logo: recruiter.logo
+      // website: recruiter.website,
+      // companyDescription: recruiter.companyDescription,
+      // industry: recruiter.industry,
+      // location: recruiter.location,
+      // logo: recruiter.logo,
+      // facebook: recruiter.facebook,
+      // instagram: recruiter.instagram,
+      // linkedin: recruiter.linkedin,
+      // x: recruiter.x,
     });
   } catch (error) {
     console.error("Recruiter fetch error:", error);

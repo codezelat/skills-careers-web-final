@@ -18,19 +18,14 @@ export const authOptions = {
     CredentialsProvider({
       async authorize(credentials) {
         const client = await connectToDatabase();
-        const jobSeekerCollection = client.db().collection("jobseekers");
-        const recruiterCollection = client.db().collection("recruiters");
-        const adminCollection = client.db().collection("admins");
+        const userCollection = client.db().collection("users");
 
         // Check if user exists in jobseekers collection
-        let user = await jobSeekerCollection.findOne({
+        let user = await userCollection.findOne({
           email: credentials.email,
         });
 
         if (user) {
-          // Concatenate firstname and lastname to create the full name
-          const fullName = user.firstName + " " + user.lastName;
-
           // Verify password for jobseeker
           const isValid = await verifyPassword(
             credentials.password,
@@ -43,60 +38,11 @@ export const authOptions = {
           client.close();
           return {
             id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
             email: user.email,
-            name: fullName,
-            role: "jobseeker",
-          };
-        }
-
-        // Check if user exists in recruiters collection
-        user = await recruiterCollection.findOne({
-          email: credentials.email,
-        });
-
-        if (user) {
-          // Verify password for recruiter
-          const isValid = await verifyPassword(
-            credentials.password,
-            user.password
-          );
-          if (!isValid) {
-            client.close();
-            throw new Error("Could not log you in!");
-          }
-          client.close();
-          return {
-            id: user._id,
-            email: user.email,
-            name: user.recruiterName,
-            role: "recruiter",
-          };
-        }
-
-        // Check if user exists in admins collection
-        user = await adminCollection.findOne({
-          email: credentials.email,
-        });
-
-        if (user) {
-          // Concatenate firstname and lastname to create the full name
-          const fullName = user.firstName + " " + user.lastName;
-
-          // Verify password for recruiter
-          const isValid = await verifyPassword(
-            credentials.password,
-            user.password
-          );
-          if (!isValid) {
-            client.close();
-            throw new Error("Could not log you in!");
-          }
-          client.close();
-          return {
-            id: user._id,
-            email: user.email,
-            name: fullName,
-            role: "admin",
+            role: user.role,
+            profileImage: user.profileImage
           };
         }
 
@@ -133,42 +79,32 @@ export const authOptions = {
           const db = client.db();
 
           // Check if user exists in jobseekers collection
-          const existingUser = await db
-            .collection("jobseekers")
-            .findOne({ email });
+          const existingUser = await db.collection("users").findOne({ email });
 
           if (existingUser) {
             user.id = existingUser._id;
-            user.role = "jobseeker";
+            user.firstName = existingUser.firstName;
+            user.lastName = existingUser.lastName;
+            user.email = existingUser.email;
+            user.role = existingUser.role;
+            user.role = existingUser.profileImage;
+
             client.close();
             return true; // Allow sign-in
           }
 
-          // If user doesn't exist, create new jobseeker profile
-          await db.collection("jobseekers").insertOne({
-            email,
-            firstName: user.name?.split(" ")[0] || "",
-            lastName: user.name?.split(" ")[1] || "",
-            profileImage: user.image || "",
-            contactNumber: "",
-            position: "",
-            personalProfile: "",
-            dob: "",
-            nationality: "",
-            maritalStatus: "",
-            languages: "",
-            religion: "",
-            address: "",
-            ethnicity: "",
-            experience: "",
-            education: "",
-            licensesCertifications: "",
-            softSkills: "",
-            professionalExpertise: "",
-            password: null,
-          });
+          // If user doesn't exist, redirect to signup
+          if (!existingUser) {
+            alert("Not Account Found, Please Sign Up ...");
+          }
+          // await db.collection("jobseekers").insertOne({
+          //   email,
+          //   firstName: user.name?.split(" ")[0] || "",
+          //   lastName: user.name?.split(" ")[1] || "",
+          //   profileImage: user.image || "",
+          //   password: null,
+          // });
 
-          user.role = "jobseeker";
           client.close();
           return true;
         } catch (error) {
@@ -182,9 +118,11 @@ export const authOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
-        session.user.role = token.role || "guest";
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
         session.user.email = token.email;
-        session.user.name = token.name;
+        session.user.role = token.role || "guest";
+        session.user.profileImage = token.profileImage;
       }
       return session;
     },
@@ -192,9 +130,11 @@ export const authOptions = {
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role || "guest";
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
         token.email = user.email;
-        token.name = user.name;
+        token.role = user.role || "guest";
+        token.profileImage = user.profileImage;
       }
       return token;
     },

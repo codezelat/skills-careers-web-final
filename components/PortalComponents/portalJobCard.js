@@ -29,20 +29,20 @@ function JobCard(props) {
 
     useEffect(() => {
         const fetchApplicationCount = async () => {
-            try {
-                const response = await fetch(
-                    `/api/applications?jobId=${_id}&recruiterId=${recruiterId}`
-                );
-                if (response.ok) {
-                    const data = await response.json();
-                    setApplicationCount(data.count);
-                }
-            } catch (error) {
-                console.error("Error fetching application count:", error);
+          try {
+            const response = await fetch(
+              `/api/jobapplication/get?jobId=${_id}&recruiterId=${recruiterId}`
+            );
+            if (response.ok) {
+              const data = await response.json();
+              setApplicationCount(data.count);
             }
+          } catch (error) {
+            console.error("Error fetching application count:", error);
+          }
         };
         fetchApplicationCount();
-    }, [_id, recruiterId]);
+      }, [_id, recruiterId]);
 
     useEffect(() => {
         if (recruiterId) {
