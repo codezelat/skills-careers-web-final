@@ -29,7 +29,7 @@ function ViewPressrelease({ pressrelease, onClose }) {
             >
               <div className="flex items-center gap-2">
                 <Image
-                  src="/images/editblue.png"
+                  src="/images/miyuri_img/editblue.png"
                   alt="arrow"
                   width={50}
                   height={16}
@@ -49,7 +49,7 @@ function ViewPressrelease({ pressrelease, onClose }) {
             >
               <div className="flex items-center gap-2">
                 <Image
-                  src="/images/deleteblue.png"
+                  src="/images/miyuri_img/deleteblue.png"
                   alt="delete"
                   width={50}
                   height={20}

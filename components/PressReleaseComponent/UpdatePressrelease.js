@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { FaTimes } from "react-icons/fa";
+
 
 function UpdatePressrelease({ pressrelease, onClose }) {
   const [pressreleaseDetails, setPressreleaseDetails] = useState({
@@ -22,7 +24,7 @@ function UpdatePressrelease({ pressrelease, onClose }) {
     setPressreleaseDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -93,10 +95,11 @@ function UpdatePressrelease({ pressrelease, onClose }) {
             onClick={onClose}
             className="text-gray-500 hover:text-red-500 focus:outline-none"
           >
-            ✕
+            <FaTimes size={24} />
           </button>
         </div>
         <div className="border-t-2 border-gray-200 mb-4" />
+
 
       <form className="space-y-6" onSubmit={submitHandler}>
         <div>
@@ -177,11 +180,24 @@ function UpdatePressrelease({ pressrelease, onClose }) {
       
                 <div className="border-t-2 border-gray-200 mb-4" />
       
-        <div>
-          <button className="w-full px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors">
-            {isSubmitting ? "Updating..." : "Update Press Release"}
-          </button>
-        </div>
+                <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+            >
+              <div className="flex items-center space-x-5">
+              {isSubmitting ? "Updating..." : "Update Press Release"}
+              <Image
+                  src="/images/miyuri_img/whitetick.png"
+                  alt="tick"
+                  width={20}
+                  height={10}
+                  className="ml-3"
+
+                />
+              </div>
+            </button>
+          </div>
       </form>
     </div>
     </div>

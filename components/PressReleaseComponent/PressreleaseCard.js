@@ -26,7 +26,7 @@ function PressreleaseCard({ pressrelease, onViewPressrelease }) {
         <div className="absolute top-2 right-2 flex space-x-2">
           <button className=" rounded-full shadow-md">
             <Image
-              src="/images/editiconwhite.png"
+              src="/images/miyuri_img/editiconwhite.png"
               alt="Edit Icon"
               width={30}
               height={16}
@@ -34,7 +34,7 @@ function PressreleaseCard({ pressrelease, onViewPressrelease }) {
           </button>
           <button className="p-2 bg-white rounded-full shadow-md">
             <Image
-              src="/images/trashblue.png"
+              src="/images/miyuri_img/trashblue.png"
               alt="Delete Icon"
               width={16}
               height={16}
