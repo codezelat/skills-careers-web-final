@@ -208,7 +208,6 @@ function JobCard(props) {
                         </>
                     )}
 
-
                     {/* For Recruiter */}
                     {session?.user?.role === "recruiter" && (
                         <>
