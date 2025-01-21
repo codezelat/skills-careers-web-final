@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function AllRecruiterData({ recruiter, isSelected, onSelect }) {
+export default function RestrictedRecruitersData({ recruiter, isSelected, onSelect }) {
   const { recruiterName, email, contactNumber, logo } = recruiter;
   const [showRecruiter, setShowRecruiter] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -62,7 +62,6 @@ export default function AllRecruiterData({ recruiter, isSelected, onSelect }) {
       <div className="w-1/3 flex justify-end gap-2">
         <button
           className="bg-[#001571] text-white px-5 py-2 rounded-lg text-sm flex items-center space-x-2"
-          onClick={() => setShowRecruiter(true)}
         >
           <Image
             src="/images/miyuri_img/edit.png"
@@ -70,7 +69,7 @@ export default function AllRecruiterData({ recruiter, isSelected, onSelect }) {
             width={20}
             height={20}
           />
-          <span>Edit Account</span>
+          <span>Unrestricted</span>
         </button>
         <button
           className="bg-red-500 text-white px-5 py-2 rounded-lg text-sm flex items-center space-x-2"
@@ -78,23 +77,15 @@ export default function AllRecruiterData({ recruiter, isSelected, onSelect }) {
           onClick={handleDelete}
         >
           <Image
-            src="/images/miyuri_img/eye-slash.png"
+            src="/images/miyuri_img/trash.png"
             alt="Restrict"
             width={20}
             height={20}
             className="mr-2"
           />
-          <span>Restrict</span>
+          {isDeleting ? "Deleting..." : "Delete"}
         </button>
       </div>
-      {/* Edit Profile Form Popup */}
-      {showRecruiter && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
-            <RecruiterProfile onClose={() => setShowRecruiter(false)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
