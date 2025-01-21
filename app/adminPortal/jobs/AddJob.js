@@ -1,5 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import jobCategories from "../../../jobCategories.json";
+import jobExperiences from "../../../jobExperiences.json";
 import { PiCheckCircle } from "react-icons/pi";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaRegCircle, FaRegCircleDot } from "react-icons/fa6";
@@ -8,10 +10,14 @@ async function createJob(
   jobTitle,
   recruiterName,
   recruiterEmail,
+  jobCategory,
   location,
+  salaryRs,
+  salaryCents,
   jobTypes,
   jobDescription,
-  keyResponsibilities
+  keyResponsibilities,
+  jobExperience
 ) {
   const response = await fetch("/api/job/add/admin", {
     method: "POST",
@@ -19,10 +25,14 @@ async function createJob(
       jobTitle,
       recruiterName,
       recruiterEmail,
+      jobCategory,
       location,
+      salaryRs,
+      salaryCents,
       jobTypes,
       jobDescription,
       keyResponsibilities,
+      jobExperience,
     }),
     headers: {
       "Content-Type": "application/json",
@@ -42,22 +52,25 @@ function AddJob({ onClose }) {
   const [jobTitle, setJobTitle] = useState("");
   const [recruiterName, setRecruiterName] = useState("");
   const [recruiterEmail, setRecruiterEmail] = useState("");
+  const [jobCategory, setJobCategory] = useState("");
   const [location, setLocation] = useState("");
+  const [salaryRs, setSalaryRs] = useState("");
+  const [salaryCents, setSalaryCents] = useState("00");
   const [jobTypes, setJobTypes] = useState([]);
   const [jobDescription, setJobDescription] = useState("");
   const [keyResponsibilities, setKeyResponsibilities] = useState("");
+  const [jobExperience, setJobExperience] = useState("No Prior Experience");
 
   const [emailSuggestions, setEmailSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selected, setSelected] = useState([]); // Define the selected state
+  const [selected, setSelected] = useState([]);
 
-  // Function to fetch recruiters based on email search
   const fetchRecruiters = async (searchTerm) => {
     if (searchTerm.length >= 3) {
       setLoading(true);
       try {
         const response = await fetch(
-          `/api/recruiterdetails/search?query=${encodeURIComponent(searchTerm)}`
+          `/api/recruiter/search?query=${encodeURIComponent(searchTerm)}`
         );
 
         if (!response.ok) {
@@ -107,14 +120,6 @@ function AddJob({ onClose }) {
     );
   };
 
-  const handleSelect = (label) => {
-    setSelected((prevSelected) =>
-      prevSelected.includes(label)
-        ? prevSelected.filter((item) => item !== label)
-        : [...prevSelected, label]
-    );
-  };
-
   async function submitHandler(event) {
     event.preventDefault();
 
@@ -123,26 +128,18 @@ function AddJob({ onClose }) {
         jobTitle,
         recruiterName,
         recruiterEmail,
+        jobCategory,
         location,
+        salaryRs,
+        salaryCents,
         jobTypes,
         jobDescription,
-        keyResponsibilities
+        keyResponsibilities,
+        jobExperience
       );
       console.log(result);
       alert(result.message);
-
-      setJobTitle("");
-      setRecruiterName("");
-      setRecruiterEmail("");
-      setLocation("");
-      setJobTypes([]);
-      setJobDescription("");
-      setKeyResponsibilities("");
-      setSelected([]); // Reset selected state
-
       onClose();
-
-      window.location.reload();
     } catch (error) {
       console.log(error.message);
       alert(error.message);
@@ -153,7 +150,9 @@ function AddJob({ onClose }) {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white w-full max-w-4xl h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-2xl font-semibold text-[#001571]">Add Job Posts</h4>
+          <h4 className="text-2xl font-semibold text-[#001571]">
+            Add Job Posts
+          </h4>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-red-500 focus:outline-none"
@@ -164,22 +163,22 @@ function AddJob({ onClose }) {
         <div className="border-2 border-gray-200 mb-4" />
 
         <form className="space-y-6" onSubmit={submitHandler}>
-<div>
-              <label
-                htmlFor="recruiteremail"
-                className="block text-sm font-semibold text-[#001571]"
-              >
-                Recruiter Email
-              </label>
-              <input
-                type="email"
-                id="recruiteremail"
-                value={recruiterEmail}
-                onChange={handleEmailChange}
-                placeholder="Start typing recruiter email..."
-                className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
-              />
-{loading && <div className="text-sm text-gray-500">Loading...</div>}
+          <div>
+            <label
+              htmlFor="recruiteremail"
+              className="block text-sm font-semibold text-[#001571]"
+            >
+              Recruiter Email
+            </label>
+            <input
+              type="email"
+              id="recruiteremail"
+              value={recruiterEmail}
+              onChange={handleEmailChange}
+              placeholder="Start typing recruiter email..."
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+            {loading && <div className="text-sm text-gray-500">Loading...</div>}
             {emailSuggestions.length > 0 && (
               <ul className="absolute z-10 w-96 border border-gray-300 rounded shadow-lg bg-white max-h-48 overflow-auto">
                 {emailSuggestions.map((recruiter, index) => (
@@ -196,9 +195,9 @@ function AddJob({ onClose }) {
                 ))}
               </ul>
             )}
-            </div>
+          </div>
           <div>
-            <label className="block text-sm font-semibold text-[#001571]">
+            <label htmlFor="jobtitle" className="block text-sm font-semibold text-[#001571]">
               Job Title
             </label>
             <input
@@ -211,7 +210,7 @@ function AddJob({ onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#001571]">
+            <label htmlFor="recruitername" className="block text-sm font-semibold text-[#001571]">
               Recruiter Name
             </label>
             <input
@@ -223,7 +222,27 @@ function AddJob({ onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#001571]">
+            <label htmlFor="recruitername" className="block text-sm font-semibold text-[#001571]">
+              Job Category
+            </label>
+            <select
+              type="text"
+              name="jobCategory"
+              required
+              value={jobCategory}
+              onChange={(e) => setJobCategory(e.target.value)}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            >
+              <option value="">--Select Category--</option>
+              {jobCategories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="recruitername" className="block text-sm font-semibold text-[#001571]">
               Location
             </label>
             <input
@@ -234,6 +253,31 @@ function AddJob({ onClose }) {
               onChange={(e) => setLocation(e.target.value)}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
+          </div>
+          <div>
+            <label htmlFor="recruitername" className="block text-sm font-semibold text-[#001571]">
+              Salary {"(If Not Apllicable Leave Empty)"}
+            </label>
+            <div className="flex gap-1 items-end mb-4 mt-2">
+              <label className="block text-sm font-semibold text-[#001571]">
+                LKR
+              </label>
+              <input
+                type="text"
+                name="salaryRs"
+                value={salaryRs}
+                onChange={(e) => setSalaryRs(e.target.value)}
+                className="px-2 py-1 w-full border-solid border border-[#B0B6D3] outline-none rounded"
+              />
+              <label className="text-sm font-bold text-black mb-1">.</label>
+              <input
+                type="text"
+                name="salaryCents"
+                value={salaryCents}
+                onChange={(e) => setSalaryCents(e.target.value)}
+                className="px-2 py-1 w-14 text-center border-solid border border-[#B0B6D3] outline-none rounded"
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <h2 className="text-sm font-bold text-[#001571] pb-2">Job Types</h2>
@@ -270,12 +314,13 @@ function AddJob({ onClose }) {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#001571]">
+            <label htmlFor="jobdescription" className="block text-sm font-semibold text-[#001571]">
               Job Description
             </label>
             <textarea
               type="text"
               id="jobdescription"
+              rows={5}
               required
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
@@ -283,19 +328,49 @@ function AddJob({ onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#001571]">
-              Key Responsibilities
+            <label htmlFor="keyResponsibilities" className="block text-sm font-semibold text-[#001571]">
+            Key Responsibilities
             </label>
             <textarea
-              type="text"
-              id="keyresponsibilities"
-              required
-              value={keyResponsibilities}
-              onChange={(e) => setKeyResponsibilities(e.target.value)}
+              name="keyResponsibilities"
+              rows="5"
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
           </div>
           <div>
+            <label htmlFor="jobExperience" className="block text-sm font-semibold text-[#001571]">
+              Experience
+            </label>
+           <select
+            type="text"
+            name="jobExperience"
+            required
+            value={jobExperience}
+            onChange={(e) => setJobExperience(e.target.value)}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            >
+             {jobExperiences.map((experience) => (
+              <option key={experience} value={experience}>
+                {experience}
+              </option>
+            ))}
+          </select>
+          </div>
+
+         {/* 
+
+         <div>
+            <label htmlFor="qualifications" className="block text-sm font-semibold text-[#001571]">
+              Required & Qualifications
+            </label>
+            <textarea
+              name="qualifications"
+              rows="10"
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+         
+         <div>
             <label className="block text-sm font-semibold text-[#001571]">
               Required & Qualifications
             </label>
@@ -314,7 +389,7 @@ function AddJob({ onClose }) {
               rows="10"
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
-          </div>
+          </div>*/}
           <div className="border-2 border-gray-200 mb-4" />
 
           <div className="flex justify-end">

@@ -13,9 +13,10 @@ function AdminNavBar({ activeSection, setActiveSection }) {
     {
       id: "jobseekers",
       label: "Job Seekers",
-      href: "/admindashboard/jobseekers",
+      href: "/adminPortal/jobseekers",
     },
     { id: "jobs", label: "Jobs", href: "/adminPortal/jobs" },
+    { id: "announcements", label: "Announcements", href: "/adminPortal/announcements" },
     { id: "settings", label: "Settings", href: "#" },
   ];
 

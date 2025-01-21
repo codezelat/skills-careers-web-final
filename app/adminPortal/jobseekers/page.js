@@ -6,8 +6,8 @@ import { useSession } from "next-auth/react";
 
 import JobseekerCard from "./JobseekerCard";
 import JobseekerProfile from "./JobseekerProfile";
-import AddJobseeker from "./AddJobseeker";
 import AdminNavBar from "@/app/admindashboard/AdminNav";
+import AddJobseeker from "./AddJobseeker";
 
 function AdminJobseekersPanel() {
   const router = useRouter();

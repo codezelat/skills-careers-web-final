@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { BsFillEyeFill } from "react-icons/bs";
 import { FaPenToSquare } from "react-icons/fa6";
 import { IoMdEyeOff } from "react-icons/io";
+import JobseekerEdit from "./JobseekerEdit";
+import { handleCloseForm, handleOpenForm } from "@/handlers";
 
 function JobseekerCard(props) {
   const {
@@ -31,9 +33,13 @@ function JobseekerCard(props) {
     profileImage,
   } = props.jobseeker;
 
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
   const handleViewJobSeeker = () => {
     props.onViewJobSeeker?.();
   };
+
+
 
   return (
       
@@ -46,7 +52,7 @@ function JobseekerCard(props) {
         </div>
         <div className="py-3 flex items-center w-[10%]">
           <div className="w-10 h-10 text-white flex justify-center items-center rounded-full m-1">
-            <Image src={profileImage} width={40} height={40} alt="logo" className="rounded-full" />
+            <Image src={profileImage|| "/default-profile.png"} width={40} height={40} alt="logo" className="rounded-full" />
           </div>
         </div>
         <div className="py-3 text-black font-semibold w-[20%] flex items-center justify-start pl-0">
@@ -59,14 +65,17 @@ function JobseekerCard(props) {
           {contactNumber}
         </div>
         <div className="py-3 flex gap-2 ml-auto justify-end w-[30%] px-3 items-center">
-          <Link href="./candidates/editProfile">
-            <button className="flex items-center bg-[#001571] text-white py-2 px-4 rounded-lg shadow hover:bg-blue-800 whitespace-nowrap">
+          
+            <button className="flex items-center bg-[#001571] text-white py-2 px-4 rounded-lg shadow hover:bg-blue-800 whitespace-nowrap" onClick={handleOpenForm(setIsFormVisible)}>
               <span className="mr-2">
                 <FaPenToSquare size={15} />
               </span>
               Edit Account
             </button>
-          </Link>
+            {isFormVisible && (
+                <JobseekerEdit onClose={handleCloseForm(setIsFormVisible)} />
+              )}
+          
           <button className="flex items-center bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 whitespace-nowrap">
             <span className="mr-2">
               <IoMdEyeOff size={20} />

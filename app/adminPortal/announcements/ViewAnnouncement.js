@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import { PiCheckCircle } from "react-icons/pi";
+import { IoCloseSharp } from "react-icons/io5";
 
 function ViewAnnouncement({ announcement, onClose }) {
   const [announcementDetails, setAnnouncementDetails] = useState({
@@ -47,59 +49,62 @@ function ViewAnnouncement({ announcement, onClose }) {
   };
 
   return (
-    <div className="absolute top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 h-[90vh] w-3/4 overflow-hidden overflow-y-auto bg-white shadow-2xl rounded-lg p-6 mb-6">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-xl font-bold">View Announcement</h2>
-
-        <button
-          onClick={onClose}
-          className="px-2 py-1 h-12 ml-auto border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
-        >
-          Close ✕
-        </button>
-      </div>
-
-      <form onSubmit={submitHandler}>
-        <div>
-          <p
-            htmlFor="announcementTitle"
-            className="text-base font-bold text-black mb-1"
+<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white w-full max-w-4xl h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-2xl font-semibold text-[#001571]">
+            Edit Annoucement
+          </h4>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-red-500 focus:outline-none"
           >
-            Announcement Title
-          </p>
-          <input
-            type="text"
-            name="announcementTitle"
-            required
-            value={announcementDetails.announcementTitle || ""}
-            onChange={handleInputChange}
-            className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-        </div>
-
-        <div>
-          <p
-            htmlFor="announcementDescription"
-            className="text-base font-bold text-black mb-1"
-          >
-            Job Description
-          </p>
-          <textarea
-            type="text"
-            name="announcementDescription"
-            required
-            value={announcementDetails.announcementDescription || ""}
-            onChange={handleInputChange}
-            className="px-2 py-1 h-56 w-full border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
-        </div>
-
-        <div>
-          <button className="w-full px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors">
-            {isSubmitting ? "Updating..." : "Update Announcement"}
+            <IoCloseSharp size={24} />
           </button>
         </div>
-      </form>
+        <div className="border-2 border-gray-200 mb-4" />
+
+        <form className="space-y-6" onSubmit={submitHandler}>
+          <div>
+            <label htmlFor="announcementTitle" className="block text-sm font-semibold text-[#001571]">
+              Annoucement Title
+            </label>
+            <input
+               type="text"
+               name="announcementTitle"
+               required
+               value={announcementDetails.announcementTitle || ""}
+               onChange={handleInputChange}
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div>
+            <label htmlFor="announcementDescription" className="block text-sm font-semibold text-[#001571]">
+            Annoucement Description
+            </label>
+            <textarea
+               type="text"
+               name="announcementDescription"
+               required
+               value={announcementDetails.announcementDescription || ""}
+               onChange={handleInputChange}
+              rows="5"
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+            />
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+            >
+              <div className="flex items-center space-x-3">
+              {isSubmitting ? "Updating..." : "Update"}
+                <PiCheckCircle width={20} height={10} className="ml-2"/>
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
