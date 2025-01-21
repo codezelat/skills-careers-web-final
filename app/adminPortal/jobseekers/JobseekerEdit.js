@@ -12,7 +12,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
   const { status } = useSession();
 
   const [jobSeekerDetails, setJobSeekerDetails] = useState({
-    id: "",
+    _id: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -41,9 +41,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
   }, [status, router]);
 
   useEffect(() => {
-    if (jobseeker) {
-      setJobSeekerDetails(jobseeker);
-    }
+    setJobSeekerDetails(jobseeker);
   }, [jobseeker]);
 
   const handleInputChange = (e) => {
@@ -73,12 +71,13 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
     }
   };
 
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-transparent bg-opacity-50">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-2xl font-semibold text-[#001571]">
-            Update {jobSeekerDetails.firstName} {jobSeekerDetails.lastName}
+          Update {jobSeekerDetails?.firstName} {jobSeekerDetails?.lastName}
           </h4>
           <button
             onClick={onClose}
@@ -100,7 +99,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="firstName"
-              value={jobSeekerDetails.firstName || ""}
+              value={jobSeekerDetails?.firstName || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -115,7 +114,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="lastName"
-              value={jobSeekerDetails.lastName || ""}
+              value={jobSeekerDetails?.lastName || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -132,7 +131,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
               <input
                 type="email"
                 name="email"
-                value={jobSeekerDetails.email || ""}
+                value={jobSeekerDetails?.email || ""}
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
               />
@@ -147,7 +146,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
               <input
                 type="text"
                 name="contactNumber"
-                value={jobSeekerDetails.contactNumber || ""}
+                value={jobSeekerDetails?.contactNumber || ""}
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
               />
@@ -164,7 +163,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="password"
               name="password"
-              value={jobSeekerDetails.password || ""}
+              value={jobSeekerDetails?.password || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -179,7 +178,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="password"
               name="confirmPassword"
-              value={jobSeekerDetails.confirmPassword || ""}
+              value={jobSeekerDetails?.confirmPassword || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -194,7 +193,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="position"
-              value={jobSeekerDetails.position || ""}
+              value={jobSeekerDetails?.position || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -209,7 +208,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="personalProfile"
-              value={jobSeekerDetails.personalProfile || ""}
+              value={jobSeekerDetails?.personalProfile || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -226,7 +225,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
               <input
                 type="date"
                 name="dob"
-                value={jobSeekerDetails.dob || ""}
+                value={jobSeekerDetails?.dob || ""}
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
               />
@@ -241,7 +240,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
               <input
                 type="text"
                 name="nationality"
-                value={jobSeekerDetails.nationality || ""}
+                value={jobSeekerDetails?.nationality || ""}
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
               />
@@ -258,7 +257,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="maritalStatus"
-              value={jobSeekerDetails.maritalStatus || ""}
+              value={jobSeekerDetails?.maritalStatus || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -275,7 +274,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
               <input
                 type="text"
                 name="languages"
-                value={jobSeekerDetails.languages || ""}
+                value={jobSeekerDetails?.languages || ""}
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
               />
@@ -290,7 +289,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
               <input
                 type="text"
                 name="religion"
-                value={jobSeekerDetails.religion || ""}
+                value={jobSeekerDetails?.religion || ""}
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
               />
@@ -307,7 +306,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="address"
-              value={jobSeekerDetails.address || ""}
+              value={jobSeekerDetails?.address || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -322,7 +321,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="ethnicity"
-              value={jobSeekerDetails.ethnicity || ""}
+              value={jobSeekerDetails?.ethnicity || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -337,7 +336,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="experience"
-              value={jobSeekerDetails.experience || ""}
+              value={jobSeekerDetails?.experience || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -352,7 +351,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="education"
-              value={jobSeekerDetails.education || ""}
+              value={jobSeekerDetails?.education || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -367,7 +366,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="licensesCertifications"
-              value={jobSeekerDetails.licensesCertifications || ""}
+              value={jobSeekerDetails?.licensesCertifications || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -382,7 +381,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="softSkills"
-              value={jobSeekerDetails.softSkills || ""}
+              value={jobSeekerDetails?.softSkills || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />
@@ -397,7 +396,7 @@ function JobseekerEdit({ jobseeker, Close, onClose }) {
             <input
               type="text"
               name="professionalExpertise"
-              value={jobSeekerDetails.professionalExpertise || ""}
+              value={jobSeekerDetails?.professionalExpertise || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
             />

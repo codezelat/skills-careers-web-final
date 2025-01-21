@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { PiCheckCircle } from "react-icons/pi";
 import { IoCloseSharp } from "react-icons/io5";
 
-function ViewAnnouncement({ announcement, onClose }) {
+function EditAnnouncement({ announcement, onClose }) {
   const [announcementDetails, setAnnouncementDetails] = useState({
     _id: "",
     announcementTitle: "",
@@ -108,4 +108,4 @@ function ViewAnnouncement({ announcement, onClose }) {
     </div>
   );
 }
-export default ViewAnnouncement;
+export default EditAnnouncement;

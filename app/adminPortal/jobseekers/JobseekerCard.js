@@ -52,7 +52,7 @@ function JobseekerCard(props) {
         </div>
         <div className="py-3 flex items-center w-[10%]">
           <div className="w-10 h-10 text-white flex justify-center items-center rounded-full m-1">
-            <Image src={profileImage|| "/default-profile.png"} width={40} height={40} alt="logo" className="rounded-full" />
+            <Image src={profileImage|| "/portal-dashboard/profile.png"} width={40} height={40} alt="logo" className="rounded-full" />
           </div>
         </div>
         <div className="py-3 text-black font-semibold w-[20%] flex items-center justify-start pl-0">

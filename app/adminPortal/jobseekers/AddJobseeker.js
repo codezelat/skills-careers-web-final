@@ -3,7 +3,7 @@ import { useState } from "react";
 import { PiCheckCircle } from "react-icons/pi";
 import { IoCloseSharp } from "react-icons/io5";
 
-async function admincreateJobseeker(
+async function createJobseeker(
   firstName,
   lastName,
   email,
@@ -115,7 +115,7 @@ function AddJobseeker({ onClose }) {
     setIsLoading(true);
 
     try {
-      const result = await admincreateJobseeker(
+      const result = await createJobseeker(
         firstName,
         lastName,
         email,

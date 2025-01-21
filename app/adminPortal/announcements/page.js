@@ -4,11 +4,11 @@ import { useSession } from "next-auth/react";
 import { handleCloseForm, handleOpenForm } from "@/handlers";
 import { useRouter } from "next/navigation";
 
-import AddAnnouncement from "./AddAnnouncement";
-import AnnouncementCard from "./AnnouncementCard";
-import ViewAnnouncement from "./ViewAnnouncement";
 import DeleteConfirmation from "./DeleteConfirmation";
 import AdminNavBar from "@/app/admindashboard/AdminNav";
+import AddAnnouncement from "@/components/adminPortal/annoucement/AddAnnouncement";
+import EditAnnouncement from "@/components/adminPortal/annoucement/EditAnnouncement";
+import AnnouncementCard from "@/components/adminPortal/annoucement/AnnouncementCard";
 
 function Announcements() {
   const router = useRouter();
@@ -121,7 +121,7 @@ function Announcements() {
             </div>
 
             {selectedAnnouncement && (
-              <ViewAnnouncement
+              <EditAnnouncement
                 announcement={selectedAnnouncement}
                 onClose={handleCloseAnnouncement}
               />
