@@ -208,7 +208,7 @@ export default function SideMenuSection() {
                         </Link>
 
                         {/* Help & contact */}
-                        <Link href="/adminPortal/helpContact">
+                        <Link href="/Portal/inquiries">
                             <button
                                 onClick={() => setActiveButton("Help & Contact")}
                                 className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Help & Contact"
