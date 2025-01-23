@@ -147,7 +147,7 @@ export default function SideMenuSection() {
                         )}
 
                         {/* Annoucements */}
-                        <Link href="/adminPortal/annoucement">
+                        <Link href="/Portal/annoucements">
                             <button
                                 onClick={() => setActiveButton("Announcements")}
                                 className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Announcements"
