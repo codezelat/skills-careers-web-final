@@ -28,20 +28,7 @@ export async function GET(req) {
     }
 
     return NextResponse.json({
-      id: recruiter._id.toString(),
-      recruiterName: recruiter.recruiterName,
-      employeeRange: recruiter.employeeRange,
-      email: recruiter.email,
-      contactNumber: recruiter.contactNumber,
-      website: recruiter.website,
-      companyDescription: recruiter.companyDescription,
-      industry: recruiter.industry,
-      location: recruiter.location,
-      logo: recruiter.logo,
-      facebook: recruiter.facebook,
-      instagram: recruiter.instagram,
-      linkedin: recruiter.linkedin,
-      x: recruiter.x,
+      recruiter
     });
   } catch (error) {
     console.error("Recruiter fetch error:", error);

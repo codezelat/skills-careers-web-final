@@ -3,18 +3,18 @@ import { useEffect, useState } from "react";
 
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
+import Link from "next/link";
 
-function JobCard(props) {
+function JobCard({job, onJobStatusChanged, onJobDeleted, onViewJob }) {
   const [applicationCount, setApplicationCount] = useState(0);
   const [recruiterDetails, setRecruiterDetails] = useState({
     email: "",
     recruiterName: "",
-    logo: "",
+    profileImage: "",
   });
-  const [isPublished, setIsPublished] = useState(
-    props.job.isPublished || false
-  );
+  const [isPublished, setIsPublished] = useState(job.isPublished || false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     _id,
@@ -24,18 +24,18 @@ function JobCard(props) {
     location,
     jobTypes,
     jobDescription,
-  } = props.job;
+  } = job;
 
   useEffect(() => {
     if (recruiterId) {
       const fetchRecruiterDetails = async (e) => {
         try {
           const response = await fetch(
-            `/api/recruiterdetails/get?id=${recruiterId}`
+            `/api/recruiter/get?id=${recruiterId}`
           );
           if (response.ok) {
             const data = await response.json();
-            setRecruiterDetails(data);
+            setRecruiterDetails(data.recruiter);
           } else {
             console.error("Failed to fetch recruiter details");
           }
@@ -52,7 +52,7 @@ function JobCard(props) {
     const fetchApplicationCount = async () => {
       try {
         const response = await fetch(
-          `/api/applications?jobId=${_id}&recruiterId=${recruiterId}`
+          `/api/jobapplication/get?jobId=${_id}&recruiterId=${recruiterId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -68,7 +68,7 @@ function JobCard(props) {
   const handlePublishToggle = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/job/${_id}/publish`, {
+      const response = await fetch(`/api/job/publish?id=${_id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +79,7 @@ function JobCard(props) {
       if (response.ok) {
         setIsPublished(!isPublished);
         // Notify parent component about the status change
-        props.onJobStatusChanged?.(_id, !isPublished);
+        onJobStatusChanged?.(_id, !isPublished);
       } else {
         alert("Failed to update job status");
       }
@@ -92,29 +92,29 @@ function JobCard(props) {
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this job?")) {
-      setIsLoading(true);
       try {
-        const response = await fetch(`/api/job/${_id}`, {
+        setIsDeleting(true);
+        const response = await fetch(`/api/job/delete?id=${_id}`, {
           method: "DELETE",
         });
 
         if (response.ok) {
-          // Notify parent component to refresh the jobs list
-          props.onJobDeleted?.(_id);
+          alert("Job Deleted Successfully!!!");
         } else {
-          alert("Failed to delete job");
+          alert("Failed to delete job...");
         }
       } catch (error) {
-        console.error("Error deleting job:", error);
-        alert("Error deleting job");
+        console.error("Error deleting Job:", error);
+        alert("Error deleting Job");
+      } finally {
+        setIsDeleting(false);
       }
-      setIsLoading(false);
     }
   };
 
   // In JobCard.js, modify the handleViewJob function:
   const handleViewJob = () => {
-    props.onViewJob?.();
+    onViewJob?.();
   };
 
   const date = new Date(createdAt).getDate();
@@ -147,6 +147,7 @@ function JobCard(props) {
           </div>
 
           {/* Other Columns - Equal Width */}
+          <Link href={`/adminPortal/jobs/${job._id}`} className="flex w-[71.25%]">
           <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
             {jobTitle}
           </div>
@@ -156,6 +157,7 @@ function JobCard(props) {
           <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
             {postedDate}
           </div>
+          </Link>
           <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[23.75%] items-center">
             <button
               onClick={handlePublishToggle}

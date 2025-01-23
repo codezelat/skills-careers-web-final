@@ -8,6 +8,9 @@ import JobCard from "./JobCard";
 import JoobProfile from "./JobProfile";
 import AddJob from "./AddJob";
 import AdminNavBar from "@/app/admindashboard/AdminNav";
+import Link from "next/link";
+import JobProfile from "./jobProfile/JobProfile";
+import JobPost from "@/components/adminPortal/jobs/jobPost";
 
 function AJobsPanel() {
   const router = useRouter();
@@ -138,6 +141,7 @@ function AJobsPanel() {
                 {filteredJobs.length > 0 ? (
                   filteredJobs
                     .map((job, index) => (
+                      
                       <JobCard
                         key={job._id}
                         job={job}
