@@ -1,5 +1,6 @@
 "use client"
 
+import AdminProfile from "@/components/PortalComponents/adminProfile";
 import CandidateProfile from "@/components/PortalComponents/candidateProfile";
 import RecruiterProfile from "@/components/PortalComponents/recruiterProfile";
 import { useSession } from "next-auth/react";
@@ -11,10 +12,13 @@ export default function MyProfiles() {
     return (
         <>
             {session?.user?.role === "jobseeker" && (
-                <CandidateProfile />
+                <CandidateProfile/>
             )}
             {session?.user?.role === "recruiter" && (
-                <RecruiterProfile />
+                <RecruiterProfile/>
+            )}
+            {session?.user?.role === "admin" && (
+                <AdminProfile/>
             )}
         </>
     );
