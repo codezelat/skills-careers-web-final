@@ -100,11 +100,11 @@ export default function Annoucements() {
 
     return (
         <>
-            <div className="min-h-screen bg-white rounded-lg p-5">
+            <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
 
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-xl font-bold text-[#001571]">Recruiters</h1>
+                    <h1 className="text-xl font-bold text-[#001571]">Annoucements</h1>
                     <button
                         className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
                         onClick={() => setShowApplicationForm(true)}
@@ -164,7 +164,7 @@ export default function Annoucements() {
                                 .reverse()
                         ) : (
                             <p className="text-lg text-center font-bold text-red-500 py-20">
-                                No jobs found.
+                                No Annoucements found.
                             </p>
                         )}
                     </div>

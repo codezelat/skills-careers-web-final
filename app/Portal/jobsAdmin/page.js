@@ -88,7 +88,7 @@ export default function Jobs() {
   }
 
   return (
-    <div className="min-h-screen bg-white rounded-lg p-5">
+    <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-bold text-[#001571]">Job Posts</h1>

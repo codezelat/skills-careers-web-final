@@ -147,7 +147,7 @@ export default function CandidateProfile() {
 
     return (
         <>
-            <div className="bg-white rounded-3xl p-6 ">
+            <div className="bg-white rounded-3xl py-5 px-7">
                 <h1 className="font-bold mb-16 text-[#001571]">My Profile</h1>
                 <div>
                     <div className="">
