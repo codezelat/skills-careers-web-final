@@ -68,7 +68,7 @@ export default function CredencialsForm({ onClose }) {
       formData.append("membership", recruiterDetails.membership);
 
       
-      const response = await fetch(`/api/recruiter/update?id=${_id}`, {
+      const response = await fetch(`/api/recruiter/update?id=${recruiterId}`, {
         method: "PUT",
         body: formData,
       });

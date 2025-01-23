@@ -4,14 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function RestrictedRecruitersData({ recruiter, isSelected, onSelect }) {
-  const { recruiterName, email, contactNumber, logo } = recruiter;
+  const { recruiterName, email, contactNumber, logo,recruiterId } = recruiter;
   const [showRecruiter, setShowRecruiter] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this recruiter?")) {
       try {
         setIsDeleting(true);
-        const response = await fetch(`/api/recruiter/delete?recruiterId=${_id}`, {
+        const response = await fetch(`/api/recruiter/delete?id=${_id}`, {
           method: "DELETE",
         });
 

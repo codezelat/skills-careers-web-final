@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import { handleCloseForm, handleOpenForm } from "@/handlers";
 import AddPressrelease from "./AddPressrelease";
 import PressreleaseCard from "../../../components/PressreleaseCard";
-import ViewPressrelease from "./ViewPressrelease";
-import PressReleasePage from "@/components/PressReleaseComponent/PressReleasePage";
 
 function PressReleases() {
   const router = useRouter();

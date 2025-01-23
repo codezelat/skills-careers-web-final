@@ -20,6 +20,7 @@ export default function EditProfileForm({recruiter, onClose }) {
     instagram: "",
     linkedin: "",
     x: "",
+    recruiterId:"",
   });
 
   // Handling input change
