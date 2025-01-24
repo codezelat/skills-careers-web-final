@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { IoAdd, IoSearchSharp } from "react-icons/io5";
 import { PiCheckCircle } from "react-icons/pi";
 import { RiDeleteBinFill } from "react-icons/ri";
-import { BsFillEyeFill, BsPlus } from "react-icons/bs";
+import { BsChevronLeft, BsChevronRight, BsFillEyeFill, BsPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import JobCard from "@/components/PortalComponents/portalJobCard";
@@ -86,6 +86,22 @@ export default function RecruiterPostedJobs(props) {
             fetchJobs();
         }
     }, [recruiterDetails.id]);
+
+    // pagination function
+    const [currentPage, setCurrentPage] = useState(1);
+    const recruitersPerPage = 6;
+
+    const totalPages = Math.ceil(jobs.length / recruitersPerPage);
+
+    const indexOfLastRecruiter = currentPage * recruitersPerPage;
+    const indexOfFirstRecruiter = indexOfLastRecruiter - recruitersPerPage;
+    const currentRecruiters = jobs.slice(indexOfFirstRecruiter, indexOfLastRecruiter);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
 
     if (loading) {
         return <PortalLoading />;
@@ -174,15 +190,15 @@ export default function RecruiterPostedJobs(props) {
                                     <th className="px-4 py-3 w-[3%]"></th>
                                     <th className="px-4 py-3 w-[24.25%]">Position</th>
                                     <th className="px-4 py-3 w-[24.25%]">Published Date</th>
-                                    <th className=" px-4 py-3 w-[24.25%]">Applications</th>
+                                    <th className="px-4 py-3 w-[24.25%]">Applications</th>
                                     <th className="px-4 py-3 w-[24.25%]">Actions</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
                     <div className="grid gap-4 grid-cols-1">
-                        {jobs.length > 0 ? (
-                            jobs
+                        {currentRecruiters.length > 0 ? (
+                            currentRecruiters
                                 .map((job, index) => (
                                     <JobCard
                                         key={index}
@@ -194,33 +210,6 @@ export default function RecruiterPostedJobs(props) {
                                 No jobs found.
                             </p>
                         )}
-                    </div>
-
-                    {/* Pagination */}
-                    <div className="flex justify-center mt-4">
-                        <nav className="flex gap-2">
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                &lt;
-                            </button>
-                            <button className="px-3 py-2 bg-blue-700 text-white rounded-lg">
-                                1
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                2
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                3
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                ...
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                15
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                &gt;
-                            </button>
-                        </nav>
                     </div>
                 </>
             ) : (
@@ -324,35 +313,37 @@ export default function RecruiterPostedJobs(props) {
                             </tbody>
                         </table>
                     </div> */}
-
-                    {/* Pagination */}
-                    {/* <div className="flex justify-center mt-4">
-                        <nav className="flex gap-2">
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                &lt;
-                            </button>
-                            <button className="px-3 py-2 bg-blue-700 text-white rounded-lg">
-                                1
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                2
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                3
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                ...
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                15
-                            </button>
-                            <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                                &gt;
-                            </button>
-                        </nav>
-                    </div> */}
                 </>
             )}
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-4">
+                <nav className="flex gap-2">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-[10px] py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
+                    >
+                        <BsChevronLeft size={15} />
+                    </button>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => handlePageChange(index + 1)}
+                            className={`px-4 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-blue-700 text-white' : 'bg-gray-200 hover:bg-gray-400'}`}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
+                    >
+                        <BsChevronRight size={15} />
+                    </button>
+                </nav>
+            </div>
         </div>
     );
 }

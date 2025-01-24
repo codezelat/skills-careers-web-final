@@ -102,6 +102,27 @@ export default function SideMenuSection() {
                             </button>
                         </Link>
 
+                        {/* Applications */}
+                        {session?.user?.role === "recruiter" && (
+                            <Link href="/Portal/applications">
+                                <button
+                                    onClick={() => setActiveButton("Applications")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Applications"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                                        }`}
+                                >
+                                    <img
+                                        src="/sidebar/pressrelease.png"
+                                        alt="Candidates"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Applications" ? "filter invert brightness-0" : ""
+                                            }`}
+                                    />
+                                    Applications
+                                </button>
+                            </Link>
+                        )}
+
                         {/* Analytics */}
                         {session?.user?.role === "admin" && (
                             <Link href="/adminPortal/analytics">

@@ -31,7 +31,7 @@ function JobCard(props) {
         const fetchApplicationCount = async () => {
           try {
             const response = await fetch(
-              `/api/jobapplication/get?jobId=${_id}&recruiterId=${recruiterId}`
+              `/api/jobapplication/get?recruiterId=${recruiterId}`
             );
             if (response.ok) {
               const data = await response.json();
@@ -70,7 +70,7 @@ function JobCard(props) {
         const fetchApplicationCount = async () => {
             try {
                 const response = await fetch(
-                    `/api/applications?jobId=${_id}&recruiterId=${recruiterId}`
+                    `/api/jobapplications/get?jobId=${_id}&recruiterId=${recruiterId}`
                 );
                 if (response.ok) {
                     const data = await response.json();
@@ -211,16 +211,16 @@ function JobCard(props) {
                     {/* For Recruiter */}
                     {session?.user?.role === "recruiter" && (
                         <>
-                            <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
                                 {jobTitle}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
                                 {postedDate}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[23.75%] flex items-center">
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
                                 {applicationCount}
                             </div>
-                            <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[23.75%] items-center">
+                            <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}

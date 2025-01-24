@@ -7,10 +7,17 @@ export async function GET(request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const jobId = searchParams.get("jobId");
+    // const jobId = searchParams.get("jobId");
     const recruiterId = searchParams.get("recruiterId");
 
-    if (!jobId || !recruiterId) {
+    // if (!jobId || !recruiterId) {
+    //   return NextResponse.json(
+    //     { error: "JobId and recruiterId are required" },
+    //     { status: 400 }
+    //   ); 
+    // }
+
+    if (!recruiterId) {
       return NextResponse.json(
         { error: "JobId and recruiterId are required" },
         { status: 400 }
@@ -20,7 +27,7 @@ export async function GET(request) {
     const db = client.db();
     const jobApplications = await db.collection("jobapplication")
       .find({
-        jobId: new ObjectId(jobId),
+        // jobId: new ObjectId(jobId),
         recruiterId: new ObjectId(recruiterId)
       })
       .toArray();
