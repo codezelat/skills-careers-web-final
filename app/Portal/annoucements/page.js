@@ -105,48 +105,58 @@ export default function Annoucements() {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-xl font-bold text-[#001571]">Annoucements</h1>
-                    <button
-                        className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
-                        onClick={() => setShowApplicationForm(true)}
-                    >
-                        <BsPlus size={25} className="mr-1" />Add New
-                    </button>
+
+                    {session?.user?.role === "admin" && (
+                        <button
+                            className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
+                            onClick={() => setShowApplicationForm(true)}
+                        >
+                            <BsPlus size={25} className="mr-1" />Add New
+                        </button>
+                    )}
+
                 </div>
 
                 <>
-                    {/* Action Buttons */}
-                    <div className="flex gap-4 mb-4 items-center bg-green">
-                        <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
-                            <span className="mr-2 flex items-center">
-                                <input
-                                    type="checkbox"
-                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                />
-                            </span>
-                            Select More
-                        </button>
+                    {session?.user?.role === "admin" && (
 
-                        <button className="flex bg-[#EC221F] text-white px-6 py-3 rounded-2xl shadow hover:bg-red-600">
-                            <span className="mr-2">
-                                <RiDeleteBinFill size={20} />
-                            </span>
-                            Delete
-                        </button>
-                    </div>
+                        <>
+                            {/* Action Buttons */}
+                            <div className="flex gap-4 mb-4 items-center bg-green">
+                                <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
+                                    <span className="mr-2 flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        />
+                                    </span>
+                                    Select More
+                                </button>
 
-                    {/* Table */}
-                    <div className="w-full overflow-x-auto">
-                        <table className="w-full border-collapse">
-                            <thead>
-                                <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                                    <th className="px-4 py-3 w-[3%]"></th>
-                                    <th className="px-4 py-3 w-[32.33%]">Title</th>
-                                    <th className="px-4 py-3 w-[32.33%]">Date Posted</th>
-                                    <th className="px-4 py-3 w-[32.33%]">Actions</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                                <button className="flex bg-[#EC221F] text-white px-6 py-3 rounded-2xl shadow hover:bg-red-600">
+                                    <span className="mr-2">
+                                        <RiDeleteBinFill size={20} />
+                                    </span>
+                                    Delete
+                                </button>
+                            </div>
+
+                            {/* table */}
+                            <div className="w-full overflow-x-auto">
+                                <table className="w-full border-collapse">
+                                    <thead>
+                                        <tr className="text-[#8A93BE] text-base font-semibold text-left">
+                                            <th className="px-4 py-3 w-[3%]"></th>
+                                            <th className="px-4 py-3 w-[32.33%]">Title</th>
+                                            <th className="px-4 py-3 w-[32.33%]">Date Posted</th>
+                                            <th className="px-4 py-3 w-[32.33%]">Actions</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </>
+                    )}
+
                     <div className="grid gap-4 grid-cols-1">
                         {currentAnnoucement.length > 0 ? (
                             currentAnnoucement.map((announcement, index) => (
