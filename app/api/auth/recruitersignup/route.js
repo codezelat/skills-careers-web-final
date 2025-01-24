@@ -1,30 +1,27 @@
 import { hashPassword } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
     const data = await req.json();
     const {
+      firstName,
+      lastName,
       recruiterName,
       employeeRange,
       email,
       contactNumber,
       password,
       confirmPassword,
-      website = "", // Default empty
-      companyDescription = "", // Default empty
-      industry = "", // Default empty
-      location = "",
-      logo = "",
-      facebook = "",
-      instagram = "",
-      linkedin = "",
-      x = "",
+      profileImage = "",
+      role = "recruiter",
     } = data;
 
-    // Validate required fields
     if (
+      !firstName ||
+      !lastName ||
       !recruiterName ||
       !employeeRange ||
       !email ||
@@ -38,10 +35,37 @@ export async function POST(req) {
       return NextResponse.json({ message: "Invalid input." }, { status: 422 });
     }
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       return NextResponse.json(
-        { message: "Password does not match" },
+        { message: "Password does not match." },
+        { status: 422 }
+      );
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json(
+        { message: "Password must be at least 8 characters long." },
+        { status: 422 }
+      );
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      return NextResponse.json(
+        { message: "Password must include at least one uppercase letter." },
+        { status: 422 }
+      );
+    }
+
+    if (!/[a-z]/.test(password)) {
+      return NextResponse.json(
+        { message: "Password must include at least one lowercase letter." },
+        { status: 422 }
+      );
+    }
+    
+    if (!/\d/.test(password)) {
+      return NextResponse.json(
+        { message: "Password must include at least one number." },
         { status: 422 }
       );
     }
@@ -50,11 +74,22 @@ export async function POST(req) {
     const client = await connectToDatabase();
     const db = client.db();
 
-    // Check if user already exists
-    const existingUser = await db.collection("recruiters").findOne({ email });
+    const existingUser = await db.collection("users").findOne({ email });
     if (existingUser) {
+      client.close();
       return NextResponse.json(
         { message: "User exists already!" },
+        { status: 422 }
+      );
+    }
+
+    const existingRecruiter = await db
+      .collection("recruiters")
+      .findOne({ email });
+    if (existingRecruiter) {
+      client.close();
+      return NextResponse.json(
+        { message: "Recruiter exists already!" },
         { status: 422 }
       );
     }
@@ -62,38 +97,48 @@ export async function POST(req) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Insert user into the database
-    const result = await db.collection("recruiters").insertOne({
-      recruiterName,
-      employeeRange,
-      email,
-      contactNumber,
-      password: hashedPassword,
-      website, // Add website field
-      companyDescription, // Add company description field
-      industry, // Add industry field
-      location, // Add industry field
-      logo,
-      createdAt: new Date(), // Save current date and time
-      facebook,
-      instagram,
-      linkedin,
-      x
-    });
-    
-    if (result.insertedId) {
-      await db
-        .collection("recruiters")
-        .updateOne(
-          { _id: result.insertedId },
-          { $set: { recruiterId: new ObjectId(result.insertedId) } }
+    const session = client.startSession();
+
+    try {
+      await session.withTransaction(async () => {
+        const userResult = await db.collection("users").insertOne(
+          {
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            profileImage,
+            role,
+            createdAt: new Date(),
+          },
+          { session }
         );
+
+        const recruiterResult = await db.collection("recruiters").insertOne(
+          {
+            recruiterName,
+            email,
+            employeeRange,
+            contactNumber,
+            userId: new ObjectId(userResult.insertedId),
+            createdAt: new Date(),
+          },
+          { session }
+        );
+      });
+
+      await session.endSession();
+      client.close();
+
+      return NextResponse.json(
+        { message: "User and recruiter created!" },
+        { status: 201 }
+      );
+    } catch (transactionError) {
+      await session.endSession();
+      client.close();
+      throw transactionError;
     }
-
-    // Close the database connection
-    client.close();
-
-    return NextResponse.json({ message: "User created!" }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },

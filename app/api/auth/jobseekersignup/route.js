@@ -1,6 +1,6 @@
-// app/api/auth/jobseekersignup/route.js
 import { hashPassword } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -13,21 +13,8 @@ export async function POST(req) {
       contactNumber,
       password,
       confirmPassword,
-      position = "",
-      personalProfile = "",
-      dob = "",
-      nationality = "",
-      maritalStatus = "",
-      languages = "",
-      religion = "",
-      address = "",
-      ethnicity = "",
-      experience = "",
-      education = "",
-      licensesCertifications = "",
-      softSkills = "",
-      professionalExpertise = "",
       profileImage = "",
+      role = "jobseeker",
     } = data;
 
     if (
@@ -37,16 +24,44 @@ export async function POST(req) {
       !email.includes("@") ||
       !contactNumber ||
       !password ||
-      password.trim().length < 7 ||
+      password.trim().length < 8 ||
       !confirmPassword ||
-      confirmPassword.trim().length < 7
+      confirmPassword.trim().length < 8
     ) {
       return NextResponse.json({ message: "Invalid input." }, { status: 422 });
     }
 
     if (password !== confirmPassword) {
       return NextResponse.json(
-        { message: "Password does not match" },
+        { message: "Password does not match." },
+        { status: 422 }
+      );
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json(
+        { message: "Password must be at least 8 characters long." },
+        { status: 422 }
+      );
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      return NextResponse.json(
+        { message: "Password must include at least one uppercase letter." },
+        { status: 422 }
+      );
+    }
+
+    if (!/[a-z]/.test(password)) {
+      return NextResponse.json(
+        { message: "Password must include at least one lowercase letter." },
+        { status: 422 }
+      );
+    }
+
+    if (!/\d/.test(password)) {
+      return NextResponse.json(
+        { message: "Password must include at least one number." },
         { status: 422 }
       );
     }
@@ -54,52 +69,66 @@ export async function POST(req) {
     const client = await connectToDatabase();
     const db = client.db();
 
-    const existingUser = await db.collection("jobseekers").findOne({ email });
+    const existingUser = await db.collection("users").findOne({ email });
+    const existingJobseeker = await db
+      .collection("jobseekers")
+      .findOne({ email });
 
     if (existingUser) {
       return NextResponse.json(
         { message: "User exists already!" },
         { status: 422 }
       );
-    } 
-
-    const hashedPassword = await hashPassword(password);
-    const result = await db.collection("jobseekers").insertOne({
-      firstName,
-      lastName,
-      email,
-      contactNumber,
-      password: hashedPassword,
-      position,
-      personalProfile,
-      dob,
-      nationality,
-      maritalStatus,
-      languages,
-      religion,
-      address,
-      ethnicity,
-      experience,
-      education,
-      licensesCertifications,
-      softSkills,
-      professionalExpertise,
-      profileImage,
-      createdAt: new Date(),
-    });
-
-    if (result.insertedId) {
-      await db
-        .collection("jobseekers")
-        .updateOne(
-          { _id: result.insertedId },
-          { $set: { jobseekerId: new ObjectId(result.insertedId) } }
-        );
     }
 
-    client.close();
+    if (existingJobseeker) {
+      return NextResponse.json(
+        { message: "User exists already!" },
+        { status: 422 }
+      );
+    }
 
-    return NextResponse.json({ message: "User created!" }, { status: 201 });
+    const hashedPassword = await hashPassword(password);
+
+    const session = client.startSession();
+
+    try {
+      await session.withTransaction(async () => {
+        const userResult = await db.collection("users").insertOne(
+          {
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            profileImage,
+            role,
+            createdAt: new Date(),
+          },
+          { session }
+        );
+
+        const jobseekerResult = await db.collection("jobseekers").insertOne(
+          {
+            email,
+            contactNumber,
+            userId: new ObjectId(userResult.insertedId),
+            createdAt: new Date(),
+          },
+          { session }
+        );
+      });
+
+      await session.endSession();
+      client.close();
+      return NextResponse.json(
+        { message: "User & Jobseeker created!" },
+        { status: 201 }
+      );
+    } catch (transactionError) {
+      await session.endSession();
+      client.close();
+      throw transactionError;
+    }
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
