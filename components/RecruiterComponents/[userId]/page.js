@@ -6,7 +6,7 @@ import RecruiterProfile from "@/app/admindashboard/recruiters/RecruiterProfile";
 
 export default function RecruiterDetailsPage() {
   const router = useRouter();
-  const { recruiterId } = router.query; // Use recruiterId instead of _id
+  const { userId } = router.query; // Use recruiterId instead of _id
   const [recruiterData, setRecruiterData] = useState(null);
 
   useEffect(() => {
