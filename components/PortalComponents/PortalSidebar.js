@@ -104,7 +104,7 @@ export default function SideMenuSection() {
 
                         {/* Applications */}
                         {session?.user?.role === "recruiter" && (
-                            <Link href="/Portal/applications">
+                            <Link href="/Portal/jobApplications">
                                 <button
                                     onClick={() => setActiveButton("Applications")}
                                     className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Applications"
