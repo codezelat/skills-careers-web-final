@@ -85,24 +85,22 @@ function UpdatePressrelease({ pressrelease, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10">
-      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
-        <div className="flex items-center justify-between mb-4">
-          <h4 className="text-2xl font-semibold text-[#001571]">
-            Edit a Press Release
-          </h4>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-red-500 focus:outline-none"
-          >
-            <FaTimes size={24} />
-          </button>
-        </div>
-        <div className="border-t-2 border-gray-200 mb-4" />
-
-
-      <form className="space-y-6" onSubmit={submitHandler}>
-        <div>
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-2xl font-semibold text-[#001571]">
+        Edit a Press Release
+      </h4>
+      <button
+        onClick={onClose}
+        className="text-gray-500 hover:text-red-500 focus:outline-none"
+      >
+        <FaTimes size={24} />
+      </button>
+    </div>
+    <div className="border-t-2 border-gray-200 mb-4" />
+    <form className="space-y-6" onSubmit={submitHandler}>
+              <div>
         <label className="block text-sm font-semibold text-[#001571]">
               Title
             </label>

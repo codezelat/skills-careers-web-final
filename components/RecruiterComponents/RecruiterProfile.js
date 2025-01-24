@@ -1,38 +1,7 @@
-"use client";
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import RecruiterEdit from "./RecruiterEdit";
-import { useState } from "react";
-import {
-  FaDribbble,
-  FaFacebook,
-  FaGithub,
-  FaInstagram,
-  FaLinkedin,
-  FaTwitter,
-} from "react-icons/fa";
-import EditProfileForm from "./EditProfileForm";
 
-function RecruiterProfile({ recruiter, onClose }) {
-  const [recruiterDetails, setRecruiterDetails] = useState({
-    _id: "",
-    recruiterName: "",
-    employeeRange: "",
-    email: "",
-    contactNumber: "",
-    website: "",
-    companyDescription: "",
-    industry: "",
-    location: "",
-    logo: "",
-    facebook: "",
-    instagram: "",
-    linkedin: "",
-    x: "",
-  });
-  const [selectedRecruiter, setSelectedRecruiter] = useState(null);
-  const [showApplicationForm, setShowApplicationForm] = useState(false);
-
+function RecruiterProfile({ recruiter }) {
+  const [recruiterDetails, setRecruiterDetails] = useState(recruiter);
 
   useEffect(() => {
     if (recruiter) {
@@ -40,58 +9,22 @@ function RecruiterProfile({ recruiter, onClose }) {
     }
   }, [recruiter]);
 
-  const handleImageChange = async (e) => {
-    e.preventDefault();
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Check file size (limit to 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File size should be less than 5MB");
-      return;
-    }
-
-    // Check file type
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file");
-      return;
-    }
-
+  const handleUpdate = async () => {
     try {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      console.log("Starting image upload...");
-      const response = await fetch("/api/recruiter/uploadimage", {
-        method: "POST",
-        body: formData,
+      const response = await fetch(`/api/recruiter/update`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(recruiterDetails),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to upload image");
+      if (response.ok) {
+        alert("Recruiter details updated successfully!");
+      } else {
+        alert("Failed to update recruiter details");
       }
-
-      console.log("Upload successful:", data);
-      setRecruiterDetails((prev) => ({
-        ...prev,
-        logo: data.imageUrl,
-      }));
-
-      alert("Logo uploaded successfully!");
     } catch (error) {
-      console.error("Error uploading image:", error);
-      alert(`Failed to upload image: ${error.message}`);
+      console.error("Error updating recruiter:", error);
     }
-  };
-
-  const handleRecruiterSelect = () => {
-    setSelectedRecruiter(recruiterDetails);
-  };
-
-  const handleCloseProfile = () => {
-    setSelectedRecruiter(null);
   };
 
   return (
@@ -152,8 +85,7 @@ function RecruiterProfile({ recruiter, onClose }) {
 
         {/* Profile Info */}
         <div className="p-4 sm:p-10 text-left mt-20">
-          {recruiters.map((recruiter) => (
-            <div key={recruiter.id}>
+            <div >
               <h3 className="text-lg sm:text-xl font-bold text-blue-900">
                 {recruiterDetails.recruiterName || "N/A"}{" "}
                 <span className="text-blue-500">✓</span>
@@ -203,7 +135,7 @@ function RecruiterProfile({ recruiter, onClose }) {
                 {/* Edit Button */}
                 <div>
                   <button
-                    onClick={() => setShowApplicationForm(true)}
+                    onClick={handleUpdate}
                     className=" text-white   px-3 py-2 sm:px-4 rounded-md"
                   >
                     <div className="flex items-center gap-2">
@@ -224,16 +156,7 @@ function RecruiterProfile({ recruiter, onClose }) {
                 {recruiterDetails.companyDescription || "N/A"}
               </p>
             </div>
-          ))}
         </div>
-                {/* Edit Profile Form Popup */}
-                {showApplicationForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-            <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
-              <EditProfileForm onClose={() => setShowApplicationForm(false)} />
-            </div>
-          </div>
-        )}
 
       </div>
     </>

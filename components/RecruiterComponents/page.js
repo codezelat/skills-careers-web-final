@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import AdminNavBar from "../AdminNav";
-import RecruiterProfile from "./RecruiterProfile";
+import AllRecruiterData from "./AllRecruiterData";
 import AddRecruiter from "./AddRecruiter";
-import AllRecruiterData from "@/components/RecruiterComponents/AllRecruiterData";
+import RecruiterDetailsPage from "./[userId]";
 
 function RecruitersPanel() {
   const router = useRouter();
@@ -29,7 +29,7 @@ function RecruitersPanel() {
     setSelectAll(isChecked);
     if (isChecked) {
       setSelectedRecruiters(
-        filteredRecruiters.map((recruiter) => recruiter._id)
+        filteredRecruiters.map((recruiter) => recruiter.userId)
       );
     } else {
       setSelectedRecruiters([]);
@@ -41,7 +41,7 @@ function RecruitersPanel() {
     setSelectedRecruiters((prev) =>
       isChecked
         ? [...prev, id]
-        : prev.filter((recruiterId) => recruiterId !== id)
+        : prev.filter((userId) => userId !== id)
     );
   };
 
@@ -56,8 +56,8 @@ function RecruitersPanel() {
       try {
         const response = await fetch("/api/recruiter/all");
         const data = await response.json();
-        setRecruiters(data.recruiters);
-        setFilteredRecruiters(data.recruiters);
+        setRecruiters(data.recruiters || []); // Default to empty array if undefined
+        setFilteredRecruiters(data.recruiters || []); // Default to empty array if undefined
       } catch (error) {
         console.error("Error fetching recruiters:", error);
       } finally {
@@ -81,7 +81,6 @@ function RecruitersPanel() {
       )
     );
   };
-
 
   const handleRecruiterSelect = (id) => {
     setSelectedRecruiterId(id);
@@ -145,7 +144,7 @@ function RecruitersPanel() {
             />
 
             {selectedRecruiterId && (
-              <RecruiterProfile
+              <RecruiterDetailsPage
                 recruiterId={selectedRecruiterId}
                 onClose={handleCloseProfile}
               />
@@ -171,7 +170,8 @@ function RecruitersPanel() {
 
               {/* Data Rows */}
               <div className="grid gap-4">
-                {filteredRecruiters.length > 0 ? (
+                {Array.isArray(filteredRecruiters) &&
+                filteredRecruiters.length > 0 ? (
                   filteredRecruiters.map((recruiter) => (
                     <AllRecruiterData
                       key={recruiter._id}

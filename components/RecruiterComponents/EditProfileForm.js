@@ -79,7 +79,7 @@ export default function EditProfileForm({recruiter, onClose }) {
       formData.append("employeeRange", recruiterDetails.employeeRange);
 
       
-      const response = await fetch(`/api/recruiter/update?id=${_id}`, {
+      const response = await fetch(`/api/recruiter/update?id=${userId}`, {
         method: "PUT",
         body: formData,
       });

@@ -64,8 +64,8 @@ function ViewPressrelease({ pressrelease, onClose }) {
             )}
           </div>
         </div>
-        <div className="relative w-full h-[400px] mb-4">
-          <Image
+        <div className="relative w-full h-[400px] mb-4 z-0">
+        <Image
             src={pressrelease.image}
             alt="img"
             layout="fill" // Automatically adjusts to the container
@@ -74,7 +74,7 @@ function ViewPressrelease({ pressrelease, onClose }) {
           />
         </div>
         <div>
-          <p className="mb-2">{pressrelease.desc}</p>
+          <p className="mb-2">{pressrelease.description}</p>
         </div>
       </div>
     </div>

@@ -35,7 +35,7 @@ export default function SolveInquireForm({ inquiry = {}, onClose }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/inquiry/update`, {
+      const response = await fetch(`/api/inquiry/update?id=${_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

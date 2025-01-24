@@ -3,8 +3,10 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import AdminNavBar from "../AdminNav";
 import { useRouter } from "next/navigation";
-import UpdateInquiryForm from "./UpdateInquiryForm";
-import InquiryCard from "./InquiryCard";
+import UpdateInquiryForm from "@/components/helpContactComponents/UpdateInquiryForm";
+import InquiryCard from "@/components/helpContactComponents/InquiryCard";
+
+
 
 function HelpandContact() {
   const router = useRouter();
@@ -90,34 +92,48 @@ function HelpandContact() {
           {/* Center Contents */}
           <div className="lg:col-span-4 md:col-span-4 sm:col-span-1 bg-slate-100 mb-4 p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl text-purple-600 font-semibold">
+              <h2 className="text-xl text-[#001571] font-semibold">
                 Inquiries
               </h2>
             </div>
 
             {selectedInquiry && (
-              <UpdateInquiryForm 
+              <UpdateInquiryForm
                 inquiry={selectedInquiry}
                 onClose={handleCloseInquiry}
               />
             )}
 
-            <div className="grid grid-cols-1">
-              {filteredInquiries.length > 0 ? (
-                filteredInquiries
-                  .map((inquiry, index) => (
-                    <InquiryCard
-                      key={index}
-                      inquiry={inquiry}
-                      onViewInquiry={() => handleInquirySelect(inquiry)}
-                    />
-                  ))
-                  .reverse()
-              ) : (
-                <p className="col-span-4 text-lg text-center font-bold text-red-500 py-20">
-                  No Inquiries found.
-                </p>
-              )}
+            {/* Help Contact List */}
+            <div className="p-4">
+              {/* Header Row */}
+              <div className="bg-slate-100 p-4 rounded-t-lg flex font-semibold text-md text-[#8A93BE]">
+                <div className="w-1/3 text-center">Recruiter Name</div>
+                <div className="w-1/4 text-center">User Role</div>
+                <div className="w-1/4 text-center">Date</div>
+                <div className="w-1/4 text-center">Time</div>
+                <div className="w-1/4 text-center">Status</div>
+                <div className="w-1/3 text-center">Actions</div>
+              </div>
+
+              {/* Data Rows */}
+              <div className="grid gap-4">
+                {filteredInquiries.length > 0 ? (
+                  filteredInquiries
+                    .map((inquiry, index) => (
+                      <InquiryCard
+                        key={index}
+                        inquiry={inquiry}
+                        onViewInquiry={() => handleInquirySelect(inquiry)}
+                      />
+                    ))
+                    .reverse()
+                ) : (
+                  <p className="col-span-4 text-lg text-center font-bold text-red-500 py-20">
+                    No Inquiries found.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
