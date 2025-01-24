@@ -4,8 +4,15 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import PortalLoading from "@/app/Portal/loading";
 
 export default function AdminProfile() {
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [userDetails, setUserDetails] = useState({
+        contactNumber: "",
+        createdAt: ""
+    });
 
     const router = useRouter();
     const { data: session, status } = useSession();
@@ -17,7 +24,29 @@ export default function AdminProfile() {
         }
     }, [status, router]);
 
-    const date = new Date(session.user.createdAt).getDate();
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await fetch(
+                    `/api/users/get?id=${session.user.id}`
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserDetails(data);
+                } else {
+                    console.error("Failed to fetch jobseeker details");
+                }
+            } catch (error) {
+                console.error("Error occurred while fetching details:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchDetails();
+    }, [session]);
+
+    const date = new Date(userDetails.createdAt).getDate();
     const monthName = [
         "January",
         "February",
@@ -32,10 +61,14 @@ export default function AdminProfile() {
         "November",
         "December",
     ];
-    const d = new Date(session.user.createdAt);
+    const d = new Date(userDetails.createdAt);
     let month = monthName[d.getMonth()];
-    const year = new Date(session.user.createdAt).getFullYear();
+    const year = new Date(userDetails.createdAt).getFullYear();
     const postedDate = `${date} ${month} ${year}`;
+
+    if (isLoading) {
+        return <PortalLoading />;
+    }
 
     return (
         <>
@@ -125,7 +158,7 @@ export default function AdminProfile() {
                         <h1 className="text-[#001571]">Contact Number</h1>
                         <input
                             type="text"
-                            value={session.user.contactNumber}
+                            value={userDetails.contactNumber}
                             disabled
                             className="px-4 py-2 w-full border-solid border-[1px] border-[#B0B6D3] rounded-xl font-semibold"
                         />

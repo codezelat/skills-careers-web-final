@@ -41,10 +41,8 @@ export const authOptions = {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            contactNumber: user.contactNumber,
             role: user.role,
-            profileImage: user.profileImage,
-            createdAt: user.createdAt
+            profileImage: user.profileImage
           };
         }
 
@@ -122,11 +120,9 @@ export const authOptions = {
         session.user.id = token.id;
         session.user.firstName = token.firstName;
         session.user.lastName = token.lastName;
-        session.user.contactNumber = token.contactNumber;
         session.user.email = token.email;
         session.user.role = token.role || "guest";
         session.user.profileImage = token.profileImage;
-        session.user.createdAt = token.createdAt;
       }
       return session;
     },
@@ -136,11 +132,9 @@ export const authOptions = {
         token.id = user.id;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
-        token.contactNumber = user.contactNumber;
         token.email = user.email;
         token.role = user.role || "guest";
         token.profileImage = user.profileImage;
-        token.createdAt = user.createdAt;
       }
       return token;
     },

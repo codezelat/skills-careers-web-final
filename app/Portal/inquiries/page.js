@@ -4,6 +4,7 @@ import InquiryCard from "@/components/PortalComponents/inquiryCard";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import PortalLoading from "../loading";
 
 export default function AdminInquiries() {
 
@@ -36,9 +37,9 @@ export default function AdminInquiries() {
             const data = await response.json();
             setInquiries(data.inquiries);
             setFilteredInquiries(data.inquiries);
-            setIsLoading(false);
         } catch (error) {
             setError(error.message);
+        } finally {
             setIsLoading(false);
         }
     };
@@ -60,6 +61,10 @@ export default function AdminInquiries() {
     const handleCloseInquiry = () => {
         setSelectedInquiry(null);
     };
+
+    if (isLoading) {
+        return <PortalLoading/>;
+      }
 
     return (
         <>
