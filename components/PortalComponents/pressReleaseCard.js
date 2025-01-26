@@ -2,8 +2,11 @@ import { formatDate } from "@/handlers";
 import Image from "next/image";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { useSession } from "next-auth/react";
 
 export default function PressReleaseCard(props, onViewPressrelease) {
+
+    const { data: session, status } = useSession();
 
     const handleViewPressrelease = () => {
         onViewPressrelease?.();
@@ -50,18 +53,20 @@ export default function PressReleaseCard(props, onViewPressrelease) {
                     className="rounded-t-lg"
                 />
                 {/* Action Icons */}
-                <div className="absolute top-2 right-2 flex space-x-2">
-                    <button className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white">
-                        <MdOutlineModeEdit
-                            size={25}
-                            color="#001571" />
-                    </button>
-                    <button className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white">
-                        <RiDeleteBin5Line
-                            size={25}
-                            color="#001571" />
-                    </button>
-                </div>
+                {session?.user?.role === "admin" && (
+                    <div className="absolute top-2 right-2 flex space-x-2">
+                        <button className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white">
+                            <MdOutlineModeEdit
+                                size={25}
+                                color="#001571" />
+                        </button>
+                        <button className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white">
+                            <RiDeleteBin5Line
+                                size={25}
+                                color="#001571" />
+                        </button>
+                    </div>
+                )}
             </div>
             {/* Text Content */}
             <div className="py-5">

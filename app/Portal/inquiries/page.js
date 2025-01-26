@@ -134,7 +134,7 @@ export default function AdminInquiries() {
                     </div>
                 )}
 
-                {session?.user?.role === "recruiter" && (
+                {session?.user?.role !== "admin" && (
                     <div className="grid gap-4 grid-cols-1">
                         {filteredInquiries.length > 0 ? (
                             filteredInquiries

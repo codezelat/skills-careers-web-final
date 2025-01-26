@@ -21,26 +21,36 @@ export default function CandidateProfile() {
     const { data: session, status } = useSession();
     console.log(status);
 
+    // const [jobSeekerDetails, setJobSeekerDetails] = useState({
+    //     firstName: "",
+    //     lastName: "",
+    //     email: "",
+    //     contactNumber: "",
+    //     position: "",
+    //     personalProfile: "",
+    //     dob: "",
+    //     nationality: "",
+    //     maritalStatus: "",
+    //     languages: "",
+    //     religion: "",
+    //     address: "",
+    //     ethnicity: "",
+    //     experience: "",
+    //     education: "",
+    //     licensesCertifications: "",
+    //     softSkills: "",
+    //     professionalExpertise: "",
+    //     profileImage: "", // Added profile image field
+    // });
+
     const [jobSeekerDetails, setJobSeekerDetails] = useState({
         firstName: "",
         lastName: "",
         email: "",
         contactNumber: "",
-        position: "",
-        personalProfile: "",
-        dob: "",
-        nationality: "",
-        maritalStatus: "",
-        languages: "",
-        religion: "",
-        address: "",
-        ethnicity: "",
-        experience: "",
-        education: "",
-        licensesCertifications: "",
-        softSkills: "",
-        professionalExpertise: "",
-        profileImage: "", // Added profile image field
+        profileImage: "",
+        role:"",
+        createdAt: "" // Added profile image field
     });
 
     const [appliedJobs, setAppliedJobs] = useState([]);
@@ -59,7 +69,7 @@ export default function CandidateProfile() {
             const fetchJobSeekerDetails = async (e) => {
                 try {
                     const response = await fetch(
-                        `/api/jobseekerdetails/get?email=${session.user.email}`
+                        `/api/users/get?id=${session.user.id}`
                     );
                     if (response.ok) {
                         const data = await response.json();
