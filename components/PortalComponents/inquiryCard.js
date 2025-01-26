@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { FaCircleChevronRight } from "react-icons/fa6";
+import { useSession } from "next-auth/react";
 
 export default function InquiryCard({ inquiry, onViewInquiry }) {
 
+    const { data: session, status } = useSession();
+    
     const [jobseekerDetails, setJobseekerDetails] = useState({
         profileImage: "",
     });
@@ -24,7 +27,7 @@ export default function InquiryCard({ inquiry, onViewInquiry }) {
                     const data = await response.json();
                     setUserDetails(data);
                 } else {
-                    console.error("Failed to fetch jobseeker details");
+                    console.error("Failed to fetch user details");
                 }
             } catch (error) {
                 console.error("Error occurred while fetching details:", error);

@@ -25,34 +25,62 @@ export default function AdminInquiries() {
             router.push("/admin");
         }
     });
-    const fetchInquiries = async () => {
-        try {
-            setIsLoading(true);
-            const response = await fetch("/api/inquiry/all");
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch Inquiries.");
+    useEffect(() => {
+        if (session?.user?.email) {
+            const fetchInquiries = async () => {
+                try {
+                    setIsLoading(true);
+                    const response = await fetch("/api/inquiry/all");
+
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch Inquiries.");
+                    }
+
+                    const data = await response.json();
+                    setInquiries(data.inquiries);
+                } catch (error) {
+                    setError(error.message);
+                } finally {
+                    setIsLoading(false);
+                }
             }
+            fetchInquiries();
+        };
+    }, [session]);
 
-            const data = await response.json();
-            setInquiries(data.inquiries);
-            setFilteredInquiries(data.inquiries);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    useEffect(() => {
+        if (session?.user?.email) {
+            const fetchFilteredInquiries = async () => {
+                try {
+                    setIsLoading(true);
+                    const response = await fetch(`/api/inquiry/all?id=${session.user.id}`);
+
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch Inquiries.");
+                    }
+
+                    const data = await response.json();
+                    setFilteredInquiries(data.inquiries);
+                } catch (error) {
+                    setError(error.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            }
+            fetchFilteredInquiries();
+        };
+    }, [session]);
 
     //   To refresh all data fetching every 60 seconds
-    useEffect(() => {
-        const fetchAllData = async () => {
-            await Promise.all([fetchInquiries()]);
-        };
-        fetchAllData();
-        const intervalId = setInterval(fetchAllData, 60000);
-        return () => clearInterval(intervalId);
-    }, []);
+    // useEffect(() => {
+    //     const fetchAllData = async () => {
+    //         await Promise.all([fetchFilteredInquiries()]);
+    //     };
+    //     fetchAllData();
+    //     const intervalId = setInterval(fetchAllData, 60000);
+    //     return () => clearInterval(intervalId);
+    // }, []);
 
     const handleInquirySelect = (inquiry) => {
         setSelectedInquiry(inquiry);
@@ -63,8 +91,8 @@ export default function AdminInquiries() {
     };
 
     if (isLoading) {
-        return <PortalLoading/>;
-      }
+        return <PortalLoading />;
+    }
 
     return (
         <>
@@ -86,22 +114,44 @@ export default function AdminInquiries() {
                         </thead>
                     </table>
                 </div>
-                <div className="grid gap-4 grid-cols-1">
-                    {filteredInquiries.length > 0 ? (
-                        filteredInquiries
-                            .map((inquiry, index) => (
-                                <InquiryCard
-                                    key={index}
-                                    inquiry={inquiry}
-                                    onViewInquiry={() => handleInquirySelect(inquiry)}
-                                />
-                            ))
-                    ) : (
-                        <p className="text-lg text-center font-bold text-red-500 py-20">
-                            No Inquiries found.
-                        </p>
-                    )}
-                </div>
+
+                {session?.user?.role === "admin" && (
+                    <div className="grid gap-4 grid-cols-1">
+                        {inquiries.length > 0 ? (
+                            inquiries
+                                .map((inquiry, index) => (
+                                    <InquiryCard
+                                        key={index}
+                                        inquiry={inquiry}
+                                        onViewInquiry={() => handleInquirySelect(inquiry)}
+                                    />
+                                ))
+                        ) : (
+                            <p className="text-lg text-center font-bold text-red-500 py-20">
+                                No Inquiries found.
+                            </p>
+                        )}
+                    </div>
+                )}
+
+                {session?.user?.role === "recruiter" && (
+                    <div className="grid gap-4 grid-cols-1">
+                        {filteredInquiries.length > 0 ? (
+                            filteredInquiries
+                                .map((inquiry, index) => (
+                                    <InquiryCard
+                                        key={index}
+                                        inquiry={inquiry}
+                                        onViewInquiry={() => handleInquirySelect(inquiry)}
+                                    />
+                                ))
+                        ) : (
+                            <p className="text-lg text-center font-bold text-red-500 py-20">
+                                No Inquiries found.
+                            </p>
+                        )}
+                    </div>
+                )}
 
                 {/* Pagination */}
                 {/* <div className="flex justify-center mt-4">
