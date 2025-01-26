@@ -1,7 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PiCheckCircle } from "react-icons/pi";
 import { IoCloseSharp } from "react-icons/io5";
+import Swal from "sweetalert2"; // Import SweetAlert
 
 async function createAnnouncement(announcementTitle, announcementDescription) {
   const response = await fetch("/api/announcement/add", {
@@ -27,7 +28,6 @@ async function createAnnouncement(announcementTitle, announcementDescription) {
 function AddAnnouncement({ onClose }) {
   const [announcementTitle, setAnnouncementTitle] = useState("");
   const [announcementDescription, setAnnouncementDescription] = useState("");
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const clearForm = () => {
@@ -44,16 +44,31 @@ function AddAnnouncement({ onClose }) {
         announcementTitle,
         announcementDescription
       );
+
+      // Display success popup with a 2-second timer
+      Swal.fire({
+        icon: "success",
+        title: "Announcement added successfully!",
+        showConfirmButton: false,
+        timer: 2000, // 2-second timer
+      }).then(() => {
+        // Refresh the page after closing the form
+        clearForm();
+        onClose();
+        window.location.reload(); // Refresh the page
+      });
+
       console.log(result);
-      alert(result.message);
-
-      clearForm();
-      onClose();
-
-      window.location.reload();
     } catch (error) {
-      console.log(error.message);
-      alert(error.message);
+      console.error(error.message);
+      // Display error popup with a 2-second timer
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add announcement.",
+        text: error.message,
+        showConfirmButton: false,
+        timer: 2000, // 2-second timer
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -64,10 +79,10 @@ function AddAnnouncement({ onClose }) {
       <div className="bg-white w-full max-w-4xl h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-2xl font-semibold text-[#001571]">
-            Create Annoucement
+            Create Announcement
           </h4>
           <button
-            onClick={onClose}
+            onClick={onClose} // Manual close functionality
             className="text-gray-500 hover:text-red-500 focus:outline-none"
           >
             <IoCloseSharp size={24} />
@@ -81,7 +96,7 @@ function AddAnnouncement({ onClose }) {
               htmlFor="announcementTitle"
               className="block text-sm font-semibold text-[#001571]"
             >
-              Annoucement Title
+              Announcement Title
             </label>
             <input
               type="text"
@@ -93,8 +108,11 @@ function AddAnnouncement({ onClose }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#001571]">
-              Annoucement Description
+            <label
+              htmlFor="announcementDescription"
+              className="block text-sm font-semibold text-[#001571]"
+            >
+              Announcement Description
             </label>
             <textarea
               type="text"
@@ -110,6 +128,7 @@ function AddAnnouncement({ onClose }) {
             <button
               type="submit"
               className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+              disabled={isSubmitting}
             >
               <div className="flex items-center space-x-3">
                 {isSubmitting ? "Creating..." : "Save"}
