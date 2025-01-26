@@ -9,6 +9,6 @@ import JobCard from "@/components/jobCard";
 
 export default function Home() {
   return (
-    <JobPost />
+    <StartingPage />
   );
 }

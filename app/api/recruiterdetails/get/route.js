@@ -21,15 +21,13 @@ export async function GET(req) {
 
     const recruiter = await db
       .collection("recruiters")
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ userId: new ObjectId(id) });
 
     if (!recruiter) {
-      return NextResponse.json({ message: "Job not found" }, { status: 404 });
+      return NextResponse.json({ message: "Recruiter not found" }, { status: 404 });
     }
 
-    return NextResponse.json({
-      recruiter
-    });
+    return NextResponse.json({ recruiter });
   } catch (error) {
     console.error("Recruiter fetch error:", error);
     return NextResponse.json(

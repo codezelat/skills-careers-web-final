@@ -1,9 +1,8 @@
 import JobPost from '@/components/adminPortal/jobs/jobPost';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 
 const JobPostPage = () => {
-  const router = useRouter();
-  const { id } = router.query;
+  const { id } = useParams();
 
   if (!id) return <p>Loading...</p>;
 
