@@ -9,11 +9,14 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import RecruiterCard from "@/components/PortalComponents/portalRecruiterCard";
 import PortalLoading from "../loading";
+import { FaTimes } from "react-icons/fa";
+import AddRecruiterForm from "./addRecruiterForm";
 
 export default function Recruiters() {
   const [activeTab, setActiveTab] = useState("all");
   const [userType, setUserType] = useState("All");
   const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -71,6 +74,94 @@ export default function Recruiters() {
 
   const handleCloseProfile = () => {
     setSelectedRecruiter(null);
+  };
+
+  const [newRecruiter, setNewRecruiter] = useState({
+    firstName: '',
+    lastName: '',
+    contactNumber: '',
+    recruiterName: '',
+    employeeRange: '',
+    email: '',
+    telephoneNumber: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  // Update createRecruiter function
+  async function createRecruiter(
+    firstName,
+    lastName,
+    contactNumber,
+    recruiterName,
+    employeeRange,
+    email,
+    telephoneNumber,
+    password,
+    confirmPassword
+  ) {
+    const response = await fetch("/api/auth/recruitersignup", {
+      method: "POST",
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        contactNumber,
+        recruiterName,
+        employeeRange,
+        email,
+        telephoneNumber,
+        password,
+        confirmPassword,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong!");
+    }
+    return data;
+  }
+
+  // Keep existing handleInputChange function
+
+  // Update handleSubmit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const result = await createRecruiter(
+        newRecruiter.firstName,
+        newRecruiter.lastName,
+        newRecruiter.contactNumber,
+        newRecruiter.recruiterName,
+        newRecruiter.employeeRange,
+        newRecruiter.email,
+        newRecruiter.telephoneNumber,
+        newRecruiter.password,
+        newRecruiter.confirmPassword
+      );
+      alert(result.message);
+      setShowApplicationForm(false);
+      // Refresh recruiters list
+      const response = await fetch("/api/recruiterdetails/all");
+      const data = await response.json();
+      setRecruiters(data.recruiters);
+      setFilteredRecruiters(data.recruiters);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Update handleInputChange for form fields
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewRecruiter(prev => ({ ...prev, [name]: value }));
   };
 
   // pagination function
@@ -240,95 +331,7 @@ export default function Recruiters() {
             </button>
           </div>
 
-          {/* Table */}
-          {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
-                <table className="w-full table-auto">
-                  <thead>
-                    <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                      <th className="px-4 py-3"></th>
-                      <th className="px-2 py-3"></th>
-                      <th className="px-4 py-3">Recruiter Name</th>
-                      <th className="px-4 py-3">Email</th>
-                      <th className="px-4 py-3">Phone</th>
-                      <th className="px-24 py-3">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {RecruitersList.filter(
-                      (recruiter) => recruiter.type === "Restricted"
-                    ).map((recruiter, id) => (
-                      <tr
-                        key={id}
-                        className="text-gray-700 hover:bg-gray-50 border-b text-sm"
-                      >
-                        <td className="px-4 py-3">
-                          <input type="checkbox" />
-                        </td>
-                        <td className="px-2 py-3 flex items-left gap-3">
-                          <div className="w-8 h-8 text-white flex justify-center items-center rounded-full">
-                            <Image
-                              src={recruiter.logo}
-                              width={35}
-                              height={35}
-                              alt="logo"
-                            />
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-black font-semibold">
-                          {recruiter.name}
-                        </td>
-                        <td className="px-4 py-3 text-black font-semibold">
-                          {recruiter.email}
-                        </td>
-                        <td className="px-4 py-3 text-black font-semibold">
-                          {recruiter.phone}
-                        </td>
-                        <td className="px-4 py-3 flex gap-2 justify-end">
-                          <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                            <span className="mr-2">
-                              <BsFillEyeFill size={15} />
-                            </span>
-                            Unrestricted
-                          </button>
-                          <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                            <span className="mr-2">
-                              <RiDeleteBinFill size={20} />
-                            </span>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div> */}
 
-          {/* Pagination */}
-          {/* <div className="flex justify-center mt-4">
-                <nav className="flex gap-2">
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    &lt;
-                  </button>
-                  <button className="px-3 py-2 bg-blue-700 text-white rounded-lg">
-                    1
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    2
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    3
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    ...
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    15
-                  </button>
-                  <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                    &gt;
-                  </button>
-                </nav>
-              </div> */}
         </>
       )}
 
@@ -360,6 +363,17 @@ export default function Recruiters() {
           </button>
         </nav>
       </div>
+
+      {showApplicationForm && (
+        <AddRecruiterForm
+          showForm={showApplicationForm}
+          onClose={() => setShowApplicationForm(false)}
+          newRecruiter={newRecruiter}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
     </div>
   );
 }
