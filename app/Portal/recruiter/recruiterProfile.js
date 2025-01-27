@@ -5,6 +5,7 @@ import PortalLoading from "../loading";
 import { FaDribbble, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaTimes, FaTwitter } from "react-icons/fa";
 import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
+import RecruiterEdit from "./recruiterEdit";
 
 export default function RecruiterProfile({ slug }) {
 
@@ -12,6 +13,7 @@ export default function RecruiterProfile({ slug }) {
     const [activeTab, setActiveTab] = useState("Profile");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showApplicationForm, setShowApplicationForm] = useState(false);
+    const [showCredentialsForm, setShowCredentialsForm] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [recruiterDetails, setRecruiterDetails] = useState({
         _id: "",
@@ -31,8 +33,11 @@ export default function RecruiterProfile({ slug }) {
     });
 
     const [userDetails, setUserDetails] = useState({
+        _id: '',
         firstName: "",
         lastName: "",
+        contactNumber: "",
+        email: "",
         profileImage: "",
     })
 
@@ -148,7 +153,7 @@ export default function RecruiterProfile({ slug }) {
             console.log("Upload successful:", data);
             setRecruiterDetails((prev) => ({
                 ...prev,
-                logo: data.imageUrl,
+                coverImage: data.imageUrl,
             }));
 
             alert("Logo uploaded successfully!");
@@ -158,6 +163,7 @@ export default function RecruiterProfile({ slug }) {
         }
     };
 
+    // Recruiter details update 
     const handleInputChange = (e) => {
         e.preventDefault();
         const { name, value } = e.target;
@@ -166,24 +172,66 @@ export default function RecruiterProfile({ slug }) {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
-          const response = await fetch(`/api/recruiterdetails/update`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(recruiterDetails),
-          });
-          if (response.ok) {
-            alert("Details updated successfully!");
-            onClose();
-          } else {
-            alert("Failed to update details.");
-          }
+            const response = await fetch(`/api/recruiterdetails/update`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(recruiterDetails),
+            });
+            if (response.ok) {
+                alert("Details updated successfully!");
+                setShowApplicationForm(false);
+            } else {
+                alert("Failed to update details.");
+            }
         } catch (error) {
-          console.error("Error updating recruiter details:", error);
+            console.error("Error updating recruiter details:", error);
+        } finally {
+            setIsSubmitting(false);
         }
-      };
+    };
+
+    // Recruiter credentials details update
+    const credSubmitHandler = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+    
+        try {
+            const response = await fetch('/api/users/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userDetails),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || 'Something went wrong');
+            }
+    
+            setShowCredentialsForm(false);
+            alert('Profile updated successfully!');
+        } catch (error) {
+            console.error('Update failed:', error);
+            alert(error.message || 'Update failed');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    
+    // Input Change Handler
+    const handleCredInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserDetails(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
 
     if (isLoading) {
@@ -250,7 +298,7 @@ export default function RecruiterProfile({ slug }) {
                                     />
                                 )}
                                 {/* cover image edit btn */}
-                                <div className="z-10 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
+                                <div className="z-0 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
                                     <input
                                         type="file"
                                         accept="image/*"
@@ -337,7 +385,7 @@ export default function RecruiterProfile({ slug }) {
 
                         <div className="pt-8 sm:pt-14">
                             <h1 className="text-center sm:text-left text-2xl sm:text-4xl md:text-3xl font-bold text-black">
-                                {recruiterDetails.recruiterName} - {recruiterDetails.location}
+                                {recruiterDetails.recruiterName} {recruiterDetails.location}
                             </h1>
 
                             <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between pr-2 sm:pr-5 space-y-4 sm:space-y-0 mt-0 text-sm w-full">
@@ -418,110 +466,13 @@ export default function RecruiterProfile({ slug }) {
 
                         {/* Edit Profile Form Popup */}
                         {showApplicationForm && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="w-2/3 max-w-4xl bg-white p-6 rounded-lg shadow-lg flex flex-col max-h-[90vh]">
-
-                                    <div className="flex items-center justify-between mb-4 border-b-2 border-gray-200 pb-4">
-                                        <h4 className="text-2xl font-semibold text-[#001571]">Edit Profile</h4>
-                                        <button
-                                            // onClick={onClose}
-                                            className="text-gray-500 hover:text-red-500 focus:outline-none"
-                                        >
-                                            <FaTimes size={24} />
-                                        </button>
-                                    </div>
-
-                                    <form className="flex-1 overflow-y-auto pr-4 space-y-7" onSubmit={submitHandler}>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-[#001571]">Recruiter Name</label>
-                                            <input
-                                                type="text"
-                                                name="recruiterName"
-                                                value={recruiterDetails.recruiterName || ""}
-                                                onChange={handleInputChange}
-                                                className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-[#001571]">Location</label>
-                                            <input
-                                                type="text"
-                                                name="location" // Updated name
-                                                value={recruiterDetails.location || ""}
-                                                onChange={handleInputChange}
-                                                className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">Recruiter Category</label>
-                                                <input
-                                                    type="text"
-                                                    name="industry" // Updated name
-                                                    value={recruiterDetails.industry || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">Employee Range</label>
-                                                <input
-                                                    type="text"
-                                                    name="employeeRange" // Updated name
-                                                    value={recruiterDetails.employeeRange || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">Email</label>
-                                                <input
-                                                    type="text"
-                                                    name="email" // Updated name
-                                                    value={recruiterDetails.email || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">Phone</label>
-                                                <input
-                                                    type="text"
-                                                    name="contactNumber" // Updated name
-                                                    value={recruiterDetails.contactNumber || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-[#001571]">Company Description</label>
-                                            <textarea
-                                                name="companyDescription" // Updated name
-                                                value={recruiterDetails.companyDescription || ""}
-                                                onChange={handleInputChange}
-                                                className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                            />
-                                        </div>
-
-                                        <div className="mt-4 border-t-2 border-gray-200 pt-4 flex justify-end">
-                                            <button
-                                                type="submit"
-                                                className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
-                                            >
-                                                <div className="flex items-center space-x-3">
-                                                    {isSubmitting ? "Updating..." : "Update Recruiter"}
-                                                    <Image src="/images/miyuri_img/whitetick.png" alt="tick" width={20} height={10} className="ml-3" />
-                                                </div>
-                                            </button>
-                                        </div>
-                                    </form>
-
-                                </div>
-                            </div>
-
+                            <RecruiterEdit
+                                recruiterDetails={recruiterDetails}
+                                onClose={() => setShowApplicationForm(false)}
+                                onSubmit={submitHandler}
+                                onInputChange={handleInputChange}
+                                isSubmitting={isSubmitting}
+                            />
                         )}
 
                     </div>
@@ -529,19 +480,21 @@ export default function RecruiterProfile({ slug }) {
                     <div className="min-h-screen">
                         {/* Edit Button */}
                         <div className="flex justify-end">
-                            <button
-                                onClick={() => setShowApplicationForm(true)}
-                                className="text-white px-3 py-2 sm:px-4 rounded-md"
-                            >
-                                <div className="flex gap-2">
-                                    <Image
-                                        src="/images/editicon.png"
-                                        alt="edit"
-                                        width={50}
-                                        height={16}
-                                    />
-                                </div>
-                            </button>
+                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                <button
+                                    onClick={() => setShowCredentialsForm(true)}
+                                    className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
+                                    <div className="flex gap-2">
+                                        <Image
+                                            src="/editiconwhite.png"
+                                            alt="Edit Icon"
+                                            layout="fill"
+                                            objectFit="contain"
+                                            quality={100}
+                                        />
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                         <form>
                             <div className="">
@@ -551,7 +504,8 @@ export default function RecruiterProfile({ slug }) {
                                 <input
                                     type="text"
                                     name="User Name"
-                                    value={recruiterDetails.email}
+                                    value={`${userDetails.firstName} ${userDetails.lastName}`}
+                                    disabled
                                     className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
                                 />
 
@@ -563,24 +517,26 @@ export default function RecruiterProfile({ slug }) {
                                         <input
                                             type="text"
                                             name="email"
-                                            value={recruiterDetails.email}
+                                            disabled
+                                            value={userDetails.email}
                                             className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-semibold text-[#001571]">
-                                            Phone
+                                            Contact Number
                                         </label>
                                         <input
                                             type="text"
-                                            name="pone"
-                                            value={recruiterDetails.contactNumber}
+                                            name="phone"
+                                            disabled
+                                            value={userDetails.contactNumber}
                                             className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
                                         />
                                     </div>
                                 </div>
                                 {/* Recruiter Package Dropdown */}
-                                <div>
+                                {/* <div>
                                     <label className="block text-sm font-semibold text-[#001571] mt-8">
                                         Membership
                                     </label>
@@ -600,9 +556,102 @@ export default function RecruiterProfile({ slug }) {
                                             Premium Recruiter Package
                                         </option>
                                     </select>
-                                </div>
+                                </div> */}
                             </div>
                         </form>
+
+                        {showCredentialsForm && (
+                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                {/* Popup Container */}
+                                <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                                    {/* Header */}
+                                    <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                                        <h4 className="text-2xl font-semibold text-[#001571]">Credentials</h4>
+                                        <button
+                                            onClick={() => setShowCredentialsForm(false)}
+                                            className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                        >
+                                            <FaTimes size={24} />
+                                        </button>
+                                    </div>
+
+                                    {/* Scrollable Form Content */}
+                                    <div className="flex-1 overflow-y-auto px-6 py-4">
+                                        <form onSubmit={credSubmitHandler} className="space-y-6">
+                                            <div className="grid grid-cols-2 grid-rows-1 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#001571]">
+                                                        First Name
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="firstName"
+                                                        value={userDetails.firstName || ""}
+                                                        onChange={handleCredInputChange}
+                                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#001571]">
+                                                        Last Name
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="lastName"
+                                                        value={userDetails.lastName || ""}
+                                                        onChange={handleCredInputChange}
+                                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#001571]">
+                                                        Email
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="email"
+                                                        disabled
+                                                        value={userDetails.email || ""}
+                                                        onChange={handleCredInputChange}
+                                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-[#001571]">
+                                                        Phone
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="contactNumber"
+                                                        value={userDetails.contactNumber || ""}
+                                                        onChange={handleCredInputChange}
+                                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="p-6 border-t border-gray-200 flex justify-end">
+                                        <button
+                                            type="submit"
+                                            onClick={credSubmitHandler}
+                                            disabled={isSubmitting}
+                                            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                                                }`}
+                                        >
+                                            {isSubmitting ? "Saving..." : "Save"}
+                                            <span className="ml-2">
+                                                <PiCheckCircle size={20} />
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                     </div>
                 )}

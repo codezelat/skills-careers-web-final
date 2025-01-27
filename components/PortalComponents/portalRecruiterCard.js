@@ -15,7 +15,7 @@ export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
         if (window.confirm("Are you sure you want to delete this recruiter?")) {
             try {
                 setIsDeleting(true);
-                const response = await fetch(`/api/recruiter/delete?id=${_id}`, {
+                const response = await fetch(`/api/recruiterdetails/delete?id=${_id}`, {
                     method: "DELETE",
                 });
 
