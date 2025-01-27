@@ -1,7 +1,9 @@
 import { connectToDatabase } from "@/lib/db";
+import { reindexCollection } from "@/lib/elasticsearch-utils";
 import { NextResponse } from "next/server";
 
 export async function PUT(req) {
+  let client;
   try {
     const body = await req.json();
 
@@ -14,16 +16,16 @@ export async function PUT(req) {
       );
     }
 
-    const client = await connectToDatabase();
+    client = await connectToDatabase();
     const db = client.db();
 
     const result = await db
       .collection("recruiters")
       .updateOne({ email }, { $set: updatedDetails }, { upsert: false });
 
-    client.close();
-
     if (result.modifiedCount > 0) {
+      await reindexCollection(db, "recruiters");
+
       return NextResponse.json(
         { message: "Details updated successfully." },
         { status: 200 }
@@ -39,5 +41,9 @@ export async function PUT(req) {
       { message: "Something went wrong.", error: error.message },
       { status: 500 }
     );
+  } finally {
+    if (client) {
+      client.close();
+    }
   }
 }

@@ -41,16 +41,17 @@ export async function GET(req) {
       contactNumber: recruiter.contactNumber,
       userId: recruiter.userId.toString(),
       createdAt: recruiter.createdAt,
-      logo: recruiter.logo
-      // website: recruiter.website,
-      // companyDescription: recruiter.companyDescription,
-      // industry: recruiter.industry,
-      // location: recruiter.location,
-      // logo: recruiter.logo,
-      // facebook: recruiter.facebook,
-      // instagram: recruiter.instagram,
-      // linkedin: recruiter.linkedin,
-      // x: recruiter.x,
+      logo: recruiter.logo,
+      coverImage: recruiter.coverImage,
+      website: recruiter.website,
+      companyDescription: recruiter.companyDescription,
+      industry: recruiter.industry,
+      location: recruiter.location,
+      logo: recruiter.logo,
+      facebook: recruiter.facebook,
+      instagram: recruiter.instagram,
+      linkedin: recruiter.linkedin,
+      x: recruiter.x,
     });
   } catch (error) {
     console.error("Recruiter fetch error:", error);

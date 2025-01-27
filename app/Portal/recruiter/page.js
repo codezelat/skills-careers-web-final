@@ -34,21 +34,22 @@ export default function Recruiters() {
   });
 
   useEffect(() => {
-    const fetchRecruiters = async () => {
-      try {
-        const response = await fetch("/api/recruiterdetails/all");
-        const data = await response.json();
-        setRecruiters(data.recruiters);
-        setFilteredRecruiters(data.recruiters);
-      } catch (error) {
-        console.error("Error fetching recruiters:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecruiters();
-  }, []);
+    if (session?.user?.email) {
+      const fetchRecruiters = async () => {
+        try {
+          const response = await fetch("/api/recruiterdetails/all");
+          const data = await response.json();
+          setRecruiters(data.recruiters);
+          setFilteredRecruiters(data.recruiters);
+        } catch (error) {
+          console.error("Error fetching recruiters:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchRecruiters();
+    }
+  }, [session]);
 
   // Handle search query change
   const handleSearchChange = (event) => {

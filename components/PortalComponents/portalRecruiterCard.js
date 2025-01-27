@@ -1,12 +1,16 @@
 import RecruiterProfile from "@/app/admindashboard/recruiters/RecruiterProfile";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 
 export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
-    const { recruiterName, email, contactNumber, logo } = recruiter;
+
+    const router = useRouter();
+    const { _id, recruiterName, email, contactNumber, logo } = recruiter;
     const [showRecruiter, setShowRecruiter] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+
     const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this recruiter?")) {
             try {
@@ -28,6 +32,10 @@ export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
             }
         }
     };
+
+    const handleViewRecruiterProfile = () => {
+        router.push(`/Portal/recruiter/${_id}`)
+    }
 
     return (
         <div className="py-4 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
@@ -62,7 +70,7 @@ export default function PortalJobCard({ recruiter, isSelected, onSelect }) {
             <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
                 <button
                     className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-                    onClick={() => setShowRecruiter(true)}
+                    onClick={handleViewRecruiterProfile}
                 >
                     <span className="mr-2">
                         <RiEdit2Fill size={20} />
