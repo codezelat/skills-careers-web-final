@@ -15,7 +15,7 @@ export default function AddRecruiterForm({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h4 className="text-2xl font-semibold text-[#001571]">Credentials</h4>
+          <h4 className="text-2xl font-semibold text-[#001571]">Add New Recruiter</h4>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-red-500 focus:outline-none"

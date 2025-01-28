@@ -9,24 +9,21 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import CandidateCard from "@/components/PortalComponents/portalCandidateCard";
 import PortalLoading from "../loading";
+import { FaTimes } from "react-icons/fa";
 
 export default function Candidates() {
     const [activeTab, setActiveTab] = useState("all");
-    const [userType, setUserType] = useState("All");
-    const [showApplicationForm, setShowApplicationForm] = useState(false);
+    const [newJobSeekerForm, setNewJobseekerForm] = useState(false);
 
     const router = useRouter();
     const { data: session, status } = useSession();
-
-    const [activeSection, setActiveSection] = useState("jobseekers");
 
     const [jobseekers, setJobseekers] = useState([]);
     const [filteredJobseekers, setFilteredJobseekers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [selectedJobseeker, setSelectedJobseeker] = useState(null);
-
-    const [isFormVisible, setIsFormVisible] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -70,8 +67,76 @@ export default function Candidates() {
         setSelectedJobseeker(jobseeker);
     };
 
-    const handleCloseProfile = () => {
-        setSelectedJobseeker(null);
+    // Create jobseeker functions
+    const [newJobseeker, setNewJobseeker] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        contactNumber: '',
+        password: '',
+        confirmPassword: '',
+    });
+
+    async function createJobseeker(
+        firstName,
+        lastName,
+        email,
+        contactNumber,
+        password,
+        confirmPassword
+    ) {
+        const response = await fetch("/api/auth/jobseekersignup", {
+            method: "POST",
+            body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                contactNumber,
+                password,
+                confirmPassword
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || "Something went wrong!");
+        }
+        return data;
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const result = await createJobseeker(
+                newJobseeker.firstName,
+                newJobseeker.lastName,
+                newJobseeker.email,
+                newJobseeker.contactNumber,
+                newJobseeker.password,
+                newJobseeker.confirmPassword
+            );
+            alert(result.message);
+            setNewJobseekerForm(false);
+
+            const response = await fetch("/api/jobseekerdetails/all");
+            const data = await response.json();
+            setJobseekers(data.jobseekers);
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // handleInputChange for form fields
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewJobseeker(prev => ({ ...prev, [name]: value }));
     };
 
     // pagination function
@@ -100,10 +165,10 @@ export default function Candidates() {
 
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-xl font-bold text-[#001571]">Recruiters</h1>
+                    <h1 className="text-xl font-bold text-[#001571]">Candidates</h1>
                     <button
                         className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
-                        onClick={() => setShowApplicationForm(true)}
+                        onClick={() => setNewJobseekerForm(true)}
                     >
                         <BsPlus size={25} className="mr-1" />Add New
                     </button>
@@ -241,97 +306,122 @@ export default function Candidates() {
                                 Delete
                             </button>
                         </div>
-
-                        {/* Table */}
-                        {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                  <th className="px-4 py-3"></th>
-                  <th className="px-2 py-3"></th>
-                  <th className="px-4 py-3">Recruiter Name</th>
-                  <th className="px-4 py-3">Email</th>
-                  <th className="px-4 py-3">Phone</th>
-                  <th className="px-24 py-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {RecruitersList.filter(
-                  (recruiter) => recruiter.type === "Restricted"
-                ).map((recruiter, id) => (
-                  <tr
-                    key={id}
-                    className="text-gray-700 hover:bg-gray-50 border-b text-sm"
-                  >
-                    <td className="px-4 py-3">
-                      <input type="checkbox" />
-                    </td>
-                    <td className="px-2 py-3 flex items-left gap-3">
-                      <div className="w-8 h-8 text-white flex justify-center items-center rounded-full">
-                        <Image
-                          src={recruiter.logo}
-                          width={35}
-                          height={35}
-                          alt="logo"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-black font-semibold">
-                      {recruiter.name}
-                    </td>
-                    <td className="px-4 py-3 text-black font-semibold">
-                      {recruiter.email}
-                    </td>
-                    <td className="px-4 py-3 text-black font-semibold">
-                      {recruiter.phone}
-                    </td>
-                    <td className="px-4 py-3 flex gap-2 justify-end">
-                      <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                        <span className="mr-2">
-                          <BsFillEyeFill size={15} />
-                        </span>
-                        Unrestricted
-                      </button>
-                      <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                        <span className="mr-2">
-                          <RiDeleteBinFill size={20} />
-                        </span>
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div> */}
-
-                        {/* Pagination */}
-                        {/* <div className="flex justify-center mt-4">
-            <nav className="flex gap-2">
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                &lt;
-              </button>
-              <button className="px-3 py-2 bg-blue-700 text-white rounded-lg">
-                1
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                2
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                3
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                ...
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                15
-              </button>
-              <button className="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-                &gt;
-              </button>
-            </nav>
-          </div> */}
                     </>
+                )}
+
+                {newJobSeekerForm && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                                <h4 className="text-2xl font-semibold text-[#001571]">Add New Candidate</h4>
+                                <button
+                                    onClick={() => setNewJobseekerForm(false)}
+                                    className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                >
+                                    <FaTimes size={24} />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto px-6 py-4">
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    {/* Admin Details */}
+                                    <div className="grid grid-cols-1 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                First Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="firstName"
+                                                value={newJobseeker.firstName}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Last Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                value={newJobseeker.lastName}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Email
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                name="email"
+                                                value={newJobseeker.email}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Phone
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                name="contactNumber"
+                                                value={newJobseeker.contactNumber}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Password
+                                            </label>
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                value={newJobseeker.password}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Confirm Password
+                                            </label>
+                                            <input
+                                                type="password"
+                                                name="confirmPassword"
+                                                value={newJobseeker.confirmPassword}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <hr className="my-4" />
+
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className={`bg-[#001571] text-white px-6 py-3 rounded-xl text-sm font-semibold ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                                                }`}
+                                        >
+                                            {isSubmitting ? "Adding..." : "Add Recruiter"}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 )}
 
                 {/* Pagination */}
