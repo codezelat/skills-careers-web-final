@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function AnnoucementsCard(props, isSelected, onSelect) {
 
     const { data: session, status } = useSession();
+    const router = useRouter();
 
     const {
         _id,
@@ -13,9 +15,9 @@ export default function AnnoucementsCard(props, isSelected, onSelect) {
         createdAt,
     } = props.announcement;
 
-    const handleViewAnnouncement = () => {
-        onViewAnnouncement?.();
-    };
+    const handleViewAnnoucement = () => {
+        router.push(`/Portal/annoucements/${_id}`)
+    }
 
     const handleViewDelete = () => {
         onViewAnnouncementDelete?.();
@@ -65,7 +67,7 @@ export default function AnnoucementsCard(props, isSelected, onSelect) {
                     <div className="py-3 flex gap-2 ml-auto justify-end w-[32.33%] items-center">
                         <button
                             className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-                            onClick={() => setShowRecruiter(true)}
+                            onClick={handleViewAnnoucement}
                         >
                             <span className="mr-2">
                                 <RiEdit2Fill size={20} />
