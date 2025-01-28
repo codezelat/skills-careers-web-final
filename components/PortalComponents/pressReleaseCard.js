@@ -3,14 +3,12 @@ import Image from "next/image";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function PressReleaseCard(props, onViewPressrelease) {
 
     const { data: session, status } = useSession();
-
-    const handleViewPressrelease = () => {
-        onViewPressrelease?.();
-    };
+    const router = useRouter();
 
     const {
         _id,
@@ -40,9 +38,13 @@ export default function PressReleaseCard(props, onViewPressrelease) {
     const year = new Date(createdAt).getFullYear();
     const postedDate = `${date} ${month} ${year}`;
 
+    const handleViewPressrelease = () => {
+        router.push(`/Portal/pressrelease/${_id}`)
+    }
+
     return (
         <div className="relative bg-white rounded-3xl shadow-md overflow-hidden"
-            onClick={handleViewPressrelease()}>
+            onClick={handleViewPressrelease}>
             {/* Main Image */}
             <div className="relative w-full h-48">
                 <Image
@@ -55,7 +57,7 @@ export default function PressReleaseCard(props, onViewPressrelease) {
                 {/* Action Icons */}
                 {session?.user?.role === "admin" && (
                     <div className="absolute top-2 right-2 flex space-x-2">
-                        <button className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white">
+                        <button className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white" onClick={handleViewPressrelease}>
                             <MdOutlineModeEdit
                                 size={25}
                                 color="#001571" />
