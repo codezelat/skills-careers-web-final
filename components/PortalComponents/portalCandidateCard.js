@@ -1,43 +1,50 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
+import { useRouter } from "next/navigation";
 
-export default function PortalCandidateCard(props, isSelected, onSelect) {
+export default function PortalCandidateCard(props, onSelect, isSelected) {
 
-    const {
-        _id,
-        firstName,
-        lastName,
-        email,
-        contactNumber,
-        position,
-        personalProfile,
-        dob,
-        nationality,
-        maritalStatus,
-        languages,
-        religion,
-        address,
-        ethnicity,
-        experience,
-        education,
-        licensesCertifications,
-        softSkills,
-        professionalExpertise,
-        profileImage,
-    } = props.jobseeker;
+    const router = useRouter();
+    const { _id, userId, email, contactNumber } = props.jobseeker;
+
+    const [userDetails, setUserDetails] = useState({
+        firstName: "",
+        lastName: "",
+        profileImage: "",
+    });
 
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const handleViewJobSeeker = () => {
-        props.onViewJobSeeker?.();
-    };
+    useEffect(() => {
+        if (userId) {
+            const fetchUserDetails = async (e) => {
+                try {
+                    const response = await fetch(`/api/users/get?id=${userId}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUserDetails(data.user);
+                    } else {
+                        console.error("Failed to fetch user details");
+                    }
+                } catch (error) {
+                    console.error("Error fetching user details:", error);
+                }
+            };
+
+            fetchUserDetails();
+        }
+    }, [_id]);
+
+    const handleViewCandidateProfile = () => {
+        router.push(`/Portal/candidates/${_id}`)
+    }
 
     const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this jobseeker?")) {
             try {
                 setIsDeleting(true);
-                const response = await fetch(`/api/jobseekerdetails/delete?id=${_id}`, {
+                const response = await fetch(`/api/jobseeker/delete?id=${_id}`, {
                     method: "DELETE",
                 });
 
@@ -70,7 +77,7 @@ export default function PortalCandidateCard(props, isSelected, onSelect) {
                 {/* Recruiter Logo */}
                 <div className="">
                     <Image
-                        src={profileImage || "/images/default-image.jpg"}
+                        src={userDetails.profileImage || "/images/default-image.jpg"}
                         alt="Recruiter Logo"
                         width={40}
                         height={40}
@@ -78,7 +85,7 @@ export default function PortalCandidateCard(props, isSelected, onSelect) {
                     />
                 </div>
                 {/* Recruiter Name */}
-                <div className="items-center">{firstName}</div>
+                <div className="items-center">{userDetails.firstName} {userDetails.lastName}</div>
             </div>
             {/* Email */}
             <div className="px-4 py-3 font-semibold w-[24.25%] flex items-center">{email}</div>
@@ -88,7 +95,7 @@ export default function PortalCandidateCard(props, isSelected, onSelect) {
             <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
                 <button
                     className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-                    onClick={() => setShowRecruiter(true)}
+                    onClick={handleViewCandidateProfile}
                 >
                     <span className="mr-2">
                         <RiEdit2Fill size={20} />
@@ -106,14 +113,6 @@ export default function PortalCandidateCard(props, isSelected, onSelect) {
                     {isDeleting ? "Deleting..." : "Delete"}
                 </button>
             </div>
-            {/* Edit Profile Form Popup */}
-            {/* {showRecruiter && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                    <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
-                        <RecruiterProfile onClose={() => setShowRecruiter(false)} />
-                    </div>
-                </div>
-            )} */}
         </div>
     );
 
