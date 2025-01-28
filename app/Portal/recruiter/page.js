@@ -207,7 +207,7 @@ export default function Recruiters() {
             : "text-[#B0B6D3] bg-[#E6E8F1]"
             }`}
         >
-          All Job Posts
+          All Recruiters
           <span className="ml-2">
             <PiCheckCircle size={20} />
           </span>
@@ -221,7 +221,7 @@ export default function Recruiters() {
             : "text-[#B0B6D3] bg-[#E6E8F1]"
             }`}
         >
-          Restricted Job Posts
+          Restricted Recruiters
           <span className="ml-2">
             <PiCheckCircle size={20} />
           </span>
