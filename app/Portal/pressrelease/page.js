@@ -7,13 +7,14 @@ import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
 import { IoSearchSharp } from "react-icons/io5";
 import PortalLoading from "../loading";
 import PressReleaseCard from "@/components/PortalComponents/pressReleaseCard";
+import AddPressrelease from "./AddPressrelease";
 
 export default function PressRelease() {
 
     const router = useRouter();
     const { data: session, status } = useSession();
     const [activeSection, setActiveSection] = useState("pressreleases");
-
+    const [showApplicationForm , setShowApplicationForm] = useState(false)
     const [pressreleases, setPressreleases] = useState([]); // Original Pressreleases
     const [filteredPressreleases, setFilteredPressreleases] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
@@ -107,12 +108,23 @@ export default function PressRelease() {
                     {session?.user?.role === "admin" && (
                     <button
                         className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
-                    // onClick={() => setShowApplicationForm(true)}
+                     onClick={() => setShowApplicationForm(true)}
                     >
                         <BsPlus size={25} className="mr-1" />Add New
                     </button>
                     )}
                 </div>
+
+                {showApplicationForm && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                  <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
+                    <AddPressrelease
+                      onClose={() => setShowApplicationForm(false)}
+                    />
+                  </div>
+                </div>
+              )}
+
 
                 {/* search */}
                 <div className="flex-grow mt-16">
