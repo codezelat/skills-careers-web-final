@@ -1,76 +1,64 @@
 import { connectToDatabase } from "@/lib/db";
-import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 export async function GET(req) {
+  let client;
   try {
     const { searchParams } = new URL(req.url);
-    const email = searchParams.get("email");
     const id = searchParams.get("id");
+    const userId = searchParams.get("userId"); 
 
-    if (!email && !id) {
+    if (!id && !userId) {
       return NextResponse.json(
-        { message: "Either email or ID must be provided." },
+        { message: "Either id or userId must be provided." },
         { status: 400 }
       );
-    } 
+    }
 
-    const client = await connectToDatabase();
+    client = await connectToDatabase();
     const db = client.db();
-    let jobseeker = null;
+    const jobseekersCollection = db.collection("jobseekers");
 
-    if (email) {
-      jobseeker = await db.collection("jobseekers").findOne({ email });
-    } else if (id) {
+    let query = {};
+    if (id) {
       if (!ObjectId.isValid(id)) {
         return NextResponse.json(
-          { message: "Invalid ID provided." },
+          { message: "Invalid jobseeker ID format" },
           { status: 400 }
         );
       }
-      jobseeker = await db
-        .collection("jobseekers")
-        .findOne({ _id: new ObjectId(id) });
+      query._id = new ObjectId(id);
+    } else {
+      if (!ObjectId.isValid(userId)) {
+        return NextResponse.json(
+          { message: "Invalid user ID format" },
+          { status: 400 }
+        );
+      }
+      query.userId = new ObjectId(userId);
     }
 
-    client.close();
+    const jobseeker = await jobseekersCollection.findOne(query);
 
-    if (jobseeker) {
+    if (!jobseeker) {
       return NextResponse.json(
-        {
-          id: jobseeker._id.toString(),
-          firstName: jobseeker.firstName,
-          lastName: jobseeker.lastName,
-          email: jobseeker.email,
-          contactNumber: jobseeker.contactNumber,
-          position: jobseeker.position,
-          personalProfile: jobseeker.personalProfile,
-          dob: jobseeker.dob,
-          nationality: jobseeker.nationality,
-          maritalStatus: jobseeker.maritalStatus,
-          languages: jobseeker.languages,
-          religion: jobseeker.religion,
-          address: jobseeker.address,
-          ethnicity: jobseeker.ethnicity,
-          experience: jobseeker.experience,
-          education: jobseeker.education,
-          licensesCertifications: jobseeker.licensesCertifications,
-          softSkills: jobseeker.softSkills,
-          professionalExpertise: jobseeker.professionalExpertise,
-          profileImage: jobseeker.profileImage,
-        },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        { message: "Job Seeker not found." },
+        { message: "Jobseeker not found" },
         { status: 404 }
       );
     }
+
+    return NextResponse.json({ jobseeker });
+
   } catch (error) {
+    console.error("Jobseeker fetch error:", error);
     return NextResponse.json(
-      { message: "Something went wrong.", error: error.message },
+      { message: "Failed to fetch jobseeker details", error: error.message },
       { status: 500 }
     );
+  } finally {
+    if (client) {
+      await client.close();
+    }
   }
 }
