@@ -32,11 +32,20 @@ export async function GET(req) {
       id: job._id.toString(),
       jobTitle: job.jobTitle,
       recruiterId: job.recruiterId,
+      jobCategory: job.jobCategory,
       location: job.location,
+      salaryRs: job.salaryRs,
+      salaryCents: job.salaryCents,
       jobTypes: job.jobTypes,
+      jobExperience:job.jobExperience,
       jobDescription: job.jobDescription,
+      shortDescription:job.shortDescription,
       keyResponsibilities: job.keyResponsibilities,
+      requiredQualifications: job.requiredQualifications,
+      perksAndBenefits: job.perksAndBenefits,
       createdAt: job.createdAt,
+      postedDate: job.postedDate,
+      isPublished: job.isPublished
     });
 
   } catch (error) {

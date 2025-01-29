@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 
 function JobCard(props) {
     const { data: session, status } = useSession();
+    const router = useRouter();
     const [applicationCount, setApplicationCount] = useState(0);
     const [recruiterDetails, setRecruiterDetails] = useState({
         email: "",
@@ -29,20 +31,20 @@ function JobCard(props) {
 
     useEffect(() => {
         const fetchApplicationCount = async () => {
-          try {
-            const response = await fetch(
-              `/api/jobapplication/get?recruiterId=${recruiterId}`
-            );
-            if (response.ok) {
-              const data = await response.json();
-              setApplicationCount(data.count);
+            try {
+                const response = await fetch(
+                    `/api/jobapplication/get?recruiterId=${recruiterId}`
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    setApplicationCount(data.count);
+                }
+            } catch (error) {
+                console.error("Error fetching application count:", error);
             }
-          } catch (error) {
-            console.error("Error fetching application count:", error);
-          }
         };
         fetchApplicationCount();
-      }, [_id, recruiterId]);
+    }, [_id, recruiterId]);
 
     useEffect(() => {
         if (recruiterId) {
@@ -131,8 +133,12 @@ function JobCard(props) {
     };
 
     // In JobCard.js, modify the handleViewJob function:
-    const handleViewJob = () => {
-        props.onViewJob?.();
+    const handleViewJobsAdmin = () => {
+        router.push(`/Portal/jobsAdmin/${_id}`)
+    };
+
+    const handleViewJobsRecruiter = () => {
+        router.push(`/Portal/jobsAdmin/${_id}`)
     };
 
     const date = new Date(createdAt).getDate();
@@ -198,12 +204,21 @@ function JobCard(props) {
                                             ? "Unrestricted"
                                             : "Restricted"}
                                 </button>
-                                <button className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
+                                <button
+                                    onClick={handleViewJobsAdmin}
+                                    className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
                                     <span className="mr-2">
                                         <RiDeleteBinFill size={20} />
                                     </span>
-                                    Delete
+                                    Edit
                                 </button>
+                                {/* <button 
+                                className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
+                                    <span className="mr-2">
+                                        <RiDeleteBinFill size={20} />
+                                    </span>
+                                    Edit
+                                </button> */}
                             </div>
                         </>
                     )}
