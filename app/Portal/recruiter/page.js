@@ -72,10 +72,6 @@ export default function Recruiters() {
     setSelectedRecruiter(recruiter);
   };
 
-  const handleCloseProfile = () => {
-    setSelectedRecruiter(null);
-  };
-
   const [newRecruiter, setNewRecruiter] = useState({
     firstName: '',
     lastName: '',
@@ -88,7 +84,7 @@ export default function Recruiters() {
     confirmPassword: '',
   });
 
-  // Update createRecruiter function
+  // createRecruiter function
   async function createRecruiter(
     firstName,
     lastName,
@@ -125,8 +121,6 @@ export default function Recruiters() {
     return data;
   }
 
-  // Keep existing handleInputChange function
-
   // Update handleSubmit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -146,7 +140,7 @@ export default function Recruiters() {
       );
       alert(result.message);
       setShowApplicationForm(false);
-      // Refresh recruiters list
+      
       const response = await fetch("/api/recruiterdetails/all");
       const data = await response.json();
       setRecruiters(data.recruiters);
@@ -158,7 +152,7 @@ export default function Recruiters() {
     }
   };
 
-  // Update handleInputChange for form fields
+  // handleInputChange for form fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewRecruiter(prev => ({ ...prev, [name]: value }));

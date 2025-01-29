@@ -10,6 +10,8 @@ export async function POST(req) {
       position,
       companyName,
       description,
+      country,
+      city,
       startDate,
       endDate,
     } = data;
@@ -26,6 +28,8 @@ export async function POST(req) {
       position,
       companyName,
       description,
+      country,
+      city,
       startDate,
       endDate,
       createdAt: new Date(),

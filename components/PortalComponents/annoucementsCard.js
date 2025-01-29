@@ -44,7 +44,7 @@ export default function AnnoucementsCard(props, isSelected, onSelect, onViewAnno
           timer: 2000, // 1-second timer
         }).then(() => {
           // Close the form automatically after the popup
-          onClose();
+          setShowApplicationForm(false);
         });
       } else {
         // Error SweetAlert popup with 1-second timer
@@ -60,6 +60,7 @@ export default function AnnoucementsCard(props, isSelected, onSelect, onViewAnno
     } finally {
       setIsSubmitting(false);
       setShowApplicationForm(false);
+      setAnnouncementDetails();
     }
   };
 
