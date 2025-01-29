@@ -9,6 +9,9 @@ import { useSession } from "next-auth/react";
 import ExperienceCard from "@/components/PortalComponents/experienceCard";
 import EducationCard from "@/components/PortalComponents/educationCard";
 import CertificationCard from "@/components/PortalComponents/certificationCard";
+import ProfileEditFormPopup from "./ProfileEditForm";
+import BioEditFormPopup from "./BioDataForm";
+import { FiPlus } from "react-icons/fi";
 
 export default function CandidateProfile({ slug }) {
 
@@ -18,8 +21,13 @@ export default function CandidateProfile({ slug }) {
     const router = useRouter();
     const { data: session, status } = useSession();
 
-    const [NameEditForm, setNameEditForm] = useState(false);
+    const [ProfileEditForm, setProfileEditForm] = useState(false);
     const [BioDataForm, setBioDataForm] = useState(false);
+    const [openCreateExperienceForm, setOpenCreateExperienceForm] = useState(false);
+    const [openCreateEducationForm, setOpenCreateEducationoForm] = useState(false);
+    const [openCreateCertificationForm, setOpenCreateCertificationForm] = useState(false);
+    const [openCreateSoftskillsForm, setOpenCreateSoftskillsForm] = useState(false);
+    const [openCreateExpertiseForm, setOpenCreateExpertiseForm] = useState(false);
 
     const [jobSeekerDetails, setJobseekerDetails] = useState([]);
     const [userDetails, setUserDetails] = useState([]);
@@ -51,9 +59,9 @@ export default function CandidateProfile({ slug }) {
 
                     const experienceResponse = await fetch(`/api/jobseekerdetails/experience/all?id=${jobSeekerData.jobseeker._id}`);
                     if (!experienceResponse.ok) throw new Error("Failed to fetch experience details");
-                    const experienceData = await experienceResponse.json();
+                    const newExperienceData = await experienceResponse.json();
 
-                    setExperienceDetails(experienceData.experiences);
+                    setExperienceDetails(newExperienceData.experiences);
 
                     const educationResponse = await fetch(`/api/jobseekerdetails/education/all?id=${jobSeekerData.jobseeker._id}`);
                     if (!educationResponse.ok) throw new Error("Failed to fetch experience details");
@@ -211,7 +219,7 @@ export default function CandidateProfile({ slug }) {
             // Check if both updates were successful
             if (userResponse.ok && jobSeekerResponse.ok) {
                 alert("Details updated successfully!");
-                setNameEditForm(false); // Close the edit form if needed
+                setProfileEditForm(false); // Close the edit form if needed
             } else {
                 alert("Failed to update details!");
             }
@@ -247,6 +255,63 @@ export default function CandidateProfile({ slug }) {
             });
         }
     }, [jobSeekerDetails.dob]);
+
+    const [newExperienceData, setNewExperienceData] = useState({
+        position: "",
+        companyName: "",
+        description: "",
+        country: "",
+        city: "",
+        startDate: "",
+        endDate: "",
+    });
+
+    const handleCreateExperience = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('/api/jobseekerdetails/experience/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jobseekerId: jobSeekerDetails._id,
+                    ...newExperienceData
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to add experience');
+
+            // Fix the variable name conflict here
+            const experienceResponse = await fetch(`/api/jobseekerdetails/experience/all?id=${jobSeekerDetails._id}`);
+            const updatedExperienceData = await experienceResponse.json(); // Renamed variable
+            setExperienceDetails(updatedExperienceData.experiences);
+
+            setOpenCreateExperienceForm(false);
+            setNewExperienceData({
+                position: "",
+                companyName: "",
+                description: "",
+                country: "",
+                city: "",
+                startDate: "",
+                endDate: "",
+            });
+
+        } catch (error) {
+            console.error('Error adding experience:', error);
+            alert(`Error: ${error.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleExperienceInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewExperienceData(prev => ({ ...prev, [name]: value }));
+    };
 
     // loading
     if (isLoading) return <PortalLoading />;
@@ -406,14 +471,14 @@ export default function CandidateProfile({ slug }) {
                             <div className="flex flex-wrap items-center justify-center sm:justify-start space-y-4 sm:space-y-0 space-x-0 sm:space-x-4">
                                 <div className="flex items-center">
                                     <p className="text-black font-semibold text-lg">
-                                        {jobSeekerDetails.position}
+                                        {jobSeekerDetails.position || "No position available"}
                                     </p>
                                 </div>
                             </div>
                             <div className="flex justify-center sm:justify-end w-full sm:w-auto sm:pt-2 z-0">
                                 <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
                                     <button
-                                        onClick={() => setNameEditForm(true)}
+                                        onClick={() => setProfileEditForm(true)}
                                         className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
                                         <div className="flex gap-2">
                                             <Image
@@ -444,7 +509,7 @@ export default function CandidateProfile({ slug }) {
                             Personal Profile
                         </h5>
                         <p className="text-justify font-medium">
-                            {jobSeekerDetails.personalProfile || "empty"}
+                            {jobSeekerDetails.personalProfile || "No personal profile available"}
                         </p>
                     </div>
 
@@ -497,10 +562,24 @@ export default function CandidateProfile({ slug }) {
                         </div>
                     </div>
 
+                    {/* experience */}
                     <div className="text-left space-y-6 mt-12">
-                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                            Experience
-                        </h5>
+                        <div className="flex flex-row items-center justify-between">
+                            <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                                Experience
+                            </h5>
+                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateExperienceForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="flex gap-2">
+                                        <FiPlus
+                                            size={30}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                         <div className="flex flex-col gap-8">
                             {experienceDetails.length > 0 ? (
                                 experienceDetails.map((experience, index) => (
@@ -512,10 +591,24 @@ export default function CandidateProfile({ slug }) {
                         </div>
                     </div>
 
+                    {/* education */}
                     <div className="text-left space-y-6 mt-12">
-                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                            Education
-                        </h5>
+                        <div className="flex flex-row items-center justify-between">
+                            <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                                Education
+                            </h5>
+                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateEducationoForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="flex gap-2">
+                                        <FiPlus
+                                            size={30}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                         <div className="flex flex-col gap-8">
                             {educationDetails.length > 0 ? (
                                 educationDetails.map((education, index) => (
@@ -527,10 +620,24 @@ export default function CandidateProfile({ slug }) {
                         </div>
                     </div>
 
+                    {/* certifications */}
                     <div className="text-left space-y-6 mt-12">
-                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                            Licenses & Certifications
-                        </h5>
+                        <div className="flex flex-row items-center justify-between">
+                            <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                                Licences & Certifications
+                            </h5>
+                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateCertificationForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="flex gap-2">
+                                        <FiPlus
+                                            size={30}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                         <div className="flex flex-col gap-8">
                             {certificationDetails.length > 0 ? (
                                 certificationDetails.map((certification, index) => (
@@ -542,10 +649,24 @@ export default function CandidateProfile({ slug }) {
                         </div>
                     </div>
 
+                    {/* soft skills */}
                     <div className="text-left space-y-4 mt-12">
-                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                            Soft Skills
-                        </h5>
+                        <div className="flex flex-row items-center justify-between">
+                            <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                                Soft Skills
+                            </h5>
+                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateSoftskillsForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="flex gap-2">
+                                        <FiPlus
+                                            size={30}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                         <div className="flex flex-wrap gap-4">
                             {jobSeekerDetails.softSkills?.map((skills, index) => (
                                 <div
@@ -559,11 +680,24 @@ export default function CandidateProfile({ slug }) {
                         </div>
                     </div>
 
-
+                    {/* expertise */}
                     <div className="text-left space-y-4 mt-12">
-                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                            Professional Expertise
-                        </h5>
+                        <div className="flex flex-row items-center justify-between">
+                            <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                                Personal Expertise
+                            </h5>
+                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateExpertiseForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="flex gap-2">
+                                        <FiPlus
+                                            size={30}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                         <div className="flex flex-wrap gap-4">
                             {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
                                 <div
@@ -578,15 +712,167 @@ export default function CandidateProfile({ slug }) {
                     </div>
 
                     {/* Edit Profile Form Popup */}
-                    {NameEditForm && (
+                    {ProfileEditForm && (
+                        <ProfileEditFormPopup
+                            userDetails={userDetails}
+                            jobSeekerDetails={jobSeekerDetails}
+                            handleInputChange={handleInputChange}
+                            jobseekerUpdateSubmitHandler={jobseekerUpdateSubmitHandler}
+                            isSubmitting={isSubmitting}
+                            onClose={() => setProfileEditForm(false)}
+                        />
+                    )}
+
+                    {/* Edit Bio Data Form Popup */}
+                    {BioDataForm && (
+                        <BioEditFormPopup
+                            jobSeekerDetails={jobSeekerDetails}
+                            handleInputChange={handleInputChange}
+                            jobseekerUpdateSubmitHandler={jobseekerUpdateSubmitHandler}
+                            isSubmitting={isSubmitting}
+                            onClose={() => setBioDataForm(false)}
+                        />
+                    )}
+
+                    {/* Add Experience Form Popup */}
+                    {openCreateExperienceForm && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                             {/* Popup Container */}
                             <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
                                 {/* Header */}
                                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                                    <h4 className="text-2xl font-semibold text-[#001571]">Edit Personal Profile Details</h4>
+                                    <h4 className="text-2xl font-semibold text-[#001571]">Add Experience Details</h4>
                                     <button
-                                        onClick={() => setNameEditForm(false)}
+                                        onClick={() => setOpenCreateExperienceForm(false)}
+                                        className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                    >
+                                        <FaTimes size={24} />
+                                    </button>
+                                </div>
+
+                                {/* Scrollable Form Content */}
+                                <div className="flex-1 overflow-y-auto px-6 py-4">
+                                    <form onSubmit={handleCreateExperience} className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Position
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="position"
+                                                value={newExperienceData.position}
+                                                onChange={handleExperienceInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Company Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="companyName"
+                                                value={newExperienceData.companyName}
+                                                onChange={handleExperienceInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Description
+                                            </label>
+                                            <textarea
+                                                type="text"
+                                                name="description"
+                                                value={newExperienceData.description}
+                                                onChange={handleExperienceInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#001571]">
+                                                    Country
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="country"
+                                                    value={newExperienceData.country}
+                                                    onChange={handleExperienceInputChange}
+                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#001571]">
+                                                    City
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="city"
+                                                    value={newExperienceData.city}
+                                                    onChange={handleExperienceInputChange}
+                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#001571]">
+                                                    Start Date
+                                                </label>
+                                                <input
+                                                    type="date"
+                                                    name="startDate"
+                                                    value={newExperienceData.startDate}
+                                                    onChange={handleExperienceInputChange}
+                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-semibold text-[#001571]">
+                                                    End Date
+                                                </label>
+                                                <input
+                                                    type="date"
+                                                    name="endDate"
+                                                    value={newExperienceData.endDate}
+                                                    onChange={handleExperienceInputChange}
+                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                                />
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                {/* Footer */}
+                                <div className="p-6 border-t border-gray-200 flex justify-end">
+                                    <button
+                                        type="submit"
+                                        onClick={handleCreateExperience}
+                                        disabled={isSubmitting}
+                                        className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                                            }`}
+                                    >
+                                        {isSubmitting ? "Saving..." : "Save"}
+                                        <span className="ml-2">
+                                            <PiCheckCircle size={20} />
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Add Education Form Popup */}
+                    {openCreateEducationForm && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                            {/* Popup Container */}
+                            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                                {/* Header */}
+                                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                                    <h4 className="text-2xl font-semibold text-[#001571]">Edit Bio Data</h4>
+                                    <button
+                                        // onClick={onClose}
                                         className="text-gray-500 hover:text-red-500 focus:outline-none"
                                     >
                                         <FaTimes size={24} />
@@ -596,133 +882,106 @@ export default function CandidateProfile({ slug }) {
                                 {/* Scrollable Form Content */}
                                 <div className="flex-1 overflow-y-auto px-6 py-4">
                                     <form onSubmit={jobseekerUpdateSubmitHandler} className="space-y-6">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    First Name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="firstName"
-                                                    value={userDetails.firstName || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    Last Name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="lastName"
-                                                    value={userDetails.lastName || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                        </div>
                                         <div>
                                             <label className="block text-sm font-semibold text-[#001571]">
-                                                Position
+                                                Birth Day
                                             </label>
                                             <input
-                                                type="text"
-                                                name="position"
-                                                value={jobSeekerDetails.position || ""}
+                                                type="date"
+                                                name="dob"
+                                                value={jobSeekerDetails.dob || ""}
                                                 onChange={handleInputChange}
                                                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                                             />
                                         </div>
                                         <div>
                                             <label className="block text-sm font-semibold text-[#001571]">
-                                                Personal Profile
+                                                Nationality
                                             </label>
                                             <input
                                                 type="text"
-                                                name="personalProfile"
-                                                value={jobSeekerDetails.personalProfile || ""}
+                                                name="nationality"
+                                                value={jobSeekerDetails.nationality || ""}
                                                 onChange={handleInputChange}
                                                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                                             />
                                         </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    LinkedIn
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="linkedin"
-                                                    value={jobSeekerDetails.linkedin || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    X
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="x"
-                                                    value={jobSeekerDetails.x || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Languages
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="languages"
+                                                value={jobSeekerDetails.languages || ""}
+                                                placeholder="example: English, French, Spanish, ...etc"
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
                                         </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    Facebook
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="facebook"
-                                                    value={jobSeekerDetails.facebook || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    Instagram
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="instagram"
-                                                    value={jobSeekerDetails.instagram || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Address
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                value={jobSeekerDetails.address || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
                                         </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    Github
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="github"
-                                                    value={jobSeekerDetails.github || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-semibold text-[#001571]">
-                                                    Dribbble
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="dribbble"
-                                                    value={jobSeekerDetails.dribbble || ""}
-                                                    onChange={handleInputChange}
-                                                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                                />
-                                            </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Age
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="age"
+                                                disabled
+                                                value={jobSeekerDetails.age || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Marital Status
+                                            </label>
+                                            <select
+                                                name="maritalStatus"
+                                                value={jobSeekerDetails.maritalStatus || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            >
+                                                <option value="">Select Marital Status</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Single">Single</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Religion
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="religion"
+                                                value={jobSeekerDetails.religion || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Ethnicity
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="ethnicity"
+                                                value={jobSeekerDetails.ethnicity || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
                                         </div>
                                     </form>
                                 </div>
@@ -746,8 +1005,8 @@ export default function CandidateProfile({ slug }) {
                         </div>
                     )}
 
-                    {/* Edit Bio Data Form Popup */}
-                    {BioDataForm && (
+                    {/* Add Certification Form Popup */}
+                    {openCreateCertificationForm && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                             {/* Popup Container */}
                             <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
@@ -755,7 +1014,291 @@ export default function CandidateProfile({ slug }) {
                                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
                                     <h4 className="text-2xl font-semibold text-[#001571]">Edit Bio Data</h4>
                                     <button
-                                        onClick={() => setBioDataForm(false)}
+                                        // onClick={onClose}
+                                        className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                    >
+                                        <FaTimes size={24} />
+                                    </button>
+                                </div>
+
+                                {/* Scrollable Form Content */}
+                                <div className="flex-1 overflow-y-auto px-6 py-4">
+                                    <form onSubmit={jobseekerUpdateSubmitHandler} className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Birth Day
+                                            </label>
+                                            <input
+                                                type="date"
+                                                name="dob"
+                                                value={jobSeekerDetails.dob || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Nationality
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="nationality"
+                                                value={jobSeekerDetails.nationality || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Languages
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="languages"
+                                                value={jobSeekerDetails.languages || ""}
+                                                placeholder="example: English, French, Spanish, ...etc"
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Address
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                value={jobSeekerDetails.address || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Age
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="age"
+                                                disabled
+                                                value={jobSeekerDetails.age || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Marital Status
+                                            </label>
+                                            <select
+                                                name="maritalStatus"
+                                                value={jobSeekerDetails.maritalStatus || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            >
+                                                <option value="">Select Marital Status</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Single">Single</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Religion
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="religion"
+                                                value={jobSeekerDetails.religion || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Ethnicity
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="ethnicity"
+                                                value={jobSeekerDetails.ethnicity || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                    </form>
+                                </div>
+
+                                {/* Footer */}
+                                <div className="p-6 border-t border-gray-200 flex justify-end">
+                                    <button
+                                        type="submit"
+                                        onClick={jobseekerUpdateSubmitHandler}
+                                        disabled={isSubmitting}
+                                        className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                                            }`}
+                                    >
+                                        {isSubmitting ? "Saving..." : "Save"}
+                                        <span className="ml-2">
+                                            <PiCheckCircle size={20} />
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Add Soft Skills Form Popup */}
+                    {openCreateSoftskillsForm && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                            {/* Popup Container */}
+                            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                                {/* Header */}
+                                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                                    <h4 className="text-2xl font-semibold text-[#001571]">Edit Bio Data</h4>
+                                    <button
+                                        // onClick={onClose}
+                                        className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                    >
+                                        <FaTimes size={24} />
+                                    </button>
+                                </div>
+
+                                {/* Scrollable Form Content */}
+                                <div className="flex-1 overflow-y-auto px-6 py-4">
+                                    <form onSubmit={jobseekerUpdateSubmitHandler} className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Birth Day
+                                            </label>
+                                            <input
+                                                type="date"
+                                                name="dob"
+                                                value={jobSeekerDetails.dob || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Nationality
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="nationality"
+                                                value={jobSeekerDetails.nationality || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Languages
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="languages"
+                                                value={jobSeekerDetails.languages || ""}
+                                                placeholder="example: English, French, Spanish, ...etc"
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Address
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                value={jobSeekerDetails.address || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Age
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="age"
+                                                disabled
+                                                value={jobSeekerDetails.age || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Marital Status
+                                            </label>
+                                            <select
+                                                name="maritalStatus"
+                                                value={jobSeekerDetails.maritalStatus || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            >
+                                                <option value="">Select Marital Status</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Single">Single</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Religion
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="religion"
+                                                value={jobSeekerDetails.religion || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-[#001571]">
+                                                Ethnicity
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="ethnicity"
+                                                value={jobSeekerDetails.ethnicity || ""}
+                                                onChange={handleInputChange}
+                                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                            />
+                                        </div>
+                                    </form>
+                                </div>
+
+                                {/* Footer */}
+                                <div className="p-6 border-t border-gray-200 flex justify-end">
+                                    <button
+                                        type="submit"
+                                        onClick={jobseekerUpdateSubmitHandler}
+                                        disabled={isSubmitting}
+                                        className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                                            }`}
+                                    >
+                                        {isSubmitting ? "Saving..." : "Save"}
+                                        <span className="ml-2">
+                                            <PiCheckCircle size={20} />
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Add Expertise Form Popup */}
+                    {openCreateExpertiseForm && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                            {/* Popup Container */}
+                            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                                {/* Header */}
+                                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                                    <h4 className="text-2xl font-semibold text-[#001571]">Edit Bio Data</h4>
+                                    <button
+                                        // onClick={onClose}
                                         className="text-gray-500 hover:text-red-500 focus:outline-none"
                                     >
                                         <FaTimes size={24} />
