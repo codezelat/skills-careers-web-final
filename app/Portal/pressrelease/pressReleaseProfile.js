@@ -130,13 +130,24 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
           </div>
         </div>
         <div className="relative w-full h-[400px] mb-4 z-0">
-          <Image
-            src={pressreleaseDetails.image}
-            alt="img"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-lg"
-          />
+          {pressreleaseDetails.image &&
+          pressreleaseDetails.image.trim() !== "" ? (
+            <Image
+              src={pressreleaseDetails.image}
+              alt="img"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          ) : (
+            <Image
+              src="/images/pressrelease-default.jpg"
+              alt="img"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          )}
         </div>
         <div>
           <p className="mb-2">{pressreleaseDetails.description}</p>

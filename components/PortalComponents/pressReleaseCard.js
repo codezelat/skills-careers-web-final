@@ -9,7 +9,7 @@ export default function PressReleaseCard(props, onViewPressrelease) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const { _id, title, description, image, createdAt } = props.pressrelease;
+  const { _id, title, image, createdAt } = props.pressrelease;
 
   const date = new Date(createdAt).getDate();
   const monthName = [
@@ -42,13 +42,23 @@ export default function PressReleaseCard(props, onViewPressrelease) {
     >
       {/* Main Image */}
       <div className="relative w-full h-48">
-        <Image
-          src={image}
-          alt={title}
-          layout="fill"
-          objectFit="cover"
-          className="rounded-t-lg"
-        />
+        {image && image.trim() !== "" ? (
+          <Image
+            src={image}
+            alt="img"
+            layout="fill"
+            objectFit="cover"
+            className="rounded-lg"
+          />
+        ) : (
+          <Image
+            src="/images/pressrelease-default.jpg"
+            alt="img"
+            layout="fill"
+            objectFit="cover"
+            className="rounded-lg"
+          />
+        )}
         {/* Action Icons */}
         {session?.user?.role === "admin" && (
           <div className="absolute top-2 right-2 flex space-x-2">
