@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     const data = await req.json();
     const {
-      firstName,
+      firstName ,
       lastName,
       recruiterName,
       employeeRange,
@@ -19,21 +19,44 @@ export async function POST(req) {
       role = "recruiter",
     } = data;
 
-    if (
-      !firstName ||
-      !lastName ||
-      !recruiterName ||
-      !employeeRange ||
-      !email ||
-      !email.includes("@") ||
-      !contactNumber ||
-      !password ||
-      password.trim().length < 7 ||
-      !confirmPassword ||
-      confirmPassword.trim().length < 7
-    ) {
-      return NextResponse.json({ message: "Invalid input." }, { status: 422 });
+    if (!firstName) {
+      return NextResponse.json({ message: "First name is required." }, { status: 422 });
     }
+    if (!lastName) {
+      return NextResponse.json({ message: "Last name is required." }, { status: 422 });
+    }
+    if (!recruiterName) {
+      return NextResponse.json({ message: "Recruiter name is required." }, { status: 422 });
+    }
+    if (!employeeRange) {
+      return NextResponse.json({ message: "Employee range is required." }, { status: 422 });
+    }
+    if (!email) {
+      return NextResponse.json({ message: "Email is required." }, { status: 422 });
+    }
+    if (!email.includes("@")) {
+      return NextResponse.json({ message: "Email is invalid." }, { status: 422 });
+    }
+    if (!contactNumber) {
+      return NextResponse.json({ message: "Contact number is required." }, { status: 422 });
+    }
+    if (!password) {
+      return NextResponse.json({ message: "Password is required." }, { status: 422 });
+    }
+    if (password.trim().length < 7) {
+      return NextResponse.json({ message: "Password must be at least 7 characters long." }, { status: 422 });
+    }
+    if (!confirmPassword) {
+      return NextResponse.json({ message: "Confirm password is required." }, { status: 422 });
+    }
+    if (confirmPassword.trim().length < 7) {
+      return NextResponse.json({ message: "Confirm password must be at least 7 characters long." }, { status: 422 });
+    }
+    if (password !== confirmPassword) {
+      return NextResponse.json({ message: "Passwords do not match." }, { status: 422 });
+    }
+    
+    // Continue with the rest of your logic here
 
     if (password !== confirmPassword) {
       return NextResponse.json(

@@ -7,16 +7,20 @@ import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
 async function createRecruiter(
+  firstName,
+  lastName,
   recruiterName,
   employeeRange,
   email,
   contactNumber,
   password,
-  confirmPassword
+  confirmPassword,
 ) {
   const response = await fetch("/api/auth/recruitersignup", {
     method: "POST",
     body: JSON.stringify({
+      firstName,
+      lastName,
       recruiterName,
       employeeRange,
       email,
@@ -28,6 +32,8 @@ async function createRecruiter(
       "Content-Type": "application/json",
     },
   });
+
+
 
   const data = await response.json();
 
@@ -42,6 +48,8 @@ function AuthForm() {
   const router = useRouter();
 
   const recruiterNameInputRef = useRef();
+  const firstNameInputRef = useRef();
+  const lastNameInputRef = useRef();
   const employeeRangeInputRef = useRef();
   const emailInputRef = useRef();
   const contactNumberInputRef = useRef();
@@ -51,6 +59,8 @@ function AuthForm() {
   async function submitHandler(event) {
     event.preventDefault();
 
+    const enteredFirstName = firstNameInputRef.current.value;
+    const enteredLastName = lastNameInputRef.current.value;
     const enteredRecruiterName = recruiterNameInputRef.current.value;
     const enteredEmployeeRangeName = employeeRangeInputRef.current.value;
     const enteredEmail = emailInputRef.current.value;
@@ -60,6 +70,8 @@ function AuthForm() {
 
     try {
       const result = await createRecruiter(
+        enteredFirstName,
+        enteredLastName,
         enteredRecruiterName,
         enteredEmployeeRangeName,
         enteredEmail,
@@ -70,7 +82,7 @@ function AuthForm() {
       console.log(result);
       alert(result.message);
 
-      router.push(`/login?email=${encodeURIComponent(enteredEmail)}`);
+      router.push(`/login`);
       // router.push(`/login`);
     } catch (error) {
       console.log(error.message);
@@ -82,6 +94,27 @@ function AuthForm() {
     <form className="space-y-4 text-blue-900" onSubmit={submitHandler}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <label className="block">
+          <input
+            type="text"
+            id="firstname"
+            required
+            ref={firstNameInputRef}
+            className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
+            placeholder="First Name"
+          />
+        </label>
+        <label className="block">
+          <input
+            type="text"
+            id="lastname"
+            required
+            ref={lastNameInputRef}
+            className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
+            placeholder="Last Name"
+          />
+        </label>
+      </div>
+      <label className="block">
           <input
             type="text"
             id="recruitername"
@@ -106,7 +139,6 @@ function AuthForm() {
             <option value="500+">500+</option>
           </select>
         </label>
-      </div>
       <label className="block">
         <input
           type="email"
@@ -147,7 +179,9 @@ function AuthForm() {
           placeholder="Confirm Password"
         />
       </label>
-      <Button className="w-full py-3 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <Button
+       className="w-full py-3 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+       >
         <span className="flex items-center justify-center ">
 
           <p>Register</p>
