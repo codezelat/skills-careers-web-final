@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     const data = await req.json();
     const {
-      firstName ,
+      firstName,
       lastName,
       recruiterName,
       employeeRange,
@@ -19,105 +19,66 @@ export async function POST(req) {
       role = "recruiter",
     } = data;
 
-    if (!firstName) {
-      return NextResponse.json({ message: "First name is required." }, { status: 422 });
-    }
-    if (!lastName) {
-      return NextResponse.json({ message: "Last name is required." }, { status: 422 });
-    }
-    if (!recruiterName) {
-      return NextResponse.json({ message: "Recruiter name is required." }, { status: 422 });
-    }
-    if (!employeeRange) {
-      return NextResponse.json({ message: "Employee range is required." }, { status: 422 });
-    }
-    if (!email) {
-      return NextResponse.json({ message: "Email is required." }, { status: 422 });
-    }
-    if (!email.includes("@")) {
-      return NextResponse.json({ message: "Email is invalid." }, { status: 422 });
-    }
-    if (!contactNumber) {
-      return NextResponse.json({ message: "Contact number is required." }, { status: 422 });
-    }
-    if (!password) {
-      return NextResponse.json({ message: "Password is required." }, { status: 422 });
-    }
-    if (password.trim().length < 7) {
-      return NextResponse.json({ message: "Password must be at least 7 characters long." }, { status: 422 });
-    }
-    if (!confirmPassword) {
-      return NextResponse.json({ message: "Confirm password is required." }, { status: 422 });
-    }
-    if (confirmPassword.trim().length < 7) {
-      return NextResponse.json({ message: "Confirm password must be at least 7 characters long." }, { status: 422 });
-    }
-    if (password !== confirmPassword) {
-      return NextResponse.json({ message: "Passwords do not match." }, { status: 422 });
-    }
-    
-    // Continue with the rest of your logic here
-
-    if (password !== confirmPassword) {
-      return NextResponse.json(
-        { message: "Password does not match." },
-        { status: 422 }
-      );
+    // Validate firstName, lastName, recruiterName (only letters)
+    if (!/^[A-Za-z]+$/.test(firstName)) {
+      return NextResponse.json({ message: "First name can only contain letters." }, { status: 422 });
     }
 
-    if (password.length < 8) {
-      return NextResponse.json(
-        { message: "Password must be at least 8 characters long." },
-        { status: 422 }
-      );
+    if (!/^[A-Za-z]+$/.test(lastName)) {
+      return NextResponse.json({ message: "Last name can only contain letters." }, { status: 422 });
+    }
+
+
+    // Validate email (should include "@" and only allow "." as a special character)
+    if (!email || !email.includes("@") || /[^a-zA-Z0-9.@]/.test(email)) {
+      return NextResponse.json({ message: "Invalid email format." }, { status: 422 });
+    }
+
+    // Validate contact number (only 10 digits)
+    if (!/^\d{10}$/.test(contactNumber)) {
+      return NextResponse.json({ message: "Contact number must be 10 digits." }, { status: 422 });
+    }
+
+    // Validate password (at least one uppercase, lowercase, number, special character, and length at least 8)
+    if (!password || password.trim().length < 8) {
+      return NextResponse.json({ message: "Password must be at least 8 characters long." }, { status: 422 });
     }
 
     if (!/[A-Z]/.test(password)) {
-      return NextResponse.json(
-        { message: "Password must include at least one uppercase letter." },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "Password must include at least one uppercase letter." }, { status: 422 });
     }
 
     if (!/[a-z]/.test(password)) {
-      return NextResponse.json(
-        { message: "Password must include at least one lowercase letter." },
-        { status: 422 }
-      );
-    }
-    
-    if (!/\d/.test(password)) {
-      return NextResponse.json(
-        { message: "Password must include at least one number." },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "Password must include at least one lowercase letter." }, { status: 422 });
     }
 
-    // Connect to database
+    if (!/\d/.test(password)) {
+      return NextResponse.json({ message: "Password must include at least one number." }, { status: 422 });
+    }
+
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      return NextResponse.json({ message: "Password must include at least one special character." }, { status: 422 });
+    }
+
+    if (password !== confirmPassword) {
+      return NextResponse.json({ message: "Passwords do not match." }, { status: 422 });
+    }
+
     const client = await connectToDatabase();
     const db = client.db();
 
     const existingUser = await db.collection("users").findOne({ email });
     if (existingUser) {
       client.close();
-      return NextResponse.json(
-        { message: "User exists already!" },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "User exists already!" }, { status: 422 });
     }
 
-    const existingRecruiter = await db
-      .collection("recruiters")
-      .findOne({ email });
+    const existingRecruiter = await db.collection("recruiters").findOne({ email });
     if (existingRecruiter) {
       client.close();
-      return NextResponse.json(
-        { message: "Recruiter exists already!" },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "Recruiter exists already!" }, { status: 422 });
     }
 
-    // Hash password
     const hashedPassword = await hashPassword(password);
 
     const session = client.startSession();
@@ -153,19 +114,13 @@ export async function POST(req) {
       await session.endSession();
       client.close();
 
-      return NextResponse.json(
-        { message: "User and recruiter created!" },
-        { status: 201 }
-      );
+      return NextResponse.json({ message: "User and recruiter created!" }, { status: 201 });
     } catch (transactionError) {
       await session.endSession();
       client.close();
       throw transactionError;
     }
   } catch (error) {
-    return NextResponse.json(
-      { message: "Something went wrong.", error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Something went wrong.", error: error.message }, { status: 500 });
   }
 }

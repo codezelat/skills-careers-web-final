@@ -17,75 +17,62 @@ export async function POST(req) {
       role = "jobseeker",
     } = data;
 
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !email.includes("@") ||
-      !contactNumber ||
-      !password ||
-      password.trim().length < 8 ||
-      !confirmPassword ||
-      confirmPassword.trim().length < 8
-    ) {
-      return NextResponse.json({ message: "Invalid input." }, { status: 422 });
+    // Validate firstName and lastName (only letters)
+    if (!/^[A-Za-z]+$/.test(firstName)) {
+      return NextResponse.json({ message: "First name can only contain letters." }, { status: 422 });
     }
 
-    if (password !== confirmPassword) {
-      return NextResponse.json(
-        { message: "Password does not match." },
-        { status: 422 }
-      );
+    if (!/^[A-Za-z]+$/.test(lastName)) {
+      return NextResponse.json({ message: "Last name can only contain letters." }, { status: 422 });
     }
 
-    if (password.length < 8) {
-      return NextResponse.json(
-        { message: "Password must be at least 8 characters long." },
-        { status: 422 }
-      );
+    // Validate email (should include "@" and no special characters except ".")
+    if (!email || !email.includes("@") || /[^a-zA-Z0-9.@]/.test(email)) {
+      return NextResponse.json({ message: "Invalid email format." }, { status: 422 });
+    }
+
+    // Validate contact number (only 10 digits)
+    if (!/^\d{10}$/.test(contactNumber)) {
+      return NextResponse.json({ message: "Contact number must be 10 digits." }, { status: 422 });
+    }
+
+    // Validate password (at least one uppercase, lowercase, number, special character, and length at least 8)
+    if (!password || password.trim().length < 8) {
+      return NextResponse.json({ message: "Password must be at least 8 characters long." }, { status: 422 });
     }
 
     if (!/[A-Z]/.test(password)) {
-      return NextResponse.json(
-        { message: "Password must include at least one uppercase letter." },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "Password must include at least one uppercase letter." }, { status: 422 });
     }
 
     if (!/[a-z]/.test(password)) {
-      return NextResponse.json(
-        { message: "Password must include at least one lowercase letter." },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "Password must include at least one lowercase letter." }, { status: 422 });
     }
 
     if (!/\d/.test(password)) {
-      return NextResponse.json(
-        { message: "Password must include at least one number." },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "Password must include at least one number." }, { status: 422 });
+    }
+
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      return NextResponse.json({ message: "Password must include at least one special character." }, { status: 422 });
+    }
+
+    if (password !== confirmPassword) {
+      return NextResponse.json({ message: "Password does not match." }, { status: 422 });
     }
 
     const client = await connectToDatabase();
     const db = client.db();
 
     const existingUser = await db.collection("users").findOne({ email });
-    const existingJobseeker = await db
-      .collection("jobseekers")
-      .findOne({ email });
+    const existingJobseeker = await db.collection("jobseekers").findOne({ email });
 
     if (existingUser) {
-      return NextResponse.json(
-        { message: "User exists already!" },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "User exists already!" }, { status: 422 });
     }
 
     if (existingJobseeker) {
-      return NextResponse.json(
-        { message: "User exists already!" },
-        { status: 422 }
-      );
+      return NextResponse.json({ message: "User exists already!" }, { status: 422 });
     }
 
     const hashedPassword = await hashPassword(password);
@@ -120,19 +107,13 @@ export async function POST(req) {
 
       await session.endSession();
       client.close();
-      return NextResponse.json(
-        { message: "User & Jobseeker created!" },
-        { status: 201 }
-      );
+      return NextResponse.json({ message: "User & Jobseeker created!" }, { status: 201 });
     } catch (transactionError) {
       await session.endSession();
       client.close();
       throw transactionError;
     }
   } catch (error) {
-    return NextResponse.json(
-      { message: "Something went wrong.", error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Something went wrong.", error: error.message }, { status: 500 });
   }
 }
