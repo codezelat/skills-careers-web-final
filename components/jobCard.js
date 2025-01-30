@@ -112,7 +112,7 @@ function JobCard(props) {
       <p className="text-xl font-bold text-[#000000] mb-4 text-left sm:text-left">
         {location}
       </p>
-      <p className="line-clamp-3 text-[#000000] text-sm mb-4 text-left sm:text-left text-justify">
+      <p className="line-clamp-3 text-[#000000] text-sm mb-4 text-justify sm:text-left">
         {jobDescription}
       </p>
       <div className="flex gap-4 flex-wrap justify-between sm:justify-start mt-auto">
