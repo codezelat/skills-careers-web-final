@@ -64,7 +64,7 @@ export default function InquiryCard({ inquiry, onViewInquiry }) {
 
     return (
         <>
-            <div className="py-4 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
+            <div className="py-2 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
                 <div className="flex flex-row space-x-3 w-[25%] items-center">
                     {/* Logo */}
                     <div className="">
@@ -80,15 +80,15 @@ export default function InquiryCard({ inquiry, onViewInquiry }) {
                     <div className="items-center">{inquiry.userName}</div>
                 </div>
                 {/* role */}
-                <div className="py-3 font-semibold w-[20%] flex items-center">{inquiry.userRole}</div>
+                <div className="py-1 font-semibold w-[20%] flex items-center">{inquiry.userRole}</div>
                 {/* date */}
-                <div className="py-3 font-semibold w-[20%] flex items-center">{postedDate}</div>
+                <div className="py-1 font-semibold w-[20%] flex items-center">{postedDate}</div>
                 {/* time */}
-                <div className="py-3 font-semibold w-[20%] flex items-center">{postedTime}</div>
+                <div className="py-1 font-semibold w-[20%] flex items-center">{postedTime}</div>
                 {/* Actions */}
-                <div className="py-3 flex gap-2 ml-auto justify-end w-[15%] items-center">
+                <div className="py-1 flex gap-2 ml-auto justify-end w-[15%] items-center">
                     <button
-                        className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-3 rounded-lg shadow hover:bg-blue-800"
+                        className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
                     // onClick={() => setShowRecruiter(true)}
                     >
                         <span>View Now</span>
