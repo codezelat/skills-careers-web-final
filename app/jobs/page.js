@@ -70,13 +70,16 @@ function Jobs() {
       <NavBar />
       <section className="bg-[#F5F5F5] w-full flex flex-col items-center pb-24">
         <div className="h-screen w-full absolute bg-white">
-          <Image src="/images/bg.jpg" alt="Background Image"
+          <Image
+            src="/images/bg.jpg"
+            alt="Background Image"
             layout="fill"
             objectFit="contain"
             objectPosition="right top"
             quality={100}
             priority
-            className="w-full h-full opacity-5 " />
+            className="w-full h-full opacity-5 "
+          />
         </div>
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 pb-8 pt-16 z-[2]">
           <div className="mb-8 sm:justify-center">
@@ -116,16 +119,16 @@ function Jobs() {
               />
             </div>
 
-              <div className="col-span-1">
-                <DropdownButton
-                  buttonName="Experience Level"
-                  dropdownItems={[
-                    "Experience Level 1",
-                    "Experience Level 2",
-                    "Experience Level 3",
-                  ]}
-                  onSelect={handleSelect}
-                />
+            <div className="col-span-1">
+              <DropdownButton
+                buttonName="Experience Level"
+                dropdownItems={[
+                  "Experience Level 1",
+                  "Experience Level 2",
+                  "Experience Level 3",
+                ]}
+                onSelect={handleSelect}
+              />
             </div>
 
             <div className="col-span-1 sm:col-span-1 flex sm:flex-none gap-2 md:gap-0">
@@ -148,9 +151,8 @@ function Jobs() {
               />
             </div>
           </div>
-
         </div>
-        <div className="container w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[2]">
+        <div className="grid w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[1]">
           {isLoading ? (
             <JobLoading />
           ) : filteredJobs.length > 0 ? (
@@ -165,8 +167,6 @@ function Jobs() {
             </div>
           )}
         </div>
-
-
       </section>
       <Footer />
     </>
