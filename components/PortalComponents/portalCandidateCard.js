@@ -2,10 +2,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function PortalCandidateCard(props, onSelect, isSelected) {
 
     const router = useRouter();
+    const { data: session, status } = useSession();
     const { _id, userId, email, contactNumber } = props.jobseeker;
 
     const [userDetails, setUserDetails] = useState({
@@ -92,27 +94,43 @@ export default function PortalCandidateCard(props, onSelect, isSelected) {
             {/* Website */}
             <div className="px-4 py-3 font-semibold w-[24.25%] flex items-center">{contactNumber}</div>
             {/* Actions */}
+            {session?.user?.role === "admin" && (
+                <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+                    <button
+                        className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                        onClick={handleViewCandidateProfile}
+                    >
+                        <span className="mr-2">
+                            <RiEdit2Fill size={20} />
+                        </span>
+                        <span>Edit</span>
+                    </button>
+                    <button
+                        className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
+                        type="button"
+                        onClick={handleDelete}
+                    >
+                        <span className="mr-2">
+                            <RiDeleteBinFill size={20} />
+                        </span>
+                        {isDeleting ? "Deleting..." : "Delete"}
+                    </button>
+                </div>
+            )}
+
+            {session?.user?.role === "recruiter" && (
             <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
                 <button
-                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                    className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
                     onClick={handleViewCandidateProfile}
                 >
                     <span className="mr-2">
                         <RiEdit2Fill size={20} />
                     </span>
-                    <span>Edit</span>
-                </button>
-                <button
-                    className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
-                    type="button"
-                    onClick={handleDelete}
-                >
-                    <span className="mr-2">
-                        <RiDeleteBinFill size={20} />
-                    </span>
-                    {isDeleting ? "Deleting..." : "Delete"}
+                    <span>View</span>
                 </button>
             </div>
+            )}
         </div>
     );
 

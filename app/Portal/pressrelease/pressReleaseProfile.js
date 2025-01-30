@@ -89,6 +89,7 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
             </p>
             <p className="text-sm font-semibold text-[#001571] mb-8">{date}</p>
           </div>
+          {session?.user?.role === "admin" && (
           <div className="flex space-x-3">
             <button
               onClick={handleOpenForm(setSelectedPressreleaseUpdate)}
@@ -128,6 +129,7 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
               />
             )}
           </div>
+          )}
         </div>
         <div className="relative w-full h-[400px] mb-4 z-0">
           {pressreleaseDetails.image &&

@@ -76,7 +76,7 @@ function UpdatePressrelease({ pressreleaseDetails, onClose, onSubmit }) {
             <input
               type="text"
               name="title"
-              value={updatedDetails.title}
+              value={updatedDetails.title || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full border rounded-md px-3 py-2"
               required
@@ -88,7 +88,7 @@ function UpdatePressrelease({ pressreleaseDetails, onClose, onSubmit }) {
             </label>
             <textarea
               name="description"
-              value={updatedDetails.description}
+              value={updatedDetails.description || ""}
               onChange={handleInputChange}
               rows="6"
               className="mt-1 block w-full border rounded-md px-3 py-2"

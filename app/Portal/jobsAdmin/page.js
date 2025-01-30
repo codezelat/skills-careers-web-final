@@ -72,7 +72,7 @@ export default function Jobs() {
   //create job functions
   const JOB_TYPE_OPTIONS = [
     'On Site',
-    'Hybride',
+    'Hybrid',
     'Remote',
     'Full-Time',
     'Part-Time',

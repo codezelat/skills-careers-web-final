@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import JobCard from "@/components/PortalComponents/portalJobCard";
 import PortalLoading from "../loading";
+import { FaTimes } from "react-icons/fa";
 
 export default function RecruiterPostedJobs(props) {
     const router = useRouter();
@@ -16,6 +17,8 @@ export default function RecruiterPostedJobs(props) {
     console.log(status);
 
     const [isFormVisible, setIsFormVisible] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formErrors, setFormErrors] = useState({});
     const [activeTab, setActiveTab] = useState("all");
     const [loading, setLoading] = useState(true);
     const [recruiterDetails, setRecruiterDetails] = useState({
@@ -43,39 +46,46 @@ export default function RecruiterPostedJobs(props) {
         }
     }, [status, router]);
 
-    useEffect(() => {
-        if (session?.user?.email) {
-            const fetchRecruiterDetails = async () => {
-                try {
-                    const response = await fetch(
-                        `/api/recruiterdetails/get?userId=${session.user.id}`
-                    );
-                    if (response.ok) {
-                        const data = await response.json();
-                        setRecruiterDetails(data);
-                    } else {
-                        console.error("Failed to fetch recruiter details lol");
-                    }
-                } catch (error) {
-                    console.error("Error fetching recruiter details:", error);
-                }
-            };
-            fetchRecruiterDetails();
-        }
-    }, [session]);
+    // useEffect(() => {
+    //     if (session?.user?.email) {
+    //         const fetchRecruiterDetails = async () => {
+    //             try {
+    //                 console.log(session.user.id);
+    //                 const response = await fetch(
+    //                     `/api/recruiterdetails/get?userId=${session.user.id}`
+    //                 );
+    //                 if (response.ok) {
+    //                     const data = await response.json();
+    //                     setRecruiterDetails(data);
+    //                 } else {
+    //                     console.error("Failed to fetch recruiter details");
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Error fetching recruiter details:", error);
+    //             }
+    //         };
+    //         fetchRecruiterDetails();
+    //     }
+    // }, [session]);
 
     useEffect(() => {
-        if (recruiterDetails.id) {
+        if (session?.user?.email) {
             const fetchJobs = async () => {
                 try {
+                    const recruiterResponse = await fetch(`/api/recruiterdetails/get?userId=${session.user.id}`);
+                    if (!recruiterResponse.ok) throw new Error("Failed to fetch recruiter");
+                    const recruiterData = await recruiterResponse.json();
+                    setRecruiterDetails(recruiterData);
+
                     const response = await fetch(
-                        `/api/job/all?recruiterId=${recruiterDetails.id}&showAll=true`
+                        `/api/job/all?recruiterId=${recruiterData.id}&showAll=true`
                     );
                     if (!response.ok) {
                         throw new Error("Failed to fetch jobs.");
                     }
                     const data = await response.json();
                     setJobs(data.jobs);
+                    console.log("jobs",data)
                 } catch (err) {
                     setError(err.message);
                     console.error("Error fetching jobs:", err);
@@ -85,7 +95,118 @@ export default function RecruiterPostedJobs(props) {
             };
             fetchJobs();
         }
-    }, [recruiterDetails.id]);
+    },[session]);
+
+    //create job functions
+    const JOB_TYPE_OPTIONS = [
+        'On Site',
+        'Hybride',
+        'Remote',
+        'Full-Time',
+        'Part-Time',
+        'Freelance'
+    ];
+    const [formData, setFormData] = useState({
+        jobTitle: '',
+        location: '',
+        jobTypes: [],
+        jobDescription: '',
+        keyResponsibilities: ''
+    });
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        setFormErrors(prev => ({ ...prev, [name]: '' }));
+    };
+    const handleJobTypeChange = (type) => {
+        setFormData(prev => ({
+            ...prev,
+            jobTypes: prev.jobTypes.includes(type)
+                ? prev.jobTypes.filter(t => t !== type)
+                : [...prev.jobTypes, type]
+        }));
+        setFormErrors(prev => ({ ...prev, jobTypes: '' }));
+    };
+    const handleRecruiterChange = (e) => {
+        setSelectedRecruiter(e.target.value);
+        setFormErrors(prev => ({ ...prev, recruiterId: '' }));
+    };
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.jobTitle.trim()) errors.jobTitle = 'Job title is required';
+        if (!formData.location.trim()) errors.location = 'Location is required';
+        if (formData.jobTypes.length === 0) errors.jobTypes = 'At least one job type is required';
+        if (!formData.jobDescription.trim()) errors.jobDescription = 'Description is required';
+        if (!formData.keyResponsibilities.trim()) errors.keyResponsibilities = 'Responsibilities are required';
+        return errors;
+    };
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const errors = validateForm();
+
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('/api/job/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    recruiterId: recruiterDetails.id
+                }),
+            });
+            console.log("menna ", JSON.stringify({
+                ...formData,
+                recruiterId: session.user.id
+            }));
+
+            // Handle empty response
+            if (response.status === 204) {
+                throw new Error("Server returned empty response");
+            }
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || `Error ${response.status}`);
+            }
+
+            // Refresh jobs list
+            const refreshResponse = await fetch("/api/job/all?showAll=true");
+            const refreshData = await refreshResponse.json();
+            setJobs(refreshData.jobs);
+
+            // Reset form
+            setFormData({
+                jobTitle: '',
+                location: '',
+                jobTypes: [],
+                jobDescription: '',
+                keyResponsibilities: ''
+            });
+
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert(error.message || 'Failed to create job. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleJobSelect = (jobId) => {
+        setSelectedJobId(jobId);
+    };
 
     // pagination function
     const [currentPage, setCurrentPage] = useState(1);
@@ -114,7 +235,7 @@ export default function RecruiterPostedJobs(props) {
                 <h1 className="text-xl font-bold text-[#001571]">Job Posts</h1>
                 <button
                     className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
-                    onClick={() => setShowApplicationForm(true)}
+                    onClick={() => setIsFormVisible(true)}
                 >
                     <BsPlus size={25} className="mr-1" />Add New
                 </button>
@@ -314,6 +435,138 @@ export default function RecruiterPostedJobs(props) {
                         </table>
                     </div> */}
                 </>
+            )}
+
+            {isFormVisible && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                            <h4 className="text-2xl font-semibold text-[#001571]">Add Job Post</h4>
+                            <button
+                                onClick={() => setIsFormVisible(false)}
+                                className="text-gray-500 hover:text-red-500 focus:outline-none"
+                            >
+                                <FaTimes size={24} />
+                            </button>
+                        </div>
+
+                        {/* Form Content */}
+                        <div className="flex-1 overflow-y-auto px-6 py-4">
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Job Title */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Job Title
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="jobTitle"
+                                        value={formData.jobTitle}
+                                        onChange={handleInputChange}
+                                        className={`mt-2 block w-full border ${formErrors.jobTitle ? 'border-red-500' : 'border-[#B0B6D3]'} rounded-xl shadow-sm px-4 py-3`}
+                                    />
+                                    {formErrors.jobTitle && (
+                                        <p className="text-red-500 text-sm mt-1">{formErrors.jobTitle}</p>
+                                    )}
+                                </div>
+
+                                {/* Location */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Location
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="location"
+                                        value={formData.location}
+                                        onChange={handleInputChange}
+                                        className={`mt-2 block w-full border ${formErrors.location ? 'border-red-500' : 'border-[#B0B6D3]'} rounded-xl shadow-sm px-4 py-3`}
+                                    />
+                                    {formErrors.location && (
+                                        <p className="text-red-500 text-base mt-1">{formErrors.location}</p>
+                                    )}
+                                </div>
+
+                                {/* Job Types */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571] mb-2">
+                                        Job Types
+                                    </label>
+                                    <div className="flex flex-row gap-2">
+                                        {JOB_TYPE_OPTIONS.map((type) => (
+                                            <label
+                                                key={type}
+                                                className={`flex items-center py-3 px-5 rounded-lg border-2 transition-all duration-300 ease-in-out
+                    ${formData.jobTypes.includes(type) ? 'bg-[#001571] text-white border-[#001571]' : 'bg-white text-black border-gray-300'}
+                  `}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.jobTypes.includes(type)}
+                                                    onChange={() => handleJobTypeChange(type)}
+                                                    className="hidden"
+                                                />
+                                                <span className="font-medium">{type}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+
+                                    {formErrors.jobTypes && (
+                                        <p className="text-red-500 text-base mt-1">{formErrors.jobTypes}</p>
+                                    )}
+                                </div>
+
+                                {/* Job Description */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Job Description
+                                    </label>
+                                    <textarea
+                                        name="jobDescription"
+                                        value={formData.jobDescription}
+                                        onChange={handleInputChange}
+                                        rows="4"
+                                        className={`mt-2 block w-full border ${formErrors.jobDescription ? 'border-red-500' : 'border-[#B0B6D3]'} rounded-xl shadow-sm px-4 py-3`}
+                                    />
+                                    {formErrors.jobDescription && (
+                                        <p className="text-red-500 text-sm mt-1">{formErrors.jobDescription}</p>
+                                    )}
+                                </div>
+
+                                {/* Key Responsibilities */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Key Responsibilities
+                                    </label>
+                                    <textarea
+                                        name="keyResponsibilities"
+                                        value={formData.keyResponsibilities}
+                                        onChange={handleInputChange}
+                                        rows="4"
+                                        className={`mt-2 block w-full border ${formErrors.keyResponsibilities ? 'border-red-500' : 'border-[#B0B6D3]'} rounded-xl shadow-sm px-4 py-3`}
+                                    />
+                                    {formErrors.keyResponsibilities && (
+                                        <p className="text-red-500 text-sm mt-1">{formErrors.keyResponsibilities}</p>
+                                    )}
+                                </div>
+
+                                {/* Submit Button */}
+                                <div className="border-t border-gray-200 pt-6 flex justify-end">
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+                                            }`}
+                                    >
+                                        {isSubmitting ? 'Creating...' : 'Create Job Post'}
+                                        <PiCheckCircle className="ml-2" size={20} />
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {/* Pagination */}
