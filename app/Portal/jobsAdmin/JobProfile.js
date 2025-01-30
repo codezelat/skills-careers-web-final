@@ -366,6 +366,42 @@ export default function JobProfile({ slug }) {
                                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                                     />
                                 </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-[#001571] mb-2">Job Type</label>
+                                    <div className="flex flex-wrap gap-4">
+                                        {["On Site", "Hybrid", "Remote", "Full-Time", "Part-Time", "Freelance"].map((type, index) => {
+                                            const isChecked = editedJobDetails.jobTypes?.includes(type);
+                                            return (
+                                                <label
+                                                    key={index}
+                                                    className={`flex items-center px-4 py-2 rounded-lg cursor-pointer transition-all
+                                                        ${isChecked
+                                                            ? "bg-[#001571] text-white" // Checked state
+                                                            : "bg-white text-black border border-gray-400 hover:bg-gray-100"} // Unchecked state`}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        name="jobTypes"
+                                                        value={type}
+                                                        checked={isChecked}
+                                                        onChange={(e) => {
+                                                            const checked = e.target.checked;
+                                                            setEditedJobDetails((prev) => ({
+                                                                ...prev,
+                                                                jobTypes: checked
+                                                                    ? [...(prev.jobTypes || []), type]
+                                                                    : prev.jobTypes.filter((t) => t !== type),
+                                                            }));
+                                                        }}
+                                                        className="hidden"
+                                                    />
+                                                    <span className="text-sm">{type}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
                             </form>
                         </div>
 
