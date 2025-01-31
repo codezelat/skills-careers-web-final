@@ -218,7 +218,6 @@ function ApplicationForm({ jobid }) {
 
   return (
     <>
-      <NavBar />
       <div className="p-4">
 
         <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">

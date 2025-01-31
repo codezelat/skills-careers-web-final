@@ -46,6 +46,7 @@ async function createRecruiter(
 function AuthForm() {
   const router = useRouter();
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const recruiterNameInputRef = useRef();
   const firstNameInputRef = useRef();
@@ -113,6 +114,7 @@ function AuthForm() {
 
   async function submitHandler(event) {
     event.preventDefault();
+    setIsSubmitting(true);
 
     if (!validateForm()) return;
 
@@ -149,6 +151,7 @@ function AuthForm() {
       });
     } catch (error) {
       console.log(error.message);
+      setIsSubmitting(false);
 
       // SweetAlert2 for failure with 2 second timer
       Swal.fire({
@@ -266,9 +269,11 @@ function AuthForm() {
           <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
         )}
       </label>
-      <Button className="w-full py-3 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <Button
+        disabled={isSubmitting} 
+        className="w-full py-3 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
         <span className="flex items-center justify-center">
-          <p>Register</p>
+          <p>{isSubmitting ? "Please Wait..." : "Register"}</p>
           <img
             src="/images/arrow-up.png"
             alt="Register"

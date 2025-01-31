@@ -55,10 +55,7 @@ export default function Candidates() {
         setFilteredJobseekers(
             jobseekers.filter(
                 (jobseeker) =>
-                    jobseeker.firstName.toLowerCase().includes(query) ||
-                    jobseeker.lastName.toLowerCase().includes(query) ||
-                    jobseeker.position.toLowerCase().includes(query) ||
-                    jobseeker.address.toLowerCase().includes(query)
+                    jobseeker.email.toLowerCase().includes(query)
             )
         );
     };
@@ -222,25 +219,28 @@ export default function Candidates() {
                                 />
                             </div>
                         </div>
-                        {/* Action Buttons */}
-                        <div className="flex gap-4 mb-4 items-center bg-green">
-                            <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
-                                <span className="mr-2 flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                    />
-                                </span>
-                                Select More
-                            </button>
 
-                            <button className="flex bg-[#EC221F] text-white px-6 py-3 rounded-2xl shadow hover:bg-red-600">
-                                <span className="mr-2">
-                                    <RiDeleteBinFill size={20} />
-                                </span>
-                                Delete
-                            </button>
-                        </div>
+                        {/* Action Buttons */}
+                        {session?.user?.role === "admin" && (
+                            <div className="flex gap-4 mb-4 items-center bg-green">
+                                <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
+                                    <span className="mr-2 flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        />
+                                    </span>
+                                    Select More
+                                </button>
+
+                                <button className="flex bg-[#EC221F] text-white px-6 py-3 rounded-2xl shadow hover:bg-red-600">
+                                    <span className="mr-2">
+                                        <RiDeleteBinFill size={20} />
+                                    </span>
+                                    Delete
+                                </button>
+                            </div>
+                        )}
 
                         {/* Table */}
                         <div className="w-full overflow-x-auto">

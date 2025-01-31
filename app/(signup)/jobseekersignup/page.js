@@ -33,6 +33,7 @@ async function createJobSeeker(
 }
 
 function AuthForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -93,7 +94,8 @@ function AuthForm() {
   async function submitHandler(event) {
     event.preventDefault();
     if (!validateForm()) return;
-  
+    setIsSubmitting(true);
+
     try {
       const result = await createJobSeeker(
         formData.firstName,
@@ -103,7 +105,7 @@ function AuthForm() {
         formData.password,
         formData.confirmPassword
       );
-  
+
       Swal.fire({
         icon: 'success',
         title: 'Jobseeker Created!',
@@ -111,7 +113,7 @@ function AuthForm() {
         timer: 2000, // 2 seconds
         showConfirmButton: false,
       });
-  
+
       setFormData({
         firstName: "",
         lastName: "",
@@ -120,9 +122,10 @@ function AuthForm() {
         password: "",
         confirmPassword: "",
       });
-  
+
       router.push(`/login?email=${encodeURIComponent(formData.email)}`);
     } catch (error) {
+      setIsSubmitting(false);
       Swal.fire({
         icon: 'error',
         title: 'Failed to Create Jobseeker',
@@ -132,7 +135,7 @@ function AuthForm() {
       });
     }
   }
-  
+
   return (
     <form className="space-y-4 text-blue-900" onSubmit={submitHandler}>
       {/* First Name & Last Name */}
@@ -145,9 +148,8 @@ function AuthForm() {
               onChange={(e) =>
                 setFormData({ ...formData, [field]: e.target.value })
               }
-              className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-                errors[field] ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors[field] ? "border-red-500" : "border-gray-300"
+                }`}
               placeholder={field === "firstName" ? "First Name" : "Last Name"}
             />
             {errors[field] && (
@@ -163,9 +165,8 @@ function AuthForm() {
           type="text"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-            errors.email ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.email ? "border-red-500" : "border-gray-300"
+            }`}
           placeholder="Email"
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
@@ -181,9 +182,8 @@ function AuthForm() {
             const numericValue = e.target.value.replace(/\D/g, "");
             setFormData({ ...formData, contactNumber: numericValue });
           }}
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-            errors.contactNumber ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.contactNumber ? "border-red-500" : "border-gray-300"
+            }`}
           placeholder="Contact Number"
           maxLength={10} // Ensures user can't type more than 10 digits
         />
@@ -200,9 +200,8 @@ function AuthForm() {
           onChange={(e) =>
             setFormData({ ...formData, password: e.target.value })
           }
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-            errors.password ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.password ? "border-red-500" : "border-gray-300"
+            }`}
           placeholder="Enter Password"
         />
         {errors.password && (
@@ -218,9 +217,8 @@ function AuthForm() {
           onChange={(e) =>
             setFormData({ ...formData, confirmPassword: e.target.value })
           }
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-            errors.confirmPassword ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+            }`}
           placeholder="Confirm Password"
         />
         {errors.confirmPassword && (
@@ -229,8 +227,8 @@ function AuthForm() {
       </label>
 
       {/* Register Button */}
-      <Button className="w-full py-3 mt-8 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        Register
+      <Button disabled={isSubmitting} className="w-full py-3 mt-8 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        {isSubmitting ? "Please Wait..." : "Register"}
       </Button>
 
       {/* Login Link */}

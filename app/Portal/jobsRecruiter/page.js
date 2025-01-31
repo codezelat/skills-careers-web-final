@@ -85,7 +85,7 @@ export default function RecruiterPostedJobs(props) {
                     }
                     const data = await response.json();
                     setJobs(data.jobs);
-                    console.log("jobs",data)
+                    console.log("jobs", data)
                 } catch (err) {
                     setError(err.message);
                     console.error("Error fetching jobs:", err);
@@ -95,7 +95,7 @@ export default function RecruiterPostedJobs(props) {
             };
             fetchJobs();
         }
-    },[session]);
+    }, [session]);
 
     //create job functions
     const JOB_TYPE_OPTIONS = [
@@ -130,10 +130,6 @@ export default function RecruiterPostedJobs(props) {
         }));
         setFormErrors(prev => ({ ...prev, jobTypes: '' }));
     };
-    const handleRecruiterChange = (e) => {
-        setSelectedRecruiter(e.target.value);
-        setFormErrors(prev => ({ ...prev, recruiterId: '' }));
-    };
     const validateForm = () => {
         const errors = {};
         if (!formData.jobTitle.trim()) errors.jobTitle = 'Job title is required';
@@ -143,7 +139,7 @@ export default function RecruiterPostedJobs(props) {
         if (!formData.keyResponsibilities.trim()) errors.keyResponsibilities = 'Responsibilities are required';
         return errors;
     };
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const errors = validateForm();
@@ -166,12 +162,7 @@ export default function RecruiterPostedJobs(props) {
                     recruiterId: recruiterDetails.id
                 }),
             });
-            console.log("menna ", JSON.stringify({
-                ...formData,
-                recruiterId: session.user.id
-            }));
 
-            // Handle empty response
             if (response.status === 204) {
                 throw new Error("Server returned empty response");
             }
@@ -182,8 +173,13 @@ export default function RecruiterPostedJobs(props) {
                 throw new Error(result.message || `Error ${response.status}`);
             }
 
-            // Refresh jobs list
-            const refreshResponse = await fetch("/api/job/all?showAll=true");
+            // Close the form
+            setIsFormVisible(false);
+
+            // Refresh jobs list with proper filtering
+            const refreshResponse = await fetch(
+                `/api/job/all?recruiterId=${recruiterDetails.id}&showAll=true`
+            );
             const refreshData = await refreshResponse.json();
             setJobs(refreshData.jobs);
 

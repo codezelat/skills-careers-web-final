@@ -76,7 +76,6 @@ function JobseekerProfile({ slug }) {
   return (
     <div className="p-4">
       <div className="grid justify-center">
-        <NavBar />
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md my-4">

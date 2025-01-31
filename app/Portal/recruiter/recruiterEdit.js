@@ -117,6 +117,78 @@ export default function RecruiterEdit({
                                 rows={4}
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-[#001571]">
+                                Facebook
+                            </label>
+                            <input
+                                name="facebook"
+                                value={recruiterDetails.facebook || ""}
+                                onChange={onInputChange}
+                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                rows={4}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-[#001571]">
+                                Instagram
+                            </label>
+                            <input
+                                name="instagram"
+                                value={recruiterDetails.instagram || ""}
+                                onChange={onInputChange}
+                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                rows={4}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-[#001571]">
+                                LinkedIn
+                            </label>
+                            <input
+                                name="linkedin"
+                                value={recruiterDetails.linkedin || ""}
+                                onChange={onInputChange}
+                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                rows={4}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-[#001571]">
+                                X
+                            </label>
+                            <input
+                                name="x"
+                                value={recruiterDetails.x || ""}
+                                onChange={onInputChange}
+                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                rows={4}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-[#001571]">
+                                Dribbble
+                            </label>
+                            <input
+                                name="dribbble"
+                                value={recruiterDetails.dribbble || ""}
+                                onChange={onInputChange}
+                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                rows={4}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-[#001571]">
+                                Github
+                            </label>
+                            <input
+                                name="github"
+                                value={recruiterDetails.github || ""}
+                                onChange={onInputChange}
+                                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                rows={4}
+                            />
+                        </div>
                     </form>
                 </div>
 
@@ -125,7 +197,7 @@ export default function RecruiterEdit({
                     <button
                         type="submit"
                         onClick={onSubmit}
-                        disabled={isSubmitting} 
+                        disabled={isSubmitting}
                         className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
                             }`}
                     >

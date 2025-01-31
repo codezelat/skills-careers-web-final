@@ -258,7 +258,7 @@ export default function SideMenuSection() {
                         </Link>
 
                         {/* Settings */}
-                        <Link href="/adminPortal/setting">
+                        <Link href="/Portal/settings">
                             <button
                                 onClick={() => setActiveButton("Settings")}
                                 className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Settings"

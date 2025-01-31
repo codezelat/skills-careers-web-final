@@ -45,8 +45,6 @@ function aboutPage() {
 
   return (
     <>
-      <NavBar />
-
       {/* Upper Banner */}
       <div
         className="relative w-full bg-cover bg-center h-64 md:h-80 flex items-center justify-center"

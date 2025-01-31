@@ -72,7 +72,7 @@ export default function DashboardCharts() {
       {session?.user?.role === "recruiter" && (
         <div className="grid grid-cols-2 gap-6">
           {/* Active Users Chart */}
-          <div className="bg-white shadow-md rounded-lg p-4">
+          <div className="bg-white shadow-md rounded-3xl p-4">
             <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
               <p>Applications</p>
               <Link href="">

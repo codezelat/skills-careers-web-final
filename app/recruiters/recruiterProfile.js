@@ -85,7 +85,6 @@ function RecruiterProfile({ slug }) {
 
   return (
     <>
-      <NavBar />
       <div className="w-full space-y-5 pb-8 pt-16 flex flex-col items-center justify-center">
 
         <div className="w-[1280px] pb-3 bg-white shadow-lg rounded-lg">

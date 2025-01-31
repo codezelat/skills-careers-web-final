@@ -61,7 +61,6 @@ function Recruiters() {
 
   return (
     <>
-      <NavBar />
       <div className="bg-[#F5F5F5] w-full flex justify-center z-0">
         <div className="h-screen w-full absolute bg-white z-[1]">
           <Image src="/images/bg.jpg" alt="Background Image"

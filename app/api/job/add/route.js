@@ -22,7 +22,7 @@ export async function POST(req) {
       'location',
       'jobTypes',
       'jobDescription',
-      'keyResponsibilities'
+      'keyResponsibilities',
     ];
 
     const missingFields = requiredFields.filter(field => !data[field]);
@@ -64,6 +64,7 @@ export async function POST(req) {
       ...data,
       recruiterId: new ObjectId(data.recruiterId),
       createdAt: new Date(),
+      postedDate: new Date()
     });
 
     return NextResponse.json(

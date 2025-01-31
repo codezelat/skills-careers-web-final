@@ -16,7 +16,6 @@ function contactPage() {
 
     return (
         <>
-            <NavBar />
             {/* Upper Banner */}
             <div
                 className="relative w-full md:flex sm:flex bg-cover bg-center h-80 sm:h-50"

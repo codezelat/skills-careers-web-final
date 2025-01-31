@@ -94,7 +94,6 @@ function EditProfileForm() {
   return (
     <div className="p-4">
       <div className="grid justify-center">
-        <NavBar />
       </div>
 
       <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">

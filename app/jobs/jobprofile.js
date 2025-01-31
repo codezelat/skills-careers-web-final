@@ -147,7 +147,6 @@ function JobProfile({ slug }) {
 
   return (
     <>
-      <NavBar />
       <div className="w-full">
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 pt-5">

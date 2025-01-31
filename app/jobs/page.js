@@ -67,7 +67,6 @@ function Jobs() {
 
   return (
     <>
-      <NavBar />
       <section className="bg-[#F5F5F5] w-full flex flex-col items-center pb-24">
         <div className="h-screen w-full absolute bg-white">
           <Image

@@ -75,7 +75,6 @@ function StartingPage() {
 
   return (
     <>
-      <NavBar />
 
       {/* Hero section */}
       <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex justify-center">

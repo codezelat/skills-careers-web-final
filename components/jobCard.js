@@ -17,6 +17,7 @@ function JobCard(props) {
     location,
     jobTypes,
     jobDescription,
+    shortDescription
   } = props.job;
 
   const date = new Date(createdAt).getDate();
@@ -76,7 +77,7 @@ function JobCard(props) {
   };
 
   return (
-    <div className="bg-white hover:bg-[#CAD1F1] p-6 rounded-lg shadow-lg max-h-[70vh] flex flex-col">
+    <div className="bg-white hover:bg-[#CAD1F1] p-6 rounded-lg shadow-lg min-h-[70vh] flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <p className="w-full text-right text-[#000000] text-sm font-bold">
           {postedDate}
@@ -112,8 +113,8 @@ function JobCard(props) {
       <p className="text-xl font-bold text-[#000000] mb-4 text-left sm:text-left">
         {location}
       </p>
-      <p className="line-clamp-3 text-[#000000] text-sm mb-4 text-justify sm:text-left">
-        {jobDescription}
+      <p className="line-clamp-4 text-[#000000] text-sm mb-4 text-justify sm:text-left">
+        {shortDescription}
       </p>
       <div className="flex gap-4 flex-wrap justify-between sm:justify-start mt-auto">
         <button

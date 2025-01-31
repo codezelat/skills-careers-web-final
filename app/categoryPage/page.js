@@ -12,7 +12,6 @@ export default function CategoryPage() {
 
   return (
     <>
-      <NavBar />
       <div className="relative bg-[#F5F5F5]">
         <div className="h-[90vh] w-full bg-white absolute top-0 left-0 z-[1]">
           <Image src="/images/bg.jpg" alt="Background Image"
