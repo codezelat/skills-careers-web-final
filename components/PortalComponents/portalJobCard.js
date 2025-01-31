@@ -44,10 +44,11 @@ function JobCard(props) {
             }
         };
         fetchApplicationCount();
-    }, [_id, recruiterId]);
+    }, [recruiterId, session?.user?.role]);
 
     useEffect(() => {
-        if (recruiterId) {
+
+        if (session?.user?.role === 'admin' && recruiterId) {
             const fetchRecruiterDetails = async (e) => {
                 try {
                     const response = await fetch(
@@ -57,10 +58,10 @@ function JobCard(props) {
                         const data = await response.json();
                         setRecruiterDetails(data);
                     } else {
-                        console.error("Failed to fetch recruiter details");
+                        console.error("Failed to fetch recruiter detailsa");
                     }
                 } catch (error) {
-                    console.error("Error fetching recruiter details:", error);
+                    console.error("Error fetching recruiter detailsss:", error);
                 }
             };
 
@@ -138,7 +139,7 @@ function JobCard(props) {
     };
 
     const handleViewJobsRecruiter = () => {
-        router.push(`/Portal/jobsAdmin/${_id}`)
+        router.push(`/Portal/jobsRecruiter/${_id}`)
     };
 
     const date = new Date(createdAt).getDate();
@@ -188,6 +189,14 @@ function JobCard(props) {
                             </div>
                             <div className=" py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
                                 <button
+                                    onClick={handleViewJobsAdmin}
+                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
+                                    <span className="mr-2">
+                                        <RiDeleteBinFill size={20} />
+                                    </span>
+                                    Edit
+                                </button>
+                                <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
                                     className={`flex items-center justify-center w-1/2 bg-[#001571] text-white py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
@@ -203,14 +212,6 @@ function JobCard(props) {
                                         : isPublished
                                             ? "Unrestricted"
                                             : "Restricted"}
-                                </button>
-                                <button
-                                    onClick={handleViewJobsAdmin}
-                                    className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
-                                    <span className="mr-2">
-                                        <RiDeleteBinFill size={20} />
-                                    </span>
-                                    Edit
                                 </button>
                                 {/* <button 
                                 className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
@@ -235,13 +236,21 @@ function JobCard(props) {
                             <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
                                 {applicationCount}
                             </div>
-                            <div className="px-4 py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+                            <div className=" py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+                                <button
+                                    onClick={handleViewJobsRecruiter}
+                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
+                                    <span className="mr-2">
+                                        <RiDeleteBinFill size={20} />
+                                    </span>
+                                    Edit
+                                </button>
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
-                                    className={`flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
-                                        ? "bg-[#001571] text-white hover:bg-yellow-600"
-                                        : "bg-green-500 text-white hover:bg-green-600"
+                                    className={`flex items-center justify-center w-1/2 bg-[#001571] text-white py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
+                                        ? "bg-[#001571] text-white hover:bg-blue-600"
+                                        : "bg-[#EC221F] text-white hover:bg-red-700"
                                         }`}
                                 >
                                     <span className="mr-2">
@@ -250,15 +259,16 @@ function JobCard(props) {
                                     {isLoading
                                         ? "Loading..."
                                         : isPublished
-                                            ? "Restricted"
-                                            : "Unrestricted"}
+                                            ? "Unrestricted"
+                                            : "Restricted"}
                                 </button>
-                                <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+                                {/* <button 
+                                className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
                                     <span className="mr-2">
                                         <RiDeleteBinFill size={20} />
                                     </span>
-                                    Delete
-                                </button>
+                                    Edit
+                                </button> */}
                             </div>
                         </>
                     )}

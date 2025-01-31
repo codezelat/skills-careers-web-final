@@ -7,7 +7,7 @@ export async function PUT(req) {
   try {
     const body = await req.json();
 
-    const { _id, recruiterId, email, createdAt, ...updatedDetails } = body;
+    const { _id, recruiterId,userId, email, createdAt, ...updatedDetails } = body;
 
     if (!email || !email.includes("@")) {
       return NextResponse.json(

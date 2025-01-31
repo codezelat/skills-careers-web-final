@@ -166,43 +166,47 @@ export default function Candidates() {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-xl font-bold text-[#001571]">Candidates</h1>
-                    <button
-                        className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
-                        onClick={() => setNewJobseekerForm(true)}
-                    >
-                        <BsPlus size={25} className="mr-1" />Add New
-                    </button>
+                    {session?.user?.role === "admin" && (
+                        <button
+                            className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
+                            onClick={() => setNewJobseekerForm(true)}
+                        >
+                            <BsPlus size={25} className="mr-1" />Add New
+                        </button>
+                    )}
                 </div>
 
-                <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
-                    {/* All Recruiters Button */}
-                    <button
-                        onClick={() => setActiveTab("all")}
-                        className={`px-6 py-3 flex rounded-2xl ${activeTab === "all"
-                            ? "bg-[#001571] text-white"
-                            : "text-[#B0B6D3] bg-[#E6E8F1]"
-                            }`}
-                    >
-                        All Job Posts
-                        <span className="ml-2">
-                            <PiCheckCircle size={20} />
-                        </span>
-                    </button>
+                {session?.user?.role === "admin" && (
+                    <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
+                        {/* All Recruiters Button */}
+                        <button
+                            onClick={() => setActiveTab("all")}
+                            className={`px-6 py-3 flex rounded-2xl ${activeTab === "all"
+                                ? "bg-[#001571] text-white"
+                                : "text-[#B0B6D3] bg-[#E6E8F1]"
+                                }`}
+                        >
+                            All Job Posts
+                            <span className="ml-2">
+                                <PiCheckCircle size={20} />
+                            </span>
+                        </button>
 
-                    {/* Restricted Recruiters Button */}
-                    <button
-                        onClick={() => setActiveTab("restricted")}
-                        className={`px-6 py-3 flex rounded-2xl text-sm font-semibold ${activeTab === "restricted"
-                            ? "bg-[#001571] text-white"
-                            : "text-[#B0B6D3] bg-[#E6E8F1]"
-                            }`}
-                    >
-                        Restricted Job Posts
-                        <span className="ml-2">
-                            <PiCheckCircle size={20} />
-                        </span>
-                    </button>
-                </div>
+                        {/* Restricted Recruiters Button */}
+                        <button
+                            onClick={() => setActiveTab("restricted")}
+                            className={`px-6 py-3 flex rounded-2xl text-sm font-semibold ${activeTab === "restricted"
+                                ? "bg-[#001571] text-white"
+                                : "text-[#B0B6D3] bg-[#E6E8F1]"
+                                }`}
+                        >
+                            Restricted Job Posts
+                            <span className="ml-2">
+                                <PiCheckCircle size={20} />
+                            </span>
+                        </button>
+                    </div>
+                )}
 
                 {activeTab === "all" ? (
                     <>

@@ -40,6 +40,7 @@ export default function JobProfile({ slug }) {
                     const jobData = await jobResponse.json();
                     setJobDetails(jobData);
                     setEditedJobDetails(jobData);
+                    console.log("hi",jobData)
 
                     const recruiterResponse = await fetch(`/api/recruiterdetails/get?id=${jobData.recruiterId}`);
                     if (!recruiterResponse.ok) throw new Error("Failed to fetch recruiter");

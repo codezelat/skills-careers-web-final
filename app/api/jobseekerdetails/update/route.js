@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function PUT(req) {
   try {
     const body = await req.json();
-    const { _id, jobseekerId, email, createdAt, ...updatedDetails } = body;
+    const { _id, jobseekerId, email, createdAt, userId, ...updatedDetails } = body;
 
     if (!email || !email.includes("@")) {
       return NextResponse.json(

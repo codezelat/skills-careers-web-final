@@ -501,35 +501,37 @@ export default function CandidateProfile({ slug }) {
         <div className="bg-white rounded-3xl py-7 px-7">
 
             {/* Tabs */}
-            <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-[20px] w-max text-sm font-medium">
-                {/* All Recruiters Button */}
-                <button
-                    onClick={() => setActiveTab("Profile")}
-                    className={`px-6 py-3 flex rounded-2xl ${activeTab === "Profile"
-                        ? "bg-[#001571] text-white"
-                        : "text-[#B0B6D3] bg-[#E6E8F1]"
-                        }`}
-                >
-                    Profile
-                    <span className="ml-2">
-                        <PiCheckCircle size={20} />
-                    </span>
-                </button>
+            {session?.user?.role === "admin" && (
+                <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-[20px] w-max text-sm font-medium">
+                    {/* All Recruiters Button */}
+                    <button
+                        onClick={() => setActiveTab("Profile")}
+                        className={`px-6 py-3 flex rounded-2xl ${activeTab === "Profile"
+                            ? "bg-[#001571] text-white"
+                            : "text-[#B0B6D3] bg-[#E6E8F1]"
+                            }`}
+                    >
+                        Profile
+                        <span className="ml-2">
+                            <PiCheckCircle size={20} />
+                        </span>
+                    </button>
 
-                {/* Restricted Recruiters Button */}
-                <button
-                    onClick={() => setActiveTab("Credentials")}
-                    className={`px-6 py-3 flex rounded-2xl text-sm font-semibold ${activeTab === "Credentials"
-                        ? "bg-[#001571] text-white"
-                        : "text-[#B0B6D3] bg-[#E6E8F1]"
-                        }`}
-                >
-                    Credentials
-                    <span className="ml-2">
-                        <PiCheckCircle size={20} />
-                    </span>
-                </button>
-            </div>
+                    {/* Restricted Recruiters Button */}
+                    <button
+                        onClick={() => setActiveTab("Credentials")}
+                        className={`px-6 py-3 flex rounded-2xl text-sm font-semibold ${activeTab === "Credentials"
+                            ? "bg-[#001571] text-white"
+                            : "text-[#B0B6D3] bg-[#E6E8F1]"
+                            }`}
+                    >
+                        Credentials
+                        <span className="ml-2">
+                            <PiCheckCircle size={20} />
+                        </span>
+                    </button>
+                </div>
+            )}
 
             {activeTab === "Profile" ? (
                 <div>
@@ -556,24 +558,26 @@ export default function CandidateProfile({ slug }) {
                                 />
                             )}
                             {/* cover image edit btn */}
-                            <div className="z-0 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleCoverImageChange}
-                                    id="logo-image-input"
-                                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                />
-                                <Image
-                                    id="cover-image-input"
-                                    src="/editiconwhite.png"
-                                    alt="Edit Icon"
-                                    layout="fill"
-                                    objectFit="contain"
-                                    quality={100}
-                                    className="cursor-pointer"
-                                />
-                            </div>
+                            {session?.user?.role === "admin" && (
+                                <div className="z-0 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleCoverImageChange}
+                                        id="logo-image-input"
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                    />
+                                    <Image
+                                        id="cover-image-input"
+                                        src="/editiconwhite.png"
+                                        alt="Edit Icon"
+                                        layout="fill"
+                                        objectFit="contain"
+                                        quality={100}
+                                        className="cursor-pointer"
+                                    />
+                                </div>
+                            )}
 
                         </div>
                         {/* Profile Image */}
@@ -608,24 +612,26 @@ export default function CandidateProfile({ slug }) {
                                 </div>
 
                                 {/* Profile picture edit icon */}
-                                <div className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-0 bg-white">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        id="logo-image-input"
-                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                    />
-                                    {/* Edit Icon */}
-                                    <Image
-                                        src="/editiconwhite.png"
-                                        alt="Edit Icon"
-                                        width={40}
-                                        height={40}
-                                        objectFit="contain"
-                                        quality={100}
-                                    />
-                                </div>
+                                {session?.user?.role === "admin" && (
+                                    <div className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-0 bg-white">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            id="logo-image-input"
+                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                        />
+                                        {/* Edit Icon */}
+                                        <Image
+                                            src="/editiconwhite.png"
+                                            alt="Edit Icon"
+                                            width={40}
+                                            height={40}
+                                            objectFit="contain"
+                                            quality={100}
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             {/* Social Links */}
@@ -655,10 +661,56 @@ export default function CandidateProfile({ slug }) {
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex justify-center sm:justify-end w-full sm:w-auto sm:pt-2 z-0">
+                            {session?.user?.role === "admin" && (
+                                <div className="flex justify-center sm:justify-end w-full sm:w-auto sm:pt-2 z-0">
+                                    <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                        <button
+                                            onClick={() => setProfileEditForm(true)}
+                                            className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
+                                            <div className="flex gap-2">
+                                                <Image
+                                                    src="/editiconwhite.png"
+                                                    alt="Edit Icon"
+                                                    layout="fill"
+                                                    objectFit="contain"
+                                                    quality={100}
+                                                />
+                                            </div>
+                                        </button>
+                                        <Image
+                                            src="/editiconwhite.png"
+                                            alt="Edit Icon"
+                                            layout="fill"
+                                            objectFit="contain"
+                                            quality={100}
+                                            className="z-0"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* personal profile */}
+                    <div className="text-left space-y-4 mt-8">
+                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                            Personal Profile
+                        </h5>
+                        <p className="text-justify font-medium">
+                            {jobSeekerDetails.personalProfile || "No personal profile available"}
+                        </p>
+                    </div>
+
+                    {/* bio data */}
+                    <div className="text-left space-y-4 mt-12">
+                        <div className="flex flex-row items-center justify-between">
+                            <h5 className="lg:text-xl md:text-xl sm:text-2xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                                Bio Data
+                            </h5>
+                            {session?.user?.role === "admin" && (
                                 <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
                                     <button
-                                        onClick={() => setProfileEditForm(true)}
+                                        onClick={() => setBioDataForm(true)}
                                         className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
                                         <div className="flex gap-2">
                                             <Image
@@ -679,49 +731,7 @@ export default function CandidateProfile({ slug }) {
                                         className="z-0"
                                     />
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* personal profile */}
-                    <div className="text-left space-y-4 mt-8">
-                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                            Personal Profile
-                        </h5>
-                        <p className="text-justify font-medium">
-                            {jobSeekerDetails.personalProfile || "No personal profile available"}
-                        </p>
-                    </div>
-
-                    {/* bio data */}
-                    <div className="text-left space-y-4 mt-12">
-                        <div className="flex flex-row items-center justify-between">
-                            <h5 className="lg:text-xl md:text-xl sm:text-2xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                                Bio Data
-                            </h5>
-                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                <button
-                                    onClick={() => setBioDataForm(true)}
-                                    className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
-                                    <div className="flex gap-2">
-                                        <Image
-                                            src="/editiconwhite.png"
-                                            alt="Edit Icon"
-                                            layout="fill"
-                                            objectFit="contain"
-                                            quality={100}
-                                        />
-                                    </div>
-                                </button>
-                                <Image
-                                    src="/editiconwhite.png"
-                                    alt="Edit Icon"
-                                    layout="fill"
-                                    objectFit="contain"
-                                    quality={100}
-                                    className="z-0"
-                                />
-                            </div>
+                            )}
                         </div>
                         <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-base font-semibold">
                             {/* First Column */}
@@ -748,17 +758,19 @@ export default function CandidateProfile({ slug }) {
                             <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                                 Experience
                             </h5>
-                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                <button
-                                    onClick={() => setOpenCreateExperienceForm(true)}
-                                    className="flex items-center justify-center rounded-md z-10">
-                                    <div className="flex gap-2">
-                                        <FiPlus
-                                            size={30}
-                                            color="#001571" />
-                                    </div>
-                                </button>
-                            </div>
+                            {session?.user?.role === "admin" && (
+                                <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                    <button
+                                        onClick={() => setOpenCreateExperienceForm(true)}
+                                        className="flex items-center justify-center rounded-md z-10">
+                                        <div className="flex gap-2">
+                                            <FiPlus
+                                                size={30}
+                                                color="#001571" />
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-col gap-8">
                             {experienceDetails.length > 0 ? (
@@ -777,17 +789,19 @@ export default function CandidateProfile({ slug }) {
                             <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                                 Education
                             </h5>
-                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                <button
-                                    onClick={() => setOpenCreateEducationoForm(true)}
-                                    className="flex items-center justify-center rounded-md z-10">
-                                    <div className="flex gap-2">
-                                        <FiPlus
-                                            size={30}
-                                            color="#001571" />
-                                    </div>
-                                </button>
-                            </div>
+                            {session?.user?.role === "admin" && (
+                                <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                    <button
+                                        onClick={() => setOpenCreateEducationoForm(true)}
+                                        className="flex items-center justify-center rounded-md z-10">
+                                        <div className="flex gap-2">
+                                            <FiPlus
+                                                size={30}
+                                                color="#001571" />
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-col gap-8">
                             {educationDetails.length > 0 ? (
@@ -806,17 +820,19 @@ export default function CandidateProfile({ slug }) {
                             <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                                 Certification
                             </h5>
-                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                <button
-                                    onClick={() => setOpenCreateCertificationForm(true)}
-                                    className="flex items-center justify-center rounded-md z-10">
-                                    <div className="flex gap-2">
-                                        <FiPlus
-                                            size={30}
-                                            color="#001571" />
-                                    </div>
-                                </button>
-                            </div>
+                            {session?.user?.role === "admin" && (
+                                <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                    <button
+                                        onClick={() => setOpenCreateCertificationForm(true)}
+                                        className="flex items-center justify-center rounded-md z-10">
+                                        <div className="flex gap-2">
+                                            <FiPlus
+                                                size={30}
+                                                color="#001571" />
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-col gap-8">
                             {certificationDetails.length > 0 ? (
@@ -835,17 +851,19 @@ export default function CandidateProfile({ slug }) {
                             <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                                 Soft Skills
                             </h5>
-                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                <button
-                                    onClick={() => setOpenCreateSoftskillsForm(true)}
-                                    className="flex items-center justify-center rounded-md z-10">
-                                    <div className="flex gap-2">
-                                        <FiPlus
-                                            size={30}
-                                            color="#001571" />
-                                    </div>
-                                </button>
-                            </div>
+                            {session?.user?.role === "admin" && (
+                                <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                    <button
+                                        onClick={() => setOpenCreateSoftskillsForm(true)}
+                                        className="flex items-center justify-center rounded-md z-10">
+                                        <div className="flex gap-2">
+                                            <FiPlus
+                                                size={30}
+                                                color="#001571" />
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-wrap gap-4">
                             {jobSeekerDetails.softSkills?.map((skills, index) => (
@@ -866,17 +884,19 @@ export default function CandidateProfile({ slug }) {
                             <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                                 Personal Expertise
                             </h5>
-                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                <button
-                                    onClick={() => setOpenCreateExpertiseForm(true)}
-                                    className="flex items-center justify-center rounded-md z-10">
-                                    <div className="flex gap-2">
-                                        <FiPlus
-                                            size={30}
-                                            color="#001571" />
-                                    </div>
-                                </button>
-                            </div>
+                            {session?.user?.role === "admin" && (
+                                <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                    <button
+                                        onClick={() => setOpenCreateExpertiseForm(true)}
+                                        className="flex items-center justify-center rounded-md z-10">
+                                        <div className="flex gap-2">
+                                            <FiPlus
+                                                size={30}
+                                                color="#001571" />
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         <div className="flex flex-wrap gap-4">
                             {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
