@@ -34,33 +34,31 @@ export default function SideMenuSection() {
                         </Link>
 
                         {/* Recruiters */}
-                        {session?.user?.role === "admin" && (
-                            <Link href={
-                                session?.user?.role === "admin"
-                                    ? "/Portal/recruiter"
-                                    : session?.user?.role === "recruiter"
-                                        ? "/Portal/recruiter"
-                                        : session?.user?.role === "jobseeker"
-                                            ? "/recruiters"
-                                            : "#"
-                            }>
-                                <button
-                                    onClick={() => setActiveButton("Recruiters")}
-                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Recruiters"
-                                        ? "bg-[#001571] text-white"
-                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                        <Link href={
+                            session?.user?.role === "admin"
+                                ? "/Portal/recruiter"
+                                : session?.user?.role === "recruiter"
+                                    ? "/recruiters"
+                                    : session?.user?.role === "jobseeker"
+                                        ? "/recruiters"
+                                        : "#"
+                        }>
+                            <button
+                                onClick={() => setActiveButton("Recruiters")}
+                                className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Recruiters"
+                                    ? "bg-[#001571] text-white"
+                                    : "bg-white text-[#001571] hover:bg-gray-100"
+                                    }`}
+                            >
+                                <img
+                                    src="/sidebar/recruiters.png"
+                                    alt="Recruiters"
+                                    className={`h-5 w-5 mr-6 ${activeButton === "Recruiters" ? "filter invert brightness-0" : ""
                                         }`}
-                                >
-                                    <img
-                                        src="/sidebar/recruiters.png"
-                                        alt="Recruiters"
-                                        className={`h-5 w-5 mr-6 ${activeButton === "Recruiters" ? "filter invert brightness-0" : ""
-                                            }`}
-                                    />
-                                    Recruiters
-                                </button>
-                            </Link>
-                        )}
+                                />
+                                Recruiters
+                            </button>
+                        </Link>
 
                         {/* Candidates */}
                         {(session?.user?.role === "admin" || session?.user?.role === "recruiter") && (
@@ -132,7 +130,7 @@ export default function SideMenuSection() {
                         )}
 
                         {/* Analytics */}
-                        {session?.user?.role === "admin" && (
+                        {/* {session?.user?.role === "admin" && (
                             <Link href="/adminPortal/analytics">
                                 <button
                                     onClick={() => setActiveButton("Analytics")}
@@ -150,10 +148,10 @@ export default function SideMenuSection() {
                                     Analytics
                                 </button>
                             </Link>
-                        )}
+                        )} */}
 
                         {/* Membership */}
-                        {session?.user?.role === "admin" && (
+                        {/* {session?.user?.role === "admin" && (
                             <Link href="/adminPortal/membership" >
                                 <button
                                     onClick={() => setActiveButton("Memberships")}
@@ -173,7 +171,7 @@ export default function SideMenuSection() {
                                     Memberships
                                 </button>
                             </Link>
-                        )}
+                        )} */}
 
                         {/* Annoucements */}
                         <Link href="/Portal/annoucements">

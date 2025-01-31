@@ -140,7 +140,7 @@ export default function DashboardDataList() {
 
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg p-4 mt-10">
+      <div className="bg-white shadow-md rounded-3xl p-4 mt-10">
         {/* content */}
         {session?.user?.role === "admin" && (
           <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
