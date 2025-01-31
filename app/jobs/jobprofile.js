@@ -28,7 +28,10 @@ function JobProfile({ slug }) {
     jobTypes: "",
     jobDescription: "",
     keyResponsibilities: "",
+    requiredQualifications: "",
+    perksAndBenefits: "",
     createdAt: "",
+    postedDate: ""
   });
 
   const [recruiterDetails, setRecruiterDetails] = useState({
@@ -135,15 +138,30 @@ function JobProfile({ slug }) {
     );
   }
 
-  const handleViewApplication = () => {
-    router.push(`/jobs/${jobDetails.id}/apply`);
-  };
-
   const handleViewRecruiter = () => {
     router.push(`/recruiters/${recruiterDetails.id}`);
   };
 
-
+  // date
+  const date = new Date(jobDetails.postedDate).getDate();
+  const monthName = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const d = new Date(jobDetails.postedDate);
+  let month = monthName[d.getMonth()];
+  const year = new Date(jobDetails.postedDate).getFullYear();
+  const postedDate = `${date} ${month} ${year}`;
 
   return (
     <>
@@ -160,7 +178,7 @@ function JobProfile({ slug }) {
               />
             </div>
             <div className="flex justify-end gap-4 mb-8 text-black font-bold text-base lg:text-lg md:text-lg sm:text-lg">
-              <p>{new Date(jobDetails.createdAt).toLocaleDateString()}</p>
+              <p>{postedDate}</p>
             </div>
           </div>
           <div className="flex flex-wrap justify-between items-center mb-4">
@@ -213,60 +231,22 @@ function JobProfile({ slug }) {
             <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
             <h3 className="text-xl font-bold mb-2">Key Responsibilities</h3>
-            <ul className="list-disc list-inside p-2 m-2 space-y-3">
-              <li>
-                Design engaging and user-friendly interfaces for web and mobile
-                applications.
-              </li>
-              <li>
-                Conduct user research, wireframing, prototyping, and usability
-                testing to improve designs.
-              </li>
-              <li>
-                Collaborate with cross-functional teams including developers,
-                product managers, and marketers.
-              </li>
-              <li>
-                Maintain and evolve design systems to ensure consistency across
-                all platforms.
-              </li>
-              <li>
-                Stay updated with the latest design trends, tools, and
-                technologies.
-              </li>
+            <ul className="list-disc list-inside  space-y-3">
+              {jobDetails.keyResponsibilities}
             </ul>
 
             <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
             <h3 className="text-xl font-bold mb-2">Required Qualifications</h3>
-            <ul className="list-disc list-inside p-2 m-2 space-y-3">
-              <li>5+ years of experience in UX/UI design.</li>
-              <li>
-                Strong portfolio showcasing user-centered design and
-                problem-solving skills.
-              </li>
-              <li>
-                Proficiency in design tools like Figma, Sketch, and Adobe Creative
-                Suite.
-              </li>
-              <li>
-                Experience with HTML/CSS and front-end frameworks is a plus.
-              </li>
-              <li>
-                Excellent communication skills and ability to work in a team
-                environment.
-              </li>
+            <ul className="list-disc list-inside space-y-3">
+              {jobDetails.requiredQualifications}
             </ul>
 
             <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
             <h3 className="text-xl font-bold mb-2">Perks & Benefits</h3>
-            <ul className="list-disc list-inside p-2 m-2 space-y-3">
-              <li>Remote work flexibility.</li>
-              <li>Health, dental, and vision insurance.</li>
-              <li>401(k) plan with company match.</li>
-              <li>Professional development opportunities.</li>
-              <li>Flexible vacation policy.</li>
+            <ul className="list-disc list-inside space-y-3">
+              {jobDetails.perksAndBenefits}
             </ul>
           </div>
         </div>

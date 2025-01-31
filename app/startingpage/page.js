@@ -22,6 +22,7 @@ import FaqComponent from "@/components/FaqComponent";
 import Loading from "../loading";
 import JobLoading from "../jobLoading";
 import { IoSearchSharp } from "react-icons/io5";
+import JobApplicationForm from "../jobs/[jobid]/apply/JobApplicationForm";
 
 function StartingPage() {
 
@@ -32,6 +33,9 @@ function StartingPage() {
     setSelectedCountry(country);
     setIsOpen(false);
   };
+
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
 
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
@@ -71,6 +75,11 @@ function StartingPage() {
           job.location.toLowerCase().includes(query)
       )
     );
+  };
+
+  const handleApply = (jobId) => {
+    setSelectedJobId(jobId);
+    setShowApplicationForm(true);
   };
 
   return (
@@ -300,7 +309,10 @@ function StartingPage() {
                 >
                   {filteredJobs.map((job, index) => (
                     <SwiperSlide key={index}>
-                      <JobCard job={job} />
+                      <JobCard
+                        job={job}
+                        onApply={handleApply}
+                      />
                     </SwiperSlide>
                   ))}
 
@@ -321,6 +333,13 @@ function StartingPage() {
           </div>
         </div>
       </div>
+
+      {showApplicationForm && (
+        <JobApplicationForm
+          jobid={selectedJobId}
+          onClose={() => setShowApplicationForm(false)}
+        />
+      )}
 
 
       <CategoryComponent />

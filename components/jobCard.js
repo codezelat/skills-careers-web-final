@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-function JobCard(props) {
+function JobCard({job, onApply}) {
   const router = useRouter();
   const {
     _id,
@@ -18,7 +18,7 @@ function JobCard(props) {
     jobTypes,
     jobDescription,
     shortDescription
-  } = props.job;
+  } = job;
 
   const date = new Date(createdAt).getDate();
   const monthName = [
@@ -98,9 +98,8 @@ function JobCard(props) {
           jobTypes.map((type, index) => (
             <span
               key={index}
-              className={`px-2 py-1 rounded-[5px] text-xs font-semibold text-white ${
-                index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
-              }`}
+              className={`px-2 py-1 rounded-[5px] text-xs font-semibold text-white ${index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
+                }`}
             >
               {type}
             </span>
@@ -119,7 +118,7 @@ function JobCard(props) {
       <div className="flex gap-4 flex-wrap justify-between sm:justify-start mt-auto">
         <button
           className="bg-[#001571] text-white px-3 py-2 rounded-lg font-semibold"
-          onClick={handleViewApplication}
+          onClick={() => onApply(_id)}
         >
           Apply Now
         </button>

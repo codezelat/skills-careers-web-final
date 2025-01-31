@@ -10,6 +10,7 @@ import Image from "next/image";
 import DropdownButton from "../../components/dropDownButton";
 import JobLoading from "../jobLoading";
 import Footer from "@/components/Footer";
+import JobApplicationForm from "./[jobid]/apply/JobApplicationForm";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -17,6 +18,9 @@ function Jobs() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
 
   // Fetch jobs data
   useEffect(() => {
@@ -63,6 +67,11 @@ function Jobs() {
   const handleSelect = (country) => {
     setSelectedCountry(country);
     setIsOpen(false);
+  };
+
+  const handleApply = (jobId) => {
+    setSelectedJobId(jobId);
+    setShowApplicationForm(true);
   };
 
   return (
@@ -157,7 +166,10 @@ function Jobs() {
           ) : filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {filteredJobs.map((job, index) => (
-                <JobCard key={index} job={job} />
+                <JobCard
+                  key={index}
+                  onApply={handleApply}
+                  job={job} />
               ))}
             </div>
           ) : (
@@ -167,6 +179,12 @@ function Jobs() {
           )}
         </div>
       </section>
+      {showApplicationForm && (
+        <JobApplicationForm
+          jobid={selectedJobId}
+          onClose={() => setShowApplicationForm(false)}
+        />
+      )}
       <Footer />
     </>
   );
