@@ -7,8 +7,12 @@ import JobCard from "@/components/jobCard";
 import NavBar from "@/components/navBar";
 import Footer from "@/components/Footer";
 import Loading from "../loading";
+import JobApplicationForm from "../jobs/[jobid]/apply/JobApplicationForm";
 
 function RecruiterProfile({ slug }) {
+
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
   const router = useRouter();
   const [recruiterDetails, setRecruiterDetails] = useState({
     id: "",
@@ -62,7 +66,7 @@ function RecruiterProfile({ slug }) {
   }, [slug]);
 
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (error) {
@@ -79,9 +83,10 @@ function RecruiterProfile({ slug }) {
     );
   }
 
-  // const handleViewApplication = () => {
-  //   router.push(`/jobs/${recruiterDetails.id}/apply`);
-  // };
+  const handleApply = (jobId) => {
+    setSelectedJobId(jobId);
+    setShowApplicationForm(true);
+  };
 
   return (
     <>
@@ -172,11 +177,11 @@ function RecruiterProfile({ slug }) {
                   </p>
                 </div>
               </div>
-              <div className="flex justify-center sm:justify-end w-full sm:w-auto sm:pt-2">
+              {/* <div className="flex justify-center sm:justify-end w-full sm:w-auto sm:pt-2">
                 <button className="bg-[#001571] text-white py-3 px-4 rounded-md font-semibold">
                   Apply Now
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -210,7 +215,7 @@ function RecruiterProfile({ slug }) {
           <h1 className="text-2xl font-bold mb-12">Open Jobs</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {jobs.length > 0 ? (
-              jobs.map((job, index) => <JobCard key={index} job={job} />)
+              jobs.map((job, index) => <JobCard key={index} job={job} onApply={handleApply} />)
             ) : (
               <p className="col-span-full text-center text-gray-500">
                 No open jobs available at this time.
@@ -219,7 +224,14 @@ function RecruiterProfile({ slug }) {
           </div>
         </div>
       </div>
-      <Footer/>
+
+      {showApplicationForm && (
+        <JobApplicationForm
+          jobid={selectedJobId}
+          onClose={() => setShowApplicationForm(false)}
+        />
+      )}
+      <Footer />
     </>
   );
 }

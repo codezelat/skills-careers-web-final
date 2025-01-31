@@ -48,9 +48,7 @@ function Recruiters() {
     setFilteredRecruiters(
       recruiters.filter(
         (recruiter) =>
-          recruiter.recruiterName.toLowerCase().includes(query) ||
-          recruiter.industry.toLowerCase().includes(query) ||
-          recruiter.location.toLowerCase().includes(query)
+          recruiter.recruiterName.toLowerCase().includes(query) 
       )
     );
   };
@@ -102,8 +100,7 @@ function Recruiters() {
             </div>
           </div>
 
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-4 mb-8 text-[14px] md:text-[16px]">
+          {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-4 mb-8 text-[14px] md:text-[16px]">
             <div className="col-span-2 md:col-span-1">
               <DropdownButton
                 buttonName="Industry"
@@ -121,8 +118,7 @@ function Recruiters() {
               dropdownItems={["Salary Range 1", "Salary Range 2", "Salary Range 3"]}
               onSelect={handleSelect}
             />
-          </div>
-
+          </div> */}
 
           <div className="w-full pt-20">
             {isLoading ? (

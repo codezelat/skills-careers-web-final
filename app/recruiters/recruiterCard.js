@@ -23,6 +23,7 @@ function RecruiterCard(props) {
     employeeRange,
     email,
     contactNumber,
+    telephoneNumber,
     companyDescription,
     industry,
     location,
@@ -134,14 +135,14 @@ function RecruiterCard(props) {
                 </div>
               </div>
 
-              <p className="text-black mt-8 mb-6 text-justify">
+              <p className="line-clamp-4 text-black mt-8 mb-6 text-justify">
                 {companyDescription}
               </p>
 
               <div className="flex flex-wrap gap-4 mt-4">
                 <button className="flex items-center bg-[#001571] text-white px-4 py-2 rounded-md">
                   <FaPhoneAlt className="mr-2" />
-                  {contactNumber}
+                  {telephoneNumber || "Not Available"}
                 </button>
                 <button className="flex items-center bg-[#001571] text-white px-4 py-2 rounded-md">
                   <FaEnvelope className="mr-2" />
@@ -162,9 +163,9 @@ function RecruiterCard(props) {
                 </p>
               </Link>
             </button>
-            <button className="bg-[#001571] font-semibold text-lg text-white px-6 py-2 rounded-md">
+            {/* <button className="bg-[#001571] font-semibold text-lg text-white px-6 py-2 rounded-md">
               Open Jobs
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
