@@ -37,6 +37,10 @@ export default function PortalApplicationCard({ application }) {
     }
   };
 
+  const handleView = () => {
+    router.push(`/Portal/jobApplications/${application.jobseekerId}`)
+  };
+
   const date = new Date(application.appliedAt).getDate();
   const monthName = [
     "January",
@@ -76,13 +80,19 @@ export default function PortalApplicationCard({ application }) {
       </div>
 
       <div className="flex gap-2 justify-end w-[20%] items-center">
-        <button
+        {/* <button
           className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
           onClick={handleDownloadCV}
           disabled={isDownloading || !application.cvFileId}
         >
           <RiDownloadLine size={20} className="mr-2" />
           {isDownloading ? "Downloading..." : "Download CV"}
+        </button> */}
+        <button
+          className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
+          onClick={handleView}
+        >
+          View
         </button>
       </div>
     </div>
