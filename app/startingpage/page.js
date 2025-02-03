@@ -23,6 +23,7 @@ import Loading from "../loading";
 import JobLoading from "../jobLoading";
 import { IoSearchSharp } from "react-icons/io5";
 import JobApplicationForm from "../jobs/[jobid]/apply/JobApplicationForm";
+import JobSearch from "@/components/jobSearch";
 
 function StartingPage() {
 
@@ -111,10 +112,10 @@ function StartingPage() {
                   Skill Careers.
                 </p>
 
-                <div className="relative w-full sm:w-2/3 md:w-1/2 lg:w-1/4">
+                <div className="relative w-full sm:w-2/3 md:w-1/2 lg:w-2/6 mb-5">
                   <div
                     onClick={() => setIsOpen(!isOpen)}
-                    className="bg-[#e6e8f1] border-2 border-[#B0B6D3] text-[#5462A0] py-3 px-3 mt-6 font-semibold rounded-md cursor-pointer sm:text-sm"
+                    className="border-2 border-[#B0B6D3] text-[#5462A0] py-4 px-3 mt-6 font-semibold rounded-md cursor-pointer sm:text-sm"
                   >
                     {selectedCountry ? (
                       <div className="flex items-center">
@@ -139,7 +140,7 @@ function StartingPage() {
                         <div
                           key={country.code}
                           onClick={() => handleSelect(country)}
-                          className="flex items-center px-2 py-2 hover:bg-gray-200 cursor-pointer"
+                          className="flex items-center px-2 py-4 hover:bg-gray-200 cursor-pointer"
                         >
                           {country.label}
                           <img
@@ -153,21 +154,7 @@ function StartingPage() {
                   )}
                 </div>
 
-                <div className="bg-gray-200 rounded-md">
-                  <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center mt-5 gap-4 mb-8 rounded-md py-1 md:py-2 px-1 md:px-4">
-                    <input
-                      type="text"
-                      placeholder="Search by job title, keywords, or company."
-                      className="bg-gray-200 w-full text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
-                    />
-                    <button className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold">
-                      <span className="mt-1 mr-2 md:mr-4 ">
-                        <IoSearchSharp size={20} />
-                      </span>
-                      Search
-                    </button>
-                  </div>
-                </div>
+                <JobSearch />
               </div>
 
               <div className="mt-24 mb-12">

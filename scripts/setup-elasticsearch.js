@@ -19,7 +19,37 @@ const collections = {
     indexName: "recruiters",
     mappings: {
       properties: {
+        recruiterId: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
         recruiterName: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
+        email: { type: "text", fields: { keyword: { type: "keyword" } } },
+        employeeRange: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
+        industry: { type: "text", fields: { keyword: { type: "keyword" } } },
+        location: { type: "text", fields: { keyword: { type: "keyword" } } },
+      },
+    },
+    transform: (doc) => ({
+      recruiterId: doc._id.toString(),
+      recruiterName: doc.recruiterName,
+      email: doc.email,
+      employeeRange: doc.employeeRange,
+      industry: doc.industry,
+      location: doc.location,
+    }),
+  },
+  jobseekers: {
+    indexName: "jobseekers",
+    mappings: {
+      properties: {
+        jobseekerId: {
           type: "text",
           fields: { keyword: { type: "keyword" } },
         },
@@ -27,22 +57,7 @@ const collections = {
       },
     },
     transform: (doc) => ({
-      recruiterName: doc.recruiterName,
-      email: doc.email,
-    }),
-  },
-  jobseekers: {
-    indexName: "jobseekers",
-    mappings: {
-      properties: {
-        firstName: { type: "text", fields: { keyword: { type: "keyword" } } },
-        lastName: { type: "text", fields: { keyword: { type: "keyword" } } },
-        email: { type: "text", fields: { keyword: { type: "keyword" } } },
-      },
-    },
-    transform: (doc) => ({
-      firstName: doc.firstName,
-      lastName: doc.lastName,
+      jobseekerId: doc._id.toString(),
       email: doc.email,
     }),
   },
@@ -50,32 +65,73 @@ const collections = {
     indexName: "jobs",
     mappings: {
       properties: {
+        jobId: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
         jobTitle: { type: "text", fields: { keyword: { type: "keyword" } } },
         recruiterId: { type: "keyword" },
         location: { type: "text", fields: { keyword: { type: "keyword" } } },
+        jobCategory: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
+        jobExperience: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
       },
     },
     transform: (doc) => ({
-      jobTitle: doc.title,
-      recruiterId: doc.recruiterId,
+      jobId: doc._id.toString(),
+      jobTitle: doc.jobTitle,
       location: doc.location,
+      jobTypes: doc.jobTypes,
+      recruiterId: doc.recruiterId,
     }),
   },
-  jobapplications: {
-    indexName: "jobapplication",
+  // jobapplications: {
+  //   indexName: "jobapplication",
+  //   mappings: {
+  //     properties: {
+  //       jobapplicationId: {
+  //         type: "text",
+  //         fields: { keyword: { type: "keyword" } },
+  //       },
+  //       jobId: { type: "keyword" },
+  //       jobTitle: { type: "text", fields: { keyword: { type: "keyword" } } },
+  //       jobseekerId: { type: "keyword" },
+  //       firstName: { type: "text", fields: { keyword: { type: "keyword" } } },
+  //       lastName: { type: "text", fields: { keyword: { type: "keyword" } } },
+  //       email: { type: "text", fields: { keyword: { type: "keyword" } } },
+  //       status: { type: "text", fields: { keyword: { type: "keyword" } } },
+  //     },
+  //   },
+  //   transform: (doc) => ({
+  //     jobapplicationId: doc._id.toString(),
+  //     jobId: doc.jobId,
+  //     jobTitle: doc.jobTitle,
+  //     jobseekerId: doc.jobseekerId,
+  //     firstName: doc.firstName,
+  //     lastName: doc.lastName,
+  //     email: doc.email,
+  //     status: doc.status,
+  //   }),
+  // },
+  pressreleases: {
+    indexName: "pressrelease",
     mappings: {
       properties: {
-        jobId: { type: "keyword" },
-        jobseekerId: { type: "keyword" },
-        cvFileId: { type: "keyword" },
-        status: { type: "keyword" },
+        pressreleaseId: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
+        title: { type: "keyword" },
       },
     },
     transform: (doc) => ({
-      jobId: doc.jobId,
-      jobseekerId: doc.jobseekerId,
-      cvFileId: doc.status,
-      status: doc.status,
+      pressreleaseId: doc._id.toString(),
+      title: doc.title,
     }),
   },
 };
