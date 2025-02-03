@@ -183,7 +183,7 @@ export default function Candidates() {
                                 : "text-[#B0B6D3] bg-[#E6E8F1]"
                                 }`}
                         >
-                            All Job Posts
+                            All Candidates
                             <span className="ml-2">
                                 <PiCheckCircle size={20} />
                             </span>
@@ -197,7 +197,7 @@ export default function Candidates() {
                                 : "text-[#B0B6D3] bg-[#E6E8F1]"
                                 }`}
                         >
-                            Restricted Job Posts
+                            Restricted Candidates
                             <span className="ml-2">
                                 <PiCheckCircle size={20} />
                             </span>
@@ -212,7 +212,7 @@ export default function Candidates() {
                                 <IoSearchSharp size={25} className="text-[#001571]" />
                                 <input
                                     type="text"
-                                    placeholder="Search Job Posts..."
+                                    placeholder="Search Candidates..."
                                     className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
                                     value={searchQuery}
                                     onChange={handleSearchChange}
@@ -248,7 +248,7 @@ export default function Candidates() {
                                 <thead>
                                     <tr className="text-[#8A93BE] text-base font-semibold text-left">
                                         <th className="px-4 py-3 w-[3%]"></th>
-                                        <th className="px-4 py-3 w-[24.25%]">Recruiter Name</th>
+                                        <th className="px-4 py-3 w-[24.25%]">Candidate Name</th>
                                         <th className="px-4 py-3 w-[24.25%]">Email</th>
                                         <th className=" px-4 py-3 w-[24.25%]">Phone</th>
                                         <th className="px-4 py-3 w-[24.25%]">Actions</th>
@@ -267,7 +267,7 @@ export default function Candidates() {
                                 ))
                             ) : (
                                 <p className="text-lg text-center font-bold text-red-500 py-20">
-                                    No jobs found.
+                                    No candidates found.
                                 </p>
                             )}
                         </div>
