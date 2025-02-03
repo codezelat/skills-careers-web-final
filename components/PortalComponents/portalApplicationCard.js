@@ -63,33 +63,33 @@ export default function PortalApplicationCard({ application }) {
 
   return (
     <div className="py-4 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
-      <div className="flex items-center w-[20%]">
+      <div className="flex items-center w-[16.66%]">
         {application.firstName} {application.lastName}
       </div>
 
-      <div className="py-3 w-[20%]">
+      <div className="py-3 w-[16.66%]">
         {application.jobTitle || "No title"}
       </div>
 
-      <div className="py-3 w-[20%]">
+      <div className="py-3 w-[16.66%]">
         {postedDate || "Unknown date"}
       </div>
 
-      <div className="py-3 w-[20%]">
+      <div className="py-3 w-[25%]">
         {application.email || "No email"}
       </div>
 
-      <div className="flex gap-2 justify-end w-[20%] items-center">
-        {/* <button
-          className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
+      <div className="flex gap-2 justify-end w-[25%] items-center">
+        <button
+          className="flex items-center justify-center w-1/2 h-[50px] bg-[#001571] text-white text-xs px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
           onClick={handleDownloadCV}
           disabled={isDownloading || !application.cvFileId}
         >
           <RiDownloadLine size={20} className="mr-2" />
           {isDownloading ? "Downloading..." : "Download CV"}
-        </button> */}
+        </button>
         <button
-          className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
+          className="flex items-center justify-center w-1/2 h-[50px] bg-[#001571] text-white  text-xs px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
           onClick={handleView}
         >
           View

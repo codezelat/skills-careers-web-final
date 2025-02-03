@@ -182,15 +182,12 @@ export default function CandidateProfile({ slug }) {
     // profile personal info update functions
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        setJobseekerDetails((prev) => ({ ...prev, [name]: value }));
+    };
 
-        // Update userDetails for firstName/lastName fields
-        if (name === "firstName" || name === "lastName") {
-            setUserDetails((prev) => ({ ...prev, [name]: value }));
-        }
-        // Update jobSeekerDetails for all other fields
-        else {
-            setJobseekerDetails((prev) => ({ ...prev, [name]: value }));
-        }
+    const handleUserInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserDetails((prev) => ({ ...prev, [name]: value }));
     };
 
     const jobseekerUpdateSubmitHandler = async (e) => {
@@ -917,6 +914,7 @@ export default function CandidateProfile({ slug }) {
                             userDetails={userDetails}
                             jobSeekerDetails={jobSeekerDetails}
                             handleInputChange={handleInputChange}
+                            handleUserInputChange={handleUserInputChange}
                             jobseekerUpdateSubmitHandler={jobseekerUpdateSubmitHandler}
                             isSubmitting={isSubmitting}
                             onClose={() => setProfileEditForm(false)}
