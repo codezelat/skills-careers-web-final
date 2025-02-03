@@ -131,18 +131,18 @@ export default function JobApplications() {
         </div>
       </div>
 
-      <div className="p-6 bg-white rounded-xl">
+      <div className=" bg-white rounded-xl mt-6">
         <h1 className="text-xl font-bold text-[#001571] mb-4">Applications</h1>
         
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                <th className="py-3 w-[20%]">Candidate Name</th>
-                <th className="py-3 w-[20%]">Job Title</th>
-                <th className="py-3 w-[20%]">Applied Date</th>
-                <th className="py-3 w-[20%]">Email</th>
-                <th className="py-3 w-[20%]">Actions</th>
+                <th className="py-3 w-[16.66%]">Candidate Name</th>
+                <th className="py-3 w-[16.66%]">Job Title</th>
+                <th className="py-3 w-[16.66%]">Applied Date</th>
+                <th className="py-3 w-[25%]">Email</th>
+                <th className="py-3 w-[25%]">Actions</th>
               </tr>
             </thead>
           </table>

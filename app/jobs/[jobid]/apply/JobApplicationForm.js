@@ -59,7 +59,7 @@ export default function JobApplicationForm({ onClose, jobid }) {
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role === "recruiter") {
       alert("Recruiters cannot apply for jobs");
-      router.push(`/jobs/${jobid}`); // Redirect to the jobs page or a relevant page
+      router.push(`/jobs`); // Redirect to the jobs page or a relevant page
     }
   }, [session, status, router, jobid]);
 
@@ -74,6 +74,8 @@ export default function JobApplicationForm({ onClose, jobid }) {
     email: "",
     logo: "",
   });
+
+  const [jobSeekerDetails, setJobseekerDetails] = useState({});
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -128,6 +130,29 @@ export default function JobApplicationForm({ onClose, jobid }) {
     }
   }, [jobDetails.recruiterId]);
 
+  useEffect(() => {
+    if (session?.user?.email) {
+      const fetchJobSeekerDetails = async () => {
+        try {
+          setIsLoading(true);
+          const response = await fetch(`/api/jobseekerdetails/get?userId=${session.user.id}`);
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || "Failed to fetch job details");
+          }
+
+          setJobseekerDetails(data.jobseeker);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchJobSeekerDetails();
+    }
+  }, [session]);
+
   // if (isLoading) {
   //   return <div className="text-center py-4">Loading Application Form ...</div>;
   // }
@@ -174,7 +199,7 @@ export default function JobApplicationForm({ onClose, jobid }) {
   async function submitHandler(event) {
     event.preventDefault();
 
-    const jobseekerId = session?.user?.id;
+    const jobseekerId = jobSeekerDetails._id;
 
     if (!selectedFile) {
       setFileError("Please upload your CV");

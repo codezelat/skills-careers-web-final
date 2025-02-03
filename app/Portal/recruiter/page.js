@@ -229,7 +229,7 @@ export default function Recruiters() {
               <IoSearchSharp size={25} className="text-[#001571]" />
               <input
                 type="text"
-                placeholder="Search Job Posts..."
+                placeholder="Search recruiters..."
                 className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
                 value={searchQuery}
                 onChange={handleSearchChange}
@@ -281,7 +281,7 @@ export default function Recruiters() {
               ))
             ) : (
               <p className="text-lg text-center font-bold text-red-500 py-20">
-                No jobs found.
+                No recruiters found.
               </p>
             )}
           </div>

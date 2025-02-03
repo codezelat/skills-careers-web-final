@@ -6,6 +6,7 @@ export default function NameEditForm({
     userDetails,
     jobSeekerDetails,
     handleInputChange,
+    handleUserInputChange,
     jobseekerUpdateSubmitHandler,
     isSubmitting,
     onClose,
@@ -37,7 +38,7 @@ export default function NameEditForm({
                                     type="text"
                                     name="firstName"
                                     value={userDetails.firstName || ""}
-                                    onChange={handleInputChange}
+                                    onChange={handleUserInputChange}
                                     className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                                 />
                             </div>
@@ -49,7 +50,7 @@ export default function NameEditForm({
                                     type="text"
                                     name="lastName"
                                     value={userDetails.lastName || ""}
-                                    onChange={handleInputChange}
+                                    onChange={handleUserInputChange}
                                     className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                                 />
                             </div>
