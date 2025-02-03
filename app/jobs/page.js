@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import useSWR from "swr";
 import JobCard from "@/components/jobCard";
 import NavBar from "@/components/navBar";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
@@ -9,6 +10,8 @@ import DropdownButton from "../../components/dropDownButton";
 import JobLoading from "../jobLoading";
 import Footer from "@/components/Footer";
 import JobApplicationForm from "./[jobid]/apply/JobApplicationForm";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -21,26 +24,30 @@ function Jobs() {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
 
-  // Fetch jobs and recruiter data
-  useEffect(() => {
-    async function fetchJobsAndRecruiters() {
-      try {
-        // Fetch jobs
-        const jobsResponse = await fetch("/api/job/all");
-        if (!jobsResponse.ok) throw new Error("Failed to fetch jobs.");
-        const jobsData = await jobsResponse.json();
-        const jobs = jobsData.jobs;
+  // SWR configuration for jobs data
+  const { data: jobsData, error: jobsError } = useSWR("/api/job/all", fetcher, {
+    refreshInterval: 60000, // Revalidate every 60 seconds
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
 
-        // Add industry to each job
+  // Process jobs and fetch recruiter details
+  useEffect(() => {
+    const processJobs = async () => {
+      if (!jobsData) return;
+
+      setIsLoading(true);
+      try {
         const jobsWithIndustry = await Promise.all(
-          jobs.map(async (job) => {
+          jobsData.jobs.map(async (job) => {
             try {
-              const recruiterResponse = await fetch(
+              const recruiterData = await fetcher(
                 `/api/recruiterdetails/get?id=${job.recruiterId}`
               );
-              if (!recruiterResponse.ok) return { ...job, industry: "Unknown" };
-              const recruiterData = await recruiterResponse.json();
-              return { ...job, industry: recruiterData.industry || "Unknown" };
+              return {
+                ...job,
+                industry: recruiterData?.industry || "Unknown",
+              };
             } catch (error) {
               return { ...job, industry: "Unknown" };
             }
@@ -54,12 +61,20 @@ function Jobs() {
         setError(error.message);
         setIsLoading(false);
       }
+    };
+
+    processJobs();
+  }, [jobsData]);
+
+  // Handle errors
+  useEffect(() => {
+    if (jobsError) {
+      setError(jobsError.message);
+      setIsLoading(false);
     }
+  }, [jobsError]);
 
-    fetchJobsAndRecruiters();
-  }, []);
-
-  // Update filtered jobs when filters change
+  // Filter jobs based on search and filters
   useEffect(() => {
     let filtered = jobs;
 
@@ -86,9 +101,16 @@ function Jobs() {
     setFilteredJobs(filtered);
   }, [searchQuery, selectedLocation, selectedIndustry, jobs]);
 
-  // Get unique industries and locations
-  const industries = [...new Set(jobs.map((job) => job.industry))].filter(Boolean);
-  const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
+  // Memoize unique industries and locations
+  const industries = useMemo(
+    () => [...new Set(jobs.map((job) => job.industry))].filter(Boolean),
+    [jobs]
+  );
+
+  const locations = useMemo(
+    () => [...new Set(jobs.map((job) => job.location))].filter(Boolean),
+    [jobs]
+  );
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -156,7 +178,11 @@ function Jobs() {
           </div>
         </div>
         <div className="grid w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[1]">
-          {isLoading ? (
+          {error ? (
+            <div className="w-full text-center py-20">
+              <p className="text-lg font-bold text-red-500">Error: {error}</p>
+            </div>
+          ) : isLoading ? (
             <JobLoading />
           ) : filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
