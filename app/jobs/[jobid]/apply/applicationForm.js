@@ -56,7 +56,7 @@ function ApplicationForm({ jobid }) {
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role === "recruiter") {
       alert("Recruiters cannot apply for jobs");
-      router.push(`/jobs/${jobid}`); // Redirect to the jobs page or a relevant page
+      router.push(`/jobs`); // Redirect to the jobs page or a relevant page
     }
   }, [session, status, router, jobid]);
 
@@ -71,6 +71,8 @@ function ApplicationForm({ jobid }) {
     email: "",
     logo: "",
   });
+
+  const [jobSeekerDetails, setJobseekerDetails] = useState({})
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -87,6 +89,56 @@ function ApplicationForm({ jobid }) {
         }
 
         setJobDetails(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (jobid) {
+      fetchJobDetails();
+    }
+  }, [jobid]);
+
+  useEffect(() => {
+    const fetchRecruiterDetails = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          `/api/recruiterdetails/get?id=${jobDetails.recruiterId}`
+        );
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch job details");
+        }
+
+        setRecruiterDetails(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (jobDetails.recruiterId) {
+      fetchRecruiterDetails();
+    }
+  }, [jobDetails.recruiterId]);
+
+  useEffect(() => {
+    const fetchJobSeekerDetails = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/jobseekerdetails/get?userId=${session.user.id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch job details");
+        }
+
+        setJobseekerDetails(data.jobseeker);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -171,7 +223,7 @@ function ApplicationForm({ jobid }) {
   async function submitHandler(event) {
     event.preventDefault();
 
-    const jobseekerId = session?.user?.id;
+    const jobseekerId = id;
 
     if (!selectedFile) {
       setFileError("Please upload your CV");
@@ -228,7 +280,7 @@ function ApplicationForm({ jobid }) {
             close
           </button>
           <h1 className="text-2xl font-bold mb-8">
-            Applying for {recruiterDetails.recruiterName}
+            Applying  {recruiterDetails.recruiterName} - {jobSeekerDetails.firstName || "lol"}
           </h1>
           <p className="text-base font-bold text-gray-600 mb-1">
             Job Name: {jobDetails.jobTitle}
