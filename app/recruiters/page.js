@@ -11,23 +11,21 @@ import Image from "next/image";
 
 function Recruiters() {
   const { data: session, status } = useSession();
-
   const [recruiters, setRecruiters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIndustry, setSelectedIndustry] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   // Fetch recruiters data
   useEffect(() => {
     async function fetchRecruiters() {
       try {
-        const response = await fetch("/api/recruiterdetails/all"); // Adjust endpoint as needed
-        if (!response.ok) {
-          throw new Error("Failed to fetch recruiters.");
-          setIsLoading(false);
-        }
+        const response = await fetch("/api/recruiterdetails/all");
+        if (!response.ok) throw new Error("Failed to fetch recruiters.");
+        
         const data = await response.json();
         setRecruiters(data.recruiters);
         setFilteredRecruiters(data.recruiters);
@@ -37,37 +35,55 @@ function Recruiters() {
         setIsLoading(false);
       }
     }
-
     fetchRecruiters();
   }, []);
 
-  // Handle search query change
-  const handleSearchChange = (event) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-    setFilteredRecruiters(
-      recruiters.filter(
-        (recruiter) =>
-          recruiter.recruiterName.toLowerCase().includes(query) 
-      )
-    );
-  };
+  // Update filters
+  useEffect(() => {
+    let filtered = recruiters;
 
-  const handleSelect = (country) => {
-    setSelectedCountry(country);
+    if (searchQuery) {
+      filtered = filtered.filter(recruiter =>
+        recruiter.recruiterName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (selectedIndustry) {
+      filtered = filtered.filter(
+        recruiter => recruiter.industry?.toLowerCase() === selectedIndustry.toLowerCase()
+      );
+    }
+
+    if (selectedLocation) {
+      filtered = filtered.filter(
+        recruiter => recruiter.location?.toLowerCase() === selectedLocation.toLowerCase()
+      );
+    }
+
+    setFilteredRecruiters(filtered);
+  }, [searchQuery, selectedIndustry, selectedLocation, recruiters]);
+
+  // Get unique industries and locations
+  const industries = [...new Set(recruiters.map(r => r.industry))].filter(Boolean);
+  const locations = [...new Set(recruiters.map(r => r.location))].filter(Boolean);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
   };
 
   return (
     <>
       <div className="bg-[#F5F5F5] w-full flex justify-center z-0">
         <div className="h-screen w-full absolute bg-white z-[1]">
-          <Image src="/images/bg.jpg" alt="Background Image"
+          <Image 
+            src="/images/bg.jpg" 
+            alt="Background Image"
             layout="fill"
             objectFit="contain"
             objectPosition="right top"
             quality={100}
             priority
-            className="w-full h-full opacity-5 " />
+            className="w-full h-full opacity-5" />
         </div>
         <div className="z-[2] min-h-screen w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-16">
           <div className="mb-8 sm:justify-center">
@@ -80,17 +96,13 @@ function Recruiters() {
 
           <div className="bg-[#e6e8f1] h-auto p-1 md:p-2 rounded-md">
             <div className="flex items-center gap-4 w-full">
-              {/* Input Field */}
               <input
                 type="search"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder="Search by job title, keywords, or company."
+                placeholder="Search recruiter name or company"
                 className="bg-gray-200 text-[14px] md:text-[18px] px-4 py-2 w-full rounded-md focus:outline-none font-semibold placeholder-[#5462A0]"
               />
-
-
-              {/* Search Button */}
               <button className="flex w-wrap justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold">
                 <span className="mt-1 mr-2 md:mr-4 ">
                   <IoSearchSharp size={20} />
@@ -100,25 +112,24 @@ function Recruiters() {
             </div>
           </div>
 
-          {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-4 mb-8 text-[14px] md:text-[16px]">
-            <div className="col-span-2 md:col-span-1">
-              <DropdownButton
-                buttonName="Industry"
-                dropdownItems={["Industry 1", "Industry 2", "Industry 3"]}
-                onSelect={handleSelect}
-              />
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
             <DropdownButton
-              buttonName="Experience Level"
-              dropdownItems={["Experience Level 1", "Experience Level 2", "Experience Level 3"]}
-              onSelect={handleSelect}
+              buttonName="Industry"
+              selected={selectedIndustry || "Industry"}
+              dropdownItems={["All Industries", ...industries]}
+              onSelect={(industry) => 
+                setSelectedIndustry(industry === "All Industries" ? null : industry)
+              }
             />
             <DropdownButton
-              buttonName="Salary Range"
-              dropdownItems={["Salary Range 1", "Salary Range 2", "Salary Range 3"]}
-              onSelect={handleSelect}
+              buttonName="Location"
+              selected={selectedLocation || "Location"}
+              dropdownItems={["All Locations", ...locations]}
+              onSelect={(location) => 
+                setSelectedLocation(location === "All Locations" ? null : location)
+              }
             />
-          </div> */}
+          </div>
 
           <div className="w-full pt-20">
             {isLoading ? (

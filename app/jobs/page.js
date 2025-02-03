@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import JobCard from "@/components/jobCard";
-import Countries from "@/components/Countries";
 import NavBar from "@/components/navBar";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
-import { countries } from "../../lib/countries";
 import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
 import DropdownButton from "../../components/dropDownButton";
@@ -18,21 +16,39 @@ function Jobs() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
 
-  // Fetch jobs data
+  // Fetch jobs and recruiter data
   useEffect(() => {
-    async function fetchJobs() {
+    async function fetchJobsAndRecruiters() {
       try {
-        const response = await fetch("/api/job/all"); // Adjust endpoint as needed
-        if (!response.ok) {
-          throw new Error("Failed to fetch jobs.");
-        }
-        const data = await response.json();
-        setJobs(data.jobs);
-        setFilteredJobs(data.jobs);
+        // Fetch jobs
+        const jobsResponse = await fetch("/api/job/all");
+        if (!jobsResponse.ok) throw new Error("Failed to fetch jobs.");
+        const jobsData = await jobsResponse.json();
+        const jobs = jobsData.jobs;
+
+        // Add industry to each job
+        const jobsWithIndustry = await Promise.all(
+          jobs.map(async (job) => {
+            try {
+              const recruiterResponse = await fetch(
+                `/api/recruiterdetails/get?id=${job.recruiterId}`
+              );
+              if (!recruiterResponse.ok) return { ...job, industry: "Unknown" };
+              const recruiterData = await recruiterResponse.json();
+              return { ...job, industry: recruiterData.industry || "Unknown" };
+            } catch (error) {
+              return { ...job, industry: "Unknown" };
+            }
+          })
+        );
+
+        setJobs(jobsWithIndustry);
+        setFilteredJobs(jobsWithIndustry);
         setIsLoading(false);
       } catch (error) {
         setError(error.message);
@@ -40,38 +56,42 @@ function Jobs() {
       }
     }
 
-    fetchJobs();
+    fetchJobsAndRecruiters();
   }, []);
 
-  // Handle search query change
-  const handleSearchChange = (event) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-    setFilteredJobs(
-      jobs.filter(
+  // Update filtered jobs when filters change
+  useEffect(() => {
+    let filtered = jobs;
+
+    if (searchQuery) {
+      filtered = filtered.filter(
         (job) =>
-          job.jobTitle.toLowerCase().includes(query) ||
-          job.location.toLowerCase().includes(query)
-      )
-    );
-  };
+          job.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          job.location.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
-  const [isOpen, setIsOpen] = useState(false);
+    if (selectedLocation) {
+      filtered = filtered.filter(
+        (job) => job.location.toLowerCase() === selectedLocation.toLowerCase()
+      );
+    }
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+    if (selectedIndustry) {
+      filtered = filtered.filter(
+        (job) => job.industry.toLowerCase() === selectedIndustry.toLowerCase()
+      );
+    }
 
-  const [selectedCountry, setSelectedCountry] = useState(null);
+    setFilteredJobs(filtered);
+  }, [searchQuery, selectedLocation, selectedIndustry, jobs]);
 
-  const handleSelect = (country) => {
-    setSelectedCountry(country);
-    setIsOpen(false);
-  };
+  // Get unique industries and locations
+  const industries = [...new Set(jobs.map((job) => job.industry))].filter(Boolean);
+  const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
 
-  const handleApply = (jobId) => {
-    setSelectedJobId(jobId);
-    setShowApplicationForm(true);
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
   };
 
   return (
@@ -107,8 +127,6 @@ function Jobs() {
                 value={searchQuery}
                 onChange={handleSearchChange}
               />
-              <Countries />
-
               <button className="flex items-center justify-center w-full md:w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 rounded-md font-semibold text-[12px] md:text-[16px]">
                 <span className="md:mt-1 mr-2 md:mr-4">
                   <IoSearchSharp size={15} />
@@ -118,47 +136,24 @@ function Jobs() {
             </div>
           </div>
 
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-8">
-            <div className="col-span-1">
-              <DropdownButton
-                buttonName="Industry"
-                dropdownItems={["Industry 1", "Industry 2", "Industry 3"]}
-                onSelect={handleSelect}
-              />
-            </div>
-
-            <div className="col-span-1">
-              <DropdownButton
-                buttonName="Experience Level"
-                dropdownItems={[
-                  "Experience Level 1",
-                  "Experience Level 2",
-                  "Experience Level 3",
-                ]}
-                onSelect={handleSelect}
-              />
-            </div>
-
-            <div className="col-span-1 sm:col-span-1 flex sm:flex-none gap-2 md:gap-0">
-              <DropdownButton
-                buttonName="Salary Range"
-                dropdownItems={[
-                  "Salary Range 1",
-                  "Salary Range 2",
-                  "Salary Range 3",
-                ]}
-                onSelect={handleSelect}
-              />
-            </div>
-
-            <div className="col-span-1 sm:col-span-1 flex sm:flex-none">
-              <DropdownButton
-                buttonName="Job Type"
-                dropdownItems={["Job Type 1", "Job Type 2", "Job Type 3"]}
-                onSelect={handleSelect}
-              />
-            </div>
-          </div> */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
+            <DropdownButton
+              buttonName="Location"
+              selected={selectedLocation || "Location"}
+              dropdownItems={["All Locations", ...locations]}
+              onSelect={(location) =>
+                setSelectedLocation(location === "All Locations" ? null : location)
+              }
+            />
+            <DropdownButton
+              buttonName="Industry"
+              selected={selectedIndustry || "Industry"}
+              dropdownItems={["All Industries", ...industries]}
+              onSelect={(industry) =>
+                setSelectedIndustry(industry === "All Industries" ? null : industry)
+              }
+            />
+          </div>
         </div>
         <div className="grid w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[1]">
           {isLoading ? (
@@ -168,8 +163,12 @@ function Jobs() {
               {filteredJobs.map((job, index) => (
                 <JobCard
                   key={index}
-                  onApply={handleApply}
-                  job={job} />
+                  onApply={(jobId) => {
+                    setSelectedJobId(jobId);
+                    setShowApplicationForm(true);
+                  }}
+                  job={job}
+                />
               ))}
             </div>
           ) : (
