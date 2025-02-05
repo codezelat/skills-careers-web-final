@@ -13,6 +13,14 @@ import CertificationCard from "@/components/PortalComponents/certificationCard";
 import ProfileEditFormPopup from "@/app/Portal/candidates/ProfileEditForm";
 import BioEditFormPopup from "@/app/Portal/candidates/BioDataForm";
 import { FiPlus } from "react-icons/fi";
+import { GoPencil } from "react-icons/go";
+import ExperienceCardEdit from "./experienceCardEdit";
+import EducationCardEdit from "./educationCardEdit";
+import CertificationCardEdit from "./certificationCardEdit";
+import SoftSkillsCard from "./softskillsCard";
+import SoftSkillsCardEdit from "./softskillsCardEdit";
+import ExpertiseCard from "./expertiseCard";
+import ExpertiseCardEdit from "./expertiseCardEdit";
 
 
 export default function CandidateProfile() {
@@ -26,10 +34,15 @@ export default function CandidateProfile() {
     const [ProfileEditForm, setProfileEditForm] = useState(false);
     const [BioDataForm, setBioDataForm] = useState(false);
     const [openCreateExperienceForm, setOpenCreateExperienceForm] = useState(false);
+    const [openEditxperienceForm, setOpenEditExperienceForm] = useState(false);
     const [openCreateEducationForm, setOpenCreateEducationoForm] = useState(false);
+    const [openEditEducationForm, setOpenEditEducationoForm] = useState(false);
     const [openCreateCertificationForm, setOpenCreateCertificationForm] = useState(false);
+    const [openEditCertificationForm, setOpenEditCertificationForm] = useState(false);
     const [openCreateSoftskillsForm, setOpenCreateSoftskillsForm] = useState(false);
+    const [openEditSoftskillsForm, setOpenEditSoftskillsForm] = useState(false);
     const [openCreateExpertiseForm, setOpenCreateExpertiseForm] = useState(false);
+    const [openEditExpertiseForm, setOpenEditExpertiseForm] = useState(false);
 
     const [jobSeekerDetails, setJobseekerDetails] = useState([]);
     const [userDetails, setUserDetails] = useState([]);
@@ -184,15 +197,12 @@ export default function CandidateProfile() {
     // profile personal info update functions
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        setJobseekerDetails((prev) => ({ ...prev, [name]: value }));
+    };
 
-        // Update userDetails for firstName/lastName fields
-        if (name === "firstName" || name === "lastName") {
-            setUserDetails((prev) => ({ ...prev, [name]: value }));
-        }
-        // Update jobSeekerDetails for all other fields
-        else {
-            setJobseekerDetails((prev) => ({ ...prev, [name]: value }));
-        }
+    const handleUserInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserDetails((prev) => ({ ...prev, [name]: value }));
     };
 
     const jobseekerUpdateSubmitHandler = async (e) => {
@@ -452,6 +462,31 @@ export default function CandidateProfile() {
         }
     };
 
+    // delete soft skill
+    const handleDeleteSoftSkill = async (skillToRemove) => {
+        try {
+            const updatedSoftSkills = jobSeekerDetails.softSkills.filter(
+                (skill) => skill !== skillToRemove
+            );
+
+            const updatedJobSeekerDetails = {
+                ...jobSeekerDetails,
+                softSkills: updatedSoftSkills,
+            };
+            setJobseekerDetails(updatedJobSeekerDetails);
+
+            const response = await fetch("/api/jobseekerdetails/update", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedJobSeekerDetails),
+            });
+
+            if (!response.ok) throw new Error("Failed to delete soft skill");
+        } catch (error) {
+            console.error("Error deleting soft skill:", error);
+        }
+    };
+
     // Create expertise
     const [newExpertise, setNewExpertise] = useState("");
     const handleAddExpertise = async (e) => {
@@ -495,8 +530,33 @@ export default function CandidateProfile() {
         }
     };
 
+    // delete soft skill
+    const handleDeleteExpertise = async (expertiseToRemove) => {
+        try {
+            const updatedExpertise = jobSeekerDetails.professionalExpertise.filter(
+                (expertise) => expertise !== expertiseToRemove
+            );
+
+            const updatedJobSeekerDetails = {
+                ...jobSeekerDetails,
+                professionalExpertise: updatedExpertise,
+            };
+            setJobseekerDetails(updatedJobSeekerDetails);
+
+            const response = await fetch("/api/jobseekerdetails/update", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedJobSeekerDetails),
+            });
+
+            if (!response.ok) throw new Error("Failed to delete expertise");
+        } catch (error) {
+            console.error("Error deleting expertise:", error);
+        }
+    };
+
     // loading
-    if (isLoading) return <PortalLoading />;
+    // if (isLoading) return <PortalLoading />;
     if (error) return <div className="text-red-500">Error: {error}</div>;
 
     return (
@@ -712,21 +772,36 @@ export default function CandidateProfile() {
                 </div>
 
                 {/* experience */}
-                <div className="text-left space-y-6 mt-12">
+                <div className="text-left space-y-10 mt-12">
                     <div className="flex flex-row items-center justify-between">
-                        <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                        <h5 className="flex flex-row items-center text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                             Experience
                         </h5>
-                        <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                            <button
-                                onClick={() => setOpenCreateExperienceForm(true)}
-                                className="flex items-center justify-center rounded-md z-10">
-                                <div className="flex gap-2">
-                                    <FiPlus
-                                        size={30}
-                                        color="#001571" />
-                                </div>
-                            </button>
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenEditExperienceForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <GoPencil
+                                            size={25}
+                                            strokeWidth={1}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateExperienceForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <FiPlus
+                                            size={30}
+                                            strokeWidth={2}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-col gap-8">
@@ -746,16 +821,31 @@ export default function CandidateProfile() {
                         <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                             Education
                         </h5>
-                        <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                            <button
-                                onClick={() => setOpenCreateEducationoForm(true)}
-                                className="flex items-center justify-center rounded-md z-10">
-                                <div className="flex gap-2">
-                                    <FiPlus
-                                        size={30}
-                                        color="#001571" />
-                                </div>
-                            </button>
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenEditEducationoForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <GoPencil
+                                            size={25}
+                                            strokeWidth={1}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateEducationoForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <FiPlus
+                                            size={30}
+                                            strokeWidth={2}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-col gap-8">
@@ -775,16 +865,31 @@ export default function CandidateProfile() {
                         <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                             Certification
                         </h5>
-                        <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                            <button
-                                onClick={() => setOpenCreateCertificationForm(true)}
-                                className="flex items-center justify-center rounded-md z-10">
-                                <div className="flex gap-2">
-                                    <FiPlus
-                                        size={30}
-                                        color="#001571" />
-                                </div>
-                            </button>
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenEditCertificationForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <GoPencil
+                                            size={25}
+                                            strokeWidth={1}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateCertificationForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <FiPlus
+                                            size={30}
+                                            strokeWidth={2}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-col gap-8">
@@ -804,27 +909,36 @@ export default function CandidateProfile() {
                         <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
                             Soft Skills
                         </h5>
-                        <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                            <button
-                                onClick={() => setOpenCreateSoftskillsForm(true)}
-                                className="flex items-center justify-center rounded-md z-10">
-                                <div className="flex gap-2">
-                                    <FiPlus
-                                        size={30}
-                                        color="#001571" />
-                                </div>
-                            </button>
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenEditSoftskillsForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <GoPencil
+                                            size={25}
+                                            strokeWidth={1}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateSoftskillsForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <FiPlus
+                                            size={30}
+                                            strokeWidth={2}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-4">
                         {jobSeekerDetails.softSkills?.map((skills, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-row items-center gap-2 bg-[#E6E8F1] px-4 py-2 rounded-md text-base font-semibold text-[#001571]"
-                            >
-                                <FaMedal />
-                                {skills}
-                            </div>
+                            <SoftSkillsCard key={index} skills={skills} />
                         )) ?? <p className="text-gray-500 text-sm">No soft skills data available.</p>}
                     </div>
                 </div>
@@ -833,29 +947,41 @@ export default function CandidateProfile() {
                 <div className="text-left space-y-4 mt-12">
                     <div className="flex flex-row items-center justify-between">
                         <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
-                            Personal Expertise
+                            Professional Expertise
                         </h5>
-                        <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                            <button
-                                onClick={() => setOpenCreateExpertiseForm(true)}
-                                className="flex items-center justify-center rounded-md z-10">
-                                <div className="flex gap-2">
-                                    <FiPlus
-                                        size={30}
-                                        color="#001571" />
-                                </div>
-                            </button>
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenEditExpertiseForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <GoPencil
+                                            size={25}
+                                            strokeWidth={1}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
+                            <div className="bg-[#E8E8E8] hover:bg-[#c1c1c1] rounded-full relative overflow-hidden flex flex-wrap items-center justify-center shadow-md w-12 h-12 mr-3 z-0">
+                                <button
+                                    onClick={() => setOpenCreateExpertiseForm(true)}
+                                    className="flex items-center justify-center rounded-md z-10">
+                                    <div className="">
+                                        <FiPlus
+                                            size={30}
+                                            strokeWidth={2}
+                                            color="#001571" />
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-4">
                         {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
-                            <div
+                            <ExpertiseCard
                                 key={index}
-                                className="flex flex-row items-center gap-2 bg-[#E6E8F1] px-4 py-2 rounded-md text-base font-semibold text-[#001571]"
-                            >
-                                <FaMedal />
-                                {expertise}
-                            </div>
+                                expertise={expertise} />
+
                         )) ?? <p className="text-gray-500 text-sm">No professional expertise data available.</p>}
                     </div>
                 </div>
@@ -866,6 +992,7 @@ export default function CandidateProfile() {
                         userDetails={userDetails}
                         jobSeekerDetails={jobSeekerDetails}
                         handleInputChange={handleInputChange}
+                        handleUserInputChange={handleUserInputChange}
                         jobseekerUpdateSubmitHandler={jobseekerUpdateSubmitHandler}
                         isSubmitting={isSubmitting}
                         onClose={() => setProfileEditForm(false)}
@@ -1284,6 +1411,136 @@ export default function CandidateProfile() {
                                         <PiCheckCircle size={20} />
                                     </span>
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+
+                {/* Edit Experience Popup */}
+                {openEditxperienceForm && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <h4 className="text-lg font-semibold text-[#001571]">Edit Experience Details</h4>
+                                <button
+                                    onClick={() => setOpenEditExperienceForm(false)}
+                                    className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                >
+                                    <FaTimes size={24} />
+                                </button>
+                            </div>
+                            <div className="p-6 overflow-y-auto">
+                                {experienceDetails.length > 0 ? (
+                                    experienceDetails.map((experience, index) => (
+                                        <ExperienceCardEdit key={index} experience={experience} />
+                                    ))
+                                ) : (
+                                    <p className="text-gray-500 text-sm">No experience data available.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Edit Education Popup */}
+                {openEditEducationForm && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <h4 className="text-lg font-semibold text-[#001571]">Edit Education Details</h4>
+                                <button
+                                    onClick={() => setOpenEditEducationoForm(false)}
+                                    className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                >
+                                    <FaTimes size={24} />
+                                </button>
+                            </div>
+                            <div className="p-6 overflow-y-auto">
+                                {educationDetails.length > 0 ? (
+                                    educationDetails.map((education, index) => (
+                                        <EducationCardEdit key={index} education={education} />
+                                    ))
+                                ) : (
+                                    <p className="text-gray-500 text-sm">No education data available.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Edit Certification Popup */}
+                {openEditCertificationForm && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <h4 className="text-lg font-semibold text-[#001571]">Edit Certification Details</h4>
+                                <button
+                                    onClick={() => setOpenEditCertificationForm(false)}
+                                    className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                >
+                                    <FaTimes size={24} />
+                                </button>
+                            </div>
+                            <div className="p-6 overflow-y-auto">
+                                {certificationDetails.length > 0 ? (
+                                    certificationDetails.map((certification, index) => (
+                                        <CertificationCardEdit key={index} certification={certification} />
+                                    ))
+                                ) : (
+                                    <p className="text-gray-500 text-sm">No certification data available.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Edit Softskills Popup */}
+                {openEditSoftskillsForm && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <h4 className="text-lg font-semibold text-[#001571]">Edit Soft Skills Details</h4>
+                                <button
+                                    onClick={() => setOpenEditSoftskillsForm(false)}
+                                    className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                >
+                                    <FaTimes size={24} />
+                                </button>
+                            </div>
+                            <div className="p-6 flex flex-wrap gap-4">
+                                {jobSeekerDetails.softSkills?.map((skill, index) => (
+                                    <SoftSkillsCardEdit
+                                        key={index}
+                                        skill={skill}
+                                        onDelete={() => handleDeleteSoftSkill(skill)} />
+                                )) ?? <p className="text-gray-500 text-sm">No soft skills data available.</p>}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Edit Expertise Popup */}
+                {openEditExpertiseForm && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                            <div className="flex items-center justify-between p-6 pb-0">
+                                <h4 className="text-lg font-semibold text-[#001571]">Edit Professional Expertise Details</h4>
+                                <button
+                                    onClick={() => setOpenEditExpertiseForm(false)}
+                                    className="text-gray-500 hover:text-red-500 focus:outline-none"
+                                >
+                                    <FaTimes size={24} />
+                                </button>
+                            </div>
+                            <div className="p-6 flex flex-wrap gap-4">
+                                {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
+                                    <ExpertiseCardEdit
+                                        key={index}
+                                        expertise={expertise}
+                                        onDelete={() => handleDeleteExpertise(expertise)} />
+
+                                )) ?? <p className="text-gray-500 text-sm">No professional expertise data available.</p>}
                             </div>
                         </div>
                     </div>

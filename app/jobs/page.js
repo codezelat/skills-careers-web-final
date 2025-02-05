@@ -1,6 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 import JobCard from "@/components/jobCard";
 import NavBar from "@/components/navBar";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
@@ -10,8 +9,6 @@ import DropdownButton from "../../components/dropDownButton";
 import JobLoading from "../jobLoading";
 import Footer from "@/components/Footer";
 import JobApplicationForm from "./[jobid]/apply/JobApplicationForm";
-
-const fetcher = (url) => fetch(url).then((res) => res.json());
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -24,30 +21,26 @@ function Jobs() {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
 
-  // SWR configuration for jobs data
-  const { data: jobsData, error: jobsError } = useSWR("/api/job/all", fetcher, {
-    refreshInterval: 60000, // Revalidate every 60 seconds
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-  });
-
-  // Process jobs and fetch recruiter details
+  // Fetch jobs and recruiter data
   useEffect(() => {
-    const processJobs = async () => {
-      if (!jobsData) return;
-
-      setIsLoading(true);
+    async function fetchJobsAndRecruiters() {
       try {
+        // Fetch jobs
+        const jobsResponse = await fetch("/api/job/all");
+        if (!jobsResponse.ok) throw new Error("Failed to fetch jobs.");
+        const jobsData = await jobsResponse.json();
+        const jobs = jobsData.jobs;
+
+        // Add industry to each job
         const jobsWithIndustry = await Promise.all(
-          jobsData.jobs.map(async (job) => {
+          jobs.map(async (job) => {
             try {
-              const recruiterData = await fetcher(
+              const recruiterResponse = await fetch(
                 `/api/recruiterdetails/get?id=${job.recruiterId}`
               );
-              return {
-                ...job,
-                industry: recruiterData?.industry || "Unknown",
-              };
+              if (!recruiterResponse.ok) return { ...job, industry: "Unknown" };
+              const recruiterData = await recruiterResponse.json();
+              return { ...job, industry: recruiterData.industry || "Unknown" };
             } catch (error) {
               return { ...job, industry: "Unknown" };
             }
@@ -61,20 +54,12 @@ function Jobs() {
         setError(error.message);
         setIsLoading(false);
       }
-    };
-
-    processJobs();
-  }, [jobsData]);
-
-  // Handle errors
-  useEffect(() => {
-    if (jobsError) {
-      setError(jobsError.message);
-      setIsLoading(false);
     }
-  }, [jobsError]);
 
-  // Filter jobs based on search and filters
+    fetchJobsAndRecruiters();
+  }, []);
+
+  // Update filtered jobs when filters change
   useEffect(() => {
     let filtered = jobs;
 
@@ -101,16 +86,9 @@ function Jobs() {
     setFilteredJobs(filtered);
   }, [searchQuery, selectedLocation, selectedIndustry, jobs]);
 
-  // Memoize unique industries and locations
-  const industries = useMemo(
-    () => [...new Set(jobs.map((job) => job.industry))].filter(Boolean),
-    [jobs]
-  );
-
-  const locations = useMemo(
-    () => [...new Set(jobs.map((job) => job.location))].filter(Boolean),
-    [jobs]
-  );
+  // Get unique industries and locations
+  const industries = [...new Set(jobs.map((job) => job.industry))].filter(Boolean);
+  const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -145,11 +123,11 @@ function Jobs() {
               <input
                 type="search"
                 placeholder="Search by job title, keywords, or company."
-                className="bg-[#e6e8f1] text-[#8A93BE] text-[14px] lg:text-lg md:text-lg sm:text-base flex-grow px-4 py-2 focus:outline-none w-full rounded-md sm:w-auto font-bold placeholder-[#5462A0]"
+                className="bg-[#e6e8f1] text-[#8A93BE] text-[14px] lg:text-lg md:text-lg sm:text-base flex-grow pl-6 py-4 focus:outline-none w-full rounded-md sm:w-auto font-bold placeholder-[#5462A0]"
                 value={searchQuery}
                 onChange={handleSearchChange}
               />
-              <button className="flex items-center justify-center w-full md:w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 rounded-md font-semibold text-[12px] md:text-[16px]">
+              <button className="flex items-center justify-center w-full md:w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 mr-2 rounded-md font-semibold text-[12px] md:text-[16px]">
                 <span className="md:mt-1 mr-2 md:mr-4">
                   <IoSearchSharp size={15} />
                 </span>
@@ -178,11 +156,7 @@ function Jobs() {
           </div>
         </div>
         <div className="grid w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[1]">
-          {error ? (
-            <div className="w-full text-center py-20">
-              <p className="text-lg font-bold text-red-500">Error: {error}</p>
-            </div>
-          ) : isLoading ? (
+          {isLoading ? (
             <JobLoading />
           ) : filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
