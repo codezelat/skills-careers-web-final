@@ -556,7 +556,7 @@ export default function CandidateProfile() {
     };
 
     // loading
-    // if (isLoading) return <PortalLoading />;
+    if (isLoading) return <PortalLoading />;
     if (error) return <div className="text-red-500">Error: {error}</div>;
 
     return (
