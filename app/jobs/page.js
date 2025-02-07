@@ -25,30 +25,45 @@ function Jobs() {
   useEffect(() => {
     async function fetchJobsAndRecruiters() {
       try {
-        // Fetch jobs
         const jobsResponse = await fetch("/api/job/all");
         if (!jobsResponse.ok) throw new Error("Failed to fetch jobs.");
         const jobsData = await jobsResponse.json();
         const jobs = jobsData.jobs;
 
-        // Add industry to each job
-        const jobsWithIndustry = await Promise.all(
+        const jobsWithRecruiterDetails = await Promise.all(
           jobs.map(async (job) => {
             try {
               const recruiterResponse = await fetch(
                 `/api/recruiterdetails/get?id=${job.recruiterId}`
               );
-              if (!recruiterResponse.ok) return { ...job, industry: "Unknown" };
+              if (!recruiterResponse.ok) {
+                return { 
+                  ...job,
+                  industry: "Unknown",
+                  recruiterName: "Unknown",
+                  logo: "/images/default-image.jpg"
+                };
+              }
               const recruiterData = await recruiterResponse.json();
-              return { ...job, industry: recruiterData.industry || "Unknown" };
+              return {
+                ...job,
+                industry: recruiterData.industry || "Unknown",
+                recruiterName: recruiterData.recruiterName || "Unknown",
+                logo: recruiterData.logo || "/images/default-image.jpg"
+              };
             } catch (error) {
-              return { ...job, industry: "Unknown" };
+              return { 
+                ...job,
+                industry: "Unknown",
+                recruiterName: "Unknown",
+                logo: "/images/default-image.jpg"
+              };
             }
           })
         );
 
-        setJobs(jobsWithIndustry);
-        setFilteredJobs(jobsWithIndustry);
+        setJobs(jobsWithRecruiterDetails);
+        setFilteredJobs(jobsWithRecruiterDetails);
         setIsLoading(false);
       } catch (error) {
         setError(error.message);

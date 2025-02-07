@@ -13,11 +13,12 @@ function JobCard({job, onApply}) {
     _id,
     createdAt,
     jobTitle,
-    recruiterId,
     location,
     jobTypes,
-    jobDescription,
-    shortDescription
+    shortDescription,
+    // New fields from enriched job data
+    recruiterName,
+    logo
   } = job;
 
   const date = new Date(createdAt).getDate();
@@ -46,28 +47,6 @@ function JobCard({job, onApply}) {
     logo: "",
   });
 
-  useEffect(() => {
-    if (recruiterId) {
-      const fetchRecruiterDetails = async () => {
-        try {
-          const response = await fetch(
-            `/api/recruiterdetails/get?id=${recruiterId}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setRecruiterDetails(data);
-          } else {
-            console.error("Failed to fetch recruiter details");
-          }
-        } catch (error) {
-          console.error("Error fetching recruiter details:", error);
-        }
-      };
-
-      fetchRecruiterDetails();
-    }
-  }, [recruiterId]);
-
   const handleViewApplication = () => {
     router.push(`/jobs/${_id}/apply`);
   };
@@ -84,7 +63,7 @@ function JobCard({job, onApply}) {
         </p>
       </div>
       <Image
-        src={recruiterDetails.logo || "/images/default-image.jpg"}
+        src={logo || "/images/default-image.jpg"}
         alt="Logo"
         width={100}
         height={100}
@@ -107,7 +86,7 @@ function JobCard({job, onApply}) {
       </div>
 
       <p className="text-xl font-bold text-[#000000] text-left sm:text-left">
-        {recruiterDetails.recruiterName}
+        {recruiterName}
       </p>
       <p className="text-xl font-bold text-[#000000] mb-4 text-left sm:text-left">
         {location}
@@ -124,7 +103,7 @@ function JobCard({job, onApply}) {
         </button>
         <button
           onClick={handleViewJob}
-          className="border border-2 border-[#001571] text-[#001571] px-3 py-2 rounded-lg font-bold hover:bg-blue-800 hover:text-white transition"
+          className="border-2 border-[#001571] text-[#001571] px-3 py-2 rounded-lg font-bold hover:bg-blue-800 hover:text-white transition"
         >
           Quick View
         </button>
