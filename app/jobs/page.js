@@ -3,9 +3,17 @@ import JobsClient from "./jobsClient";
 
 // Fetch jobs and recruiter data with revalidation
 async function getJobs() {
-  const jobsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/job/all`, {
-    next: { revalidate: 10 }, // Revalidate every 10 seconds
-  });
+  const jobsResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/job/all`,
+    {
+      method: "GET",
+      cache: "no-store", // Prevent caching
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    }
+  );
 
   if (!jobsResponse.ok) {
     throw new Error("Failed to fetch jobs.");
@@ -19,7 +27,14 @@ async function getJobs() {
       try {
         const recruiterResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/recruiterdetails/get?id=${job.recruiterId}`,
-          { next: { revalidate: 10 } } // Revalidate every 10 seconds
+          {
+            method: "GET",
+            cache: "no-store", // Prevent caching
+            headers: {
+              "Cache-Control":
+                "no-store, no-cache, must-revalidate, proxy-revalidate",
+            },
+          }
         );
 
         if (!recruiterResponse.ok) {
