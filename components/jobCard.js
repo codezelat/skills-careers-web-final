@@ -53,6 +53,7 @@ function JobCard({job, onApply}) {
 
   const handleViewJob = () => {
     router.push(`/jobs/${_id}`);
+    window.scrollTo(0, 0);
   };
 
   return (
