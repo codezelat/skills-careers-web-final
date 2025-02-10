@@ -40,18 +40,18 @@ function NavBar() {
             HOME
           </Link>
           <Link
-            href="/recruiters"
-            className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
-            prefetch={true}
-          >
-            EXPLORE RECRUITERS
-          </Link>
-          <Link
             href="/jobs"
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
             prefetch={true}
           >
             EXPLORE JOBS
+          </Link>
+          <Link
+            href="/recruiters"
+            className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            prefetch={true}
+          >
+            EXPLORE RECRUITERS
           </Link>
           <Link
             href="/about"

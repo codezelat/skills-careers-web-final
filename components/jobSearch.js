@@ -62,7 +62,7 @@ export default function JobSearch() {
     };
 
     return (
-        <div className="flex flex-col relative">
+        <div className="flex flex-col relative mt-10">
             <div className="bg-gray-200 rounded-md">
                 <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center gap-4 rounded-md py-1 md:py-2 px-1 md:px-4">
                     <input
