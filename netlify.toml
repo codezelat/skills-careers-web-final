@@ -1,4 +1,12 @@
 [[headers]]
 for = "/*"
   [headers.values]
-  Cache-Control = "no-cache, no-store, must-revalidate"
+    Cache-Control = "no-cache, no-store, must-revalidate, max-age=0"
+
+[build]
+  command = "npm run build"
+  publish = ".next" # Ensure the correct Next.js output is published
+  functions = "netlify/functions"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
