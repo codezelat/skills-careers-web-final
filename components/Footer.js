@@ -30,17 +30,22 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/recruiterSearch" className="transition hover:opacity-75">
+                <a href="/jobs" className="transition hover:opacity-75">
+                  Explore Jobs
+                </a>
+              </li>
+              <li>
+                <a href="/recruiters" className="transition hover:opacity-75">
                   Explore Recruiters
                 </a>
               </li>
               <li>
-                <a href="/aboutUs" className="transition hover:opacity-75">
+                <a href="/about" className="transition hover:opacity-75">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="/contactUs" className="transition hover:opacity-75">
+                <a href="/contact" className="transition hover:opacity-75">
                   Contact Us
                 </a>
               </li>
@@ -56,11 +61,11 @@ export default function Footer() {
                   Privacy Policy
                 </a>
               </li>
-              <li>
+              {/*<li>
                 <a href="#" className="transition hover:opacity-75">
                   Sustainability Policy
                 </a>
-              </li>
+              </li>*/}
               <li>
                 <a href="#" className="transition hover:opacity-75">
                   Terms of Use

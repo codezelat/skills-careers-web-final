@@ -142,7 +142,7 @@ function StartingPage() {
                   Skill Careers.
                 </p>
 
-                <div className="relative w-full sm:w-2/3 md:w-1/2 lg:w-2/6 mb-5">
+                {/*<div className="relative w-full sm:w-2/3 md:w-1/2 lg:w-2/6 mb-5">
                   <div
                     onClick={() => setIsOpen(!isOpen)}
                     className="border-2 border-[#B0B6D3] text-[#5462A0] py-4 px-3 mt-6 font-semibold rounded-md cursor-pointer sm:text-sm"
@@ -182,7 +182,7 @@ function StartingPage() {
                       ))}
                     </div>
                   )}
-                </div>
+                </div>*/}
 
                 <JobSearch />
               </div>
