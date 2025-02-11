@@ -28,25 +28,40 @@ export async function GET(req) {
       );
     }
 
-    return NextResponse.json({
-      id: job._id.toString(),
-      jobTitle: job.jobTitle,
-      recruiterId: job.recruiterId,
-      jobCategory: job.jobCategory,
-      location: job.location,
-      salaryRs: job.salaryRs,
-      salaryCents: job.salaryCents,
-      jobTypes: job.jobTypes,
-      jobExperience:job.jobExperience,
-      jobDescription: job.jobDescription,
-      shortDescription:job.shortDescription,
-      keyResponsibilities: job.keyResponsibilities,
-      requiredQualifications: job.requiredQualifications,
-      perksAndBenefits: job.perksAndBenefits,
-      createdAt: job.createdAt,
-      postedDate: job.postedDate,
-      isPublished: job.isPublished
-    });
+    return NextResponse.json(
+      {
+        id: job._id.toString(),
+        jobTitle: job.jobTitle,
+        recruiterId: job.recruiterId,
+        jobCategory: job.jobCategory,
+        location: job.location,
+        salaryRs: job.salaryRs,
+        salaryCents: job.salaryCents,
+        jobTypes: job.jobTypes,
+        jobExperience: job.jobExperience,
+        jobDescription: job.jobDescription,
+        shortDescription: job.shortDescription,
+        keyResponsibilities: job.keyResponsibilities,
+        requiredQualifications: job.requiredQualifications,
+        perksAndBenefits: job.perksAndBenefits,
+        createdAt: job.createdAt,
+        postedDate: job.postedDate,
+        isPublished: job.isPublished
+      },
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+          "CDN-Cache-Control": "no-store",
+          "Surrogate-Control": "no-store",
+          Pragma: "no-cache",
+          Expires: "0",
+          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+        },
+      }
+    );
 
   } catch (error) {
     console.error("Job fetch error:", error);

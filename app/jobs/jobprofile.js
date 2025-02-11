@@ -47,19 +47,38 @@ function JobProfile({ slug }) {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
 
   const [jobs, setJobs] = useState([]);
-  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [featuredJobs, setFeaturedJobs] = useState([])
 
   // Fetch jobs data
   useEffect(() => {
     async function fetchJobs() {
       try {
-        const response = await fetch("/api/job/all"); // Adjust endpoint as needed
+        const response = await fetch("/api/job/all");
         if (!response.ok) {
-          throw new Error("Failed to fetch jobs.");
+          throw new Error("Failed to fetch featured jobs details");
         }
         const data = await response.json();
-        setJobs(data.jobs);
-        setFilteredJobs(data.jobs);
+
+        // Fetch recruiter details for each job
+        const jobsWithRecruiterDetails = await Promise.all(
+          data.jobs.map(async (job) => {
+            const recruiterResponse = await fetch(
+              `/api/recruiterdetails/get?id=${job.recruiterId}`
+            );
+            if (!recruiterResponse.ok) {
+              throw new Error("Failed to fetch recruiter details");
+            }
+            const recruiterData = await recruiterResponse.json();
+            return {
+              ...job,
+              recruiterName: recruiterData.recruiterName,
+              logo: recruiterData.logo,
+            };
+          })
+        );
+
+        setJobs(jobsWithRecruiterDetails);
+        setFeaturedJobs(jobsWithRecruiterDetails);
         setIsLoading(false);
       } catch (error) {
         setError(error.message);
@@ -269,7 +288,7 @@ function JobProfile({ slug }) {
               <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
                 <JobLoading />
               </div>
-            ) : Array.isArray(filteredJobs) && filteredJobs.length > 0 ? (
+            ) : Array.isArray(featuredJobs) && featuredJobs.length > 0 ? (
 
               <div className="flex items-center justify-between relative w-full px-[20px] xl:px-[0px] ">
 
@@ -297,9 +316,9 @@ function JobProfile({ slug }) {
                   }}
                   className="swiper-container w-[1280px] mt-16 pb-16"
                 >
-                  {filteredJobs.map((job, index) => (
+                  {featuredJobs.map((job, index) => (
                     <SwiperSlide key={index}>
-                      <JobCard job={job} />
+                      <JobCard job={job}/>
                     </SwiperSlide>
                   ))}
 
