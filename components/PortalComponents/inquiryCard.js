@@ -1,12 +1,35 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaCircleChevronRight } from "react-icons/fa6";
 import UpdateInquiryForm from "./updateInquiryForm";
+import { useSession } from "next-auth/react";
 
 export default function InquiryCard({ inquiry }) {
+  const { data: session, status } = useSession();
   const [showInquiry, setShowInquiry] = useState(false);
+  const [error,setError] = useState();
   const [userDetails, setUserDetails] = useState({ profileImage: "" });
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      const fetchData = async () => {
+        try {
+
+          const userResponse = await fetch(`/api/users/get?id=${inquiry.userId}`);
+          // if (!userResponse.ok) throw new Error("Failed to fetch user data");
+          const userData = await userResponse.json();
+
+          setUserDetails(userData.user);
+
+        } catch (err) {
+          setError(err.message);
+          console.error("Fetch error:", err);
+        } finally {
+        }
+      };fetchData();
+    }
+  }, [session]);
 
   const handleViewInquiry = () => {
     setShowInquiry(true);
