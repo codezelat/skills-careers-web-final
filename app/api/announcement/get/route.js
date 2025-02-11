@@ -19,7 +19,7 @@ export async function GET(req) {
     client = await connectToDatabase();
     const db = client.db();
 
-    const announcement = await db 
+    const announcement = await db
       .collection("announcements")
       .findOne({ _id: new ObjectId(id) });
 
@@ -30,10 +30,22 @@ export async function GET(req) {
       );
     }
 
-    return NextResponse.json({
-      announcement,
-    });
-    
+    return NextResponse.json(
+      { announcement },
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+          "CDN-Cache-Control": "no-store",
+          "Surrogate-Control": "no-store",
+          Pragma: "no-cache",
+          Expires: "0",
+          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+        },
+      });
+
   } catch (error) {
     console.error("Announcement fetch error:", error);
     return NextResponse.json(

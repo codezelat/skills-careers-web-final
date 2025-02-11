@@ -1,20 +1,25 @@
 import Image from "next/image";
 import { IoSearchSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function HeaderSection() {
 
     const { data: session, status } = useSession();
     console.log("Session Data:", session);
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
     return (
         <>
             {/* Header */}
             <div className="flex items-center justify-between mb-4 h-[60px] ">
                 {/* Left Section */}
-                <div className="bg-[#001571] flex items-center justify-center text-white h-full px-8 rounded-2xl font-semibold text-[18px]">
-                    SKILLS CAREERS
-                </div>
+                <Link href={baseUrl || "/"} className="bg-[#001571] flex items-center justify-center text-white h-full px-8 rounded-2xl font-semibold text-[18px]">
+                    <h1>
+                        SKILLS CAREERS
+                    </h1>
+                </Link>
 
                 {/* Middle Section */}
                 <div className="flex-grow mx-8 h-full">

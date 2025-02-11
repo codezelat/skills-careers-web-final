@@ -64,6 +64,7 @@ export async function GET(req) {
         email: recruiter.email,
         employeeRange: recruiter.employeeRange,
         contactNumber: recruiter.contactNumber,
+        telephoneNumber: recruiter.telephoneNumber,
         userId: recruiter.userId.toString(),
         createdAt: recruiter.createdAt,
         logo: recruiter.logo,

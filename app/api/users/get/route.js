@@ -36,7 +36,20 @@ export async function GET(req) {
     client.close();
 
     if (user) {
-      return NextResponse.json({ user }, { status: 200 });
+      return NextResponse.json({ user },
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control":
+              "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+            "CDN-Cache-Control": "no-store",
+            "Surrogate-Control": "no-store",
+            Pragma: "no-cache",
+            Expires: "0",
+            "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+          },
+        });
     } else {
       return NextResponse.json(
         { message: "User not found." },

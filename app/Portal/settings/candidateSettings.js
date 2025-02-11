@@ -1,94 +1,89 @@
 "use client"
-
 import { useState, useEffect } from "react";
-import PortalLoading from "@/app/Portal/loading";
-import { FaDribbble, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaMedal, FaTimes, FaTwitter } from "react-icons/fa";
-import Image from "next/image";
-import { PiCheckCircle } from "react-icons/pi";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import ExperienceCard from "@/components/PortalComponents/experienceCard";
-import EducationCard from "@/components/PortalComponents/educationCard";
-import CertificationCard from "@/components/PortalComponents/certificationCard";
-import ProfileEditFormPopup from "@/app/Portal/candidates/ProfileEditForm";
-import BioEditFormPopup from "@/app/Portal/candidates/BioDataForm";
-import { FiPlus } from "react-icons/fi";
+import PortalLoading from "../loading";
+import Image from "next/image";
+import CredentialsForm from "./credentialsEditForm";
 
+export default function CandidateSettings() {
 
-export default function CandidateProfile() {
-
-    const [activeTab, setActiveTab] = useState("Profile");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const router = useRouter();
     const { data: session, status } = useSession();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showCredentialsForm, setShowCredentialsForm] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [ProfileEditForm, setProfileEditForm] = useState(false);
-    const [BioDataForm, setBioDataForm] = useState(false);
-    const [openCreateExperienceForm, setOpenCreateExperienceForm] = useState(false);
-    const [openCreateEducationForm, setOpenCreateEducationoForm] = useState(false);
-    const [openCreateCertificationForm, setOpenCreateCertificationForm] = useState(false);
-    const [openCreateSoftskillsForm, setOpenCreateSoftskillsForm] = useState(false);
-    const [openCreateExpertiseForm, setOpenCreateExpertiseForm] = useState(false);
+    const [userDetails, setUserDetails] = useState({
+        _id: '',
+        firstName: "",
+        lastName: "",
+        contactNumber: "",
+        email: "",
+        profileImage: "",
+    })
 
-    const [jobSeekerDetails, setJobseekerDetails] = useState([]);
-    const [userDetails, setUserDetails] = useState([]);
-    const [experienceDetails, setExperienceDetails] = useState([]);
-    const [educationDetails, setEducationDetails] = useState([]);
-    const [certificationDetails, setCertificationDetails] = useState([]);
-
-    const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-
-    // fetch functions
     useEffect(() => {
         if (session?.user?.email) {
-            const fetchData = async () => {
+            const fetchDetails = async () => {
                 try {
-                    setIsLoading(true);
-                    console.log(session.user.id)
-                    const jobSeekerResponse = await fetch(`/api/jobseekerdetails/get?userId=${session.user.id}`);
-                    if (!jobSeekerResponse.ok) throw new Error("Failed to fetch job seeker");
-                    const jobSeekerData = await jobSeekerResponse.json();
-                    console.log("test", jobSeekerData.jobseeker)
-
-                    setJobseekerDetails(jobSeekerData.jobseeker);
 
                     const userResponse = await fetch(`/api/users/get?id=${session.user.id}`);
-                    if (!userResponse.ok) throw new Error("Failed to fetch user");
                     const userData = await userResponse.json();
 
+                    if (!userResponse.ok) {
+                        throw new Error(userData.message || "Failed to fetch user details");
+                    }
+
                     setUserDetails(userData.user);
-
-                    const experienceResponse = await fetch(`/api/jobseekerdetails/experience/all?id=${jobSeekerData.jobseeker._id}`);
-                    if (!experienceResponse.ok) throw new Error("Failed to fetch experience details");
-                    const newExperienceData = await experienceResponse.json();
-
-                    setExperienceDetails(newExperienceData.experiences);
-
-                    const educationResponse = await fetch(`/api/jobseekerdetails/education/all?id=${jobSeekerData.jobseeker._id}`);
-                    if (!educationResponse.ok) throw new Error("Failed to fetch experience details");
-                    const educationeData = await educationResponse.json();
-
-                    setEducationDetails(educationeData.educations);
-
-                    const certificationResponse = await fetch(`/api/jobseekerdetails/certification/all?id=${jobSeekerData.jobseeker._id}`);
-                    if (!certificationResponse.ok) throw new Error("Failed to fetch experience details");
-                    const certificationData = await certificationResponse.json();
-
-                    setCertificationDetails(certificationData.licensesandcertifications);
-
+                    console.log("first name : ", userDetails.firstName);
                 } catch (err) {
                     setError(err.message);
-                    console.error("Fetch error:", err);
                 } finally {
                     setIsLoading(false);
                 }
             };
 
-            if (session.user.id) fetchData();
+            fetchDetails();
         }
-    }, [session, session.user.id]);
+    }, [session]);
+
+    // Recruiter credentials details update
+    const credSubmitHandler = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('/api/users/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userDetails),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Something went wrong');
+            }
+
+            setShowCredentialsForm(false);
+            alert('Profile updated successfully!');
+        } catch (error) {
+            console.error('Update failed:', error);
+            alert(error.message || 'Update failed');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Input Change Handler
+    const handleCredInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserDetails(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
     // image updae functions
     const handleImageChange = async (e) => {
@@ -109,10 +104,10 @@ export default function CandidateProfile() {
         try {
             const formData = new FormData();
             formData.append("image", file);
-            formData.append("email", jobSeekerDetails.email);
+            formData.append("email", userDetails.email);
 
             console.log("Starting image upload...");
-            const response = await fetch("/api/jobseekerdetails/uploadimage", {
+            const response = await fetch("/api/users/uploadimage", {
                 method: "POST",
                 body: formData,
             });
@@ -124,7 +119,7 @@ export default function CandidateProfile() {
             }
 
             console.log("Upload successful:", data);
-            setJobseekerDetails((prev) => ({
+            setUserDetails((prev) => ({
                 ...prev,
                 profileImage: data.imageUrl,
             }));
@@ -136,374 +131,160 @@ export default function CandidateProfile() {
         }
     };
 
-    const handleCoverImageChange = async (e) => {
-        e.preventDefault();
-        const file = e.target.files[0];
-        if (!file) return;
 
-        if (file.size > 5 * 1024 * 1024) {
-            alert("File size should be less than 5MB");
-            return;
-        }
-
-        if (!file.type.startsWith("image/")) {
-            alert("Please upload an image file");
-            return;
-        }
-
-        try {
-            const formData = new FormData();
-            formData.append("image", file);
-            formData.append("email", jobSeekerDetails.email);
-
-            console.log("Starting image upload...");
-            const response = await fetch("/api/jobseekerdetails/uploadCoverImage", {
-                method: "POST",
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || "Failed to upload image");
-            }
-
-            console.log("Upload successful:", data);
-            setJobseekerDetails((prev) => ({
-                ...prev,
-                coverImage: data.imageUrl,
-            }));
-
-            alert("Logo uploaded successfully!");
-        } catch (error) {
-            console.error("Error uploading image:", error);
-            alert(`Failed to upload image: ${error.message}`);
-        }
-    };
-
-    // profile personal info update functions
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-
-        // Update userDetails for firstName/lastName fields
-        if (name === "firstName" || name === "lastName") {
-            setUserDetails((prev) => ({ ...prev, [name]: value }));
-        }
-        // Update jobSeekerDetails for all other fields
-        else {
-            setJobseekerDetails((prev) => ({ ...prev, [name]: value }));
-        }
-    };
-
-    const jobseekerUpdateSubmitHandler = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            // Update userDetails
-            const userResponse = await fetch(`/api/users/update`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(userDetails),
-            });
-
-            // Update jobSeekerDetails
-            const jobSeekerResponse = await fetch(`/api/jobseekerdetails/update`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(jobSeekerDetails),
-            });
-
-            // Check if both updates were successful
-            if (userResponse.ok && jobSeekerResponse.ok) {
-                alert("Details updated successfully!");
-                setProfileEditForm(false); // Close the edit form if needed
-            } else {
-                alert("Failed to update details!");
-            }
-        } catch (error) {
-            console.error("Error updating details:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // Calculate age
-    useEffect(() => {
-        if (jobSeekerDetails.dob) {
-            const today = new Date();
-            const birthDate = new Date(jobSeekerDetails.dob);
-            let calculatedAge = today.getFullYear() - birthDate.getFullYear();
-
-            // Adjust if the birthday hasn't occurred yet this year
-            const monthDifference = today.getMonth() - birthDate.getMonth();
-            if (
-                monthDifference < 0 ||
-                (monthDifference === 0 && today.getDate() < birthDate.getDate())
-            ) {
-                calculatedAge--;
-            }
-
-            // Update the age in the state
-            handleInputChange({
-                target: {
-                    name: "age",
-                    value: calculatedAge.toString(),
-                },
-            });
-        }
-    }, [jobSeekerDetails.dob]);
-
-    // Create new experience
-    const [newExperienceData, setNewExperienceData] = useState({
-        position: "",
-        companyName: "",
-        description: "",
-        country: "",
-        city: "",
-        startDate: "",
-        endDate: "",
-    });
-    const handleCreateExperience = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const response = await fetch('/api/jobseekerdetails/experience/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jobseekerId: jobSeekerDetails._id,
-                    ...newExperienceData
-                }),
-            });
-
-            if (!response.ok) throw new Error('Failed to add experience');
-
-            const experienceResponse = await fetch(`/api/jobseekerdetails/experience/all?id=${jobSeekerDetails._id}`);
-            const updatedExperienceData = await experienceResponse.json();
-            setExperienceDetails(updatedExperienceData.experiences);
-
-            setOpenCreateExperienceForm(false);
-            setNewExperienceData({
-                position: "",
-                companyName: "",
-                description: "",
-                country: "",
-                city: "",
-                startDate: "",
-                endDate: "",
-            });
-
-        } catch (error) {
-            console.error('Error adding experience:', error);
-            alert(`Error: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    const handleExperienceInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewExperienceData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Create new education
-    const [newEducationData, setNewEducationData] = useState({
-        educationName: "",
-        location: "",
-        startDate: "",
-        endDate: "",
-    });
-    const handleCreateEducation = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const response = await fetch('/api/jobseekerdetails/education/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jobseekerId: jobSeekerDetails._id,
-                    ...newEducationData
-                }),
-            });
-
-            if (!response.ok) throw new Error('Failed to add education');
-
-            const educationResponse = await fetch(`/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`);
-            const updatedEducationData = await educationResponse.json();
-            setExperienceDetails(updatedEducationData.educations);
-
-            setOpenCreateEducationoForm(false);
-            setNewEducationData({
-                educationName: "",
-                location: "",
-                startDate: "",
-                endDate: "",
-            });
-
-        } catch (error) {
-            console.error('Error adding education:', error);
-            alert(`Error: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    const handleEducationInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewEducationData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Create new Certification
-    const [newCertificationData, setNewCertificationData] = useState({
-        certificateName: "",
-        organizationName: "",
-        receivedDate: "",
-    });
-    const handleCreateCertification = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const response = await fetch('/api/jobseekerdetails/certification/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jobseekerId: jobSeekerDetails._id,
-                    ...newCertificationData
-                }),
-            });
-
-            if (!response.ok) throw new Error('Failed to add education');
-
-            const certificationResponse = await fetch(`/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`);
-            const updatedCertificationData = await certificationResponse.json();
-            setNewCertificationData(updatedCertificationData.licensesandcertifications);
-
-            setOpenCreateCertificationForm(false);
-            setNewCertificationData({
-                certificateName: "",
-                organizationName: "",
-                receivedDate: "",
-            });
-
-        } catch (error) {
-            console.error('Error adding education:', error);
-            alert(`Error: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    const handleCertificationInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewCertificationData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Create soft skill
-    const [newSoftSkill, setNewSoftSkill] = useState("");
-    const handleAddSoftSkill = async (e) => {
-        e.preventDefault();
-
-        if (!newSoftSkill.trim()) {
-            alert("Please enter a soft skill.");
-            return;
-        }
-
-        try {
-            setIsSubmitting(true);
-
-            const updatedSoftSkills = [...(jobSeekerDetails.softSkills || []), newSoftSkill];
-
-            const updatedJobSeekerDetails = {
-                ...jobSeekerDetails,
-                softSkills: updatedSoftSkills,
-            };
-
-            const response = await fetch("/api/jobseekerdetails/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedJobSeekerDetails),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update soft skills.");
-            }
-
-            setJobseekerDetails(updatedJobSeekerDetails);
-            setNewSoftSkill("");
-            setOpenCreateSoftskillsForm(false);
-        } catch (error) {
-            console.error("Error adding soft skill:", error);
-            alert(`Failed to add soft skill: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // Create expertise
-    const [newExpertise, setNewExpertise] = useState("");
-    const handleAddExpertise = async (e) => {
-        e.preventDefault();
-
-        if (!newExpertise.trim()) {
-            alert("Please enter an expertise");
-            return;
-        }
-
-        try {
-            setIsSubmitting(true);
-
-            const updatedExpertise = [...(jobSeekerDetails.professionalExpertise || []), newExpertise];
-
-            const updatedJobSeekerDetails = {
-                ...jobSeekerDetails,
-                professionalExpertise: updatedExpertise,
-            };
-
-            const response = await fetch("/api/jobseekerdetails/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedJobSeekerDetails),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update expertise");
-            }
-
-            setJobseekerDetails(updatedJobSeekerDetails);
-            setNewExpertise("");
-            setOpenCreateExpertiseForm(false);
-        } catch (error) {
-            console.error("Error adding expertise", error);
-            alert(`Failed to add expertise : ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // loading
-    if (isLoading) return <PortalLoading />;
-    if (error) return <div className="text-red-500">Error: {error}</div>;
+    if (isLoading) {
+        return (<PortalLoading />);
+    }
 
     return (
-        <div className="bg-white rounded-3xl py-7 px-7">
-            <div className="min-h-screen">
+        <>
+            <div className="bg-white rounded-3xl py-7 px-7">
 
+                <div className="min-h-screen">
+                    {/* Edit Button */}
+                    <div className="flex flex-row items-center justify-between">
+                        <h1 className="font-bold text-xl">Settings</h1>
+                        <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mr-3 z-0">
+                            <button
+                                onClick={() => setShowCredentialsForm(true)}
+                                className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
+                                <div className="flex gap-2">
+                                    <Image
+                                        src="/editiconwhite.png"
+                                        alt="Edit Icon"
+                                        layout="fill"
+                                        objectFit="contain"
+                                        quality={100}
+                                    />
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Profile Image */}
+                    <div className="relative flex flex-row justify-between">
+
+                        {/* DP Image */}
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px] mt-10 flex items-top justify-center relative">
+
+                            {/* Profile picture container */}
+                            <div className="relative border-4 border-[#001571] bg-white rounded-full overflow-hidden w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px]">
+                                {userDetails.profileImage ? (
+                                    <Image
+                                        src={userDetails.profileImage}
+                                        alt="Profile"
+                                        layout="fill"
+                                        priority
+                                        objectFit="cover"
+                                        quality={100}
+                                        className="fill"
+                                    />
+                                ) : (
+                                    <Image
+                                        src="/default-avatar.jpg"
+                                        alt="Profile"
+                                        layout="fill"
+                                        priority
+                                        objectFit="cover"
+                                        quality={100}
+                                        className="fill"
+                                    />
+                                )}
+                            </div>
+
+                            {/* Profile picture edit icon */}
+                            <div className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-0 bg-white">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    id="logo-image-input"
+                                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                />
+                                {/* Edit Icon */}
+                                <Image
+                                    src="/editiconwhite.png"
+                                    alt="Edit Icon"
+                                    width={40}
+                                    height={40}
+                                    objectFit="contain"
+                                    quality={100}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <form className="mt-10">
+                        <div className="">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                <div>
+                                    <label className="block text-sm font-semibold text-[#001571]">
+                                        First Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="User Name"
+                                        value={userDetails.firstName || ""}
+                                        disabled
+                                        className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-[#001571]">
+                                        Last Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="User Name"
+                                        value={userDetails.lastName || ""}
+                                        disabled
+                                        className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
+                                    />
+                                </div>
+                            </div>
+
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                <div>
+                                    <label className="block text-sm font-semibold text-[#001571]">
+                                        Email
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="email"
+                                        disabled
+                                        value={userDetails.email || ""}
+                                        className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-[#001571]">
+                                        Contact Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="phone"
+                                        disabled
+                                        value={userDetails.contactNumber}
+                                        className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    {showCredentialsForm && (
+                        <CredentialsForm
+                            userDetails={userDetails}
+                            isSubmitting={isSubmitting}
+                            onClose={() => setShowCredentialsForm(false)}
+                            onSubmit={credSubmitHandler}
+                            onInputChange={handleCredInputChange}
+                        />
+                    )}
+
+                </div>
             </div>
-        </div>
-    );
+        </>
+    )
 }

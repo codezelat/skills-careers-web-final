@@ -9,6 +9,7 @@ import DropdownButton from "../../components/dropDownButton";
 import JobLoading from "../jobLoading";
 import Footer from "@/components/Footer";
 import JobApplicationForm from "./[jobid]/apply/JobApplicationForm";
+import { useSearchParams } from "next/navigation"; // Import useSearchParams
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -20,6 +21,17 @@ function Jobs() {
   const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
+
+  // Get the query parameters from the URL
+  const searchParams = useSearchParams();
+  const industryQueryParam = searchParams.get("industry");
+
+  // Set the selected industry from the query parameter
+  useEffect(() => {
+    if (industryQueryParam) {
+      setSelectedIndustry(industryQueryParam);
+    }
+  }, [industryQueryParam]);
 
   // Fetch jobs and recruiter data
   useEffect(() => {
@@ -37,11 +49,11 @@ function Jobs() {
                 `/api/recruiterdetails/get?id=${job.recruiterId}`
               );
               if (!recruiterResponse.ok) {
-                return { 
+                return {
                   ...job,
                   industry: "Unknown",
                   recruiterName: "Unknown",
-                  logo: "/images/default-image.jpg"
+                  logo: "/images/default-image.jpg",
                 };
               }
               const recruiterData = await recruiterResponse.json();
@@ -49,14 +61,14 @@ function Jobs() {
                 ...job,
                 industry: recruiterData.industry || "Unknown",
                 recruiterName: recruiterData.recruiterName || "Unknown",
-                logo: recruiterData.logo || "/images/default-image.jpg"
+                logo: recruiterData.logo || "/images/default-image.jpg",
               };
             } catch (error) {
-              return { 
+              return {
                 ...job,
                 industry: "Unknown",
                 recruiterName: "Unknown",
-                logo: "/images/default-image.jpg"
+                logo: "/images/default-image.jpg",
               };
             }
           })
@@ -102,7 +114,9 @@ function Jobs() {
   }, [searchQuery, selectedLocation, selectedIndustry, jobs]);
 
   // Get unique industries and locations
-  const industries = [...new Set(jobs.map((job) => job.industry))].filter(Boolean);
+  const industries = [...new Set(jobs.map((job) => job.industry))].filter(
+    Boolean
+  );
   const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
 
   const handleSearchChange = (event) => {
@@ -163,7 +177,7 @@ function Jobs() {
             <DropdownButton
               buttonName="Industry"
               selected={selectedIndustry || "Industry"}
-              dropdownItems={["All Industries", ...industries]}
+              dropdownItems={["All Industries", "Creative & Design","Education & Training","Technology & Development","Operations & Logistics","Marketing & Sales"]}
               onSelect={(industry) =>
                 setSelectedIndustry(industry === "All Industries" ? null : industry)
               }

@@ -29,18 +29,23 @@ export default function RecruiterProfile({ slug }) {
         membership: "",
         coverImage: "",
         website: "",
-        companyDescription: ""
+        companyDescription: "",
+        telephoneNumber: "",
 
     });
 
     const [userDetails, setUserDetails] = useState({
-        _id: '',
-        firstName: "",
-        lastName: "",
-        contactNumber: "",
-        email: "",
-        profileImage: "",
-    })
+        user: {
+            _id: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            contactNumber: "",
+            profileImage: "",
+            role: "",
+            createdAt: "",
+        },
+    });
 
     useEffect(() => {
         if (session?.user?.email) {
@@ -62,7 +67,7 @@ export default function RecruiterProfile({ slug }) {
                         throw new Error(userData.message || "Failed to fetch user details");
                     }
 
-                    setUserDetails(userData);
+                    setUserDetails(userData.user);
                 } catch (err) {
                     setError(err.message);
                 } finally {
@@ -499,16 +504,32 @@ export default function RecruiterProfile({ slug }) {
                         </div>
                         <form>
                             <div className="">
-                                <label className="block text-sm font-semibold text-[#001571]">
-                                    User Name
-                                </label>
-                                <input
-                                    type="text"
-                                    name="User Name"
-                                    value={`${userDetails.firstName} ${userDetails.lastName}`}
-                                    disabled
-                                    className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
-                                />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-[#001571]">
+                                            First Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="First Name"
+                                            value={userDetails.firstName}
+                                            disabled
+                                            className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
+                                        />
+                                    </div>
+                                    <div>
+                                    <label className="block text-sm font-semibold text-[#001571]">
+                                            Last Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="Last Name"
+                                            value={userDetails.lastName}
+                                            disabled
+                                            className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
+                                        />
+                                    </div>
+                                </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                     <div>

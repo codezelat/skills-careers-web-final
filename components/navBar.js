@@ -72,11 +72,16 @@ function NavBar() {
         {/* Desktop Button */}
         <div className="hidden md:block">
           {status === "unauthenticated" && (
-            <Link href="/register">
-              <Button>
-                <p className="py-2 px-6">JOIN AS RECRUITER</p>
-              </Button>
-            </Link>
+            <div className="flex flex-row items-center justify-end">
+              <Link href="/login">
+                  <p className="py-2 px-6 text-lg font-semibold text-[#001571]">Login</p>
+              </Link>
+              <Link href="/register">
+                <Button>
+                  <p className="py-2 px-6">SIGN UP</p>
+                </Button>
+              </Link>
+            </div>
           )}
           {session?.user?.role === "recruiter" && (
             <Link href="/Portal/dashboard">

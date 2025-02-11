@@ -5,22 +5,32 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import Footer from "@/components/Footer";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function CategoryPage() {
-
   const [search, setSearch] = useState("");
+  const router = useRouter(); // Initialize useRouter
+
+  // Function to handle category click
+  const handleCategoryClick = (categoryName) => {
+    // Navigate to the Jobs Page with the selected category as a query parameter
+    router.push(`/jobs?industry=${encodeURIComponent(categoryName)}`);
+  };
 
   return (
     <>
       <div className="relative bg-[#F5F5F5]">
         <div className="h-[90vh] w-full bg-white absolute top-0 left-0 z-[1]">
-          <Image src="/images/bg.jpg" alt="Background Image"
+          <Image
+            src="/images/bg.jpg"
+            alt="Background Image"
             layout="fill"
             objectFit="contain"
             objectPosition="right top"
             quality={100}
             priority
-            className="w-full h-full opacity-5 " />
+            className="w-full h-full opacity-5 "
+          />
         </div>
         <div className="w-full pt-24 z-[2] relative">
           <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
@@ -63,7 +73,8 @@ export default function CategoryPage() {
                 .map((category, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center justify-center p-6 bg-white border hover:bg-[#CAD1F1] border-gray-300 rounded-lg shadow-md"
+                    className="flex flex-col items-center justify-center p-6 bg-white border hover:bg-[#CAD1F1] border-gray-300 rounded-lg shadow-md cursor-pointer"
+                    onClick={() => handleCategoryClick(category.name)} // Add onClick handler
                   >
                     <Image
                       src={category.icon}
