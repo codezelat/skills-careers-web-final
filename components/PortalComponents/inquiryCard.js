@@ -1,103 +1,124 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { FaCircleChevronRight } from "react-icons/fa6";
 import { useSession } from "next-auth/react";
+import UpdateInquiryForm from "./updateInquiryForm";
 
 export default function InquiryCard({ inquiry, onViewInquiry }) {
+  const { data: session, status } = useSession();
+  const [showInquiry, setShowInquiry] = useState(false);
+  const [jobseekerDetails, setJobseekerDetails] = useState({
+    profileImage: "",
+  });
 
-    const { data: session, status } = useSession();
-    
-    const [jobseekerDetails, setJobseekerDetails] = useState({
-        profileImage: "",
-    });
+  const [userDetails, setUserDetails] = useState({
+    profileImage: "",
+  });
 
-    const [userDetails, setUserDetails] = useState({
-        profileImage: "",
-    });
-
-    useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                const response = await fetch(
-                    `/api/users/get?id=${inquiry.userId}`
-                );
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserDetails(data);
-                } else {
-                    console.error("Failed to fetch user details");
-                }
-            } catch (error) {
-                console.error("Error occurred while fetching details:", error);
-            }
-        };
-
-        fetchDetails();
-    }, [inquiry]);
-
-    const handleViewInquiry = () => {
-        onViewInquiry?.();
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const response = await fetch(`/api/users/get?id=${inquiry.userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setUserDetails(data);
+        } else {
+          console.error("Failed to fetch user details");
+        }
+      } catch (error) {
+        console.error("Error occurred while fetching details:", error);
+      }
     };
 
-    // date and time
-    const date = new Date(inquiry.createdAt).getDate();
-    const monthName = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
-    ];
-    const d = new Date(inquiry.createdAt);
-    let month = monthName[d.getMonth()];
-    const year = d.getFullYear();
+    fetchDetails();
+  }, [inquiry]);
 
-    let hours = d.getHours();
-    const minutes = d.getMinutes().toString().padStart(2, "0");
-    const seconds = d.getSeconds().toString().padStart(2, "0");
+  const handleViewInquiry = () => {
+    onViewInquiry?.();
+  };
 
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
+  // date and time
+  const date = new Date(inquiry.createdAt).getDate();
+  const monthName = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const d = new Date(inquiry.createdAt);
+  let month = monthName[d.getMonth()];
+  const year = d.getFullYear();
 
-    const postedDate = `${date} ${month} ${year}`;
-    const postedTime = `${hours} : ${minutes} : ${seconds} ${ampm}`;
+  let hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2, "0");
+  const seconds = d.getSeconds().toString().padStart(2, "0");
 
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
 
-    return (
-        <>
-            <div className="py-2 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
-                <div className="flex flex-row space-x-3 w-[25%] items-center">
-                    {/* Logo */}
-                    <div className="">
-                        <Image
-                            src={userDetails?.profileImage || "/images/default-image.jpg"}
-                            alt="Recruiter Logo"
-                            width={45}
-                            height={45}
-                            className="rounded-full shadow-lg"
-                        />
-                    </div>
-                    {/* Name */}
-                    <div className="items-center">{inquiry.userName}</div>
-                </div>
-                {/* role */}
-                <div className="py-1 font-semibold w-[20%] flex items-center">{inquiry.userRole}</div>
-                {/* date */}
-                <div className="py-1 font-semibold w-[20%] flex items-center">{postedDate}</div>
-                {/* time */}
-                <div className="py-1 font-semibold w-[20%] flex items-center">{postedTime}</div>
-                {/* Actions */}
-                <div className="py-1 flex gap-2 ml-auto justify-end w-[15%] items-center">
-                    <button
-                        className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-                    // onClick={() => setShowRecruiter(true)}
-                    >
-                        <span>View Now</span>
-                        <span className="ml-2">
-                            <FaCircleChevronRight size={15} />
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </>
-    )
+  const postedDate = `${date} ${month} ${year}`;
+  const postedTime = `${hours} : ${minutes} : ${seconds} ${ampm}`;
+
+  return (
+    <>
+      <div className="py-2 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
+        <div className="flex flex-row space-x-3 w-[25%] items-center">
+          {/* Logo */}
+          <div className="">
+            <Image
+              src={userDetails?.profileImage || "/images/default-image.jpg"}
+              alt="Recruiter Logo"
+              width={45}
+              height={45}
+              className="rounded-full shadow-lg"
+            />
+          </div>
+          {/* Name */}
+          <div className="items-center">{inquiry.userName}</div>
+        </div>
+        {/* role */}
+        <div className="py-1 font-semibold w-[20%] flex items-center">
+          {inquiry.userRole}
+        </div>
+        {/* date */}
+        <div className="py-1 font-semibold w-[20%] flex items-center">
+          {postedDate}
+        </div>
+        {/* time */}
+        <div className="py-1 font-semibold w-[20%] flex items-center">
+          {postedTime}
+        </div>
+        {/* Actions */}
+        <div className="py-1 flex gap-2 ml-auto justify-end w-[15%] items-center">
+          <button
+            className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+            onClick={() => setShowInquiry(true)}
+          >
+            <span>View Now</span>
+            <span className="ml-2">
+              <FaCircleChevronRight size={15} />
+            </span>
+          </button>
+        </div>
+            {/* View update Inquire Popup */}
+            {showInquiry && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
+            <UpdateInquiryForm onClose={() => setShowInquiry(false)} />
+          </div>
+        </div>
+      )}
+      </div>
+    </>
+  );
 }
