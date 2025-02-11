@@ -7,7 +7,7 @@ export async function GET() {
     const db = client.db();
 
     const jobapplications = await db.collection("jobapplication").find().toArray();
-    
+
     // Format data to match frontend needs
     const formattedApplications = jobapplications.map(app => ({
       id: app._id.toString(),
@@ -24,11 +24,23 @@ export async function GET() {
     client.close();
 
     return NextResponse.json(
-      { 
-        applications: formattedApplications, 
-        count: formattedApplications.length 
+      {
+        applications: formattedApplications,
+        count: formattedApplications.length
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+          "CDN-Cache-Control": "no-store",
+          "Surrogate-Control": "no-store",
+          Pragma: "no-cache",
+          Expires: "0",
+          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+        },
+      }
     );
   } catch (error) {
     return NextResponse.json(

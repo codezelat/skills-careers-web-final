@@ -21,6 +21,7 @@ export default function RecruiterProfile({ slug }) {
         email: "",
         employeeRange: "",
         contactNumber: "",
+        telephoneNumber:"",
         userId: "",
         createdAt: "",
         location: "",

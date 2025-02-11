@@ -18,9 +18,9 @@ export async function POST(req) {
 
     // Validate required fields
     if (
-      !userId ||
-      !userName ||
-      !userRole ||
+      //  !userId ||
+      // !userName ||
+        !userRole ||
       !inquiryTitle ||
       !inquiryDescription
     ) {

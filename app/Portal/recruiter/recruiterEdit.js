@@ -98,8 +98,8 @@ export default function RecruiterEdit({
                                 </label>
                                 <input
                                     type="text"
-                                    name="contactNumber"
-                                    value={recruiterDetails.contactNumber || ""}
+                                    name="telephoneNumber"
+                                    value={recruiterDetails.telephoneNumber || ""}
                                     onChange={onInputChange}
                                     className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                                 />
