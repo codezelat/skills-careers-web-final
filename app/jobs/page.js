@@ -10,7 +10,13 @@ async function getJobs() {
       cache: "no-store", // Prevent caching
       headers: {
         "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        "CDN-Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+        "Surrogate-Control": "no-store",
+        Pragma: "no-cache",
+        Expires: "0",
+        "x-netlify-cache": "miss",
       },
     }
   );
@@ -32,7 +38,13 @@ async function getJobs() {
             cache: "no-store", // Prevent caching
             headers: {
               "Cache-Control":
-                "no-store, no-cache, must-revalidate, proxy-revalidate",
+                "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+              "CDN-Cache-Control":
+                "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+              "Surrogate-Control": "no-store",
+              Pragma: "no-cache",
+              Expires: "0",
+              "x-netlify-cache": "miss",
             },
           }
         );
