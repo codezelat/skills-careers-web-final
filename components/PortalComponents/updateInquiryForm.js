@@ -1,15 +1,14 @@
-"use client"
-
-import { formatDate } from "@/handlers";
+"use client";
 import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import Image from "next/image";
-import SolveInquireForm from "./solveInquiryForm";
+import SolveInquiryForm from "./solveInquiryForm";
+import Swal from "sweetalert2";
+import { useSession } from "next-auth/react";
 
+export default function UpdateInquiryForm({ inquiry, onClose }) {
+  const { data: session, status } = useSession();
 
-function UpdateInquiryForm({ inquiry, onClose }) {
   const [showSolveInquire, setShowSolveInquire] = useState(false);
-
   const [inquiryDetails, setInquiryDetails] = useState({
     _id: "",
     userName: "",
@@ -20,56 +19,34 @@ function UpdateInquiryForm({ inquiry, onClose }) {
     status: "",
     reply: "",
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    if (session?.user?.id) {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch(`/api/user?id=${session.user.id}`);
+          if (!response.ok) throw new Error("Failed to fetch user data.");
+          const userData = await response.json();
+          setUserName(`${userData.firstName}${userData.lastName}`);
+        } catch (error) {
+          setError(error.message);
+        }
+      };
+      fetchUserData();
+    }
+  }, [session]);
 
   useEffect(() => {
-    setInquiryDetails(inquiry);
-  }, [inquiry]);
-
-  // Handling input change
-  const handleInputChange = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    setInquiryDetails((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch(`/api/inquiry/update`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inquiryDetails),
-      });
-      if (response.ok) {
-        alert("Replied successfully!");
-      } else {
-        alert("Failed to Reply.");
-      }
-    } catch (error) {
-      console.error("Error updating inquiry:", error);
-    } finally {
-      setIsSubmitting(false);
+    if (inquiry) {
+      setInquiryDetails(inquiry);
     }
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onClose(); // Close the form on submit
-  };
-
-  const date = formatDate(inquiryDetails.createdAt);
+  }, [inquiry]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white w-full max-w-4xl min-h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-2xl font-semibold text-[#001571]">
-            View Inquire
+            View Inquiry
           </h4>
           <button
             onClick={onClose}
@@ -80,77 +57,119 @@ function UpdateInquiryForm({ inquiry, onClose }) {
         </div>
         <div className="border-t-2 border-gray-200 mb-4" />
 
-        <form className="space-y-6 flex-grow" onSubmit={submitHandler}>
-
-      <div>
+        <form className="space-y-6 flex-grow">
+          <div>
             <label className="block text-sm font-semibold text-[#001571] mb-5">
               Profile Name
             </label>
             <input
               type="text"
-              name="title"
+              name="userName"
               value={inquiryDetails.userName}
-              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+              readOnly
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 bg-gray-100"
             />
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#001571] mb-5">
-              Inquire Title
+              Inquiry Title
             </label>
             <input
               type="text"
-              name="title"
+              name="inquiryTitle"
               value={inquiryDetails.inquiryTitle}
-              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+              readOnly
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 bg-gray-100"
             />
           </div>
-
           <div>
             <label className="block text-sm font-semibold text-[#001571] mb-5">
-              Inquire Description
+              Inquiry Description
             </label>
             <textarea
-              type="text"
-              name="title"
+              name="inquiryDescription"
               rows={8}
               value={inquiryDetails.inquiryDescription}
-              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2"
+              readOnly
+              className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 bg-gray-100"
             />
           </div>
-          </form>
-                  {/* Footer Section */}
-        <div className="border-t-2 border-gray-200 mb-4 mt-4" />
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={() => setShowSolveInquire(true)}
 
-            className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
-          >
-            <div className="flex items-center space-x-3">
-              <p>Solve Inquire</p>
-              <Image
-                src="/images/arrowforward.png"
-                alt="tick"
-                width={20}
-                height={10}
-              />
+          <div className="border-t-2 border-gray-200  mt-4 mb-16" />
+          <div className="flex justify-end">
+            {session?.user?.role === "admin" && (
+              <button
+                type="button"
+                onClick={() => setShowSolveInquire(true)}
+                className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+              >
+                Solve Inquiry
+              </button>
+            )}
+            {session?.user?.role === "jobseeker" && (
+              <div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#001571] mb-5">
+                    Reply
+                  </label>
+                  <textarea
+                    name="reply"
+                    rows={6}
+                    value={inquiryDetails.reply}
+                    readOnly
+                    className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 bg-gray-100"
+                  />
+                </div>
+
+                <div className="border-t-2 border-gray-200 mb-4 mt-4" />
+
+                <button
+                  type="button"
+                  className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+                >
+                  Done
+                </button>
+              </div>
+            )}
+            {session?.user?.role === "recruiter" && (
+              <div>
+              <div>
+                <label className="block text-sm font-semibold text-[#001571] mb-5">
+                  Reply
+                </label>
+                <textarea
+                  name="reply"
+                  rows={6}
+                  value={inquiryDetails.reply}
+                  readOnly
+                  className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 bg-gray-100"
+                />
+              </div>
+
+              <div className="border-t-2 border-gray-200 mb-4 mt-4" />
+
+              <button
+                type="button"
+                className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+              >
+                Done
+              </button>
             </div>
-          </button>
-        </div>
+          )}
+          </div>
+        </form>
       </div>
 
-            {/* Solve Inquire Popup */}
-            {showSolveInquire && (
+      {showSolveInquire && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
-            <SolveInquireForm onClose={() => setShowSolveInquire(false)} />
+            <SolveInquiryForm
+              inquiry={inquiryDetails}
+              onClose={() => setShowSolveInquire(false)}
+            />
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
-export default UpdateInquiryForm;
