@@ -2,7 +2,7 @@
 import { FaTimes } from "react-icons/fa";
 import { PiCheckCircle } from "react-icons/pi";
 
-export default function CredentialsForm({
+export default function AdminEditForm({
   userDetails,
   isSubmitting,
   onClose,
