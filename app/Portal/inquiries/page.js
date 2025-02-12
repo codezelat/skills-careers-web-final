@@ -48,7 +48,7 @@ export default function AdminInquiries(inquiry) {
     const fetchFilteredInquiries = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/inquiry/get?id=${session.user.id}`);
+        const response = await fetch(`/api/inquiry/get?userId=${session.user.id}`);
         if (!response.ok) throw new Error("Failed to fetch inquiries.");
         const data = await response.json();
         console.log("aiyo",data.inquiries);

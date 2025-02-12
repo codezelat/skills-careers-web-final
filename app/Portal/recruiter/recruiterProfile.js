@@ -7,6 +7,7 @@ import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
 import RecruiterEdit from "./recruiterEdit";
 import CredentialsForm from "./credentialsEditForm";
+import Swal from "sweetalert2";
 
 export default function RecruiterProfile({ slug }) {
 
@@ -83,91 +84,140 @@ export default function RecruiterProfile({ slug }) {
         e.preventDefault();
         const file = e.target.files[0];
         if (!file) return;
-
+    
         if (file.size > 5 * 1024 * 1024) {
-            alert("File size should be less than 5MB");
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "File size should be less than 5MB.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
             return;
         }
-
+    
         if (!file.type.startsWith("image/")) {
-            alert("Please upload an image file");
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Please upload an image file.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
             return;
         }
-
+    
         try {
             const formData = new FormData();
             formData.append("image", file);
             formData.append("email", recruiterDetails.email);
-
+    
             console.log("Starting image upload...");
             const response = await fetch("/api/recruiterdetails/uploadimage", {
                 method: "POST",
                 body: formData,
             });
-
+    
             const data = await response.json();
-
+    
             if (!response.ok) {
                 throw new Error(data.error || "Failed to upload image");
             }
-
+    
             console.log("Upload successful:", data);
             setRecruiterDetails((prev) => ({
                 ...prev,
                 logo: data.imageUrl,
             }));
-
-            alert("Logo uploaded successfully!");
-        } catch (error) {
-            console.error("Error uploading image:", error);
-            alert(`Failed to upload image: ${error.message}`);
-        }
-    };
-
-    const handleCoverImageChange = async (e) => {
-        e.preventDefault();
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.size > 5 * 1024 * 1024) {
-            alert("File size should be less than 5MB");
-            return;
-        }
-
-        if (!file.type.startsWith("image/")) {
-            alert("Please upload an image file");
-            return;
-        }
-
-        try {
-            const formData = new FormData();
-            formData.append("image", file);
-            formData.append("email", recruiterDetails.email);
-
-            console.log("Starting image upload...");
-            const response = await fetch("/api/recruiterdetails/uploadCoverImage", {
-                method: "POST",
-                body: formData,
+    
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Logo uploaded successfully!",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || "Failed to upload image");
-            }
-
-            console.log("Upload successful:", data);
-            setRecruiterDetails((prev) => ({
-                ...prev,
-                coverImage: data.imageUrl,
-            }));
-
-            alert("Logo uploaded successfully!");
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert(`Failed to upload image: ${error.message}`);
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message || "Failed to upload image.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
         }
     };
+
+
+const handleCoverImageChange = async (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "File size should be less than 5MB.",
+            timer: 2000, // 2 seconds
+            showConfirmButton: false,
+        });
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Please upload an image file.",
+            timer: 2000, // 2 seconds
+            showConfirmButton: false,
+        });
+        return;
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("email", recruiterDetails.email);
+
+        console.log("Starting image upload...");
+        const response = await fetch("/api/recruiterdetails/uploadCoverImage", {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Failed to upload image");
+        }
+
+        console.log("Upload successful:", data);
+        setRecruiterDetails((prev) => ({
+            ...prev,
+            coverImage: data.imageUrl,
+        }));
+
+        Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Cover image uploaded successfully!",
+            timer: 2000, // 2 seconds
+            showConfirmButton: false,
+        });
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: error.message || "Failed to upload image.",
+            timer: 2000, // 2 seconds
+            showConfirmButton: false,
+        });
+    }
+};
 
     // Recruiter details update 
     const handleInputChange = (e) => {
@@ -187,24 +237,40 @@ export default function RecruiterProfile({ slug }) {
                 },
                 body: JSON.stringify(recruiterDetails),
             });
+    
+            const data = await response.json(); // Parse the response body
+            console.log("Server Response:", data);
             if (response.ok) {
-                alert("Details updated successfully!");
+                Swal.fire({
+                    icon: "success",
+                    title: "Success!",
+                    text: data.message || "Details updated successfully!",
+                    timer: 2000, // 2 seconds
+                    showConfirmButton: false,
+                });
                 setShowApplicationForm(false);
             } else {
-                alert("Failed to update details.");
+                throw new Error(data.message || "Failed to update details.");
             }
         } catch (error) {
             console.error("Error updating recruiter details:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message || "Failed to update details.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
         } finally {
             setIsSubmitting(false);
         }
     };
-
+    
     // Recruiter credentials details update
     const credSubmitHandler = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-
+    
         try {
             const response = await fetch('/api/users/update', {
                 method: 'PUT',
@@ -213,23 +279,35 @@ export default function RecruiterProfile({ slug }) {
                 },
                 body: JSON.stringify(userDetails),
             });
-
+    
             const data = await response.json();
-
+    
             if (!response.ok) {
                 throw new Error(data.message || 'Something went wrong');
             }
-
+    
             setShowCredentialsForm(false);
-            alert('Profile updated successfully!');
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Profile updated successfully!",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error('Update failed:', error);
-            alert(error.message || 'Update failed');
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message || "Update failed.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
         } finally {
             setIsSubmitting(false);
         }
     };
-
+    
     // Input Change Handler
     const handleCredInputChange = (e) => {
         const { name, value } = e.target;

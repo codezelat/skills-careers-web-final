@@ -280,7 +280,7 @@ export default function RecruiterPostedJobs(props) {
                         </div>
                     </div>
                     {/* Action Buttons */}
-                    <div className="flex gap-4 mb-4 items-center bg-green">
+                    {/* <div className="flex gap-4 mb-4 items-center bg-green">
                         <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
                             <span className="mr-2 flex items-center">
                                 <input
@@ -297,7 +297,7 @@ export default function RecruiterPostedJobs(props) {
                             </span>
                             Delete
                         </button>
-                    </div>
+                    </div> */}
 
                     {/* Table */}
                     <div className="w-full overflow-x-auto">
