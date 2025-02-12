@@ -97,7 +97,7 @@ export default function RecruiterEdit({
                                     Phone
                                 </label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     name="telephoneNumber"
                                     value={recruiterDetails.telephoneNumber || ""}
                                     onChange={onInputChange}
