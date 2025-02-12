@@ -1,10 +1,8 @@
 "use client";
-import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import { PiCheckCircle } from "react-icons/pi";
-import { RiDeleteBinFill } from "react-icons/ri";
-import { BsChevronLeft, BsChevronRight, BsFillEyeFill, BsPlus } from "react-icons/bs";
+import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import CandidateCard from "@/components/PortalComponents/portalCandidateCard";
@@ -12,158 +10,151 @@ import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
 
 export default function Candidates() {
-    const [activeTab, setActiveTab] = useState("all");
-    const [newJobSeekerForm, setNewJobseekerForm] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [jobseekers, setJobseekers] = useState([]);
+  const [filteredJobseekers, setFilteredJobseekers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const candidatesPerPage = 6;
+  const [newJobSeekerForm, setNewJobseekerForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const router = useRouter();
-    const { data: session, status } = useSession();
+  const [newJobseeker, setNewJobseeker] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    contactNumber: '',
+    password: '',
+    confirmPassword: '',
+});
 
-    const [jobseekers, setJobseekers] = useState([]);
-    const [filteredJobseekers, setFilteredJobseekers] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [selectedJobseeker, setSelectedJobseeker] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/admin");
-        }
+async function createJobseeker(
+    firstName,
+    lastName,
+    email,
+    contactNumber,
+    password,
+    confirmPassword
+) {
+    const response = await fetch("/api/auth/jobseekersignup", {
+        method: "POST",
+        body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            contactNumber,
+            password,
+            confirmPassword
+        }),
+        headers: {
+            "Content-Type": "application/json",
+        },
     });
 
-    useEffect(() => {
-        const fetchJobseekers = async () => {
-            try {
-                const response = await fetch("/api/jobseekerdetails/all");
-                const data = await response.json();
-                setJobseekers(data.jobseekers);
-                setFilteredJobseekers(data.jobseekers);
-            } catch (error) {
-                console.error("Error fetching Job Seekers:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || "Something went wrong!");
+    }
+    return data;
+}
 
-        fetchJobseekers();
-    }, []);
 
-    // Handle search query change
-    const handleSearchChange = (event) => {
-        const query = event.target.value.toLowerCase();
-        setSearchQuery(query);
-        setFilteredJobseekers(
-            jobseekers.filter(
-                (jobseeker) =>
-                    jobseeker.email.toLowerCase().includes(query)
-            )
-        );
-    };
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/admin");
+  }, [status, router]);
 
-    const handleJobseekerSelect = (jobseeker) => {
-        setSelectedJobseeker(jobseeker);
-    };
-
-    // Create jobseeker functions
-    const [newJobseeker, setNewJobseeker] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        contactNumber: '',
-        password: '',
-        confirmPassword: '',
-    });
-
-    async function createJobseeker(
-        firstName,
-        lastName,
-        email,
-        contactNumber,
-        password,
-        confirmPassword
-    ) {
-        const response = await fetch("/api/auth/jobseekersignup", {
-            method: "POST",
-            body: JSON.stringify({
-                firstName,
-                lastName,
-                email,
-                contactNumber,
-                password,
-                confirmPassword
-            }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json();
+  useEffect(() => {
+    const fetchJobseekers = async () => {
+      try {
+        const response = await fetch("/api/jobseekerdetails/all");
         if (!response.ok) {
-            throw new Error(data.message || "Something went wrong!");
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return data;
+        const data = await response.json();
+        setJobseekers(data.jobseekers || []);
+        filterJobseekers(data.jobseekers || [], searchQuery, activeTab);
+      } catch (error) {
+        console.error("Error fetching jobseekers:", error);
+        setJobseekers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    if (session?.user?.email) fetchJobseekers();
+  }, [session]);
+
+  const filterJobseekers = (jobseekers, query, tab) => {
+    const filtered = (jobseekers || []).filter(jobseeker => {
+      const matchesSearch = (jobseeker.email || '').toLowerCase().includes(query.toLowerCase());
+      const matchesTab = tab === "all" ? true : jobseeker.isRestricted;
+      return matchesSearch && matchesTab;
+    });
+    setFilteredJobseekers(filtered);
+  };
+
+  useEffect(() => {
+    filterJobseekers(jobseekers, searchQuery, activeTab);
+  }, [searchQuery, activeTab, jobseekers]);
+
+  const handleJobseekerUpdate = (updatedJobseeker) => {
+    setJobseekers(prev => prev.map(js => 
+      js._id === updatedJobseeker._id ? { ...js, ...updatedJobseeker } : js
+    ));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+        const result = await createJobseeker(
+            newJobseeker.firstName,
+            newJobseeker.lastName,
+            newJobseeker.email,
+            newJobseeker.contactNumber,
+            newJobseeker.password,
+            newJobseeker.confirmPassword
+        );
+        alert(result.message);
+        setNewJobseekerForm(false);
+
+        const response = await fetch("/api/jobseekerdetails/all");
+        const data = await response.json();
+        setJobseekers(data.jobseekers);
+    } catch (error) {
+        alert(error.message);
+    } finally {
+        setIsSubmitting(false);
     }
+};
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
+const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewJobseeker(prev => ({ ...prev, [name]: value }));
+};
 
-        try {
-            const result = await createJobseeker(
-                newJobseeker.firstName,
-                newJobseeker.lastName,
-                newJobseeker.email,
-                newJobseeker.contactNumber,
-                newJobseeker.password,
-                newJobseeker.confirmPassword
-            );
-            alert(result.message);
-            setNewJobseekerForm(false);
 
-            const response = await fetch("/api/jobseekerdetails/all");
-            const data = await response.json();
-            setJobseekers(data.jobseekers);
-        } catch (error) {
-            alert(error.message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // handleInputChange for form fields
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewJobseeker(prev => ({ ...prev, [name]: value }));
-    };
-
-    // pagination function
-    const [currentPage, setCurrentPage] = useState(1);
-    const candidatesPerPage = 6;
-
-    const totalPages = Math.ceil(filteredJobseekers.length / candidatesPerPage);
-
-    const indexOfLastCandidates = currentPage * candidatesPerPage;
-    const indexOfFirstCandidates = indexOfLastCandidates - candidatesPerPage;
-    const currentCandidatess = filteredJobseekers.slice(indexOfFirstCandidates, indexOfLastCandidates);
-
-    const handlePageChange = (newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
-    };
-
-    if (loading) {
-        return <PortalLoading />;
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= Math.ceil(filteredJobseekers.length / candidatesPerPage)) {
+      setCurrentPage(newPage);
     }
+  };
 
-    return (
-        <>
-            <div className="min-h-screen bg-white rounded-lg p-5">
 
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-xl font-bold text-[#001571]">Candidates</h1>
-                    {session?.user?.role === "admin" && (
+  if (loading) return <PortalLoading />;
+
+  return (
+    <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-bold text-[#001571]">Candidates</h1>
+        {session?.user?.role === "admin" && (
                         <button
                             className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
                             onClick={() => setNewJobseekerForm(true)}
@@ -171,149 +162,107 @@ export default function Candidates() {
                             <BsPlus size={25} className="mr-1" />Add New
                         </button>
                     )}
-                </div>
+      </div>
 
-                {session?.user?.role === "admin" && (
-                    <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
-                        {/* All Recruiters Button */}
-                        <button
-                            onClick={() => setActiveTab("all")}
-                            className={`px-6 py-3 flex rounded-2xl ${activeTab === "all"
-                                ? "bg-[#001571] text-white"
-                                : "text-[#B0B6D3] bg-[#E6E8F1]"
-                                }`}
-                        >
-                            All Candidates
-                            <span className="ml-2">
-                                <PiCheckCircle size={20} />
-                            </span>
-                        </button>
+      {/* Tabs */}
+      <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
+        <button
+          onClick={() => setActiveTab("all")}
+          className={`px-6 py-3 flex rounded-2xl ${
+            activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+          }`}
+        >
+          All Candidates
+          <PiCheckCircle size={20} className="ml-2" />
+        </button>
+        <button
+          onClick={() => setActiveTab("restricted")}
+          className={`px-6 py-3 flex rounded-2xl ${
+            activeTab === "restricted" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+          }`}
+        >
+          Restricted Candidates
+          <PiCheckCircle size={20} className="ml-2" />
+        </button>
+      </div>
 
-                        {/* Restricted Recruiters Button */}
-                        <button
-                            onClick={() => setActiveTab("restricted")}
-                            className={`px-6 py-3 flex rounded-2xl text-sm font-semibold ${activeTab === "restricted"
-                                ? "bg-[#001571] text-white"
-                                : "text-[#B0B6D3] bg-[#E6E8F1]"
-                                }`}
-                        >
-                            Restricted Candidates
-                            <span className="ml-2">
-                                <PiCheckCircle size={20} />
-                            </span>
-                        </button>
-                    </div>
-                )}
+      {/* Search */}
+      <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
+        <IoSearchSharp size={25} className="text-[#001571]" />
+        <input
+          type="text"
+          placeholder="Search candidates..."
+          className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
 
-                {activeTab === "all" ? (
-                    <>
-                        <div className="flex-grow ">
-                            <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
-                                <IoSearchSharp size={25} className="text-[#001571]" />
-                                <input
-                                    type="text"
-                                    placeholder="Search Candidates..."
-                                    className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
-                                    value={searchQuery}
-                                    onChange={handleSearchChange}
-                                />
-                            </div>
-                        </div>
+      {/* Candidate List */}
+      <div className="w-full overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="text-[#8A93BE] text-base font-semibold text-left">
+              <th className="px-4 py-3 w-[3%]"></th>
+              <th className="px-4 py-3 w-[24.25%]">Candidate Name</th>
+              <th className="px-4 py-3 w-[24.25%]">Email</th>
+              <th className="px-4 py-3 w-[24.25%]">Phone</th>
+              <th className="px-4 py-3 w-[24.25%]">Actions</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
 
-                        {/* Action Buttons */}
-                        {session?.user?.role === "admin" && (
-                            <div className="flex gap-4 mb-4 items-center bg-green">
-                                <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
-                                    <span className="mr-2 flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                        />
-                                    </span>
-                                    Select More
-                                </button>
+      <div className="grid gap-4 grid-cols-1">
+        {filteredJobseekers
+          .slice((currentPage - 1) * candidatesPerPage, currentPage * candidatesPerPage)
+          .map((jobseeker) => (
+            <CandidateCard
+              key={jobseeker._id}
+              jobseeker={jobseeker}
+              onUpdate={handleJobseekerUpdate}
+            />
+          ))}
+      </div>
 
-                                <button className="flex bg-[#EC221F] text-white px-6 py-3 rounded-2xl shadow hover:bg-red-600">
-                                    <span className="mr-2">
-                                        <RiDeleteBinFill size={20} />
-                                    </span>
-                                    Delete
-                                </button>
-                            </div>
-                        )}
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        <nav className="flex gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === 1 ? "bg-gray-300" : "bg-gray-200 hover:bg-gray-400"
+            }`}
+          >
+            <BsChevronLeft size={15} />
+          </button>
+          {Array.from({ length: Math.ceil(filteredJobseekers.length / candidatesPerPage) }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handlePageChange(index + 1)}
+              className={`px-4 py-2 rounded-lg ${
+                currentPage === index + 1 ? "bg-blue-700 text-white" : "bg-gray-200 hover:bg-gray-400"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === Math.ceil(filteredJobseekers.length / candidatesPerPage)}
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === Math.ceil(filteredJobseekers.length / candidatesPerPage) 
+                ? "bg-gray-300" 
+                : "bg-gray-200 hover:bg-gray-400"
+            }`}
+          >
+            <BsChevronRight size={15} />
+          </button>
+        </nav>
+      </div>
 
-                        {/* Table */}
-                        <div className="w-full overflow-x-auto">
-                            <table className="w-full border-collapse">
-                                <thead>
-                                    <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                                        <th className="px-4 py-3 w-[3%]"></th>
-                                        <th className="px-4 py-3 w-[24.25%]">Candidate Name</th>
-                                        <th className="px-4 py-3 w-[24.25%]">Email</th>
-                                        <th className=" px-4 py-3 w-[24.25%]">Phone</th>
-                                        <th className="px-4 py-3 w-[24.25%]">Actions</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div className="grid gap-4 grid-cols-1">
-                            {currentCandidatess.length > 0 ? (
-                                currentCandidatess.map((jobseeker) => (
-                                    <CandidateCard
-                                        key={jobseeker._id}
-                                        jobseeker={jobseeker}
-                                        onViewJobSeeker={() => handleJobseekerSelect(jobseeker)}
-                                    />
-                                ))
-                            ) : (
-                                <p className="text-lg text-center font-bold text-red-500 py-20">
-                                    No candidates found.
-                                </p>
-                            )}
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <div className="flex-grow ">
-                            <div className="bg-[#E6E8F1] flex items-center pl-4 pr-4 mb-5 py-4 rounded-lg shadow-sm w-full">
-                                <IoSearchSharp size={25} className="text-[#001571]" />
-                                <input
-                                    type="text"
-                                    placeholder="Search Recruiters..."
-                                    className="ml-2 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
-                                />
-                            </div>
-                        </div>
-                        {/* Action Buttons */}
-                        <div className="flex gap-4 mb-4 items-center bg-green">
-                            <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                                <span className="mr-2">
-                                    <input
-                                        type="checkbox"
-                                        className="form-checkbox h-4 w-4 text-blue-600 rounded"
-                                    />
-                                </span>
-                                Select More
-                            </button>
-
-                            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                                <span className="mr-2">
-                                    <BsFillEyeFill size={20} />
-                                </span>
-                                Unrestricted
-                            </button>
-
-                            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                                <span className="mr-2">
-                                    <RiDeleteBinFill size={20} />
-                                </span>
-                                Delete
-                            </button>
-                        </div>
-                    </>
-                )}
-
-                {newJobSeekerForm && (
+      {newJobSeekerForm && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
                             <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -427,36 +376,6 @@ export default function Candidates() {
                         </div>
                     </div>
                 )}
-
-                {/* Pagination */}
-                <div className="flex justify-center mt-4">
-                    <nav className="flex gap-2">
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className={`px-[10px] py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
-                        >
-                            <BsChevronLeft size={15} />
-                        </button>
-                        {Array.from({ length: totalPages }, (_, index) => (
-                            <button
-                                key={index + 1}
-                                onClick={() => handlePageChange(index + 1)}
-                                className={`px-4 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-blue-700 text-white' : 'bg-gray-200 hover:bg-gray-400'}`}
-                            >
-                                {index + 1}
-                            </button>
-                        ))}
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
-                        >
-                            <BsChevronRight size={15} />
-                        </button>
-                    </nav>
-                </div>
-            </div>
-        </>
-    )
+    </div>
+  );
 }

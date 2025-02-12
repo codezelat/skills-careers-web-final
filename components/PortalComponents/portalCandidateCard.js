@@ -1,137 +1,121 @@
+"use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { RiEdit2Fill } from "react-icons/ri";
+import { BsFillEyeFill } from "react-icons/bs";
 
-export default function PortalCandidateCard(props, onSelect, isSelected) {
+export default function PortalCandidateCard({ jobseeker, onUpdate }) {
+  const router = useRouter();
+  const { _id, userId, email, contactNumber, isRestricted } = jobseeker;
+  const [userDetails, setUserDetails] = useState({});
+  const [localRestricted, setLocalRestricted] = useState(isRestricted);
+  const [isRestricting, setIsRestricting] = useState(false);
 
-    const router = useRouter();
-    const { data: session, status } = useSession();
-    const { _id, userId, email, contactNumber } = props.jobseeker;
+  useEffect(() => {
+    setLocalRestricted(isRestricted);
+  }, [isRestricted]);
 
-    const [userDetails, setUserDetails] = useState({
-        firstName: "",
-        lastName: "",
-        profileImage: "",
-    });
-
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    useEffect(() => {
-        if (userId) {
-            const fetchUserDetails = async (e) => {
-                try {
-                    const response = await fetch(`/api/users/get?id=${userId}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        setUserDetails(data.user);
-                    } else {
-                        console.error("Failed to fetch user details");
-                    }
-                } catch (error) {
-                    console.error("Error fetching user details:", error);
-                }
-            };
-
-            fetchUserDetails();
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await fetch(`/api/users/get?id=${userId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-    }, [_id]);
-
-    const handleViewCandidateProfile = () => {
-        router.push(`/Portal/candidates/${_id}`)
-    }
-
-    const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this jobseeker?")) {
-            try {
-                setIsDeleting(true);
-                const response = await fetch(`/api/jobseeker/delete?id=${_id}`, {
-                    method: "DELETE",
-                });
-
-                if (response.ok) {
-                    alert("Jobseeker Deleted Successfully!!!");
-                } else {
-                    alert("Failed to delete jobseeker...");
-                }
-            } catch (error) {
-                console.error("Error deleting Job:", error);
-                alert("Error deleting Jobseeker");
-            } finally {
-                setIsDeleting(false);
-            }
-        }
+        const data = await response.json();
+        setUserDetails(data.user || {});
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        setUserDetails({});
+      }
     };
+    
+    if (userId) fetchUserDetails();
+  }, [userId]);
 
-    return (
-        <div className="py-4 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
-            {/* Checkbox */}
-            <div className="flex items-center px-4 py-3 w-[3%]">
-                <input
-                    type="checkbox"
-                    className="form-checkbox text-[#001571] border-gray-300 rounded"
-                    checked={isSelected}
-                    onChange={(e) => onSelect(e.target.checked)}
-                />
-            </div>
-            <div className="flex flex-row space-x-3 w-[24.25%] items-center pl-4">
-                {/* Recruiter Logo */}
-                <div className="">
-                    <Image
-                        src={userDetails.profileImage || "/images/default-image.jpg"}
-                        alt="Recruiter Logo"
-                        width={40}
-                        height={40}
-                        className="rounded-full shadow-lg"
-                    />
-                </div>
-                {/* Recruiter Name */}
-                <div className="items-center">{userDetails.firstName} {userDetails.lastName}</div>
-            </div>
-            {/* Email */}
-            <div className="px-4 py-3 font-semibold w-[24.25%] flex items-center">{email}</div>
-            {/* Website */}
-            <div className="px-4 py-3 font-semibold w-[24.25%] flex items-center">{contactNumber}</div>
-            {/* Actions */}
-            {session?.user?.role === "admin" && (
-                <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
-                    <button
-                        className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-                        onClick={handleViewCandidateProfile}
-                    >
-                        <span className="mr-2">
-                            <RiEdit2Fill size={20} />
-                        </span>
-                        <span>Edit</span>
-                    </button>
-                    <button
-                        className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
-                        type="button"
-                        onClick={handleDelete}
-                    >
-                        <span className="mr-2">
-                            <RiDeleteBinFill size={20} />
-                        </span>
-                        {isDeleting ? "Deleting..." : "Delete"}
-                    </button>
-                </div>
-            )}
+  const handleRestrictToggle = async () => {
+    setIsRestricting(true);
+    try {
+      const response = await fetch(`/api/jobseekerdetails/${_id}/restrict`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isRestricted: !localRestricted })
+      });
 
-            {session?.user?.role === "recruiter" && (
-            <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
-                <button
-                    className="flex items-center justify-center w-full bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-                    onClick={handleViewCandidateProfile}
-                >
-                    <span className="mr-2">
-                        <RiEdit2Fill size={20} />
-                    </span>
-                    <span>View</span>
-                </button>
-            </div>
-            )}
-        </div>
-    );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
+      const result = await response.json();
+      
+      if (!result || typeof result.isRestricted === 'undefined') {
+        throw new Error('Invalid API response structure');
+      }
+
+      setLocalRestricted(result.isRestricted);
+      onUpdate(result);
+      
+    } catch (error) {
+      //console.error("Error updating restriction status:", error);
+     // alert(`Error updating candidate: ${error.message}`);
+    } finally {
+      setIsRestricting(false);
+    }
+  };
+
+  return (
+    <div className="py-4 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
+      <div className="flex items-center px-4 py-3 w-[3%]">
+        <input
+          type="checkbox"
+          className="form-checkbox text-[#001571] border-gray-300 rounded"
+        />
+      </div>
+      <div className="flex items-center pl-4 w-[24.25%]">
+        <Image
+          src={userDetails.profileImage || "/images/default-image.jpg"}
+          alt="Candidate"
+          width={40}
+          height={40}
+          className="rounded-full shadow-lg"
+        />
+        <span className="ml-3">
+          {userDetails.firstName || 'Unknown'} {userDetails.lastName || 'User'}
+        </span>
+      </div>
+      <div className="px-4 py-3 w-[24.25%]">{email}</div>
+      <div className="px-4 py-3 w-[24.25%]">{contactNumber || 'N/A'}</div>
+      <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+        <button
+          className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+          onClick={() => router.push(`/Portal/candidates/${_id}`)}
+        >
+          <RiEdit2Fill size={20} className="mr-2" />
+          Edit
+        </button>
+        <button
+          className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${
+            localRestricted ? "bg-[#EC221F] hover:bg-red-700" : "bg-[#001571] hover:bg-blue-700"
+          }`}
+          onClick={handleRestrictToggle}
+          disabled={isRestricting}
+        >
+          {isRestricting ? (
+            "Processing..."
+          ) : localRestricted ? (
+            <>
+              <BsFillEyeFill size={15} className="mr-2" />
+              Unrestrict
+            </>
+          ) : (
+            <>
+              <BsFillEyeFill size={15} className="mr-2" />
+              Restrict
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
 }
