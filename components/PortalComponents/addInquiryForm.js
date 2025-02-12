@@ -1,43 +1,20 @@
 "use client";
-import { useState, useEffect } from "react"; // Added useEffect
+import { useState, useEffect } from "react";
 import { PiCheckCircle } from "react-icons/pi";
 import { IoCloseSharp } from "react-icons/io5";
 import Swal from "sweetalert2";
-import { useSession } from "next-auth/react"; // Import useSession
-
-// Function to create an inquiry
-async function CreateInquiry(inquiryTitle, inquiryDescription, userName, userRole) {
-  const response = await fetch("/api/inquiry/add", {
-    method: "POST",
-    body: JSON.stringify({
-      inquiryTitle,
-      inquiryDescription,
-      userName,
-      userRole,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Something went wrong!");
-  }
-
-  return data;
-}
+import { useSession } from "next-auth/react";
 
 function AddInquiry({ onClose }) {
   const { data: session } = useSession(); // Get session data
   const [inquiryTitle, setInquiryTitle] = useState("");
   const [inquiryDescription, setInquiryDescription] = useState("");
-  const [userName , setUserName] = useState();
+  // const [userName, setUserName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // State for job seeker details
-  const [jobseekers, setJobseekers] = useState([]);
-  const [currentUser, setCurrentUser] = useState({ userName: "" });
+
+  const userName = session?.user?.firstName
+    ? `${session.user.firstName} ${session.user.lastName}`
+    : "";
 
   // Fetch job seeker details
   useEffect(() => {
@@ -45,18 +22,15 @@ function AddInquiry({ onClose }) {
       try {
         const response = await fetch("/api/jobseekerdetails/all");
         const data = await response.json();
-        setJobseekers(data.jobseekers);
-
+        
         // Find the current user's details from the fetched job seekers
         const currentUserDetails = data.jobseekers.find(
-          (jobseeker) => jobseeker.userId === session?.user?.id // Use session.user.id
+          (jobseeker) => jobseeker.userId === session?.user?.id
         );
 
-        if (currentUserDetails) {
-          setCurrentUser({
-            userName: currentUserDetails.userName,
-          });
-        }
+        // if (currentUserDetails) {
+        //   setUserName(currentUserDetails.userName); // Set userName from fetched data
+        // }
       } catch (error) {
         console.error("Error fetching Job Seekers:", error);
       }
@@ -72,18 +46,41 @@ function AddInquiry({ onClose }) {
     setInquiryDescription("");
   };
 
-  async function submitHandler(event) {
+  // Function to create an inquiry
+  const createInquiry = async (inquiryTitle, inquiryDescription, userName, userRole) => {
+    const response = await fetch("/api/inquiry/add", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: session.user.id,
+        userName: userName, 
+        userRole: userRole, 
+        inquiryTitle,
+        inquiryDescription,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong!");
+    }
+
+    return data;
+  };
+
+  const submitHandler = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Get userName and userRole
+      // Get userRole from session
       const userRole = session?.user?.role;
-      const userName = currentUser.userName; // Use currentUser.userName
 
-
-      // Call CreateInquiry with all required fields
-      const result = await CreateInquiry(
+      // Call createInquiry with all required fields
+      const result = await createInquiry(
         inquiryTitle,
         inquiryDescription,
         userName,
@@ -112,7 +109,7 @@ function AddInquiry({ onClose }) {
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -143,7 +140,7 @@ function AddInquiry({ onClose }) {
               type="text"
               id="userName"
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              readOnly // Make the field read-only
               className="mt-1 block w-full border border-[#B0B6D3] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2 bg-gray-100"
             />
           </div>

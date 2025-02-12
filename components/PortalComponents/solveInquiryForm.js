@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 
 export default function SolveInquiryForm({ inquiry, onClose }) {
   const [inquiryDetails, setInquiryDetails] = useState(inquiry);
+  const [error,setError] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {

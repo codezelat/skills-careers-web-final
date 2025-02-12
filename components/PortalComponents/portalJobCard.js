@@ -1,12 +1,12 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { RiDeleteBinFill } from "react-icons/ri";
+import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
 function JobCard(props) {
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const router = useRouter();
     const [applicationCount, setApplicationCount] = useState(0);
     const [recruiterDetails, setRecruiterDetails] = useState({
@@ -14,99 +14,55 @@ function JobCard(props) {
         recruiterName: "",
         logo: "",
     });
-    const [isPublished, setIsPublished] = useState(
-        props.job.isPublished || false
-    );
+    const [isPublished, setIsPublished] = useState(props.job.isPublished || false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const {
-        _id,
-        createdAt,
-        jobTitle,
-        recruiterId,
-        location,
-        jobTypes,
-        jobDescription,
-    } = props.job;
+    const { _id, createdAt, jobTitle, recruiterId } = props.job;
 
     useEffect(() => {
-        const fetchApplicationCount = async () => {
+        const fetchCounts = async () => {
             try {
-                const response = await fetch(
+                // Fetch application count
+                const appResponse = await fetch(
                     `/api/jobapplication/get?recruiterId=${recruiterId}`
                 );
-                if (response.ok) {
-                    const data = await response.json();
-                    setApplicationCount(data.count);
+                if (appResponse.ok) {
+                    const appData = await appResponse.json();
+                    setApplicationCount(appData.count);
                 }
-            } catch (error) {
-                console.error("Error fetching application count:", error);
-            }
-        };
-        fetchApplicationCount();
-    }, [recruiterId, session?.user?.role]);
 
-    useEffect(() => {
-
-        if (session?.user?.role === 'admin' && recruiterId) {
-            const fetchRecruiterDetails = async (e) => {
-                try {
-                    const response = await fetch(
+                // Fetch recruiter details for admin
+                if (session?.user?.role === 'admin' && recruiterId) {
+                    const recruiterResponse = await fetch(
                         `/api/recruiterdetails/get?id=${recruiterId}`
                     );
-                    if (response.ok) {
-                        const data = await response.json();
-                        setRecruiterDetails(data);
-                    } else {
-                        console.error("Failed to fetch recruiter detailsa");
+                    if (recruiterResponse.ok) {
+                        const recruiterData = await recruiterResponse.json();
+                        setRecruiterDetails(recruiterData);
                     }
-                } catch (error) {
-                    console.error("Error fetching recruiter detailsss:", error);
-                }
-            };
-
-            fetchRecruiterDetails();
-        }
-    }, [recruiterId]);
-
-    useEffect(() => {
-        const fetchApplicationCount = async () => {
-            try {
-                const response = await fetch(
-                    `/api/jobapplications/get?jobId=${_id}&recruiterId=${recruiterId}`
-                );
-                if (response.ok) {
-                    const data = await response.json();
-                    setApplicationCount(data.count);
                 }
             } catch (error) {
-                console.error("Error fetching application count:", error);
+                console.error("Error fetching data:", error);
             }
         };
-        fetchApplicationCount();
-    }, [_id, recruiterId]);
+        fetchCounts();
+    }, [recruiterId, session?.user?.role]);
 
     const handlePublishToggle = async () => {
         setIsLoading(true);
         try {
             const response = await fetch(`/api/job/${_id}/publish`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ isPublished: !isPublished }),
             });
 
             if (response.ok) {
                 setIsPublished(!isPublished);
-                // Notify parent component about the status change
                 props.onJobStatusChanged?.(_id, !isPublished);
-            } else {
-                alert("Failed to update job status");
             }
         } catch (error) {
             console.error("Error updating job status:", error);
-            alert("Error updating job status");
         }
         setIsLoading(false);
     };
@@ -115,160 +71,97 @@ function JobCard(props) {
         if (window.confirm("Are you sure you want to delete this job?")) {
             setIsLoading(true);
             try {
-                const response = await fetch(`/api/job/${_id}`, {
-                    method: "DELETE",
-                });
-
-                if (response.ok) {
-                    // Notify parent component to refresh the jobs list
-                    props.onJobDeleted?.(_id);
-                } else {
-                    alert("Failed to delete job");
-                }
+                const response = await fetch(`/api/job/${_id}`, { method: "DELETE" });
+                if (response.ok) props.onJobDeleted?.(_id);
             } catch (error) {
                 console.error("Error deleting job:", error);
-                alert("Error deleting job");
             }
             setIsLoading(false);
         }
     };
 
-    // In JobCard.js, modify the handleViewJob function:
-    const handleViewJobsAdmin = () => {
-        router.push(`/Portal/jobsAdmin/${_id}`)
+    const handleViewJob = () => {
+        const path = session?.user?.role === "admin" 
+            ? `/Portal/jobsAdmin/${_id}`
+            : `/Portal/jobsRecruiter/${_id}`;
+        router.push(path);
     };
 
-    const handleViewJobsRecruiter = () => {
-        router.push(`/Portal/jobsRecruiter/${_id}`)
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
     };
-
-    const date = new Date(createdAt).getDate();
-    const monthName = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
-    const d = new Date(createdAt);
-    let month = monthName[d.getMonth()];
-    const year = new Date(createdAt).getFullYear();
-    const postedDate = `${date} ${month} ${year}`;
 
     return (
         <div className="gap-1 bg-white rounded-lg hover:shadow-md">
-
-
             <div className="w-full items-center">
                 <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex items-center">
-                    {/* First Column - Small */}
-                    <div className="px-4 py-3 w-[3%] flex items-center">
-                        <input type="checkbox" />
-                    </div>
-
-                    {/* Other Columns - Equal Width */}
-
-                    {/* For Admin */}
                     {session?.user?.role === "admin" && (
                         <>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
                                 {jobTitle}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
                                 {recruiterDetails.recruiterName}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
-                                {postedDate}
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                                {formatDate(createdAt)}
                             </div>
-                            <div className=" py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+                            <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
                                 <button
-                                    onClick={handleViewJobsAdmin}
-                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                                    <span className="mr-2">
-                                        <RiDeleteBinFill size={20} />
-                                    </span>
+                                    onClick={handleViewJob}
+                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                                >
+                                    <RiEdit2Fill size={20} className="mr-2" />
                                     Edit
                                 </button>
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
-                                    className={`flex items-center justify-center w-1/2 bg-[#001571] text-white py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
-                                        ? "bg-[#001571] text-white hover:bg-blue-600"
-                                        : "bg-[#EC221F] text-white hover:bg-red-700"
-                                        }`}
+                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${
+                                        isPublished 
+                                            ? "bg-[#EC221F] hover:bg-red-700" 
+                                            : "bg-[#001571] hover:bg-blue-700"
+                                    } text-white`}
                                 >
-                                    <span className="mr-2">
-                                        <BsFillEyeFill size={15} />
-                                    </span>
-                                    {isLoading
-                                        ? "Loading..."
-                                        : isPublished
-                                            ? "Unrestricted"
-                                            : "Restricted"}
+                                    <BsFillEyeFill size={15} className="mr-2" />
+                                    {isLoading ? "Loading..." : isPublished ? "Restrict" : "Unrestrict"}
                                 </button>
-                                {/* <button 
-                                className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
-                                    <span className="mr-2">
-                                        <RiDeleteBinFill size={20} />
-                                    </span>
-                                    Edit
-                                </button> */}
                             </div>
                         </>
                     )}
 
-                    {/* For Recruiter */}
                     {session?.user?.role === "recruiter" && (
                         <>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
                                 {jobTitle}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
-                                {postedDate}
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                                {formatDate(createdAt)}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%] flex items-center">
+                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
                                 {applicationCount}
                             </div>
-                            <div className=" py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+                            <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
                                 <button
-                                    onClick={handleViewJobsRecruiter}
-                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                                    <span className="mr-2">
-                                        <RiDeleteBinFill size={20} />
-                                    </span>
+                                    onClick={handleViewJob}
+                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                                >
+                                    <RiEdit2Fill size={20} className="mr-2" />
                                     Edit
                                 </button>
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
-                                    className={`flex items-center justify-center w-1/2 bg-[#001571] text-white py-2 rounded-lg shadow hover:bg-blue-800 ${isPublished
-                                        ? "bg-[#001571] text-white hover:bg-blue-600"
-                                        : "bg-[#EC221F] text-white hover:bg-red-700"
-                                        }`}
+                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${
+                                        isPublished 
+                                            ? "bg-[#EC221F] hover:bg-red-700" 
+                                            : "bg-[#001571] hover:bg-blue-700"
+                                    } text-white`}
                                 >
-                                    <span className="mr-2">
-                                        <BsFillEyeFill size={15} />
-                                    </span>
-                                    {isLoading
-                                        ? "Loading..."
-                                        : isPublished
-                                            ? "Unrestricted"
-                                            : "Restricted"}
+                                    <BsFillEyeFill size={15} className="mr-2" />
+                                    {isLoading ? "Loading..." : isPublished ? "Restrict" : "Unrestrict"}
                                 </button>
-                                {/* <button 
-                                className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700">
-                                    <span className="mr-2">
-                                        <RiDeleteBinFill size={20} />
-                                    </span>
-                                    Edit
-                                </button> */}
                             </div>
                         </>
                     )}
