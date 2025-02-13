@@ -20,6 +20,21 @@ export default function Recruiters() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const recruitersPerPage = 6;
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeSection, setActiveSection] = useState("recruiters");
+  const [selectedRecruiter, setSelectedRecruiter] = useState(null);
+  const [newRecruiter, setNewRecruiter] = useState({
+    firstName: '',
+    lastName: '',
+    contactNumber: '',
+    recruiterName: '',
+    employeeRange: '',
+    email: '',
+    telephoneNumber: '',
+    password: '',
+    confirmPassword: '',
+  });
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/admin");
@@ -74,20 +89,110 @@ export default function Recruiters() {
 
   if (loading) return <PortalLoading />;
 
+  const handleSearchChange = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    setFilteredRecruiters(
+      recruiters.filter(
+        (recruiter) =>
+          recruiter.recruiterName.toLowerCase().includes(query)
+      )
+    );
+  };
+
+  const handleRecruiterSelect = (recruiter) => {
+    setSelectedRecruiter(recruiter);
+  };
+
+  async function createRecruiter(
+    firstName,
+    lastName,
+    contactNumber,
+    recruiterName,
+    employeeRange,
+    email,
+    telephoneNumber,
+    password,
+    confirmPassword
+  ) {
+    const response = await fetch("/api/auth/recruitersignup", {
+      method: "POST",
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        contactNumber,
+        recruiterName,
+        employeeRange,
+        email,
+        telephoneNumber,
+        password,
+        confirmPassword,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong!");
+    }
+    return data;
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const result = await createRecruiter(
+        newRecruiter.firstName,
+        newRecruiter.lastName,
+        newRecruiter.contactNumber,
+        newRecruiter.recruiterName,
+        newRecruiter.employeeRange,
+        newRecruiter.email,
+        newRecruiter.telephoneNumber,
+        newRecruiter.password,
+        newRecruiter.confirmPassword
+      );
+      alert(result.message);
+      setShowApplicationForm(false);
+      
+      const response = await fetch("/api/recruiterdetails/all");
+      const data = await response.json();
+      setRecruiters(data.recruiters);
+      setFilteredRecruiters(data.recruiters);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewRecruiter(prev => ({ ...prev, [name]: value }));
+  };
+
+  const totalPages = Math.ceil(filteredRecruiters.length / recruitersPerPage);
+
+  const indexOfLastRecruiter = currentPage * recruitersPerPage;
+  const indexOfFirstRecruiter = indexOfLastRecruiter - recruitersPerPage;
+  const currentRecruiters = filteredRecruiters.slice(indexOfFirstRecruiter, indexOfLastRecruiter);
+
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
-      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-bold text-[#001571]">Recruiters</h1>
         <button
           className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
-          onClick={() => setIsFormVisible(true)}
+          onClick={() => setShowApplicationForm(true)}
         >
           <BsPlus size={25} className="mr-1" />Add New
         </button>
       </div>
 
-      {/* Tabs */}
       <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
         <button
           onClick={() => setActiveTab("all")}
@@ -109,7 +214,6 @@ export default function Recruiters() {
         </button>
       </div>
 
-      {/* Search */}
       <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
         <IoSearchSharp size={25} className="text-[#001571]" />
         <input
@@ -121,7 +225,6 @@ export default function Recruiters() {
         />
       </div>
 
-      {/* Recruiter List */}
       <div className="w-full overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
@@ -149,7 +252,6 @@ export default function Recruiters() {
           ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center mt-4">
         <nav className="flex gap-2">
           <button
@@ -186,13 +288,14 @@ export default function Recruiters() {
         </nav>
       </div>
 
-      {isFormVisible && (
+      {showApplicationForm && (
         <AddRecruiterForm
-          onClose={() => setIsFormVisible(false)}
-          onSuccess={(newRecruiter) => {
-            setRecruiters(prev => [...prev, newRecruiter]);
-            setIsFormVisible(false);
-          }}
+          showForm={showApplicationForm}
+          onClose={() => setShowApplicationForm(false)}
+          newRecruiter={newRecruiter}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
         />
       )}
     </div>
