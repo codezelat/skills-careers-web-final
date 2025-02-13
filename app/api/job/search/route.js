@@ -4,35 +4,22 @@ import { NextResponse } from "next/server";
 
 // Create the client instance
 const client = new Client({
-  node: process.env.ELASTICSEARCH_URL,
-  auth: {
-    username: process.env.ELASTIC_USERNAME || "elastic",
-    password: process.env.ELASTIC_PASSWORD,
+  cloud: {
+    id: process.env.ELASTIC_CLOUD_ID
   },
+  auth: {
+    apiKey: process.env.ELASTIC_API_KEY
+  }
 });
 
 export async function GET(req) {
-  // Add at the start of the GET function
-  try {
-    await client.ping();
-    console.log('Successfully connected to Elasticsearch');
-  } catch (error) {
-    console.error('Elasticsearch connection failed:', error);
-    return NextResponse.json(
-      { message: "Elasticsearch connection failed" },
-      { status: 500 }
-    );
-  }
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
 
     // For debugging - log the search query
     console.log("Search query:", query);
-    console.log("Elasticsearch config:", {
-      ELASTICSEARCH_URL: process.env.ELASTICSEARCH_URL,
-      username: process.env.ELASTIC_USERNAME,
-    });
+    
 
     if (!query || query.length < 2) {
       return NextResponse.json({ jobs: [] });
@@ -55,9 +42,8 @@ export async function GET(req) {
               {
                 multi_match: {
                   query: query,
-                  fields: ["jobTitle", "location", "recruiterId"],
-                  type: "cross_fields",
-                  operator: "or"
+                  fields: ["jobTitle", "location", "jobCategory", "jobExperience"],
+                  type: "phrase_prefix",
                 },
               },
             ],
@@ -66,14 +52,14 @@ export async function GET(req) {
       },
     });
 
-    console.log("Raw Elasticsearch response:", JSON.stringify(result, null, 2));
-
     // Extract and format the results
     const jobs = result.hits.hits.map((hit) => ({
       jobId: hit._source.jobId,
       jobTitle: hit._source.jobTitle,
-      location: hit._source.location,
       recruiterId: hit._source.recruiterId,
+      location: hit._source.location,
+      jobCategory: hit._source.jobCategory,
+      jobExperience: hit._source.jobExperience,
     }));
 
     // For debugging - log the results

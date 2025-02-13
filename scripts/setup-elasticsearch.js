@@ -3,12 +3,21 @@ const { Client } = require("@elastic/elasticsearch");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
+// const elasticClient = new Client({
+//   node: process.env.ELASTICSEARCH_URL,
+//   auth: {
+//     username: process.env.ELASTIC_USERNAME,
+//     password: process.env.ELASTIC_PASSWORD,
+//   },
+// });
+
 const elasticClient = new Client({
-  node: process.env.ELASTICSEARCH_URL,
-  auth: {
-    username: process.env.ELASTIC_USERNAME,
-    password: process.env.ELASTIC_PASSWORD,
+  cloud: {
+    id: process.env.ELASTIC_CLOUD_ID
   },
+  auth: {
+    apiKey: process.env.ELASTIC_API_KEY
+  }
 });
 
 const mongoUri = process.env.MONGODB_URI;
@@ -85,9 +94,10 @@ const collections = {
     transform: (doc) => ({
       jobId: doc._id.toString(),
       jobTitle: doc.jobTitle,
-      location: doc.location,
-      jobTypes: doc.jobTypes,
       recruiterId: doc.recruiterId,
+      location: doc.location,
+      jobCategory: doc.jobCategory,
+      jobExperience: doc.jobExperience,
     }),
   },
   // jobapplications: {

@@ -17,6 +17,7 @@ export default function JobSearch() {
                 const jobsResponse = await fetch(`/api/job/search?query=${encodeURIComponent(searchTerm)}`);
                 if (!jobsResponse.ok) throw new Error("Job search failed");
                 const jobsData = await jobsResponse.json();
+                console.log("searched job data --- ",jobsData);
 
                 // Then fetch recruiter details for each job
                 const jobsWithRecruiters = await Promise.all(
