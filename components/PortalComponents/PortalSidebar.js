@@ -34,11 +34,10 @@ export default function SideMenuSection() {
                         </Link>
 
                         {/* Recruiters */}
+                        {(session?.user?.role === "admin" || session?.user?.role === "jobseeker") && (
                         <Link href={
                             session?.user?.role === "admin"
                                 ? "/Portal/recruiter"
-                                : session?.user?.role === "recruiter"
-                                    ? "/recruiters"
                                     : session?.user?.role === "jobseeker"
                                         ? "/recruiters"
                                         : "#"
@@ -59,6 +58,7 @@ export default function SideMenuSection() {
                                 Recruiters
                             </button>
                         </Link>
+                        )}
 
                         {/* Candidates */}
                         {(session?.user?.role === "admin" || session?.user?.role === "recruiter") && (
