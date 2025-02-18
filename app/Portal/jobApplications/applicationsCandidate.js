@@ -30,13 +30,6 @@ export default function JobApplicationsCandidate() {
                 const applicationdata = await applicationResponse.json();
                 console.log("application : ",applicationdata);
 
-                // const recruiterUrl = `/api/recruitrdetails/get?id=${applicationdata.applications.recruiterId}`;
-                // const recruiterResponse = await fetch(recruiterUrl);
-                // if (!recruiterResponse.ok) throw new Error('Failed to fetch');
-                // const recruiterdata = await recruiterResponse.json();
-                // setRecruiterdetails(recruiterdata)
-                // console.log("recruiter : ",recruiterdata);
-
                 if (applicationdata.success) {
                     const formatted = applicationdata.applications.map(app => ({
                         ...app,
