@@ -109,7 +109,7 @@ export default function SideMenuSection() {
                         </Link>
 
                         {/* Applications */}
-                        {session?.user?.role === "recruiter" && (
+                        {(session?.user?.role === "jobseeker" || session?.user?.role === "recruiter") && (
                             <Link href="/Portal/jobApplications">
                                 <button
                                     onClick={() => setActiveButton("Applications")}

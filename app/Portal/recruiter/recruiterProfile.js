@@ -84,7 +84,7 @@ export default function RecruiterProfile({ slug }) {
         e.preventDefault();
         const file = e.target.files[0];
         if (!file) return;
-    
+
         if (file.size > 5 * 1024 * 1024) {
             Swal.fire({
                 icon: "error",
@@ -95,7 +95,7 @@ export default function RecruiterProfile({ slug }) {
             });
             return;
         }
-    
+
         if (!file.type.startsWith("image/")) {
             Swal.fire({
                 icon: "error",
@@ -106,30 +106,30 @@ export default function RecruiterProfile({ slug }) {
             });
             return;
         }
-    
+
         try {
             const formData = new FormData();
             formData.append("image", file);
             formData.append("email", recruiterDetails.email);
-    
+
             console.log("Starting image upload...");
             const response = await fetch("/api/recruiterdetails/uploadimage", {
                 method: "POST",
                 body: formData,
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 throw new Error(data.error || "Failed to upload image");
             }
-    
+
             console.log("Upload successful:", data);
             setRecruiterDetails((prev) => ({
                 ...prev,
                 logo: data.imageUrl,
             }));
-    
+
             Swal.fire({
                 icon: "success",
                 title: "Success!",
@@ -150,74 +150,74 @@ export default function RecruiterProfile({ slug }) {
     };
 
 
-const handleCoverImageChange = async (e) => {
-    e.preventDefault();
-    const file = e.target.files[0];
-    if (!file) return;
+    const handleCoverImageChange = async (e) => {
+        e.preventDefault();
+        const file = e.target.files[0];
+        if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-        Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "File size should be less than 5MB.",
-            timer: 2000, // 2 seconds
-            showConfirmButton: false,
-        });
-        return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-        Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "Please upload an image file.",
-            timer: 2000, // 2 seconds
-            showConfirmButton: false,
-        });
-        return;
-    }
-
-    try {
-        const formData = new FormData();
-        formData.append("image", file);
-        formData.append("email", recruiterDetails.email);
-
-        console.log("Starting image upload...");
-        const response = await fetch("/api/recruiterdetails/uploadCoverImage", {
-            method: "POST",
-            body: formData,
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Failed to upload image");
+        if (file.size > 5 * 1024 * 1024) {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "File size should be less than 5MB.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
+            return;
         }
 
-        console.log("Upload successful:", data);
-        setRecruiterDetails((prev) => ({
-            ...prev,
-            coverImage: data.imageUrl,
-        }));
+        if (!file.type.startsWith("image/")) {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Please upload an image file.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
+            return;
+        }
 
-        Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Cover image uploaded successfully!",
-            timer: 2000, // 2 seconds
-            showConfirmButton: false,
-        });
-    } catch (error) {
-        console.error("Error uploading image:", error);
-        Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: error.message || "Failed to upload image.",
-            timer: 2000, // 2 seconds
-            showConfirmButton: false,
-        });
-    }
-};
+        try {
+            const formData = new FormData();
+            formData.append("image", file);
+            formData.append("email", recruiterDetails.email);
+
+            console.log("Starting image upload...");
+            const response = await fetch("/api/recruiterdetails/uploadCoverImage", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to upload image");
+            }
+
+            console.log("Upload successful:", data);
+            setRecruiterDetails((prev) => ({
+                ...prev,
+                coverImage: data.imageUrl,
+            }));
+
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Cover image uploaded successfully!",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message || "Failed to upload image.",
+                timer: 2000, // 2 seconds
+                showConfirmButton: false,
+            });
+        }
+    };
 
     // Recruiter details update 
     const handleInputChange = (e) => {
@@ -237,7 +237,7 @@ const handleCoverImageChange = async (e) => {
                 },
                 body: JSON.stringify(recruiterDetails),
             });
-    
+
             const data = await response.json(); // Parse the response body
             console.log("Server Response:", data);
             if (response.ok) {
@@ -265,12 +265,12 @@ const handleCoverImageChange = async (e) => {
             setIsSubmitting(false);
         }
     };
-    
+
     // Recruiter credentials details update
     const credSubmitHandler = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-    
+
         try {
             const response = await fetch('/api/users/update', {
                 method: 'PUT',
@@ -279,13 +279,13 @@ const handleCoverImageChange = async (e) => {
                 },
                 body: JSON.stringify(userDetails),
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 throw new Error(data.message || 'Something went wrong');
             }
-    
+
             setShowCredentialsForm(false);
             Swal.fire({
                 icon: "success",
@@ -307,7 +307,7 @@ const handleCoverImageChange = async (e) => {
             setIsSubmitting(false);
         }
     };
-    
+
     // Input Change Handler
     const handleCredInputChange = (e) => {
         const { name, value } = e.target;
@@ -327,35 +327,37 @@ const handleCoverImageChange = async (e) => {
             <div className="bg-white rounded-3xl py-7 px-7">
 
                 {/* Tabs */}
-                <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-[20px] w-max text-sm font-medium">
-                    {/* All Recruiters Button */}
-                    <button
-                        onClick={() => setActiveTab("Profile")}
-                        className={`px-6 py-3 flex rounded-2xl ${activeTab === "Profile"
-                            ? "bg-[#001571] text-white"
-                            : "text-[#B0B6D3] bg-[#E6E8F1]"
-                            }`}
-                    >
-                        Profile
-                        <span className="ml-2">
-                            <PiCheckCircle size={20} />
-                        </span>
-                    </button>
+                {session?.user?.role === "admin" && (
+                    <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-[20px] w-max text-sm font-medium">
+                        {/* All Recruiters Button */}
+                        <button
+                            onClick={() => setActiveTab("Profile")}
+                            className={`px-6 py-3 flex rounded-2xl ${activeTab === "Profile"
+                                ? "bg-[#001571] text-white"
+                                : "text-[#B0B6D3] bg-[#E6E8F1]"
+                                }`}
+                        >
+                            Profile
+                            <span className="ml-2">
+                                <PiCheckCircle size={20} />
+                            </span>
+                        </button>
 
-                    {/* Restricted Recruiters Button */}
-                    <button
-                        onClick={() => setActiveTab("Credentials")}
-                        className={`px-6 py-3 flex rounded-2xl text-sm font-semibold ${activeTab === "Credentials"
-                            ? "bg-[#001571] text-white"
-                            : "text-[#B0B6D3] bg-[#E6E8F1]"
-                            }`}
-                    >
-                        Credentials
-                        <span className="ml-2">
-                            <PiCheckCircle size={20} />
-                        </span>
-                    </button>
-                </div>
+                        {/* Restricted Recruiters Button */}
+                        <button
+                            onClick={() => setActiveTab("Credentials")}
+                            className={`px-6 py-3 flex rounded-2xl text-sm font-semibold ${activeTab === "Credentials"
+                                ? "bg-[#001571] text-white"
+                                : "text-[#B0B6D3] bg-[#E6E8F1]"
+                                }`}
+                        >
+                            Credentials
+                            <span className="ml-2">
+                                <PiCheckCircle size={20} />
+                            </span>
+                        </button>
+                    </div>
+                )}
 
                 {activeTab === "Profile" ? (
                     <div>
@@ -382,24 +384,26 @@ const handleCoverImageChange = async (e) => {
                                     />
                                 )}
                                 {/* cover image edit btn */}
-                                <div className="z-0 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleCoverImageChange}
-                                        id="logo-image-input"
-                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                    />
-                                    <Image
-                                        id="cover-image-input"
-                                        src="/editiconwhite.png"
-                                        alt="Edit Icon"
-                                        layout="fill"
-                                        objectFit="contain"
-                                        quality={100}
-                                        className="cursor-pointer"
-                                    />
-                                </div>
+                                {session?.user?.role === "admin" && (
+                                    <div className="z-0 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleCoverImageChange}
+                                            id="logo-image-input"
+                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                        />
+                                        <Image
+                                            id="cover-image-input"
+                                            src="/editiconwhite.png"
+                                            alt="Edit Icon"
+                                            layout="fill"
+                                            objectFit="contain"
+                                            quality={100}
+                                            className="cursor-pointer"
+                                        />
+                                    </div>
+                                )}
 
                             </div>
                             {/* Profile Image */}
@@ -434,24 +438,26 @@ const handleCoverImageChange = async (e) => {
                                     </div>
 
                                     {/* Profile picture edit icon */}
-                                    <div className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-0 bg-white">
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleImageChange}
-                                            id="logo-image-input"
-                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                        />
-                                        {/* Edit Icon */}
-                                        <Image
-                                            src="/editiconwhite.png"
-                                            alt="Edit Icon"
-                                            width={40}
-                                            height={40}
-                                            objectFit="contain"
-                                            quality={100}
-                                        />
-                                    </div>
+                                    {session?.user?.role === "admin" && (
+                                        <div className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-0 bg-white">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageChange}
+                                                id="logo-image-input"
+                                                className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                            />
+                                            {/* Edit Icon */}
+                                            <Image
+                                                src="/editiconwhite.png"
+                                                alt="Edit Icon"
+                                                width={40}
+                                                height={40}
+                                                objectFit="contain"
+                                                quality={100}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Social Links */}
@@ -511,31 +517,34 @@ const handleCoverImageChange = async (e) => {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex justify-center sm:justify-end w-full sm:w-auto sm:pt-2 z-0">
-                                    <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                        <button
-                                            onClick={() => setShowApplicationForm(true)}
-                                            className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
-                                            <div className="flex gap-2">
-                                                <Image
-                                                    src="/editiconwhite.png"
-                                                    alt="Edit Icon"
-                                                    layout="fill"
-                                                    objectFit="contain"
-                                                    quality={100}
-                                                />
-                                            </div>
-                                        </button>
-                                        <Image
-                                            src="/editiconwhite.png"
-                                            alt="Edit Icon"
-                                            layout="fill"
-                                            objectFit="contain"
-                                            quality={100}
-                                            className="z-0"
-                                        />
+
+                                {session?.user?.role === "admin" && (
+                                    <div className="flex justify-center sm:justify-end w-full sm:w-auto sm:pt-2 z-0">
+                                        <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                            <button
+                                                onClick={() => setShowApplicationForm(true)}
+                                                className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
+                                                <div className="flex gap-2">
+                                                    <Image
+                                                        src="/editiconwhite.png"
+                                                        alt="Edit Icon"
+                                                        layout="fill"
+                                                        objectFit="contain"
+                                                        quality={100}
+                                                    />
+                                                </div>
+                                            </button>
+                                            <Image
+                                                src="/editiconwhite.png"
+                                                alt="Edit Icon"
+                                                layout="fill"
+                                                objectFit="contain"
+                                                quality={100}
+                                                className="z-0"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
 
@@ -563,23 +572,25 @@ const handleCoverImageChange = async (e) => {
                 ) : (
                     <div className="min-h-screen">
                         {/* Edit Button */}
-                        <div className="flex justify-end">
-                            <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
-                                <button
-                                    onClick={() => setShowCredentialsForm(true)}
-                                    className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
-                                    <div className="flex gap-2">
-                                        <Image
-                                            src="/editiconwhite.png"
-                                            alt="Edit Icon"
-                                            layout="fill"
-                                            objectFit="contain"
-                                            quality={100}
-                                        />
-                                    </div>
-                                </button>
+                        {session?.user?.role === "admin" && (
+                            <div className="flex justify-end">
+                                <div className="bg-[#E8E8E8] rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 z-0">
+                                    <button
+                                        onClick={() => setShowCredentialsForm(true)}
+                                        className="text-white px-3 py-2 sm:px-4 rounded-md z-10">
+                                        <div className="flex gap-2">
+                                            <Image
+                                                src="/editiconwhite.png"
+                                                alt="Edit Icon"
+                                                layout="fill"
+                                                objectFit="contain"
+                                                quality={100}
+                                            />
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                         <form>
                             <div className="">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
@@ -596,7 +607,7 @@ const handleCoverImageChange = async (e) => {
                                         />
                                     </div>
                                     <div>
-                                    <label className="block text-sm font-semibold text-[#001571]">
+                                        <label className="block text-sm font-semibold text-[#001571]">
                                             Last Name
                                         </label>
                                         <input
@@ -635,28 +646,6 @@ const handleCoverImageChange = async (e) => {
                                         />
                                     </div>
                                 </div>
-                                {/* Recruiter Package Dropdown */}
-                                {/* <div>
-                                    <label className="block text-sm font-semibold text-[#001571] mt-8">
-                                        Membership
-                                    </label>
-                                    <select
-                                        name="package"
-                                        value={recruiterDetails.membership}
-                                        // onChange={handleChange}
-                                        className="mt-1 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
-                                    >
-                                        <option value="Basic Recruiter Package">
-                                            Basic Recruiter Package
-                                        </option>
-                                        <option value="Advanced Recruiter Package">
-                                            Advanced Recruiter Package
-                                        </option>
-                                        <option value="Premium Recruiter Package">
-                                            Premium Recruiter Package
-                                        </option>
-                                    </select>
-                                </div> */}
                             </div>
                         </form>
 
