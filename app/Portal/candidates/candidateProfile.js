@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import PortalLoading from "../loading";
 import { FaDribbble, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaMedal, FaTimes, FaTwitter } from "react-icons/fa";
@@ -20,9 +20,9 @@ import ExperienceCardEdit from "@/components/PortalComponents/experienceCardEdit
 import EducationCardEdit from "@/components/PortalComponents/educationCardEdit";
 import CertificationCardEdit from "@/components/PortalComponents/certificationCardEdit";
 import SoftSkillsCard from "@/components/PortalComponents/softskillsCard";
+import Swal from 'sweetalert2';
 
 export default function CandidateProfile({ slug }) {
-
     const [activeTab, setActiveTab] = useState("Profile");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -51,7 +51,7 @@ export default function CandidateProfile({ slug }) {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // fetch functions
+    // Fetch functions
     useEffect(() => {
         if (session?.user?.email) {
             const fetchData = async () => {
@@ -77,18 +77,16 @@ export default function CandidateProfile({ slug }) {
                     setExperienceDetails(newExperienceData.experiences);
 
                     const educationResponse = await fetch(`/api/jobseekerdetails/education/all?id=${jobSeekerData.jobseeker._id}`);
-                    if (!educationResponse.ok) throw new Error("Failed to fetch experience details");
+                    if (!educationResponse.ok) throw new Error("Failed to fetch education details");
                     const educationeData = await educationResponse.json();
 
                     setEducationDetails(educationeData.educations);
 
                     const certificationResponse = await fetch(`/api/jobseekerdetails/certification/all?id=${jobSeekerData.jobseeker._id}`);
-                    if (!certificationResponse.ok) throw new Error("Failed to fetch experience details");
+                    if (!certificationResponse.ok) throw new Error("Failed to fetch certification details");
                     const certificationData = await certificationResponse.json();
 
                     setCertificationDetails(certificationData.licensesandcertifications);
-                    console.log("test", certificationData.licensesandcertifications);
-
                 } catch (err) {
                     setError(err.message);
                     console.error("Fetch error:", err);
@@ -101,19 +99,31 @@ export default function CandidateProfile({ slug }) {
         }
     }, [session, slug]);
 
-    // image updae functions
+    // Image update functions
     const handleImageChange = async (e) => {
         e.preventDefault();
         const file = e.target.files[0];
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            alert("File size should be less than 5MB");
+            Swal.fire({
+                icon: 'error',
+                title: 'File size too large',
+                text: 'File size should be less than 5MB',
+                timer: 2000,
+                showConfirmButton: false,
+            });
             return;
         }
 
         if (!file.type.startsWith("image/")) {
-            alert("Please upload an image file");
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid file type',
+                text: 'Please upload an image file',
+                timer: 2000,
+                showConfirmButton: false,
+            });
             return;
         }
 
@@ -122,7 +132,6 @@ export default function CandidateProfile({ slug }) {
             formData.append("image", file);
             formData.append("email", jobSeekerDetails.email);
 
-            console.log("Starting image upload...");
             const response = await fetch("/api/jobseekerdetails/uploadimage", {
                 method: "POST",
                 body: formData,
@@ -134,16 +143,26 @@ export default function CandidateProfile({ slug }) {
                 throw new Error(data.error || "Failed to upload image");
             }
 
-            console.log("Upload successful:", data);
             setJobseekerDetails((prev) => ({
                 ...prev,
                 profileImage: data.imageUrl,
             }));
 
-            alert("Logo uploaded successfully!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile image updated!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert(`Failed to upload image: ${error.message}`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload failed',
+                text: `Failed to upload image: ${error.message}`,
+                timer: 2000,
+                showConfirmButton: false,
+            });
         }
     };
 
@@ -153,12 +172,24 @@ export default function CandidateProfile({ slug }) {
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            alert("File size should be less than 5MB");
+            Swal.fire({
+                icon: 'error',
+                title: 'File size too large',
+                text: 'File size should be less than 5MB',
+                timer: 2000,
+                showConfirmButton: false,
+            });
             return;
         }
 
         if (!file.type.startsWith("image/")) {
-            alert("Please upload an image file");
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid file type',
+                text: 'Please upload an image file',
+                timer: 2000,
+                showConfirmButton: false,
+            });
             return;
         }
 
@@ -167,7 +198,6 @@ export default function CandidateProfile({ slug }) {
             formData.append("image", file);
             formData.append("email", jobSeekerDetails.email);
 
-            console.log("Starting image upload...");
             const response = await fetch("/api/jobseekerdetails/uploadCoverImage", {
                 method: "POST",
                 body: formData,
@@ -179,20 +209,38 @@ export default function CandidateProfile({ slug }) {
                 throw new Error(data.error || "Failed to upload image");
             }
 
-            console.log("Upload successful:", data);
             setJobseekerDetails((prev) => ({
                 ...prev,
                 coverImage: data.imageUrl,
             }));
 
-            alert("Logo uploaded successfully!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Cover image updated!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert(`Failed to upload image: ${error.message}`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload failed',
+                text: `Failed to upload image: ${error.message}`,
+                timer: 2000,
+                showConfirmButton: false,
+            });
         }
     };
 
-    // profile personal info update functions
+    // Function to trigger file input programmatically
+    const triggerFileInput = (inputId) => {
+        const fileInput = document.getElementById(inputId);
+        if (fileInput) {
+            fileInput.click();
+        }
+    };
+
+    // Profile personal info update functions
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setJobseekerDetails((prev) => ({ ...prev, [name]: value }));
@@ -228,449 +276,152 @@ export default function CandidateProfile({ slug }) {
 
             // Check if both updates were successful
             if (userResponse.ok && jobSeekerResponse.ok) {
-                alert("Details updated successfully!");
-                setProfileEditForm(false); // Close the edit form if needed
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Details updated successfully!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+                setProfileEditForm(false);
             } else {
-                alert("Failed to update details!");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to update details!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
             }
         } catch (error) {
             console.error("Error updating details:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error updating details',
+                text: error.message,
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // Calculate age
-    useEffect(() => {
-        if (jobSeekerDetails.dob) {
-            const today = new Date();
-            const birthDate = new Date(jobSeekerDetails.dob);
-            let calculatedAge = today.getFullYear() - birthDate.getFullYear();
-
-            // Adjust if the birthday hasn't occurred yet this year
-            const monthDifference = today.getMonth() - birthDate.getMonth();
-            if (
-                monthDifference < 0 ||
-                (monthDifference === 0 && today.getDate() < birthDate.getDate())
-            ) {
-                calculatedAge--;
-            }
-
-            // Update the age in the state
-            handleInputChange({
-                target: {
-                    name: "age",
-                    value: calculatedAge.toString(),
-                },
-            });
-        }
-    }, [jobSeekerDetails.dob]);
-
-    // Create new experience
-    const [newExperienceData, setNewExperienceData] = useState({
-        position: "",
-        companyName: "",
-        description: "",
-        country: "",
-        city: "",
-        startDate: "",
-        endDate: "",
-    });
-    const handleCreateExperience = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const response = await fetch('/api/jobseekerdetails/experience/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jobseekerId: jobSeekerDetails._id,
-                    ...newExperienceData
-                }),
-            });
-
-            if (!response.ok) throw new Error('Failed to add experience');
-
-            const experienceResponse = await fetch(`/api/jobseekerdetails/experience/all?id=${jobSeekerDetails._id}`);
-            const updatedExperienceData = await experienceResponse.json();
-            setExperienceDetails(updatedExperienceData.experiences);
-
-            setOpenCreateExperienceForm(false);
-            setNewExperienceData({
-                position: "",
-                companyName: "",
-                description: "",
-                country: "",
-                city: "",
-                startDate: "",
-                endDate: "",
-            });
-
-        } catch (error) {
-            console.error('Error adding experience:', error);
-            alert(`Error: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    const handleExperienceInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewExperienceData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Create new education
-    const [newEducationData, setNewEducationData] = useState({
-        educationName: "",
-        location: "",
-        startDate: "",
-        endDate: "",
-    });
-    const handleCreateEducation = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const response = await fetch('/api/jobseekerdetails/education/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jobseekerId: jobSeekerDetails._id,
-                    ...newEducationData
-                }),
-            });
-
-            if (!response.ok) throw new Error('Failed to add education');
-
-            const educationResponse = await fetch(`/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`);
-            const updatedEducationData = await educationResponse.json();
-            setExperienceDetails(updatedEducationData.educations);
-
-            setOpenCreateEducationoForm(false);
-            setNewEducationData({
-                educationName: "",
-                location: "",
-                startDate: "",
-                endDate: "",
-            });
-
-        } catch (error) {
-            console.error('Error adding education:', error);
-            alert(`Error: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    const handleEducationInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewEducationData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Create new Certification
-    const [newCertificationData, setNewCertificationData] = useState({
-        certificateName: "",
-        organizationName: "",
-        receivedDate: "",
-    });
-    const handleCreateCertification = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const response = await fetch('/api/jobseekerdetails/certification/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jobseekerId: jobSeekerDetails._id,
-                    ...newCertificationData
-                }),
-            });
-
-            if (!response.ok) throw new Error('Failed to add education');
-
-            const certificationResponse = await fetch(`/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`);
-            const updatedCertificationData = await certificationResponse.json();
-            setNewCertificationData(updatedCertificationData.licensesandcertifications);
-
-            setOpenCreateCertificationForm(false);
-            setNewCertificationData({
-                certificateName: "",
-                organizationName: "",
-                receivedDate: "",
-            });
-
-        } catch (error) {
-            console.error('Error adding education:', error);
-            alert(`Error: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    const handleCertificationInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewCertificationData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Create soft skill
-    const [newSoftSkill, setNewSoftSkill] = useState("");
-    const handleAddSoftSkill = async (e) => {
-        e.preventDefault();
-
-        if (!newSoftSkill.trim()) {
-            alert("Please enter a soft skill.");
-            return;
-        }
-
-        try {
-            setIsSubmitting(true);
-
-            const updatedSoftSkills = [...(jobSeekerDetails.softSkills || []), newSoftSkill];
-
-            const updatedJobSeekerDetails = {
-                ...jobSeekerDetails,
-                softSkills: updatedSoftSkills,
-            };
-
-            const response = await fetch("/api/jobseekerdetails/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedJobSeekerDetails),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update soft skills.");
-            }
-
-            setJobseekerDetails(updatedJobSeekerDetails);
-            setNewSoftSkill("");
-            setOpenCreateSoftskillsForm(false);
-        } catch (error) {
-            console.error("Error adding soft skill:", error);
-            alert(`Failed to add soft skill: ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // delete soft skill
-    const handleDeleteSoftSkill = async (skillToRemove) => {
-        try {
-            const updatedSoftSkills = jobSeekerDetails.softSkills.filter(
-                (skill) => skill !== skillToRemove
-            );
-
-            const updatedJobSeekerDetails = {
-                ...jobSeekerDetails,
-                softSkills: updatedSoftSkills,
-            };
-            setJobseekerDetails(updatedJobSeekerDetails);
-
-            const response = await fetch("/api/jobseekerdetails/update", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatedJobSeekerDetails),
-            });
-
-            if (!response.ok) throw new Error("Failed to delete soft skill");
-        } catch (error) {
-            console.error("Error deleting soft skill:", error);
-        }
-    };
-
-    // Create expertise
-    const [newExpertise, setNewExpertise] = useState("");
-    const handleAddExpertise = async (e) => {
-        e.preventDefault();
-
-        if (!newExpertise.trim()) {
-            alert("Please enter an expertise");
-            return;
-        }
-
-        try {
-            setIsSubmitting(true);
-
-            const updatedExpertise = [...(jobSeekerDetails.professionalExpertise || []), newExpertise];
-
-            const updatedJobSeekerDetails = {
-                ...jobSeekerDetails,
-                professionalExpertise: updatedExpertise,
-            };
-
-            const response = await fetch("/api/jobseekerdetails/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedJobSeekerDetails),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update expertise");
-            }
-
-            setJobseekerDetails(updatedJobSeekerDetails);
-            setNewExpertise("");
-            setOpenCreateExpertiseForm(false);
-        } catch (error) {
-            console.error("Error adding expertise", error);
-            alert(`Failed to add expertise : ${error.message}`);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // delete soft skill
-    const handleDeleteExpertise = async (expertiseToRemove) => {
-        try {
-            const updatedExpertise = jobSeekerDetails.professionalExpertise.filter(
-                (expertise) => expertise !== expertiseToRemove
-            );
-
-            const updatedJobSeekerDetails = {
-                ...jobSeekerDetails,
-                professionalExpertise: updatedExpertise,
-            };
-            setJobseekerDetails(updatedJobSeekerDetails);
-
-            const response = await fetch("/api/jobseekerdetails/update", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatedJobSeekerDetails),
-            });
-
-            if (!response.ok) throw new Error("Failed to delete expertise");
-        } catch (error) {
-            console.error("Error deleting expertise:", error);
-        }
-    };
-
-    // loading
+    // Loading
     if (isLoading) return <PortalLoading />;
     if (error) return <div className="text-red-500">Error: {error}</div>;
-
     return (
-        <div className="bg-white rounded-3xl py-7 px-7">
-            <div>
-                <div className="">
-                    {/* Background Image */}
-                    <div className="bg-red-300 relative w-full h-[300px] rounded-t-2xl overflow-hidden flex items-top justify-end">
-                        {jobSeekerDetails.coverImage ? (
+<div className="bg-white rounded-3xl py-7 px-7">
+        <div>
+            <div className="">
+                {/* Background Image */}
+                <div className="bg-red-300 relative w-full h-[300px] rounded-t-2xl overflow-hidden flex items-top justify-end">
+                    {jobSeekerDetails.coverImage ? (
+                        <Image
+                            src={jobSeekerDetails.coverImage}
+                            alt="Background"
+                            layout="fill"
+                            priority
+                            objectFit="cover"
+                            quality={100}
+                        />
+                    ) : (
+                        <Image
+                            src="/recruiterbg.png"
+                            alt="Background"
+                            layout="fill"
+                            priority
+                            objectFit="cover"
+                            quality={100}
+                        />
+                    )}
+                    {/* Cover image edit button */}
+                    {session?.user?.role === "admin" && (
+                        <div
+                            className="z-0 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3 cursor-pointer"
+                            onClick={() => triggerFileInput("cover-image-input")}
+                        >
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleCoverImageChange}
+                                id="cover-image-input"
+                                className="hidden"
+                            />
                             <Image
-                                src={jobSeekerDetails.coverImage}
-                                alt="Background"
+                                src="/editiconwhite.png"
+                                alt="Edit Icon"
                                 layout="fill"
-                                priority
-                                objectFit="cover"
+                                objectFit="contain"
                                 quality={100}
                             />
-                        ) : (
-                            <Image
-                                src="/recruiterbg.png"
-                                alt="Background"
-                                layout="fill"
-                                priority
-                                objectFit="cover"
-                                quality={100}
-                            />
-                        )}
-                        {/* cover image edit btn */}
-                        {session?.user?.role === "admin" && (
-                            <div className="z-0 rounded-full relative overflow-hidden flex flex-wrap items-center justify-end shadow-md w-12 h-12 mt-3 mr-3">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleCoverImageChange}
-                                    id="logo-image-input"
-                                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                />
+                        </div>
+                    )}
+                </div>
+
+                {/* Profile Image */}
+                <div className="relative flex flex-row justify-between">
+                    {/* DP Image */}
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px] mt-[-92px] ml-10 flex items-top justify-center relative">
+                        {/* Profile picture container */}
+                        <div className="relative border-4 border-[#001571] bg-white rounded-full overflow-hidden w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px]">
+                            {jobSeekerDetails.profileImage ? (
                                 <Image
-                                    id="cover-image-input"
-                                    src="/editiconwhite.png"
-                                    alt="Edit Icon"
+                                    src={jobSeekerDetails.profileImage}
+                                    alt="Profile"
                                     layout="fill"
-                                    objectFit="contain"
+                                    priority
+                                    objectFit="cover"
                                     quality={100}
-                                    className="cursor-pointer"
+                                    className="fill"
                                 />
-                            </div>
-                        )}
-
-                    </div>
-                    {/* Profile Image */}
-                    <div className="relative flex flex-row justify-between">
-
-                        {/* DP Image */}
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px] mt-[-92px] ml-10 flex items-top justify-center relative">
-
-                            {/* Profile picture container */}
-                            <div className="relative border-4 border-[#001571] bg-white rounded-full overflow-hidden w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px]">
-                                {jobSeekerDetails.profileImage ? (
-                                    <Image
-                                        src={jobSeekerDetails.profileImage}
-                                        alt="Profile"
-                                        layout="fill"
-                                        priority
-                                        objectFit="cover"
-                                        quality={100}
-                                        className="fill"
-                                    />
-                                ) : (
-                                    <Image
-                                        src="/default-avatar.jpg"
-                                        alt="Profile"
-                                        layout="fill"
-                                        priority
-                                        objectFit="cover"
-                                        quality={100}
-                                        className="fill"
-                                    />
-                                )}
-                            </div>
-
-                            {/* Profile picture edit icon */}
-                            {session?.user?.role === "admin" && (
-                                <div className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-0 bg-white">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        id="logo-image-input"
-                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                    />
-                                    {/* Edit Icon */}
-                                    <Image
-                                        src="/editiconwhite.png"
-                                        alt="Edit Icon"
-                                        width={40}
-                                        height={40}
-                                        objectFit="contain"
-                                        quality={100}
-                                    />
-                                </div>
+                            ) : (
+                                <Image
+                                    src="/default-avatar.jpg"
+                                    alt="Profile"
+                                    layout="fill"
+                                    priority
+                                    objectFit="cover"
+                                    quality={100}
+                                    className="fill"
+                                />
                             )}
                         </div>
 
-                        {/* Social Links */}
-                        <div className="pr-8 sm:pr-6 flex justify-end mt-4 space-x-2 sm:space-x-4 text-blue-900 ">
-                            <a href={jobSeekerDetails.linkedin}><FaLinkedin size={30} className="cursor-pointer" /></a>
-                            <a href={jobSeekerDetails.x}><FaTwitter size={30} className="cursor-pointer" /></a>
-                            <a href={jobSeekerDetails.instagram}><FaInstagram size={30} className="cursor-pointer" /></a>
-                            <a href={jobSeekerDetails.facebook}><FaFacebook size={30} className="cursor-pointer" /></a>
-                            <a href={jobSeekerDetails.github}><FaGithub size={30} className="cursor-pointer" /></a>
-                            <a href={jobSeekerDetails.dribbble}><FaDribbble size={30} className="cursor-pointer" /></a>
-                        </div>
+                        {/* Profile picture edit icon */}
+                        {session?.user?.role === "admin" && (
+                            <div
+                                className="absolute top-0 right-0 w-12 h-12 rounded-full flex items-center justify-center shadow-md z-0 bg-white cursor-pointer"
+                                onClick={() => triggerFileInput("profile-image-input")}
+                            >
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    id="profile-image-input"
+                                    className="hidden"
+                                />
+                                <Image
+                                    src="/editiconwhite.png"
+                                    alt="Edit Icon"
+                                    width={40}
+                                    height={40}
+                                    objectFit="contain"
+                                    quality={100}
+                                />
+                            </div>
+                        )}
                     </div>
 
+                    {/* Social Links */}
+                    <div className="pr-8 sm:pr-6 flex justify-end mt-4 space-x-2 sm:space-x-4 text-blue-900 ">
+                        <a href={jobSeekerDetails.linkedin}><FaLinkedin size={30} className="cursor-pointer" /></a>
+                        <a href={jobSeekerDetails.x}><FaTwitter size={30} className="cursor-pointer" /></a>
+                        <a href={jobSeekerDetails.instagram}><FaInstagram size={30} className="cursor-pointer" /></a>
+                        <a href={jobSeekerDetails.facebook}><FaFacebook size={30} className="cursor-pointer" /></a>
+                        <a href={jobSeekerDetails.github}><FaGithub size={30} className="cursor-pointer" /></a>
+                        <a href={jobSeekerDetails.dribbble}><FaDribbble size={30} className="cursor-pointer" /></a>
+                    </div>
                 </div>
+            </div>
 
                 {/* title */}
                 <div className="pt-8 sm:pt-14">
