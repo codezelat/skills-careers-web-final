@@ -98,16 +98,16 @@ function JobCard(props) {
                 <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex items-center">
                     {session?.user?.role === "admin" && (
                         <>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                            <div className="px-4 py-3 text-black font-semibold w-[25%]">
                                 {jobTitle}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                            <div className="px-4 py-3 text-black font-semibold w-[25%]">
                                 {recruiterDetails.recruiterName}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                            <div className="px-4 py-3 text-black font-semibold w-[25%]">
                                 {formatDate(createdAt)}
                             </div>
-                            <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
+                            <div className="py-3 flex gap-2 ml-auto justify-end w-[25%]">
                                 <button
                                     onClick={handleViewJob}
                                     className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
