@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import PortalLoading from "../../loading";
 import { FaDribbble, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaMedal, FaTimes, FaTwitter } from "react-icons/fa";
+import { GiConfirmed } from "react-icons/gi";
 import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
 import { useRouter } from "next/navigation";
@@ -11,6 +12,9 @@ import EducationCard from "@/components/PortalComponents/educationCard";
 import CertificationCard from "@/components/PortalComponents/certificationCard";
 import { FiPlus } from "react-icons/fi";
 import { RiDownloadLine } from "react-icons/ri";
+import { IoIosCheckmarkCircleOutline, IoMdClose } from "react-icons/io";
+import { MdDownloadForOffline } from "react-icons/md";
+import { TbMailFilled } from "react-icons/tb";
 
 export default function CandidateProfile({ slug }) {
 
@@ -28,6 +32,8 @@ export default function CandidateProfile({ slug }) {
 
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [applicationStatus, setApplicationStatus] = useState(null);
 
     // fetch functions
     useEffect(() => {
@@ -36,7 +42,14 @@ export default function CandidateProfile({ slug }) {
                 try {
                     setIsLoading(true);
 
-                    const jobSeekerResponse = await fetch(`/api/jobseekerdetails/get?id=${slug}`);
+                    const applicationResponse = await fetch(`/api/jobapplication/get?id=${slug}`);
+                    if (!applicationResponse.ok) throw new Error("Failed to fetch job applications");
+                    const applicationData = await applicationResponse.json();
+                    setApplications(applicationData.application);
+                    setApplicationStatus(applicationData.application.status);
+                    console.log("single application - ", applicationData.application);
+
+                    const jobSeekerResponse = await fetch(`/api/jobseekerdetails/get?id=${applicationData.application.jobseekerId}`);
                     if (!jobSeekerResponse.ok) throw new Error("Failed to fetch job seeker");
                     const jobSeekerData = await jobSeekerResponse.json();
 
@@ -79,6 +92,85 @@ export default function CandidateProfile({ slug }) {
         }
     }, [session, slug]);
 
+    // Approve function
+    const handleApprove = async () => {
+        try {
+            setIsProcessing(true);
+            const response = await fetch('/api/jobapplication/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ applicationId: slug, status: 'Approved' }),
+            });
+
+            if (!response.ok) throw new Error('Failed to update status');
+
+            const data = await response.json();
+            console.log(data.message);
+            setApplicationStatus('Approved');
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    // Decline function
+    const handleDecline = async () => {
+        try {
+            setIsProcessing(true);
+            const response = await fetch('/api/jobapplication/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ applicationId: slug, status: 'Declined' }),
+            });
+
+            if (!response.ok) throw new Error('Failed to update status');
+
+            const data = await response.json();
+            console.log(data.message);
+            setApplicationStatus('Declined');
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    // Download cv function
+    const handleDownloadCV = async () => {
+        if (!applications?.cvFileId) {
+            alert("No CV available for download");
+            return;
+        }
+
+        setIsDownloading(true);
+        try {
+            const response = await fetch(`/api/download-cv/${applications.cvFileId}`);
+            if (!response.ok) throw new Error('Failed to download CV');
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CV_${applications.firstName.replace(/\s+/g, '_')}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+        } catch (error) {
+            console.error('Download error:', error);
+            alert('Failed to download CV. Please try again.');
+        } finally {
+            setIsDownloading(false);
+        }
+    };
+
     // loading
     if (isLoading) return <PortalLoading />;
     if (error) return <div className="text-red-500">Error: {error}</div>;
@@ -87,7 +179,33 @@ export default function CandidateProfile({ slug }) {
         <div className="bg-white rounded-3xl py-7 px-7">
 
             <div>
-                <div className="">
+                <div className="flex flex-row items-center justify-between w-full border-b-[1px] border-[#B0B6D3] pb-6">
+                    <h1 className="font-semibold text-lg text-[#001571]">Application</h1>
+                    <div className="flex flex-row items-end gap-2">
+                        {isProcessing ? (
+                            <div className="flex items-center justify-center w-full py-2 px-6 rounded-xl bg-gray-200 text-gray-700 text-base font-normal">
+                                Please Wait...
+                            </div>
+                        ) : applicationStatus === 'Approved' || applicationStatus === 'Declined' ? (
+                            <div className={`flex items-center justify-center w-full py-2 px-6 text-base font-normal rounded-xl ${applicationStatus === 'Approved' ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'
+                                }`}>
+                                {applicationStatus}
+                            </div>
+                        ) : (
+                            <>
+                                <button onClick={handleApprove} className="flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl bg-[#001571] hover:bg-[#162255] text-base font-normal text-white">
+                                    <IoIosCheckmarkCircleOutline size={20} />
+                                    Approve
+                                </button>
+                                <button onClick={handleDecline} className="flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl bg-[#EC221F] hover:bg-[#c63431] text-base font-normal text-white">
+                                    <IoMdClose size={20} />
+                                    Decline
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+                <div className="mt-6">
                     {/* Background Image */}
                     <div className="bg-red-300 relative w-full h-[300px] rounded-t-2xl overflow-hidden flex items-top justify-end">
                         {jobSeekerDetails.coverImage ? (
@@ -157,19 +275,26 @@ export default function CandidateProfile({ slug }) {
                 </div>
 
                 {/* title */}
-                <div className="pt-8 sm:pt-14">
-                    <h1 className="text-center sm:text-left text-2xl sm:text-4xl md:text-3xl font-bold text-black">
-                        {userDetails.firstName} {userDetails.lastName}
-                    </h1>
-
-                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between space-y-4 sm:space-y-0 mt-0 text-sm w-full">
-                        <div className="flex flex-wrap items-center justify-center sm:justify-start space-y-4 sm:space-y-0 space-x-0 sm:space-x-4">
-                            <div className="flex items-center">
-                                <p className="text-black font-semibold text-lg">
-                                    {jobSeekerDetails.position || "No position available"}
-                                </p>
+                <div className="flex flex-row items-center justify-between pt-8 sm:pt-14">
+                    <div>
+                        <h1 className="text-center sm:text-left text-2xl sm:text-4xl md:text-3xl font-bold text-black">
+                            {userDetails.firstName} {userDetails.lastName}
+                        </h1>
+                        <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between space-y-4 sm:space-y-0 mt-0 text-sm w-full">
+                            <div className="flex flex-wrap items-center justify-center sm:justify-start space-y-4 sm:space-y-0 space-x-0 sm:space-x-4">
+                                <div className="flex items-center">
+                                    <p className="text-black font-semibold text-lg">
+                                        {jobSeekerDetails.position || "No position available"}
+                                    </p>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div className="flex flex-row gap-2">
+                        <button onClick={handleDownloadCV} className="flex flex-row items-center gap-2 py-3 px-6 border-0 rounded-xl bg-[#001571] hover:bg-[#162255] text-base font-normal text-white">
+                            <MdDownloadForOffline size={20} />
+                            {isDownloading ? "Downloading..." : "Download CV"}
+                        </button>
                     </div>
                 </div>
 

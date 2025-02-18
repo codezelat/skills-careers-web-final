@@ -110,15 +110,15 @@ export default function JobApplications() {
   return (
     <div className="flex flex-col p-6 bg-white rounded-xl">
       <div className="flex flex-row items-center justify-between">
-        <h2 className="text-[#001571] text-xl font-bold mb-6">
+        <h2 className="text-[#001571] text-xl font-bold">
           Received Applications
         </h2>
-        <span className="text-[#001571]">
+        <span className="text-[#001571] text-base font-medium">
           Total Applications: {applications.length}
         </span>
       </div>
 
-      <div className="flex-grow">
+      <div className="flex-grow mt-6">
         <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
           <IoSearchSharp size={25} className="text-[#001571]" />
           <input
@@ -131,18 +131,18 @@ export default function JobApplications() {
         </div>
       </div>
 
-      <div className=" bg-white rounded-xl mt-6">
-        <h1 className="text-xl font-bold text-[#001571] mb-4">Applications</h1>
+      <div className=" bg-white rounded-xl mt-8">
+        <h1 className="text-xl font-bold text-[#001571] mb-2">Applications</h1>
         
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                <th className="py-3 w-[16.66%]">Candidate Name</th>
-                <th className="py-3 w-[16.66%]">Job Title</th>
-                <th className="py-3 w-[16.66%]">Applied Date</th>
-                <th className="py-3 w-[25%]">Email</th>
-                <th className="py-3 w-[25%]">Actions</th>
+                <th className="py-3 w-[23.33%]">Candidate Name</th>
+                <th className="py-3 w-[15%]">Job Title</th>
+                <th className="py-3 w-[23.33%]">Applied Date</th>
+                <th className="py-3 w-[23.33%]">Email</th>
+                <th className="py-3 w-[15%]">Actions</th>
               </tr>
             </thead>
           </table>

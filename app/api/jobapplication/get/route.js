@@ -2,69 +2,66 @@ import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
-export async function GET(req) {
-  let client;
+export async function GET(request) {
+  const client = await connectToDatabase();
+
   try {
-    const { searchParams } = new URL(req.url);
-    const recruiterId = searchParams.get("recruiterId");
-    const jobseekerId = searchParams.get("jobseekerId");
+    const { searchParams } = new URL(request.url);
+    const _id = searchParams.get("id"); 
+    const jobId = searchParams.get("jobId"); 
 
-    // Validate input parameters
-    if (recruiterId && jobseekerId) {
+    if (!_id && !jobId) {
       return NextResponse.json(
-        { message: "Provide either recruiterId OR jobseekerId, not both" },
+        { error: "Either _id or jobId is required" },
         { status: 400 }
       );
     }
 
-    if (!recruiterId && !jobseekerId) {
-      return NextResponse.json(
-        { message: "Either recruiterId or jobseekerId must be provided." },
-        { status: 400 }
-      );
-    }
-
-    client = await connectToDatabase();
     const db = client.db();
-    const jobApplicationsCollection = db.collection("jobapplication");
 
-    let query = {};
-    if (recruiterId) {
-      if (!ObjectId.isValid(recruiterId)) {
+    if (_id) {
+      const jobApplication = await db
+        .collection("jobapplication")
+        .findOne({ _id: new ObjectId(_id) });
+
+      if (!jobApplication) {
         return NextResponse.json(
-          { message: "Invalid recruiter ID format" },
-          { status: 400 }
+          { error: "Application not found" },
+          { status: 404 }
         );
       }
-      query.recruiterId = new ObjectId(recruiterId);
-    } else {
-      if (!ObjectId.isValid(jobseekerId)) {
-        return NextResponse.json(
-          { message: "Invalid jobseeker ID format" },
-          { status: 400 }
-        );
-      }
-      query.jobseekerId = new ObjectId(jobseekerId);
+
+      return NextResponse.json(
+        {
+          success: true,
+          application: jobApplication,
+        },
+        { status: 200 }
+      );
+    } else if (jobId) {
+      const jobApplications = await db
+        .collection("jobapplication")
+        .find({ jobId: new ObjectId(jobId) })
+        .toArray();
+
+      const applicationCount = jobApplications.length;
+
+      return NextResponse.json(
+        {
+          success: true,
+          applications: jobApplications,
+          count: applicationCount,
+        },
+        { status: 200 }
+      );
     }
-
-    const jobApplications = await jobApplicationsCollection.find(query).toArray();
-    const applicationCount = jobApplications.length;
-
-    return NextResponse.json({
-      success: true,
-      applications: jobApplications,
-      count: applicationCount
-    });
-
   } catch (error) {
-    console.error("Job applications fetch error:", error);
+    console.error("Error fetching job application:", error);
     return NextResponse.json(
-      { message: "Failed to fetch applications", error: error.message },
+      { error: "Failed to fetch application" },
       { status: 500 }
     );
   } finally {
-    if (client) {
-      await client.close();
-    }
+    await client.close();
   }
 }

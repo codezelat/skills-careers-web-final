@@ -38,7 +38,7 @@ export default function PortalApplicationCard({ application }) {
   };
 
   const handleView = () => {
-    router.push(`/Portal/jobApplications/${application.jobseekerId}`)
+    router.push(`/Portal/jobApplications/${application._id}`)
   };
 
   const date = new Date(application.appliedAt).getDate();
@@ -63,33 +63,25 @@ export default function PortalApplicationCard({ application }) {
 
   return (
     <div className="py-4 rounded-lg transition-shadow border-b border-gray-200 flex items-center text-sm font-semibold">
-      <div className="flex items-center w-[16.66%]">
+      <div className="flex items-center w-[23.33%]">
         {application.firstName} {application.lastName}
       </div>
 
-      <div className="py-3 w-[16.66%]">
+      <div className="py-3 w-[15%]">
         {application.jobTitle || "No title"}
       </div>
 
-      <div className="py-3 w-[16.66%]">
+      <div className="py-3 w-[23.33%]">
         {postedDate || "Unknown date"}
       </div>
 
-      <div className="py-3 w-[25%]">
+      <div className="py-3 w-[23.33%]">
         {application.email || "No email"}
       </div>
 
-      <div className="flex gap-2 justify-end w-[25%] items-center">
+      <div className="flex gap-2 justify-end w-[15%] items-center">
         <button
-          className="flex items-center justify-center w-1/2 h-[50px] bg-[#001571] text-white text-xs px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
-          onClick={handleDownloadCV}
-          disabled={isDownloading || !application.cvFileId}
-        >
-          <RiDownloadLine size={20} className="mr-2" />
-          {isDownloading ? "Downloading..." : "Download CV"}
-        </button>
-        <button
-          className="flex items-center justify-center w-1/2 h-[50px] bg-[#001571] text-white  text-xs px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
+          className="flex items-center justify-center w-full h-[50px] bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800 transition-colors disabled:opacity-50"
           onClick={handleView}
         >
           View
