@@ -304,11 +304,11 @@ export default function RecruiterPostedJobs(props) {
                         <table className="w-full border-collapse">
                             <thead>
                                 <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                                    <th className="px-4 py-3 w-[3%]"></th>
-                                    <th className="px-4 py-3 w-[24.25%]">Position</th>
-                                    <th className="px-4 py-3 w-[24.25%]">Published Date</th>
-                                    <th className="px-4 py-3 w-[24.25%]">Applications</th>
-                                    <th className="px-4 py-3 w-[24.25%]">Actions</th>
+                                    <th className="py-3 w-[3%]"></th>
+                                    <th className="py-3 w-[24.25%]">Position</th>
+                                    <th className="py-3 w-[24.25%]">Published Date</th>
+                                    <th className="py-3 w-[24.25%]">Applications</th>
+                                    <th className="py-3 w-[24.25%]">Actions</th>
                                 </tr>
                             </thead>
                         </table>

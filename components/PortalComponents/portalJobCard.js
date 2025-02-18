@@ -24,7 +24,7 @@ function JobCard(props) {
             try {
                 // Fetch application count
                 const appResponse = await fetch(
-                    `/api/jobapplication/get?recruiterId=${recruiterId}`
+                    `/api/jobapplication/get?jobId=${_id}`
                 );
                 if (appResponse.ok) {
                     const appData = await appResponse.json();
@@ -81,7 +81,7 @@ function JobCard(props) {
     };
 
     const handleViewJob = () => {
-        const path = session?.user?.role === "admin" 
+        const path = session?.user?.role === "admin"
             ? `/Portal/jobsAdmin/${_id}`
             : `/Portal/jobsRecruiter/${_id}`;
         router.push(path);
@@ -98,16 +98,17 @@ function JobCard(props) {
                 <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex items-center">
                     {session?.user?.role === "admin" && (
                         <>
-                            <div className="px-4 py-3 text-black font-semibold w-[25%]">
+                            <div className="py-3 text-black font-semibold w-[3%]"></div>
+                            <div className="py-3 text-black font-semibold w-[24.25%]">
                                 {jobTitle}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[25%]">
+                            <div className="py-3 text-black font-semibold w-[24.25%]">
                                 {recruiterDetails.recruiterName}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[25%]">
+                            <div className="py-3 text-black font-semibold w-[24.25%]">
                                 {formatDate(createdAt)}
                             </div>
-                            <div className="py-3 flex gap-2 ml-auto justify-end w-[25%]">
+                            <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
                                 <button
                                     onClick={handleViewJob}
                                     className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
@@ -118,11 +119,10 @@ function JobCard(props) {
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
-                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${
-                                        isPublished 
-                                            ? "bg-[#EC221F] hover:bg-red-700" 
+                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${isPublished
+                                            ? "bg-[#EC221F] hover:bg-red-700"
                                             : "bg-[#001571] hover:bg-blue-700"
-                                    } text-white`}
+                                        } text-white`}
                                 >
                                     <BsFillEyeFill size={15} className="mr-2" />
                                     {isLoading ? "Loading..." : isPublished ? "Restrict" : "Unrestrict"}
@@ -133,13 +133,14 @@ function JobCard(props) {
 
                     {session?.user?.role === "recruiter" && (
                         <>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                            <div className="py-3 text-black font-semibold w-[3%]"></div>
+                            <div className="py-3 text-black font-semibold w-[24.25%]">
                                 {jobTitle}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                            <div className="py-3 text-black font-semibold w-[24.25%]">
                                 {formatDate(createdAt)}
                             </div>
-                            <div className="px-4 py-3 text-black font-semibold w-[24.25%]">
+                            <div className="py-3 justify-center text-black font-semibold w-[24.25%]">
                                 {applicationCount}
                             </div>
                             <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
@@ -153,11 +154,10 @@ function JobCard(props) {
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
-                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${
-                                        isPublished 
-                                            ? "bg-[#EC221F] hover:bg-red-700" 
+                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${isPublished
+                                            ? "bg-[#EC221F] hover:bg-red-700"
                                             : "bg-[#001571] hover:bg-blue-700"
-                                    } text-white`}
+                                        } text-white`}
                                 >
                                     <BsFillEyeFill size={15} className="mr-2" />
                                     {isLoading ? "Loading..." : isPublished ? "Restrict" : "Unrestrict"}
