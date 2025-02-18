@@ -83,54 +83,58 @@ export default function Jobs() {
   };
 
   const JOB_TYPE_OPTIONS = [
-    'On Site',
-    'Hybrid',
-    'Remote',
-    'Full-Time',
-    'Part-Time',
-    'Freelance'
+    "On Site",
+    "Hybrid",
+    "Remote",
+    "Full-Time",
+    "Part-Time",
+    "Freelance",
   ];
-  
+
   const [formData, setFormData] = useState({
-    jobTitle: '',
-    location: '',
+    jobTitle: "",
+    location: "",
     jobTypes: [],
-    jobDescription: '',
-    keyResponsibilities: ''
+    jobDescription: "",
+    keyResponsibilities: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    setFormErrors(prev => ({ ...prev, [name]: '' }));
+    setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleJobTypeChange = (type) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       jobTypes: prev.jobTypes.includes(type)
-        ? prev.jobTypes.filter(t => t !== type)
-        : [...prev.jobTypes, type]
+        ? prev.jobTypes.filter((t) => t !== type)
+        : [...prev.jobTypes, type],
     }));
-    setFormErrors(prev => ({ ...prev, jobTypes: '' }));
+    setFormErrors((prev) => ({ ...prev, jobTypes: "" }));
   };
 
   const handleRecruiterChange = (e) => {
     setSelectedRecruiter(e.target.value);
-    setFormErrors(prev => ({ ...prev, recruiterId: '' }));
+    setFormErrors((prev) => ({ ...prev, recruiterId: "" }));
   };
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.jobTitle.trim()) errors.jobTitle = 'Job title is required';
-    if (!selectedRecruiter) errors.recruiterId = 'Recruiter selection is required';
-    if (!formData.location.trim()) errors.location = 'Location is required';
-    if (formData.jobTypes.length === 0) errors.jobTypes = 'At least one job type is required';
-    if (!formData.jobDescription.trim()) errors.jobDescription = 'Description is required';
-    if (!formData.keyResponsibilities.trim()) errors.keyResponsibilities = 'Responsibilities are required';
+    if (!formData.jobTitle.trim()) errors.jobTitle = "Job title is required";
+    if (!selectedRecruiter)
+      errors.recruiterId = "Recruiter selection is required";
+    if (!formData.location.trim()) errors.location = "Location is required";
+    if (formData.jobTypes.length === 0)
+      errors.jobTypes = "At least one job type is required";
+    if (!formData.jobDescription.trim())
+      errors.jobDescription = "Description is required";
+    if (!formData.keyResponsibilities.trim())
+      errors.keyResponsibilities = "Responsibilities are required";
     return errors;
   };
 
@@ -146,14 +150,14 @@ export default function Jobs() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/job/add/admin', {
-        method: 'POST',
+      const response = await fetch("/api/job/add/admin", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...formData,
-          recruiterId: selectedRecruiter
+          recruiterId: selectedRecruiter,
         }),
       });
 
@@ -173,19 +177,18 @@ export default function Jobs() {
       setFilteredJobs(refreshData.jobs);
 
       setFormData({
-        jobTitle: '',
-        location: '',
+        jobTitle: "",
+        location: "",
         jobTypes: [],
-        jobDescription: '',
-        keyResponsibilities: ''
+        jobDescription: "",
+        keyResponsibilities: "",
       });
-      setSelectedRecruiter('');
+      setSelectedRecruiter("");
       setIsFormVisible(false);
       setCurrentPage(1); // Reset to first page after adding new job
-
     } catch (error) {
-      console.error('Submission error:', error);
-      alert(error.message || 'Failed to create job. Please try again.');
+      console.error("Submission error:", error);
+      alert(error.message || "Failed to create job. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

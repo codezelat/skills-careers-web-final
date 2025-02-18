@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { RiEdit2Fill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
+import { useSession } from "next-auth/react";
 
 export default function PortalCandidateCard({ jobseeker, onUpdate }) {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
   const [userDetails, setUserDetails] = useState({});
   const [localRestricted, setLocalRestricted] = useState(isRestricted);
   const [isRestricting, setIsRestricting] = useState(false);
+   const { data: session, status } = useSession();
 
   useEffect(() => {
     setLocalRestricted(isRestricted);
@@ -30,7 +32,7 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
         setUserDetails({});
       }
     };
-    
+
     if (userId) fetchUserDetails();
   }, [userId]);
 
@@ -40,7 +42,7 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
       const response = await fetch(`/api/jobseekerdetails/${_id}/restrict`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isRestricted: !localRestricted })
+        body: JSON.stringify({ isRestricted: !localRestricted }),
       });
 
       if (!response.ok) {
@@ -48,17 +50,16 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
       }
 
       const result = await response.json();
-      
-      if (!result || typeof result.isRestricted === 'undefined') {
-        throw new Error('Invalid API response structure');
+
+      if (!result || typeof result.isRestricted === "undefined") {
+        throw new Error("Invalid API response structure");
       }
 
       setLocalRestricted(result.isRestricted);
       onUpdate(result);
-      
     } catch (error) {
       //console.error("Error updating restriction status:", error);
-     // alert(`Error updating candidate: ${error.message}`);
+      // alert(`Error updating candidate: ${error.message}`);
     } finally {
       setIsRestricting(false);
     }
@@ -81,41 +82,55 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
           className="rounded-full shadow-lg"
         />
         <span className="ml-3">
-          {userDetails.firstName || 'Unknown'} {userDetails.lastName || 'User'}
+          {userDetails.firstName || "Unknown"} {userDetails.lastName || "User"}
         </span>
       </div>
       <div className="px-4 py-3 w-[24.25%]">{email}</div>
-      <div className="px-4 py-3 w-[24.25%]">{contactNumber || 'N/A'}</div>
-      <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
-        <button
-          className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-          onClick={() => router.push(`/Portal/candidates/${_id}`)}
-        >
-          <RiEdit2Fill size={20} className="mr-2" />
-          Edit
-        </button>
-        <button
-          className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${
-            localRestricted ? "bg-[#EC221F] hover:bg-red-700" : "bg-[#001571] hover:bg-blue-700"
-          }`}
-          onClick={handleRestrictToggle}
-          disabled={isRestricting}
-        >
-          {isRestricting ? (
-            "Processing..."
-          ) : localRestricted ? (
-            <>
-              <BsFillEyeFill size={15} className="mr-2" />
-              Unrestrict
-            </>
-          ) : (
-            <>
-              <BsFillEyeFill size={15} className="mr-2" />
-              Restrict
-            </>
-          )}
-        </button>
-      </div>
+      <div className="px-4 py-3 w-[24.25%]">{contactNumber || "N/A"}</div>
+      {session?.user?.role === "recruiter" && (
+        <div className="py-3 flex gap-2 ml-auto justify-start w-[24.25%] items-center">
+          <button
+            className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+            onClick={() => router.push(`/Portal/candidates/${_id}`)}
+          >
+            View Profile
+          </button>
+        </div>
+      )}
+      {session?.user?.role === "admin" && (
+        <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+          <button
+            className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+            onClick={() => router.push(`/Portal/candidates/${_id}`)}
+          >
+            <RiEdit2Fill size={20} className="mr-2" />
+            Edit
+          </button>
+          <button
+            className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${
+              localRestricted
+                ? "bg-[#EC221F] hover:bg-red-700"
+                : "bg-[#001571] hover:bg-blue-700"
+            }`}
+            onClick={handleRestrictToggle}
+            disabled={isRestricting}
+          >
+            {isRestricting ? (
+              "Processing..."
+            ) : localRestricted ? (
+              <>
+                <BsFillEyeFill size={15} className="mr-2" />
+                Unrestrict
+              </>
+            ) : (
+              <>
+                <BsFillEyeFill size={15} className="mr-2" />
+                Restrict
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
