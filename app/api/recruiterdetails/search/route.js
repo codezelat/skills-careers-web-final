@@ -1,13 +1,13 @@
-// app/api/recruiterdetails/search/route.js
 import { Client } from "@elastic/elasticsearch";
 import { NextResponse } from "next/server";
 
 // Create the client instance
 const client = new Client({
-  node: process.env.ELASTICSEARCH_URL,
+  cloud: {
+    id: process.env.ELASTIC_CLOUD_ID,
+  },
   auth: {
-    username: process.env.ELASTIC_USERNAME || "elastic",
-    password: process.env.ELASTIC_PASSWORD,
+    apiKey: process.env.ELASTIC_API_KEY,
   },
 });
 
