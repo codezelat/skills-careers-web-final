@@ -78,8 +78,8 @@ export default function NewsComponent() {
               </div>
             </div>
 
-            <div className="col-span-2 row-span-1 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg">
-              <div className="bg-white p-3">
+            <div className="col-span-2 row-span-1 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg ">
+              <div className="bg-white p-3 scrollbar-hide">
                 <Image
                   src="/newsImage.png"
                   alt="Small Article"
