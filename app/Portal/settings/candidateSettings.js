@@ -4,12 +4,14 @@ import { useSession } from "next-auth/react";
 import PortalLoading from "../loading";
 import Image from "next/image";
 import CredentialsForm from "./credentialsEditForm";
+import PasswordReset from "@/components/PortalComponents/passwordReset";
 
 export default function CandidateSettings() {
 
     const { data: session, status } = useSession();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showCredentialsForm, setShowCredentialsForm] = useState(false);
+    const [showResetPassword, setShowResetPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const [userDetails, setUserDetails] = useState({
@@ -273,6 +275,10 @@ export default function CandidateSettings() {
                         </div>
                     </form>
 
+                    <div className="flex flex-row w-full justify-end mt-10">
+                        <button onClick={() => setShowResetPassword(true)} className="py-2 px-4 rounded-xl bg-[#001571] text-white font-medium">Reset Password</button>
+                    </div>
+
                     {showCredentialsForm && (
                         <CredentialsForm
                             userDetails={userDetails}
@@ -281,6 +287,11 @@ export default function CandidateSettings() {
                             onSubmit={credSubmitHandler}
                             onInputChange={handleCredInputChange}
                         />
+                    )}
+
+                    {showResetPassword && (
+                        <PasswordReset
+                            onClose={() => setShowResetPassword(false)} />
                     )}
 
                 </div>

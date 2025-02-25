@@ -6,12 +6,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PortalLoading from "@/app/Portal/loading";
 import AdminEditForm from "@/app/Portal/profile/adminEditForm";
+import PasswordReset from "./passwordReset";
 
 export default function AdminProfile() {
 
     const { data: session, status } = useSession();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showCredentialsForm, setShowCredentialsForm] = useState(false);
+    const [showResetPassword, setShowResetPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const [userDetails, setUserDetails] = useState({
@@ -286,6 +288,10 @@ export default function AdminProfile() {
                         />
                     </div>
                 </div>
+
+                <div className="flex flex-row w-full justify-end mt-10">
+                    <button onClick={() => setShowResetPassword(true)} className="py-2 px-4 rounded-xl bg-[#001571] text-white font-medium">Reset Password</button>
+                </div>
             </div>
 
             {showCredentialsForm && (
@@ -296,6 +302,11 @@ export default function AdminProfile() {
                     onSubmit={credSubmitHandler}
                     onInputChange={handleCredInputChange}
                 />
+            )}
+
+            {showResetPassword && (
+                <PasswordReset
+                    onClose={() => setShowResetPassword(false)} />
             )}
         </>
     );
