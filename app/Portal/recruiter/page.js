@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import PortalLoading from "../loading";
 import AddRecruiterForm from "./addRecruiterForm";
 import PortalRecruiterCard from "@/components/PortalComponents/portalRecruiterCard";
+import RecruiterSearch from "@/components/RecruiterSearch";
 
 export default function Recruiters() {
   const [activeTab, setActiveTab] = useState("all");
@@ -25,15 +26,15 @@ export default function Recruiters() {
   const [activeSection, setActiveSection] = useState("recruiters");
   const [selectedRecruiter, setSelectedRecruiter] = useState(null);
   const [newRecruiter, setNewRecruiter] = useState({
-    firstName: '',
-    lastName: '',
-    contactNumber: '',
-    recruiterName: '',
-    employeeRange: '',
-    email: '',
-    telephoneNumber: '',
-    password: '',
-    confirmPassword: '',
+    firstName: "",
+    lastName: "",
+    contactNumber: "",
+    recruiterName: "",
+    employeeRange: "",
+    email: "",
+    telephoneNumber: "",
+    password: "",
+    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -53,13 +54,15 @@ export default function Recruiters() {
         setLoading(false);
       }
     };
-    
+
     if (session?.user?.email) fetchRecruiters();
   }, [session]);
 
   const filterRecruiters = (recruiters, query, tab) => {
-    const filtered = recruiters.filter(recruiter => {
-      const matchesSearch = recruiter.recruiterName.toLowerCase().includes(query.toLowerCase());
+    const filtered = recruiters.filter((recruiter) => {
+      const matchesSearch = recruiter.recruiterName
+        .toLowerCase()
+        .includes(query.toLowerCase());
       const matchesTab = tab === "all" ? true : recruiter.isRestricted;
       return matchesSearch && matchesTab;
     });
@@ -71,18 +74,23 @@ export default function Recruiters() {
   }, [searchQuery, activeTab, recruiters]);
 
   const handleRecruiterUpdate = (updatedRecruiter) => {
-    setRecruiters(prev => prev.map(r => 
-      r._id === updatedRecruiter._id ? { ...r, ...updatedRecruiter } : r
-    ));
+    setRecruiters((prev) =>
+      prev.map((r) =>
+        r._id === updatedRecruiter._id ? { ...r, ...updatedRecruiter } : r
+      )
+    );
   };
 
   const handleRecruiterDelete = (deletedId) => {
-    setRecruiters(prev => prev.filter(r => r._id !== deletedId));
-    setFilteredRecruiters(prev => prev.filter(r => r._id !== deletedId));
+    setRecruiters((prev) => prev.filter((r) => r._id !== deletedId));
+    setFilteredRecruiters((prev) => prev.filter((r) => r._id !== deletedId));
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= Math.ceil(filteredRecruiters.length / recruitersPerPage)) {
+    if (
+      newPage >= 1 &&
+      newPage <= Math.ceil(filteredRecruiters.length / recruitersPerPage)
+    ) {
       setCurrentPage(newPage);
     }
   };
@@ -93,9 +101,8 @@ export default function Recruiters() {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
     setFilteredRecruiters(
-      recruiters.filter(
-        (recruiter) =>
-          recruiter.recruiterName.toLowerCase().includes(query)
+      recruiters.filter((recruiter) =>
+        recruiter.recruiterName.toLowerCase().includes(query)
       )
     );
   };
@@ -158,7 +165,7 @@ export default function Recruiters() {
       );
       alert(result.message);
       setShowApplicationForm(false);
-      
+
       const response = await fetch("/api/recruiterdetails/all");
       const data = await response.json();
       setRecruiters(data.recruiters);
@@ -172,14 +179,17 @@ export default function Recruiters() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewRecruiter(prev => ({ ...prev, [name]: value }));
+    setNewRecruiter((prev) => ({ ...prev, [name]: value }));
   };
 
   const totalPages = Math.ceil(filteredRecruiters.length / recruitersPerPage);
 
   const indexOfLastRecruiter = currentPage * recruitersPerPage;
   const indexOfFirstRecruiter = indexOfLastRecruiter - recruitersPerPage;
-  const currentRecruiters = filteredRecruiters.slice(indexOfFirstRecruiter, indexOfLastRecruiter);
+  const currentRecruiters = filteredRecruiters.slice(
+    indexOfFirstRecruiter,
+    indexOfLastRecruiter
+  );
 
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
@@ -189,7 +199,8 @@ export default function Recruiters() {
           className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
           onClick={() => setShowApplicationForm(true)}
         >
-          <BsPlus size={25} className="mr-1" />Add New
+          <BsPlus size={25} className="mr-1" />
+          Add New
         </button>
       </div>
 
@@ -206,7 +217,9 @@ export default function Recruiters() {
         <button
           onClick={() => setActiveTab("restricted")}
           className={`px-6 py-3 flex rounded-2xl ${
-            activeTab === "restricted" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+            activeTab === "restricted"
+              ? "bg-[#001571] text-white"
+              : "text-[#B0B6D3]"
           }`}
         >
           Restricted Recruiters
@@ -214,7 +227,7 @@ export default function Recruiters() {
         </button>
       </div>
 
-      <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
+      {/* <div className="bg-[#E6E8F1] flex items-center mb-5 py-4 rounded-2xl shadow-sm w-full">
         <IoSearchSharp size={25} className="text-[#001571]" />
         <input
           type="text"
@@ -223,7 +236,8 @@ export default function Recruiters() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </div>
+      </div> */}
+      <RecruiterSearch />
 
       <div className="w-full overflow-x-auto">
         <table className="w-full border-collapse">
@@ -241,7 +255,10 @@ export default function Recruiters() {
 
       <div className="grid gap-4 grid-cols-1">
         {filteredRecruiters
-          .slice((currentPage - 1) * recruitersPerPage, currentPage * recruitersPerPage)
+          .slice(
+            (currentPage - 1) * recruitersPerPage,
+            currentPage * recruitersPerPage
+          )
           .map((recruiter) => (
             <PortalRecruiterCard
               key={recruiter._id}
@@ -258,28 +275,41 @@ export default function Recruiters() {
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
             className={`px-[10px] py-2 rounded-lg ${
-              currentPage === 1 ? "bg-gray-300" : "bg-gray-200 hover:bg-gray-400"
+              currentPage === 1
+                ? "bg-gray-300"
+                : "bg-gray-200 hover:bg-gray-400"
             }`}
           >
             <BsChevronLeft size={15} />
           </button>
-          {Array.from({ length: Math.ceil(filteredRecruiters.length / recruitersPerPage) }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1 ? "bg-blue-700 text-white" : "bg-gray-200 hover:bg-gray-400"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
+          {Array.from(
+            {
+              length: Math.ceil(filteredRecruiters.length / recruitersPerPage),
+            },
+            (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === index + 1
+                    ? "bg-blue-700 text-white"
+                    : "bg-gray-200 hover:bg-gray-400"
+                }`}
+              >
+                {index + 1}
+              </button>
+            )
+          )}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === Math.ceil(filteredRecruiters.length / recruitersPerPage)}
+            disabled={
+              currentPage ===
+              Math.ceil(filteredRecruiters.length / recruitersPerPage)
+            }
             className={`px-[10px] py-2 rounded-lg ${
-              currentPage === Math.ceil(filteredRecruiters.length / recruitersPerPage) 
-                ? "bg-gray-300" 
+              currentPage ===
+              Math.ceil(filteredRecruiters.length / recruitersPerPage)
+                ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
             }`}
           >

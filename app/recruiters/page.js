@@ -8,6 +8,7 @@ import DropdownButton from "@/components/dropDownButton";
 import RecruiterLoading from "@/components/RecruiterLoading";
 import Footer from "@/components/Footer";
 import Image from "next/image";
+import RecruiterSearch from "@/components/RecruiterSearch";
 
 function Recruiters() {
   const { data: session, status } = useSession();
@@ -25,7 +26,7 @@ function Recruiters() {
       try {
         const response = await fetch("/api/recruiterdetails/all");
         if (!response.ok) throw new Error("Failed to fetch recruiters.");
-        
+
         const data = await response.json();
         setRecruiters(data.recruiters);
         setFilteredRecruiters(data.recruiters);
@@ -43,20 +44,24 @@ function Recruiters() {
     let filtered = recruiters;
 
     if (searchQuery) {
-      filtered = filtered.filter(recruiter =>
-        recruiter.recruiterName.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter((recruiter) =>
+        recruiter.recruiterName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
       );
     }
 
     if (selectedIndustry) {
       filtered = filtered.filter(
-        recruiter => recruiter.industry?.toLowerCase() === selectedIndustry.toLowerCase()
+        (recruiter) =>
+          recruiter.industry?.toLowerCase() === selectedIndustry.toLowerCase()
       );
     }
 
     if (selectedLocation) {
       filtered = filtered.filter(
-        recruiter => recruiter.location?.toLowerCase() === selectedLocation.toLowerCase()
+        (recruiter) =>
+          recruiter.location?.toLowerCase() === selectedLocation.toLowerCase()
       );
     }
 
@@ -64,8 +69,12 @@ function Recruiters() {
   }, [searchQuery, selectedIndustry, selectedLocation, recruiters]);
 
   // Get unique industries and locations
-  const industries = [...new Set(recruiters.map(r => r.industry))].filter(Boolean);
-  const locations = [...new Set(recruiters.map(r => r.location))].filter(Boolean);
+  const industries = [...new Set(recruiters.map((r) => r.industry))].filter(
+    Boolean
+  );
+  const locations = [...new Set(recruiters.map((r) => r.location))].filter(
+    Boolean
+  );
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -75,15 +84,16 @@ function Recruiters() {
     <>
       <div className="bg-[#F5F5F5] w-full flex justify-center z-0">
         <div className="h-screen w-full absolute bg-white z-[1]">
-          <Image 
-            src="/images/bg.jpg" 
+          <Image
+            src="/images/bg.jpg"
             alt="Background Image"
             layout="fill"
             objectFit="contain"
             objectPosition="right top"
             quality={100}
             priority
-            className="w-full h-full opacity-5" />
+            className="w-full h-full opacity-5"
+          />
         </div>
         <div className="z-[2] min-h-screen w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-16">
           <div className="mb-8 sm:justify-center">
@@ -94,8 +104,8 @@ function Recruiters() {
             </h1>
           </div>
 
-          <div className="bg-[#e6e8f1] h-auto p-1 md:p-2 rounded-md">
-            <div className="flex items-center gap-4 w-full">
+          <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md z-10">
+            {/* <div className="flex items-center gap-4 w-full">
               <input
                 type="search"
                 value={searchQuery}
@@ -109,7 +119,8 @@ function Recruiters() {
                 </span>
                 Search
               </button>
-            </div>
+            </div> */}
+            <RecruiterSearch />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
@@ -117,16 +128,20 @@ function Recruiters() {
               buttonName="Industry"
               selected={selectedIndustry || "Industry"}
               dropdownItems={["All Industries", ...industries]}
-              onSelect={(industry) => 
-                setSelectedIndustry(industry === "All Industries" ? null : industry)
+              onSelect={(industry) =>
+                setSelectedIndustry(
+                  industry === "All Industries" ? null : industry
+                )
               }
             />
             <DropdownButton
               buttonName="Location"
               selected={selectedLocation || "Location"}
               dropdownItems={["All Locations", ...locations]}
-              onSelect={(location) => 
-                setSelectedLocation(location === "All Locations" ? null : location)
+              onSelect={(location) =>
+                setSelectedLocation(
+                  location === "All Locations" ? null : location
+                )
               }
             />
           </div>

@@ -10,6 +10,7 @@ import JobLoading from "../jobLoading";
 import Footer from "@/components/Footer";
 import JobApplicationForm from "./[jobid]/apply/JobApplicationForm";
 import { useSearchParams } from "next/navigation"; // Import useSearchParams
+import JobSearch from "@/components/jobSearch";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -147,8 +148,8 @@ function Jobs() {
             </h1>
           </div>
 
-          <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md">
-            <div className="flex flex-col md:flex-row gap-1 md:gap-4 items-center">
+          <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md z-10">
+            {/* <div className="flex flex-col md:flex-row gap-1 md:gap-4 items-center">
               <input
                 type="search"
                 placeholder="Search by job title, keywords, or company."
@@ -162,7 +163,8 @@ function Jobs() {
                 </span>
                 Search
               </button>
-            </div>
+            </div> */}
+            <JobSearch/>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">

@@ -73,16 +73,16 @@ export default function JobSearch() {
                         onChange={handleJobChange}
                         className="bg-gray-200 w-full text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
                     />
-                    <button className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold">
+                    {/* <button className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold">
                         <span className="mt-1 mr-2 md:mr-4 ">
                             <IoSearchSharp size={20} />
                         </span>
                         Search
-                    </button>
+                    </button> */}
                 </div>
             </div>
 
-            <div className="absolute top-full left-0 right-0">
+            <div className="absolute top-full left-0 right-0 z-20">
                 {jobLoading && (
                     <div className="z-10 w-full bg-gray-200 rounded-md shadow-lg p-4 mt-2 pl-6 text-base font-semibold">
                         Loading Jobs...
