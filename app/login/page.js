@@ -19,8 +19,11 @@ function Login() {
   const { data: session, status } = useSession();
 
   const [errorMessage, setErrorMessage] = useState("");
-
   const [isLoading, setIsLoading] = useState(true);
+  const [showForgotPasswordPopup, setShowForgotPasswordPopup] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -29,7 +32,7 @@ function Login() {
     return () => clearTimeout(timer);
   }, []);
 
-  const emailFromParams = searchParams.get("email"); // Get email from query parameters
+  const emailFromParams = searchParams.get("email");
 
   // Populate the email input field with the query param value
   useEffect(() => {
@@ -74,7 +77,7 @@ function Login() {
       } else if (userRole === "recruiter") {
         router.push("/Portal/dashboard");
       } else if (userRole === "admin") {
-        router.push("/Portal/dashboard")
+        router.push("/Portal/dashboard");
       }
     } else {
       alert("Login failed. Please check your email and password.");
@@ -89,6 +92,38 @@ function Login() {
       });
     } catch (error) {
       setErrorMessage("Failed to sign in with Google. Please try again.");
+    }
+  };
+
+  // Handle Forgot Password
+  const handleForgotPasswordClick = () => {
+    setShowForgotPasswordPopup(true);
+  };
+
+  const handleForgotPasswordSubmit = async (event) => {
+    event.preventDefault();
+    setForgotPasswordLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/forgotPassword", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotPasswordEmail }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || "Failed to send reset email");
+
+      alert("Password reset email sent. Please check your inbox.");
+      setShowForgotPasswordPopup(false);
+      setForgotPasswordEmail("");
+
+    } catch (error) {
+      console.error('Forgot Password Error:', error);
+      alert(error.message || "Network error. Please try again.");
+    } finally {
+      setForgotPasswordLoading(false);
     }
   };
 
@@ -168,6 +203,7 @@ function Login() {
                 <a
                   href="#"
                   className="text-sm text-blue-900 underline mb-2 font-semibold"
+                  onClick={handleForgotPasswordClick}
                 >
                   Forget Password
                 </a>
@@ -215,7 +251,8 @@ function Login() {
 
               <div className="mt-3">
                 <Button
-                  onClick={() => signIn("linkedin", { callbackUrl: "/profile" })}>
+                  onClick={() => signIn("linkedin", { callbackUrl: "/profile" })}
+                >
                   <span className="flex items-center justify-center py-1 px-5">
                     <img
                       src="/images/linkedin-icon.png"
@@ -238,6 +275,42 @@ function Login() {
         </div>
       )}
 
+      {/* Forgot Password Popup */}
+      {showForgotPasswordPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
+            <form onSubmit={handleForgotPasswordSubmit}>
+              <label className="block">
+                <input
+                  type="email"
+                  required
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-semibold"
+                  placeholder="Enter your email"
+                />
+              </label>
+              <div className="mt-4 flex justify-end">
+                <button
+                  type="button"
+                  className="mr-2 px-4 py-2 bg-gray-300 rounded-lg"
+                  onClick={() => setShowForgotPasswordPopup(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-900 text-white rounded-lg disabled:opacity-50"
+                  disabled={forgotPasswordLoading}
+                >
+                  {forgotPasswordLoading ? 'Sending...' : 'Submit'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }

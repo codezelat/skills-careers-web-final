@@ -9,7 +9,8 @@ export default function HeaderWrapper() {
   if (
     pathname.startsWith("/Portal") || 
     pathname === "/login" || 
-    pathname === "/register"
+    pathname === "/register" ||
+    pathname === "/resetPassword"
   ) {
     return null;
   }
