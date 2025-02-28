@@ -13,6 +13,9 @@ export default function DashboardStats() {
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [jobApplications, setJobApplications] = useState(0);
+  const [jobs, setJobs] = useState([]);
+
   // Fetch data from APIs
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +48,54 @@ export default function DashboardStats() {
 
     fetchData();
   }, []);
+
+  const fetchRecruiterDetails = async () => {
+    console.log("Recruiter data started fetching.......");
+    try {
+      const recruiterResponse = await fetch(
+        `/api/recruiterdetails/get?userId=${session?.user?.id}`
+      );
+      if (recruiterResponse.ok) {
+        const recruiterData = await recruiterResponse.json();
+
+        // Fetch Job Applications
+        const applicationsResponse = await fetch(
+          `/api/jobapplication/all?recruiterId=${recruiterData.id}`
+        );
+
+        if (!applicationsResponse.ok) {
+          throw new Error("Failed to fetch jobs applications.");
+        }
+
+        const data = await applicationsResponse.json();
+        setJobApplications(data.count);
+
+        // Fetch Jobs
+        const jobResponse = await fetch(
+          `/api/job/all?recruiterId=${recruiterData.id}&showAll=true`
+        );
+        if (!jobResponse.ok) {
+          throw new Error("Failed to fetch jobs.");
+        }
+        const jobData = await jobResponse.json();
+        setJobs(jobData.jobs);
+      } else {
+        console.error("Failed to fetch recruiter details");
+      }
+    } catch (error) {
+      console.error("Error fetching recruiter details:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch Recruiter Details
+    if (session?.user?.role === "recruiter") {
+      fetchRecruiterDetails();
+    }
+  }, [session?.user?.role]);
+
+  const activeJobs = jobs.filter((job) => job.isPublished === true);
+  const inactiveJobs = jobs.filter((job) => job.isPublished === false);
 
   return (
     <>
@@ -148,25 +199,25 @@ export default function DashboardStats() {
         <div className="grid grid-cols-3 gap-6 mb-6">
           {[
             {
-              title: "Job Posts",
-              count: jobsCount, // Use jobs count for recruiter's job posts
-              growth: "+6.5% ",
-              since: "Since Last Month",
-              icon: "/portal-dashboard/flag.png",
-            },
-            {
               title: "Applications",
-              count: applicationsCount, // Use applications count
+              count: jobApplications, // Use applications count
               growth: "+1.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/document.png",
             },
             {
-              title: "Profile Views",
-              count: 8, // Replace with actual data if available
-              growth: "+1.5% ",
-              since: " Since Last Month",
-              icon: "/portal-dashboard/buliding.png",
+              title: "Active Jobs",
+              count: activeJobs.length, // Use jobs count for recruiter's job posts
+              growth: "+6.5% ",
+              since: "Since Last Month",
+              icon: "/portal-dashboard/flag.png",
+            },
+            {
+              title: "Inactive Jobs",
+              count: inactiveJobs.length, // Use jobs count for recruiter's job posts
+              growth: "+6.5% ",
+              since: "Since Last Month",
+              icon: "/portal-dashboard/flag.png",
             },
           ].map((item, idx) => (
             <div key={idx} className="bg-white p-6 rounded-3xl shadow-md">

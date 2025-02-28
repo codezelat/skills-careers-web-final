@@ -40,7 +40,7 @@ export async function GET(req) {
 
     if (!recruiter) {
       return NextResponse.json(
-        { message: "Job not found" },
+        { message: "Recruiter not found" },
         { status: 404 },
         {
           headers: {
