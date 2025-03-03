@@ -14,7 +14,7 @@ export default function DashBoard() {
       <DashboardCharts />
       
       {/*Data lists */}
-      <DashboardDataList />
+      {/* <DashboardDataList /> */}
     </>
   );
 }

@@ -45,7 +45,7 @@ export async function GET(req) {
       .toArray();
 
     client.close();
-    return NextResponse.json({ appliedJobs }, { status: 200 });
+    return NextResponse.json({ appliedJobs }, { status: 200 }); 
   } catch (error) {
     console.error("Error in GET applied jobs:", error);
     return NextResponse.json(
