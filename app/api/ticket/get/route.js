@@ -1,17 +1,32 @@
 import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb"; // Add this import
+import { ObjectId } from "mongodb";
 
 export async function GET(req) {
   let client;
   try {
     const { searchParams } = new URL(req.url);
+    const recruiterId = searchParams.get("recruiterId");
     const id = searchParams.get("id");
 
-    // Validate ID format
-    if (!id || !ObjectId.isValid(id)) {
+    // Validate that at least one parameter is provided
+    if (!recruiterId && !id) {
       return NextResponse.json(
-        { message: "Invalid ticket ID format" },
+        { message: "Either recruiterId or id must be provided" },
+        { status: 400 }
+      );
+    }
+
+    // Validate ObjectId format if provided
+    if (recruiterId && !ObjectId.isValid(recruiterId)) {
+      return NextResponse.json(
+        { message: "Invalid recruiterId format" },
+        { status: 400 }
+      );
+    }
+    if (id && !ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { message: "Invalid id format" },
         { status: 400 }
       );
     }
@@ -19,19 +34,30 @@ export async function GET(req) {
     client = await connectToDatabase();
     const db = client.db();
 
-    const ticket = await db
-      .collection("tickets")
-      .findOne({ _id: new ObjectId(id) });
+    let tickets;
+    if (recruiterId) {
+      // Fetch tickets based on recruiterId
+      tickets = await db
+        .collection("tickets")
+        .find({ recruiterId: new ObjectId(recruiterId) })
+        .toArray();
+    } else if (id) {
+      // Fetch a single ticket based on _id
+      const ticket = await db
+        .collection("tickets")
+        .findOne({ _id: new ObjectId(id) });
+      tickets = ticket ? [ticket] : [];
+    }
 
-    if (!ticket) {
+    if (!tickets || tickets.length === 0) {
       return NextResponse.json(
-        { message: "Ticket not found" },
+        { message: "No tickets found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { ticket },
+      { tickets },
       {
         status: 200,
         headers: {
@@ -42,7 +68,7 @@ export async function GET(req) {
           "Surrogate-Control": "no-store",
           Pragma: "no-cache",
           Expires: "0",
-          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+          "x-netlify-cache": "miss",
         },
       }
     );
