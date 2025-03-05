@@ -244,12 +244,12 @@ export default function AdminsTicketsPage(props) {
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-xl font-bold text-[#001571]">Tickets</h1>
-                <button
+                {/* <button
                     className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
                     onClick={() => setIsFormVisible(true)}
                 >
                     <BsPlus size={25} className="mr-1" />Add New
-                </button>
+                </button> */}
             </div>
 
             {/* Tabs */}
