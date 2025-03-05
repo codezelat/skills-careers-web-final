@@ -120,8 +120,8 @@ function JobCard(props) {
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
                                     className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${isPublished
-                                            ? "bg-[#EC221F] hover:bg-red-700"
-                                            : "bg-[#001571] hover:bg-blue-700"
+                                            ? "bg-[#001571] hover:bg-blue-700"
+                                            : "bg-[#EC221F] hover:bg-red-700"
                                         } text-white`}
                                 >
                                     <BsFillEyeFill size={15} className="mr-2" />
