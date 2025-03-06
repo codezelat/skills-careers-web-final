@@ -1,60 +1,75 @@
 import { connectToDatabase } from "@/lib/db";
 import { ObjectId } from "mongodb";
-import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req) {
-  try {
-    const data = await req.json();
+    try {
+        const formData = await req.formData();
 
-    const {
-      recruiterId,
-      name,
-      description,
-      location,
-      date,
-      startTime,
-      endTime,
-      capacity,
-      closingDate,
-    } = data;
+        const recruiterId = formData.get("recruiterId");
+        const name = formData.get("name");
+        const description = formData.get("description");
+        const location = formData.get("location");
+        const date = formData.get("date");
+        const startTime = formData.get("startTime");
+        const endTime = formData.get("endTime");
+        const capacity = formData.get("capacity");
+        const closingDate = formData.get("closingDate");
+        const eventProfile = formData.get("eventProfile");
 
-    // Validate required fields
-    if (!recruiterId || !name || !location || !date || !startTime) {
-      return NextResponse.json({ message: "Invalid input." }, { status: 422 });
+        if (!recruiterId || !name || !location || !date || !startTime) {
+            return NextResponse.json({ message: "Invalid input." }, { status: 422 });
+        }
+
+        let eventProfileUrl = null;
+        if (eventProfile) {
+            const buffer = await eventProfile.arrayBuffer();
+            const base64Image = Buffer.from(buffer).toString("base64");
+
+            const cloudinaryResponse = await cloudinary.uploader.upload(
+                `data:${eventProfile.type};base64,${base64Image}`,
+                {
+                    folder: "event-profiles",
+                    resource_type: "auto",
+                }
+            );
+            eventProfileUrl = cloudinaryResponse.secure_url;
+        }
+
+        const client = await connectToDatabase();
+        const db = client.db();
+
+        const seatingCapacity = capacity === "" ? null : parseInt(capacity);
+
+        const result = await db.collection("tickets").insertOne({
+            recruiterId: new ObjectId(recruiterId),
+            name,
+            description,
+            location,
+            date,
+            startTime,
+            endTime,
+            capacity: seatingCapacity,
+            enrolledCount: "0",
+            closingDate,
+            eventProfile: eventProfileUrl,
+            createdAt: new Date(),
+        });
+
+        client.close();
+
+        return NextResponse.json({ message: "Ticket created!" }, { status: 201 });
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Something went wrong.", error: error.message },
+            { status: 500 }
+        );
     }
-
-    // Connect to database
-    const client = await connectToDatabase();
-    const db = client.db();
-
-    const seatingCapacity = capacity === "" ? null : parseInt(capacity);
-    console.log("Seating capacity is", seatingCapacity);
-
-    // Insert Jobs into the database
-    const result = await db.collection("tickets").insertOne({
-      recruiterId: new ObjectId(recruiterId),
-      name,
-      description,
-      location,
-      date,
-      startTime,
-      endTime,
-      capacity: seatingCapacity,
-      enrolledCount: "0",
-      closingDate,
-      createdAt: new Date(), // Save current date and time
-    });
-
-    // Close the database connection
-    client.close();
-
-    revalidatePath("/tickets");
-    return NextResponse.json({ message: "Ticket created!" }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Something went wrong.", error: error.message },
-      { status: 500 }
-    );
-  }
 }

@@ -2,20 +2,36 @@ import { connectToDatabase } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function PUT(req) {
   try {
-    const body = await req.json();
-    const { _id, ...updateFields } = body;
+    const formData = await req.formData();
 
-    if (!_id) {
-      return NextResponse.json({ message: "No ID provided." }, { status: 400 });
+    const _id = formData.get("_id");
+    const name = formData.get("name");
+    const description = formData.get("description");
+    const location = formData.get("location");
+    const date = formData.get("date");
+    const startTime = formData.get("startTime");
+    const endTime = formData.get("endTime");
+    const capacity = formData.get("capacity");
+    const closingDate = formData.get("closingDate");
+    const eventProfile = formData.get("eventProfile");
+
+    if (!_id || !name || !location || !date || !startTime) {
+      return NextResponse.json({ message: "Invalid input." }, { status: 422 });
     }
 
     const client = await connectToDatabase();
     const db = client.db();
 
-    // Get the existing ticket to preserve the recruiterId
     const existingTicket = await db
       .collection("tickets")
       .findOne({ _id: new ObjectId(_id) });
@@ -24,24 +40,45 @@ export async function PUT(req) {
       return NextResponse.json({ message: "Ticket not found." }, { status: 404 });
     }
 
-    // Keep the existing recruiterId and add new fields
-    const updateData = {
-      ...updateFields,
-      recruiterId: existingTicket.recruiterId,
-      createdAt: existingTicket.createdAt,
-    };
+    let eventProfileUrl = existingTicket.eventProfile; 
+    if (eventProfile) {
+      const buffer = await eventProfile.arrayBuffer();
+      const base64Image = Buffer.from(buffer).toString("base64");
 
-    const result = await db
-      .collection("tickets")
-      .updateOne({ _id: new ObjectId(_id) }, { $set: updateData });
+      const cloudinaryResponse = await cloudinary.uploader.upload(
+        `data:${eventProfile.type};base64,${base64Image}`,
+        {
+          folder: "event-profiles",
+          resource_type: "auto",
+        }
+      );
+      eventProfileUrl = cloudinaryResponse.secure_url;
+    }
+
+    const result = await db.collection("tickets").updateOne(
+      { _id: new ObjectId(_id) },
+      {
+        $set: {
+          name,
+          description,
+          location,
+          date,
+          startTime,
+          endTime,
+          capacity: capacity === "" ? null : parseInt(capacity),
+          closingDate,
+          eventProfile: eventProfileUrl,
+          recruiterId: existingTicket.recruiterId, 
+          createdAt: existingTicket.createdAt, 
+        },
+      }
+    );
 
     client.close();
 
-    revalidatePath("/tickets");
-
     if (result.modifiedCount > 0) {
       return NextResponse.json(
-        { message: "Details updated successfully." },
+        { message: "Ticket updated successfully." },
         { status: 200 }
       );
     } else {

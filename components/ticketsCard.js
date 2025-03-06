@@ -84,7 +84,7 @@ export default function TicketsCard({ ticket, fetchTickets }) {
             <div className="flex flex-row w-full border rounded-lg bg-white hover:bg-[#EDF0FF] p-6 shadow-md">
                 <div className="flex-shrink-0 mt-5 lg:mt-0 md:pt-0 mb-4 md:mb-0 md:mr-6 flex justify-center items-center">
                     <Image
-                        src={ticket.recruiter?.logo || "/images/default-image.jpg"}
+                        src={ticket.eventProfile || "/images/image-placeholder.jpg"}
                         alt={`${ticket.recruiter?.recruiterName || 'Company'} logo`}
                         width={200}
                         height={200}
