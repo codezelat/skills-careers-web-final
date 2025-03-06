@@ -113,14 +113,14 @@ function Login() {
 
       const data = await response.json();
 
-      if (!response.ok) throw new Error(data.error || "Failed to send reset email");
+      if (!response.ok)
+        throw new Error(data.error || "Failed to send reset email");
 
       alert("Password reset email sent. Please check your inbox.");
       setShowForgotPasswordPopup(false);
       setForgotPasswordEmail("");
-
     } catch (error) {
-      console.error('Forgot Password Error:', error);
+      console.error("Forgot Password Error:", error);
       alert(error.message || "Network error. Please try again.");
     } finally {
       setForgotPasswordLoading(false);
@@ -143,7 +143,13 @@ function Login() {
 
             {/* Logo */}
             <div className="absolute top-9 left-9 cursor-pointer w-90 h-90">
-              <img src="/images/logo.png" alt="Logo" className="w-140 h-34 mx-5" />
+              <a href="/">
+                <img
+                  src="/images/logo.png"
+                  alt="Logo"
+                  className="w-140 h-34 mx-5"
+                />
+              </a>
             </div>
 
             {/* Content */}
@@ -151,8 +157,8 @@ function Login() {
               <h1 className="text-3xl font-bold mb-5">Login</h1>
               <h2 className="text-4xl font-extrabold mb-3">SKILLS CAREERS</h2>
               <p className="text-md leading-relaxed mb-9">
-                Welcome to Skill Careers, where finding your dream job or the right
-                talent is just a click away.
+                Welcome to Skill Careers, where finding your dream job or the
+                right talent is just a click away.
               </p>
             </div>
           </div>
@@ -160,19 +166,22 @@ function Login() {
           {/* Right Side with Form */}
           <div className="flex flex-col justify-center md:w-2/5 p-8">
             <div className="flex flex-col items-center mb-4">
-              <Image
-                src="/images/logo.png"
-                alt="logo"
-                width={140}
-                height={40}
-                className="mb-5 ml-10 md:hidden"
-              />
+              <a href="/">
+                <Image
+                  src="/images/logo.png"
+                  alt="logo"
+                  width={140}
+                  height={40}
+                  className="mb-5 ml-10 md:hidden"
+                />
+              </a>
+
               <h2 className="text-xl text-blue-900 font-semibold text-center mb-2 ">
                 Welcome Back! Let's Get You Started.
               </h2>
               <p className="text-blue-900 text-center text-md mt-4 mb-4 font-medium ">
-                Log in to access your account and continue your career journey or
-                recruitment process.
+                Log in to access your account and continue your career journey
+                or recruitment process.
               </p>
             </div>
 
@@ -251,7 +260,9 @@ function Login() {
 
               <div className="mt-3">
                 <Button
-                  onClick={() => signIn("linkedin", { callbackUrl: "/profile" })}
+                  onClick={() =>
+                    signIn("linkedin", { callbackUrl: "/profile" })
+                  }
                 >
                   <span className="flex items-center justify-center py-1 px-5">
                     <img
@@ -304,7 +315,7 @@ function Login() {
                   className="px-4 py-2 bg-blue-900 text-white rounded-lg disabled:opacity-50"
                   disabled={forgotPasswordLoading}
                 >
-                  {forgotPasswordLoading ? 'Sending...' : 'Submit'}
+                  {forgotPasswordLoading ? "Sending..." : "Submit"}
                 </button>
               </div>
             </form>
