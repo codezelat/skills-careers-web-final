@@ -1,4 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
+import { sendStatusChangedNotification } from "@/lib/mailer";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
@@ -6,7 +7,8 @@ export async function PUT(req) {
   const client = await connectToDatabase();
 
   try {
-    const { applicationId, status } = await req.json();
+    const { jobseekerEmail, applicationId, jobTitle, status } =
+      await req.json();
 
     if (!applicationId || !status) {
       return NextResponse.json({ message: "Invalid input" }, { status: 400 });
@@ -22,6 +24,18 @@ export async function PUT(req) {
         { message: "Application not found" },
         { status: 404 }
       );
+    }
+
+    try {
+      await sendStatusChangedNotification({
+        jobseekerEmail,
+        applicationId,
+        jobTitle,
+        status,
+      });
+    } catch (emailError) {
+      console.error("Email notification failed:", emailError);
+      // Continue with the response even if email fails
     }
 
     return NextResponse.json(

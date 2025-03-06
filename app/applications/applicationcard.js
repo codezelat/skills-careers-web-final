@@ -63,7 +63,9 @@ function ApplicationCard({ application }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          jobseekerEmail: application.email,
           applicationId: application._id,
+          jobTitle: application.jobTitle,
           status: newStatus,
         }),
       });
