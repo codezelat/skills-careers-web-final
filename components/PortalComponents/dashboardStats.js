@@ -14,6 +14,7 @@ export default function DashboardStats() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [jobApplications, setJobApplications] = useState(0);
+  const [appliedJobs, setAppliedJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
 
   // Fetch data from APIs
@@ -50,7 +51,7 @@ export default function DashboardStats() {
   }, []);
 
   const fetchRecruiterDetails = async () => {
-    console.log("Recruiter data started fetching.......");
+    console.log("Recruiter stats started fetching.......");
     try {
       const recruiterResponse = await fetch(
         `/api/recruiterdetails/get?userId=${session?.user?.id}`
@@ -80,10 +81,42 @@ export default function DashboardStats() {
         const jobData = await jobResponse.json();
         setJobs(jobData.jobs);
       } else {
-        console.error("Failed to fetch recruiter details");
+        console.error("Failed to fetch recruiter stats");
       }
     } catch (error) {
-      console.error("Error fetching recruiter details:", error);
+      console.error("Error fetching recruiter stats:", error);
+    }
+  };
+
+  const fetchJobseekerDetails = async () => {
+    console.log("Jobseeker stats started fetching.......");
+
+    try {
+      const jobseekerResponse = await fetch(
+        `/api/jobseekerdetails/get?userId=${session?.user?.id}`
+      );
+
+      if (jobseekerResponse.ok) {
+        const jobseekerData = await jobseekerResponse.json();
+
+        // Fetch Applied Job Applications
+        const appliedJobsResponse = await fetch(
+          `/api/job/appliedjobs?id=${jobseekerData.jobseeker._id}`
+        );
+
+        console.log(jobseekerData.jobseeker.id);
+
+        if (!appliedJobsResponse.ok) {
+          throw new Error("Failed to fetch applied jobs.");
+        }
+
+        const appliedJobsData = await appliedJobsResponse.json();
+        setAppliedJobs(appliedJobsData.appliedJobs);
+      } else {
+        console.error("Failed to fetch jobseeker stats");
+      }
+    } catch (error) {
+      console.error("Error fetching jobseeker stats:", error);
     }
   };
 
@@ -92,10 +125,24 @@ export default function DashboardStats() {
     if (session?.user?.role === "recruiter") {
       fetchRecruiterDetails();
     }
+
+    // Fetch Jobseeker Details
+    if (session?.user?.role === "jobseeker") {
+      fetchJobseekerDetails();
+    }
   }, [session?.user?.role]);
 
+  // Recruiter Calculations
   const activeJobs = jobs.filter((job) => job.isPublished === true);
   const inactiveJobs = jobs.filter((job) => job.isPublished === false);
+
+  // Jobseeker Calculations
+  const approvedApplications = appliedJobs.filter(
+    (application) => application.status === "Approved"
+  );
+  const pendingApplications = appliedJobs.filter(
+    (application) => application.status === "Pending"
+  );
 
   return (
     <>
@@ -155,22 +202,22 @@ export default function DashboardStats() {
         <div className="grid grid-cols-3 gap-6 mb-6">
           {[
             {
-              title: "Applications",
-              count: 12, // Replace with actual data if available
+              title: "Applied Jobs",
+              count: appliedJobs.length, 
               growth: "+2.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/flag.png",
             },
             {
-              title: "Impressions",
-              count: 221, // Replace with actual data if available
+              title: "Approved",
+              count: approvedApplications.length, 
               growth: "+6.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/document.png",
             },
             {
-              title: "Profile Views",
-              count: 8, // Replace with actual data if available
+              title: "Pending",
+              count: pendingApplications.length, 
               growth: "+1.5% ",
               since: " Since Last Month",
               icon: "/portal-dashboard/buliding.png",
@@ -200,21 +247,21 @@ export default function DashboardStats() {
           {[
             {
               title: "Applications",
-              count: jobApplications, // Use applications count
+              count: jobApplications, 
               growth: "+1.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/document.png",
             },
             {
               title: "Active Jobs",
-              count: activeJobs.length, // Use jobs count for recruiter's job posts
+              count: activeJobs.length, 
               growth: "+6.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/flag.png",
             },
             {
               title: "Inactive Jobs",
-              count: inactiveJobs.length, // Use jobs count for recruiter's job posts
+              count: inactiveJobs.length, 
               growth: "+6.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/flag.png",

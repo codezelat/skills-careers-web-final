@@ -130,6 +130,48 @@ export default function SideMenuSection() {
                         )}
 
                         {/* Analytics */}
+                        {session?.user?.role === "admin" && (
+                            <Link href="/Portal/analytics">
+                                <button
+                                    onClick={() => setActiveButton("Analytics")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Analytics"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                                        }`}
+                                >
+                                    <img
+                                        src="/sidebar/pressrelease.png"
+                                        alt="Candidates"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Analytics" ? "filter invert brightness-0" : ""
+                                            }`}
+                                    />
+                                    Analytics
+                                </button>
+                            </Link>
+                        )}
+
+                        {/* Tickets */}
+                        {(session?.user?.role === "admin" || session?.user?.role === "recruiter") && (
+                            <Link href="/Portal/tickets">
+                                <button
+                                    onClick={() => setActiveButton("Tickets")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Tickets"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                                        }`}
+                                >
+                                    <img
+                                        src="/sidebar/pressrelease.png"
+                                        alt="Candidates"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Tickets" ? "filter invert brightness-0" : ""
+                                            }`}
+                                    />
+                                    Tickets
+                                </button>
+                            </Link>
+                        )}
+
+                        {/* Analytics */}
                         {/* {session?.user?.role === "admin" && (
                             <Link href="/adminPortal/analytics">
                                 <button

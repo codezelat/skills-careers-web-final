@@ -54,6 +54,13 @@ function NavBar() {
             EXPLORE RECRUITERS
           </Link>
           <Link
+            href="/tickets"
+            className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            prefetch={true}
+          >
+            TICKETS
+          </Link>
+          <Link
             href="/about"
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
             prefetch={true}
@@ -74,7 +81,7 @@ function NavBar() {
           {status === "unauthenticated" && (
             <div className="flex flex-row items-center justify-end">
               <Link href="/login">
-                  <p className="py-2 px-6 text-lg font-semibold text-[#001571]">Login</p>
+                <p className="py-2 px-6 text-lg font-semibold text-[#001571]">Login</p>
               </Link>
               <Link href="/register">
                 <Button>
