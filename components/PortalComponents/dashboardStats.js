@@ -203,21 +203,21 @@ export default function DashboardStats() {
           {[
             {
               title: "Applied Jobs",
-              count: appliedJobs.length, // Replace with actual data if available
+              count: appliedJobs.length, 
               growth: "+2.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/flag.png",
             },
             {
               title: "Approved",
-              count: approvedApplications.length, // Replace with actual data if available
+              count: approvedApplications.length, 
               growth: "+6.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/document.png",
             },
             {
               title: "Pending",
-              count: pendingApplications.length, // Replace with actual data if available
+              count: pendingApplications.length, 
               growth: "+1.5% ",
               since: " Since Last Month",
               icon: "/portal-dashboard/buliding.png",
@@ -247,21 +247,21 @@ export default function DashboardStats() {
           {[
             {
               title: "Applications",
-              count: jobApplications, // Use applications count
+              count: jobApplications, 
               growth: "+1.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/document.png",
             },
             {
               title: "Active Jobs",
-              count: activeJobs.length, // Use jobs count for recruiter's job posts
+              count: activeJobs.length, 
               growth: "+6.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/flag.png",
             },
             {
               title: "Inactive Jobs",
-              count: inactiveJobs.length, // Use jobs count for recruiter's job posts
+              count: inactiveJobs.length, 
               growth: "+6.5% ",
               since: "Since Last Month",
               icon: "/portal-dashboard/flag.png",
