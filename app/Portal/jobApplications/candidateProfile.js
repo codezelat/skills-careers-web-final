@@ -42,6 +42,7 @@ export default function CandidateProfile({ slug }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState(null);
+  const [pendingAction, setPendingAction] = useState(null);
 
   // fetch functions
   useEffect(() => {
@@ -120,6 +121,8 @@ export default function CandidateProfile({ slug }) {
   const handleApprove = async () => {
     try {
       setIsProcessing(true);
+      setPendingAction('approve');
+
       const response = await fetch("/api/jobapplication/update", {
         method: "PUT",
         headers: {
@@ -142,6 +145,7 @@ export default function CandidateProfile({ slug }) {
       console.error("Error:", error);
     } finally {
       setIsProcessing(false);
+      setPendingAction(null); 
     }
   };
 
@@ -149,6 +153,8 @@ export default function CandidateProfile({ slug }) {
   const handleDecline = async () => {
     try {
       setIsProcessing(true);
+      setPendingAction('decline'); 
+
       const response = await fetch("/api/jobapplication/update", {
         method: "PUT",
         headers: {
@@ -171,6 +177,7 @@ export default function CandidateProfile({ slug }) {
       console.error("Error:", error);
     } finally {
       setIsProcessing(false);
+      setPendingAction(null); 
     }
   };
 
@@ -214,39 +221,34 @@ export default function CandidateProfile({ slug }) {
         <div className="flex flex-row items-center justify-between w-full border-b-[1px] border-[#B0B6D3] pb-6">
           <h1 className="font-semibold text-lg text-[#001571]">Application</h1>
           <div className="flex flex-row items-end gap-2">
-            {isProcessing ? (
-              <div className="flex items-center justify-center w-full py-2 px-6 rounded-xl bg-gray-200 text-gray-700 text-base font-normal">
-                Please Wait...
-              </div>
-            ) : applicationStatus === "Approved" ||
-              applicationStatus === "Declined" ? (
-              <div
-                className={`flex items-center justify-center w-full py-2 px-6 text-base font-normal rounded-xl ${
-                  applicationStatus === "Approved"
-                    ? "bg-green-200 text-green-700"
-                    : "bg-red-200 text-red-700"
-                }`}
+            <>
+              <button
+                onClick={handleApprove}
+                disabled={isProcessing || applicationStatus === "Approved"}
+                className={`flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl text-base font-medium transition-colors ${applicationStatus === "Approved"
+                  ? "bg-[#001571] hover:bg-[#243584] text-white cursor-default"
+                  : applicationStatus === "Declined"
+                    ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#001571]"
+                    : "bg-[#001571] hover:bg-[#243584] text-white"
+                  } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
               >
-                {applicationStatus}
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={handleApprove}
-                  className="flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl bg-[#001571] hover:bg-[#162255] text-base font-normal text-white"
-                >
-                  <IoIosCheckmarkCircleOutline size={20} />
-                  Approve
-                </button>
-                <button
-                  onClick={handleDecline}
-                  className="flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl bg-[#EC221F] hover:bg-[#c63431] text-base font-normal text-white"
-                >
-                  <IoMdClose size={20} />
-                  Decline
-                </button>
-              </>
-            )}
+                <IoIosCheckmarkCircleOutline size={20} />
+                {pendingAction === "approve" ? "Processing..." : (applicationStatus === "Approved" ? "Approved" : "Approve")}
+              </button>
+              <button
+                onClick={handleDecline}
+                disabled={isProcessing || applicationStatus === "Declined"}
+                className={`flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl text-base font-normal transition-colors ${applicationStatus === "Declined"
+                  ? "bg-[#EC221F] hover:bg-[#c63431] text-white cursor-default"
+                  : applicationStatus === "Approved"
+                    ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#EC221F]"
+                    : "bg-[#EC221F] hover:bg-[#c63431] text-white"
+                  } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
+              >
+                <IoMdClose size={20} />
+                {pendingAction === "decline" ? "Processing..." : (applicationStatus === "Declined" ? "Declined" : "Decline")}
+              </button>
+            </>
           </div>
         </div>
         <div className="mt-6">
@@ -467,10 +469,10 @@ export default function CandidateProfile({ slug }) {
                 {skills}
               </div>
             )) ?? (
-              <p className="text-gray-500 text-sm">
-                No soft skills data available.
-              </p>
-            )}
+                <p className="text-gray-500 text-sm">
+                  No soft skills data available.
+                </p>
+              )}
           </div>
         </div>
 
@@ -491,10 +493,10 @@ export default function CandidateProfile({ slug }) {
                 {expertise}
               </div>
             )) ?? (
-              <p className="text-gray-500 text-sm">
-                No professional expertise data available.
-              </p>
-            )}
+                <p className="text-gray-500 text-sm">
+                  No professional expertise data available.
+                </p>
+              )}
           </div>
         </div>
       </div>
