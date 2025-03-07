@@ -26,7 +26,7 @@ export async function PATCH(req) {
     const db = client.db();
 
     const result = await db
-      .collection("jobapplications")
+      .collection("jobapplication")
       .updateOne(
         { _id: new ObjectId(jobApplicationId) },
         { $set: { isFavourited: isFavourited } }
