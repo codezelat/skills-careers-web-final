@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import JobCard from "@/components/jobCard";
-import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
-import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
 import DropdownButton from "../../components/dropDownButton";
 import JobLoading from "./jobLoading";
