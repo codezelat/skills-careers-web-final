@@ -24,6 +24,7 @@ import { RiDownloadLine } from "react-icons/ri";
 import { IoIosCheckmarkCircleOutline, IoMdClose } from "react-icons/io";
 import { MdDownloadForOffline } from "react-icons/md";
 import { TbMailFilled } from "react-icons/tb";
+import { IoMail } from "react-icons/io5";
 
 export default function CandidateProfile({ slug }) {
   const router = useRouter();
@@ -145,7 +146,7 @@ export default function CandidateProfile({ slug }) {
       console.error("Error:", error);
     } finally {
       setIsProcessing(false);
-      setPendingAction(null); 
+      setPendingAction(null);
     }
   };
 
@@ -153,7 +154,7 @@ export default function CandidateProfile({ slug }) {
   const handleDecline = async () => {
     try {
       setIsProcessing(true);
-      setPendingAction('decline'); 
+      setPendingAction('decline');
 
       const response = await fetch("/api/jobapplication/update", {
         method: "PUT",
@@ -177,7 +178,7 @@ export default function CandidateProfile({ slug }) {
       console.error("Error:", error);
     } finally {
       setIsProcessing(false);
-      setPendingAction(null); 
+      setPendingAction(null);
     }
   };
 
@@ -351,6 +352,19 @@ export default function CandidateProfile({ slug }) {
             >
               <MdDownloadForOffline size={20} />
               {isDownloading ? "Downloading..." : "Download CV"}
+            </button>
+            <button
+              onClick={() => {
+                if (jobSeekerDetails.email) {
+                  window.location.href = `mailto:${jobSeekerDetails.email}?subject=Regarding Your Job Application&body=Dear ${userDetails.firstName} ${userDetails.lastName},`;
+                } else {
+                  alert("No email address available for this candidate.");
+                }
+              }}
+              className="flex flex-row items-center gap-2 py-3 px-6 border-0 rounded-xl bg-[#001571] hover:bg-[#162255] text-base font-normal text-white"
+            >
+              <IoMail size={20} />
+              Send an Email
             </button>
           </div>
         </div>
