@@ -5,9 +5,11 @@ import {
   FaDribbble,
   FaFacebook,
   FaGithub,
+  FaHeart,
   FaInstagram,
   FaLinkedin,
   FaMedal,
+  FaRegHeart,
   FaTimes,
   FaTwitter,
 } from "react-icons/fa";
@@ -44,6 +46,7 @@ export default function CandidateProfile({ slug }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState(null);
   const [pendingAction, setPendingAction] = useState(null);
+  const [isFavourited, setIsFavourited] = useState(false);
 
   // fetch functions
   useEffect(() => {
@@ -60,6 +63,7 @@ export default function CandidateProfile({ slug }) {
           const applicationData = await applicationResponse.json();
           setApplications(applicationData.application);
           setApplicationStatus(applicationData.application.status);
+          setIsFavourited(applicationData.application.isFavourited || false);
           console.log("single application - ", applicationData.application);
 
           const jobSeekerResponse = await fetch(
@@ -117,6 +121,32 @@ export default function CandidateProfile({ slug }) {
       if (slug) fetchData();
     }
   }, [session, slug]);
+
+  // handle favorite function
+  const handleToggleFavorite = async () => {
+    try {
+      const newFavouriteStatus = !isFavourited;
+
+      const response = await fetch(`/api/jobapplication/favourite?id=${applications._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isFavourited: newFavouriteStatus,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update favorite status");
+
+      const data = await response.json();
+      console.log(data.message);
+      setIsFavourited(newFavouriteStatus);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to update favorite status. Please try again.");
+    }
+  };
 
   // Approve function
   const handleApprove = async () => {
@@ -223,10 +253,24 @@ export default function CandidateProfile({ slug }) {
           <h1 className="font-semibold text-lg text-[#001571]">Application</h1>
           <div className="flex flex-row items-end gap-2">
             <>
+              {/* favorite button */}
+              <button
+                onClick={handleToggleFavorite}
+                className={`flex items-center w-[42px] h-[42px] justify-center p-2 rounded-xl transition-colors ${isFavourited ? "bg-red-100" : "bg-gray-200"
+                  }`}
+              >
+                {isFavourited ? (
+                  <FaHeart color="#EC221F" size={20} /> 
+                ) : (
+                  <FaRegHeart color="#001571" size={20} /> 
+                )}
+              </button>
+
+              {/* approve and decline buttons */}
               <button
                 onClick={handleApprove}
                 disabled={isProcessing || applicationStatus === "Approved"}
-                className={`flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl text-base font-medium transition-colors ${applicationStatus === "Approved"
+                className={`flex flex-row items-center h-[42px] gap-2 py-2 px-6 border-0 rounded-xl text-base font-medium transition-colors ${applicationStatus === "Approved"
                   ? "bg-[#001571] hover:bg-[#243584] text-white cursor-default"
                   : applicationStatus === "Declined"
                     ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#001571]"
@@ -239,7 +283,7 @@ export default function CandidateProfile({ slug }) {
               <button
                 onClick={handleDecline}
                 disabled={isProcessing || applicationStatus === "Declined"}
-                className={`flex flex-row items-center gap-2 py-2 px-6 border-0 rounded-xl text-base font-normal transition-colors ${applicationStatus === "Declined"
+                className={`flex flex-row items-center h-[42px] gap-2 py-2 px-6 border-0 rounded-xl text-base font-normal transition-colors ${applicationStatus === "Declined"
                   ? "bg-[#EC221F] hover:bg-[#c63431] text-white cursor-default"
                   : applicationStatus === "Approved"
                     ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#EC221F]"
