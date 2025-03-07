@@ -1,5 +1,3 @@
-//explore jobs client side renderings 
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -18,11 +16,11 @@ function JobsClient() {
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
 
   const searchParams = useSearchParams();
   const industryQueryParam = searchParams.get("industry");
@@ -86,15 +84,14 @@ function JobsClient() {
   }, []);
 
   useEffect(() => {
-    let filtered = jobs;
-
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (job) =>
-          job.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          job.location.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    // If we have search results, use those
+    if (searchResults !== null) {
+      setFilteredJobs(searchResults);
+      return;
     }
+
+    // Otherwise, filter based on dropdowns
+    let filtered = jobs;
 
     if (selectedLocation) {
       filtered = filtered.filter(
@@ -109,15 +106,15 @@ function JobsClient() {
     }
 
     setFilteredJobs(filtered);
-  }, [searchQuery, selectedLocation, selectedIndustry, jobs]);
+  }, [selectedLocation, selectedIndustry, jobs, searchResults]);
 
   const industries = [...new Set(jobs.map((job) => job.industry))].filter(
     Boolean
   );
   const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+  const handleSearchResults = (results) => {
+    setSearchResults(results);
   };
 
   return (
@@ -145,7 +142,7 @@ function JobsClient() {
           </div>
 
           <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md z-10">
-            <JobSearch />
+            <JobSearch onSearchResults={handleSearchResults} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
@@ -153,17 +150,19 @@ function JobsClient() {
               buttonName="Location"
               selected={selectedLocation || "Location"}
               dropdownItems={["All Locations", ...locations]}
-              onSelect={(location) =>
-                setSelectedLocation(location === "All Locations" ? null : location)
-              }
+              onSelect={(location) => {
+                setSelectedLocation(location === "All Locations" ? null : location);
+                setSearchResults(null); // Reset search results when changing filters
+              }}
             />
             <DropdownButton
               buttonName="Industry"
               selected={selectedIndustry || "Industry"}
               dropdownItems={["All Industries", "Creative & Design","Education & Training","Technology & Development","Operations & Logistics","Marketing & Sales"]}
-              onSelect={(industry) =>
-                setSelectedIndustry(industry === "All Industries" ? null : industry)
-              }
+              onSelect={(industry) => {
+                setSelectedIndustry(industry === "All Industries" ? null : industry);
+                setSearchResults(null); // Reset search results when changing filters
+              }}
             />
           </div>
         </div>
