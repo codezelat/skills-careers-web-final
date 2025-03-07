@@ -15,9 +15,9 @@ export default function RecruitersContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
 
   useEffect(() => {
     async function fetchRecruiters() {
@@ -38,15 +38,14 @@ export default function RecruitersContent() {
   }, []);
 
   useEffect(() => {
-    let filtered = recruiters;
-
-    if (searchQuery) {
-      filtered = filtered.filter((recruiter) =>
-        recruiter.recruiterName
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      );
+    // If we have search results, use those
+    if (searchResults !== null) {
+      setFilteredRecruiters(searchResults);
+      return;
     }
+
+    // Otherwise, filter based on dropdowns
+    let filtered = recruiters;
 
     if (selectedIndustry) {
       filtered = filtered.filter(
@@ -63,7 +62,7 @@ export default function RecruitersContent() {
     }
 
     setFilteredRecruiters(filtered);
-  }, [searchQuery, selectedIndustry, selectedLocation, recruiters]);
+  }, [selectedIndustry, selectedLocation, recruiters, searchResults]);
 
   const industries = [...new Set(recruiters.map((r) => r.industry))].filter(
     Boolean
@@ -72,8 +71,8 @@ export default function RecruitersContent() {
     Boolean
   );
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+  const handleSearchResults = (results) => {
+    setSearchResults(results);
   };
 
   return (
@@ -100,7 +99,7 @@ export default function RecruitersContent() {
         </div>
 
         <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md z-10">
-          <RecruiterSearch />
+          <RecruiterSearch onSearchResults={handleSearchResults} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
@@ -108,21 +107,23 @@ export default function RecruitersContent() {
             buttonName="Industry"
             selected={selectedIndustry || "Industry"}
             dropdownItems={["All Industries", ...industries]}
-            onSelect={(industry) =>
+            onSelect={(industry) => {
               setSelectedIndustry(
                 industry === "All Industries" ? null : industry
-              )
-            }
+              );
+              setSearchResults(null); // Reset search results when changing filters
+            }}
           />
           <DropdownButton
             buttonName="Location"
             selected={selectedLocation || "Location"}
             dropdownItems={["All Locations", ...locations]}
-            onSelect={(location) =>
+            onSelect={(location) => {
               setSelectedLocation(
                 location === "All Locations" ? null : location
-              )
-            }
+              );
+              setSearchResults(null); // Reset search results when changing filters
+            }}
           />
         </div>
 

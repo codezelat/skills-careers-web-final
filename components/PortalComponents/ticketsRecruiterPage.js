@@ -21,7 +21,6 @@ export default function RecruitersTicketsPage(props) {
     const [error, setError] = useState(null);
     const [isEditFormVisible, setIsEditFormVisible] = useState(false);
 
-    // Form state
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -31,9 +30,9 @@ export default function RecruitersTicketsPage(props) {
         endTime: "",
         capacity: "",
         closingDate: "",
+        eventProfile: null, 
     });
 
-    // Edit form state
     const [editFormData, setEditFormData] = useState({
         _id: "",
         name: "",
@@ -44,6 +43,7 @@ export default function RecruitersTicketsPage(props) {
         endTime: "",
         capacity: "",
         closingDate: "",
+        eventProfile: null,
     });
 
     useEffect(() => {
@@ -58,6 +58,7 @@ export default function RecruitersTicketsPage(props) {
         }
     }, [session]);
 
+    // Fetch tickets
     const fetchTickets = async () => {
         try {
             const recruiterResponse = await fetch(`/api/recruiterdetails/get?userId=${session.user.id}`);
@@ -83,6 +84,7 @@ export default function RecruitersTicketsPage(props) {
         }
     };
 
+    // Convert time to 12-hour format
     const convertTo12HourFormat = (time) => {
         if (!time) return "";
 
@@ -98,6 +100,7 @@ export default function RecruitersTicketsPage(props) {
         return `${hour}:${minutes} ${ampm}`;
     };
 
+    // Handle input change
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -106,6 +109,7 @@ export default function RecruitersTicketsPage(props) {
         }));
     };
 
+    // Add new ticket
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -123,17 +127,25 @@ export default function RecruitersTicketsPage(props) {
 
             const recruiterId = recruiterData.id;
 
+            // Create FormData object
+            const formDataToSend = new FormData();
+            formDataToSend.append("recruiterId", recruiterId);
+            formDataToSend.append("name", formData.name);
+            formDataToSend.append("description", formData.description);
+            formDataToSend.append("location", formData.location);
+            formDataToSend.append("date", formData.date);
+            formDataToSend.append("startTime", startTime12Hour);
+            formDataToSend.append("endTime", endTime12Hour);
+            formDataToSend.append("capacity", formData.capacity);
+            formDataToSend.append("closingDate", formData.closingDate);
+            if (formData.eventProfile) {
+                formDataToSend.append("eventProfile", formData.eventProfile); // Append the file
+            }
+
+            // Send the request
             const response = await fetch("/api/ticket/add", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    startTime: startTime12Hour,
-                    endTime: endTime12Hour,
-                    recruiterId,
-                }),
+                body: formDataToSend, // No need to set Content-Type header for FormData
             });
 
             if (!response.ok) {
@@ -152,6 +164,7 @@ export default function RecruitersTicketsPage(props) {
                 endTime: "",
                 capacity: "",
                 closingDate: "",
+                eventProfile: null,
             });
         } catch (error) {
             console.error("Ticket creation error:", error);
@@ -161,6 +174,7 @@ export default function RecruitersTicketsPage(props) {
         }
     };
 
+    // Convert time to 24-hour format
     const convertTo24HourFormat = (time) => {
         if (!time) return "";
 
@@ -178,6 +192,7 @@ export default function RecruitersTicketsPage(props) {
         return `${hour.toString().padStart(2, "0")}:${minutes}`;
     };
 
+    // Edit ticket details
     const handleEdit = useCallback((ticket) => {
         setEditFormData({
             _id: ticket._id,
@@ -189,6 +204,7 @@ export default function RecruitersTicketsPage(props) {
             endTime: convertTo24HourFormat(ticket.endTime),
             capacity: ticket.capacity,
             closingDate: ticket.closingDate,
+            eventProfile: ticket.eventProfile,
         });
         setIsEditFormVisible(true);
     }, []);
@@ -207,12 +223,25 @@ export default function RecruitersTicketsPage(props) {
         setIsSubmitting(true);
 
         try {
+            // Create FormData object
+            const formDataToSend = new FormData();
+            formDataToSend.append("_id", editFormData._id);
+            formDataToSend.append("name", editFormData.name);
+            formDataToSend.append("description", editFormData.description);
+            formDataToSend.append("location", editFormData.location);
+            formDataToSend.append("date", editFormData.date);
+            formDataToSend.append("startTime", editFormData.startTime);
+            formDataToSend.append("endTime", editFormData.endTime);
+            formDataToSend.append("capacity", editFormData.capacity);
+            formDataToSend.append("closingDate", editFormData.closingDate);
+            if (editFormData.eventProfile) {
+                formDataToSend.append("eventProfile", editFormData.eventProfile); // Append the file
+            }
+
+            // Send the request
             const response = await fetch("/api/ticket/update", {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(editFormData),
+                body: formDataToSend, // No need to set Content-Type header for FormData
             });
 
             if (!response.ok) {
@@ -229,6 +258,7 @@ export default function RecruitersTicketsPage(props) {
         }
     };
 
+    // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const ticketsPerPage = 6;
     const totalPages = Math.ceil(tickets.length / ticketsPerPage);
@@ -432,6 +462,26 @@ export default function RecruitersTicketsPage(props) {
 
                                 <div>
                                     <label className="block text-base font-semibold text-[#001571]">
+                                        Event Profile Image
+                                    </label>
+                                    <input
+                                        type="file"
+                                        name="eventProfile"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    eventProfile: file,
+                                                }));
+                                            }
+                                        }}
+                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
                                         Description
                                     </label>
                                     <textarea
@@ -574,6 +624,26 @@ export default function RecruitersTicketsPage(props) {
                                         onChange={handleEditInputChange}
                                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                                         required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Event Profile Image
+                                    </label>
+                                    <input
+                                        type="file"
+                                        name="eventProfile"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                setEditFormData((prev) => ({
+                                                    ...prev,
+                                                    eventProfile: file,
+                                                }));
+                                            }
+                                        }}
+                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                                     />
                                 </div>
 

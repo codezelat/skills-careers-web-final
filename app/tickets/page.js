@@ -11,40 +11,6 @@ export default function TicketsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [tickets, setTickets] = useState([]);
 
-    // useEffect(() => {
-    //     const fetchTicketsWithRecruiters = async () => {
-    //         try {
-    //             // Fetch tickets
-    //             const ticketsResponse = await fetch('/api/ticket/all');
-    //             const ticketsData = await ticketsResponse.json();
-
-    //             if (!ticketsResponse.ok) throw new Error('Failed to fetch tickets');
-
-    //             // Fetch recruiter details for each ticket
-    //             const ticketsWithRecruiters = await Promise.all(
-    //                 ticketsData.tickets.map(async (ticket) => {
-    //                     try {
-    //                         const recruiterResponse = await fetch(`/api/recruiterdetails/get?id=${ticket.recruiterId}`);
-    //                         const recruiterData = await recruiterResponse.json();
-    //                         return { ...ticket, recruiter: recruiterData };
-    //                     } catch (error) {
-    //                         //   console.error(`Error fetching recruiter for ticket ${ticket._id}:`, error);
-    //                         return { ...ticket, recruiter: null };
-    //                     }
-    //                 })
-    //             );
-
-    //             setTickets(ticketsWithRecruiters);
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     };
-
-    //     fetchTicketsWithRecruiters();
-    // }, []);
-
     const fetchTicketsWithRecruiters = useCallback(async () => {
         try {
             // Fetch tickets
