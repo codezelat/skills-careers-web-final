@@ -37,7 +37,7 @@ export default async function PressReleaseSection() {
           <p>Latest Press Releases</p>
         </div>
         <div className="flex justify-end -2 gap-4 mb-8 text-[#001571] font-bold text-xl">
-          <Link href="/pressRelease/page.js">
+          <Link href="/pressRelease">
             <p className="flex">
               View All
               <span className="ml-3">

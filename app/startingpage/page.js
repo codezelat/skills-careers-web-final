@@ -8,6 +8,7 @@ import FaqComponent from "@/components/FaqComponent";
 import Footer from "@/components/Footer";
 import FetchingJobs from "@/components/StartingPageComponents/FetchingJobs";
 import JobSearchDropdown from "@/components/JobSearchDropdown";
+import PressReleaseSection from "@/components/PressReleaseSection";
 
 const StartingPage = () => {
   return (
@@ -187,7 +188,7 @@ const StartingPage = () => {
       <div className="bg-[#F5F5F5] w-full flex items-center justify-center">
         <div className="w-full py-28 flex flex-col items-center justify-center gap-24">
           <StoryComponent />
-          <NewsComponent />
+          <PressReleaseSection/>
           <FaqComponent />
         </div>
       </div>
