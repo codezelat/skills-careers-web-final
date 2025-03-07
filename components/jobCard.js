@@ -41,15 +41,6 @@ function JobCard({job, onApply}) {
   const year = new Date(createdAt).getFullYear();
   const postedDate = `${date} ${month} ${year}`;
 
-  const [recruiterDetails, setRecruiterDetails] = useState({
-    email: "",
-    recruiterName: "",
-    logo: "",
-  });
-
-  const handleViewApplication = () => {
-    router.push(`/jobs/${_id}/apply`);
-  };
 
   const handleViewJob = () => {
     router.push(`/jobs/${_id}`);

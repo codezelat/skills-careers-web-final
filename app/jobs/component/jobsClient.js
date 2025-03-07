@@ -1,85 +1,23 @@
+// app/jobs/JobsClient.js
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import JobCard from "@/components/jobCard";
+import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
-import DropdownButton from "../../components/dropDownButton";
-import JobLoading from "./jobLoading";
-import { useSearchParams } from "next/navigation";
-import JobSearch from "@/components/jobSearch";
-import JobApplicationForm from "@/app/jobs/[jobid]/apply/JobApplicationForm";
+import DropdownButton from "../../../components/dropDownButton";
+import Footer from "@/components/Footer";
+import JobApplicationForm from "../[jobid]/apply/JobApplicationForm";
 
-function JobsClient() {
-  const [jobs, setJobs] = useState([]);
-  const [filteredJobs, setFilteredJobs] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+function JobsClient({ initialJobs }) {
+  const [jobs, setJobs] = useState(initialJobs);
+  const [filteredJobs, setFilteredJobs] = useState(initialJobs);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
 
-  const searchParams = useSearchParams();
-  const industryQueryParam = searchParams.get("industry");
-
-  useEffect(() => {
-    if (industryQueryParam) {
-      setSelectedIndustry(industryQueryParam);
-    }
-  }, [industryQueryParam]);
-
-  useEffect(() => {
-    async function fetchJobsAndRecruiters() {
-      try {
-        const jobsResponse = await fetch("/api/job/all");
-        if (!jobsResponse.ok) throw new Error("Failed to fetch jobs.");
-        const jobsData = await jobsResponse.json();
-        const jobs = jobsData.jobs;
-
-        const jobsWithRecruiterDetails = await Promise.all(
-          jobs.map(async (job) => {
-            try {
-              const recruiterResponse = await fetch(
-                `/api/recruiterdetails/get?id=${job.recruiterId}`
-              );
-              if (!recruiterResponse.ok) {
-                return {
-                  ...job,
-                  industry: "Unknown",
-                  recruiterName: "Unknown",
-                  logo: "/images/default-image.jpg",
-                };
-              }
-              const recruiterData = await recruiterResponse.json();
-              return {
-                ...job,
-                industry: recruiterData.industry || "Unknown",
-                recruiterName: recruiterData.recruiterName || "Unknown",
-                logo: recruiterData.logo || "/images/default-image.jpg",
-              };
-            } catch (error) {
-              return {
-                ...job,
-                industry: "Unknown",
-                recruiterName: "Unknown",
-                logo: "/images/default-image.jpg",
-              };
-            }
-          })
-        );
-
-        setJobs(jobsWithRecruiterDetails);
-        setFilteredJobs(jobsWithRecruiterDetails);
-        setIsLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setIsLoading(false);
-      }
-    }
-
-    fetchJobsAndRecruiters();
-  }, []);
 
   useEffect(() => {
     let filtered = jobs;
@@ -107,9 +45,8 @@ function JobsClient() {
     setFilteredJobs(filtered);
   }, [searchQuery, selectedLocation, selectedIndustry, jobs]);
 
-  const industries = [...new Set(jobs.map((job) => job.industry))].filter(
-    Boolean
-  );
+  // Get unique industries and locations
+  const industries = [...new Set(jobs.map((job) => job.industry))].filter(Boolean);
   const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
 
   const handleSearchChange = (event) => {
@@ -140,8 +77,22 @@ function JobsClient() {
             </h1>
           </div>
 
-          <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md z-10">
-            <JobSearch />
+          <div className="bg-[#e6e8f1] p-2 md:p-0 rounded-md">
+            <div className="flex flex-col md:flex-row gap-1 md:gap-4 items-center">
+              <input
+                type="search"
+                placeholder="Search by job title, keywords, or company."
+                className="bg-[#e6e8f1] text-[#8A93BE] text-[14px] lg:text-lg md:text-lg sm:text-base flex-grow pl-6 py-4 focus:outline-none w-full rounded-md sm:w-auto font-bold placeholder-[#5462A0]"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              <button className="flex items-center justify-center w-full md:w-wrap lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-white px-6 py-3 mr-2 rounded-md font-semibold text-[12px] md:text-[16px]">
+                <span className="md:mt-1 mr-2 md:mr-4">
+                  <IoSearchSharp size={15} />
+                </span>
+                Search
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
@@ -156,7 +107,7 @@ function JobsClient() {
             <DropdownButton
               buttonName="Industry"
               selected={selectedIndustry || "Industry"}
-              dropdownItems={["All Industries", "Creative & Design","Education & Training","Technology & Development","Operations & Logistics","Marketing & Sales"]}
+              dropdownItems={["All Industries", ...industries]}
               onSelect={(industry) =>
                 setSelectedIndustry(industry === "All Industries" ? null : industry)
               }
@@ -164,9 +115,7 @@ function JobsClient() {
           </div>
         </div>
         <div className="grid w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[1]">
-          {isLoading ? (
-            <JobLoading />
-          ) : filteredJobs.length > 0 ? (
+          {filteredJobs.length > 0 ? (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {filteredJobs.map((job, index) => (
                 <JobCard
@@ -192,6 +141,7 @@ function JobsClient() {
           onClose={() => setShowApplicationForm(false)}
         />
       )}
+      <Footer />
     </>
   );
 }
