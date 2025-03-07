@@ -3,7 +3,6 @@ import JobSearch from "@/components/jobSearch";
 import CategoryComponent from "@/components/CategoryComponent";
 import PackageComponent from "@/components/PackageComponent";
 import StoryComponent from "@/components/StoryComponent";
-import NewsComponent from "@/components/NewsComponent";
 import FaqComponent from "@/components/FaqComponent";
 import Footer from "@/components/Footer";
 import FetchingJobs from "@/components/StartingPageComponents/FetchingJobs";
