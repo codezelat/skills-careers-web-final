@@ -85,7 +85,7 @@ export default function Candidates() {
     };
 
     if (session?.user?.email) fetchJobseekers();
-  }, [session]);
+  }, [session, searchQuery, activeTab]);
 
   const filterJobseekers = (jobseekers, query, tab) => {
     const filtered = (jobseekers || []).filter((jobseeker) => {
