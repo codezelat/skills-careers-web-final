@@ -6,7 +6,6 @@ function PressRelease() {
   return (
     <>
       <PressReleaseClient />
-      <Footer />
     </>
   );
 }

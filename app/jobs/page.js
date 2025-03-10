@@ -6,7 +6,6 @@ function Jobs() {
   return (
     <>
       <JobsClient />
-      <Footer />
     </>
   );
 }

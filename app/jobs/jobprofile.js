@@ -347,7 +347,6 @@ function JobProfile({ slug }) {
           onClose={() => setShowApplicationForm(false)}
         />
       )}
-      <Footer />
     </>
   );
 }

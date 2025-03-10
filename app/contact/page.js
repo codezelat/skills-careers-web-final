@@ -41,7 +41,6 @@ function contactPage() {
             <div className="w-full h-[500px] flex flex-col items-center gap-3">
                 <MapWithNoSSR />
             </div>{" "}
-            <Footer />
         </>
     );
 }

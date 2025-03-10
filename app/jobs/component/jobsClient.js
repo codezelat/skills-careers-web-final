@@ -141,7 +141,6 @@ function JobsClient({ initialJobs }) {
           onClose={() => setShowApplicationForm(false)}
         />
       )}
-      <Footer />
     </>
   );
 }

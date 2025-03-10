@@ -39,7 +39,6 @@ export default function ContactUsPage() {
       <div className="w-full  flex flex-col items-center gap-3">
         <MapWithNoSSR />
       </div>{" "}
-      <Footer />
     </>
   );
 }

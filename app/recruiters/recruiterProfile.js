@@ -231,7 +231,6 @@ function RecruiterProfile({ slug }) {
           onClose={() => setShowApplicationForm(false)}
         />
       )}
-      <Footer />
     </>
   );
 }

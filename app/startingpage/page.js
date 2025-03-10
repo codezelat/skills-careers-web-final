@@ -191,8 +191,6 @@ const StartingPage = () => {
           <FaqComponent />
         </div>
       </div>
-
-      <Footer />
     </>
   );
 };

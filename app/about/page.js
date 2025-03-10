@@ -256,7 +256,6 @@ function aboutPage() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

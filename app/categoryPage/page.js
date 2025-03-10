@@ -92,8 +92,6 @@ export default function CategoryPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }
