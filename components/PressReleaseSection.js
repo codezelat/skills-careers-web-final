@@ -50,14 +50,14 @@ export default async function PressReleaseSection() {
       <div className="w-full container mt-8">
         <div className="h-screen grid grid-cols-5 grid-rows-2 space-x-6">
           {/* Featured Press Release (Large Section) */}
-          <div className="col-span-3 row-span-2 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar">
-            <div className="bg-white p-3">
+          <div className="col-span-3 row-span-2 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-4">
+            <div className="relative h-[400px] w-full overflow-hidden">
               <Image
                 src={featuredPressRelease?.image || "/newsImage.png"}
                 alt="Featured Press Release"
-                width={600}
-                height={200}
-                className="w-full h-auto object-cover rounded-lg"
+                fill
+                className="object-cover object-top"
+                priority
               />
             </div>
             <div className="p-6 flex-grow">
@@ -74,18 +74,19 @@ export default async function PressReleaseSection() {
           </div>
 
           {/* Smaller Press Releases */}
+          <div className="flex flex-col gap-4 col-span-2 row-span-2">
           {smallerPressReleases.map((pressrelease, index) => (
             <div
               key={index}
-              className="col-span-2 row-span-1 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg mb-4 hide-scrollbar"
+              className="h-1/2 w-full bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-3"
             >
-              <div className="bg-white p-3">
+              <div className="bg-white relative h-[200px] w-full overflow-hidden">
                 <Image
                   src={pressrelease?.image || "/newsImage.png"}
                   alt="Small Press Release"
-                  width={200}
-                  height={200}
-                  className="w-full h-[200px] object-cover rounded-lg"
+                  fill
+                  priority
+                  className="object-cover object-top"
                 />
               </div>
               <div className="p-4 flex-grow">
@@ -101,6 +102,7 @@ export default async function PressReleaseSection() {
               </div>
             </div>
           ))}
+          </div>
         </div>
       </div>
     </div>
