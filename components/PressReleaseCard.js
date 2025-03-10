@@ -5,11 +5,13 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 function PressReleaseCard({ release }) {
+
+  const router = useRouter();
+  
   if (!release || Object.keys(release).length === 0) {
     return <div>Loading...</div>;
   }
 
-  const router = useRouter();
   const { _id, createdAt, title, description, image } = release;
 
   const date = new Date(createdAt).getDate();
@@ -56,13 +58,13 @@ function PressReleaseCard({ release }) {
         {description}
       </p>
       <div className="flex gap-4 flex-wrap justify-center mt-auto">
-  <button
-    onClick={handleViewPressRelease}
-    className="flex border-2 border-[#001571] text-[#001571] px-3 py-2 rounded-lg font-bold hover:bg-blue-800 hover:text-white transition"
-  >
-    Read More
-  </button>
-</div>
+        <button
+          onClick={handleViewPressRelease}
+          className="flex border-2 border-[#001571] text-[#001571] px-3 py-2 rounded-lg font-bold hover:bg-blue-800 hover:text-white transition"
+        >
+          Read More
+        </button>
+      </div>
 
     </div>
   );
