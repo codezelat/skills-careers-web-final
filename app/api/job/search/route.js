@@ -5,11 +5,11 @@ import { NextResponse } from "next/server";
 // Create the client instance
 const client = new Client({
   cloud: {
-    id: process.env.ELASTIC_CLOUD_ID
+    id: process.env.ELASTIC_CLOUD_ID,
   },
   auth: {
-    apiKey: process.env.ELASTIC_API_KEY
-  }
+    apiKey: process.env.ELASTIC_API_KEY,
+  },
 });
 
 export async function GET(req) {
@@ -19,13 +19,12 @@ export async function GET(req) {
 
     // For debugging - log the search query
     console.log("Search query:", query);
-    
 
     if (!query || query.length < 2) {
       return NextResponse.json({ jobs: [] });
     }
 
-    // Perform the search 
+    // Perform the search
     const result = await client.search({
       index: "jobs",
       body: {
@@ -42,7 +41,12 @@ export async function GET(req) {
               {
                 multi_match: {
                   query: query,
-                  fields: ["jobTitle", "location", "jobCategory", "jobExperience"],
+                  fields: [
+                    "jobTitle",
+                    "location",
+                    "jobCategory",
+                    "jobExperience",
+                  ],
                   type: "phrase_prefix",
                 },
               },
@@ -60,6 +64,9 @@ export async function GET(req) {
       location: hit._source.location,
       jobCategory: hit._source.jobCategory,
       jobExperience: hit._source.jobExperience,
+      createdAt: hit._source.createdAt,
+      jobTypes: hit._source.jobTypes,
+      shortDescription: hit._source.shortDescription,
     }));
 
     // For debugging - log the results
@@ -67,7 +74,7 @@ export async function GET(req) {
 
     return NextResponse.json({ jobs });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     console.error("Search error:", error);
 
     // Send a more detailed error response

@@ -13,11 +13,11 @@ require("dotenv").config();
 
 const elasticClient = new Client({
   cloud: {
-    id: process.env.ELASTIC_CLOUD_ID
+    id: process.env.ELASTIC_CLOUD_ID,
   },
   auth: {
-    apiKey: process.env.ELASTIC_API_KEY
-  }
+    apiKey: process.env.ELASTIC_API_KEY,
+  },
 });
 
 const mongoUri = process.env.MONGODB_URI;
@@ -50,8 +50,16 @@ const collections = {
       recruiterName: doc.recruiterName,
       email: doc.email,
       employeeRange: doc.employeeRange,
+      contactNumber: doc.contactNumber,
+      companyDescription: doc.companyDescription,
       industry: doc.industry,
       location: doc.location,
+      logo: doc.logo,
+      createdAt: doc.createdAt,
+      facebook: doc.facebook,
+      instagram: doc.instagram,
+      linkedin: doc.linkedin,
+      x: doc.x,
     }),
   },
   jobseekers: {
@@ -89,6 +97,9 @@ const collections = {
           type: "text",
           fields: { keyword: { type: "keyword" } },
         },
+        createdAt: { type: "date" },
+        jobTypes: { type: "text", fields: { keyword: { type: "keyword" } } },
+        shortDescription: { type: "text" },
       },
     },
     transform: (doc) => ({
@@ -98,6 +109,9 @@ const collections = {
       location: doc.location,
       jobCategory: doc.jobCategory,
       jobExperience: doc.jobExperience,
+      createdAt: doc.createdAt,
+      jobTypes: doc.jobTypes,
+      shortDescription: doc.shortDescription,
     }),
   },
   // jobapplications: {

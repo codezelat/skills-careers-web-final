@@ -18,10 +18,6 @@ export async function GET(req) {
 
     // For debugging - log the search query
     console.log("Search query:", query);
-    console.log("Elasticsearch config:", {
-      ELASTICSEARCH_URL: process.env.ELASTICSEARCH_URL,
-      username: process.env.ELASTIC_USERNAME,
-    });
 
     if (!query || query.length < 3) {
       return NextResponse.json({ recruiters: [] });
@@ -45,6 +41,17 @@ export async function GET(req) {
     const recruiters = result.hits.hits.map((hit) => ({
       recruiterName: hit._source.recruiterName,
       email: hit._source.email,
+      employeeRange: hit._source.employeeRange,
+      contactNumber: hit._source.contactNumber,
+      companyDescription: hit._source.companyDescription,
+      industry: hit._source.industry,
+      location: hit._source.location,
+      logo: hit._source.logo,
+      createdAt: hit._source.createdAt,
+      facebook: hit._source.facebook,
+      instagram: hit._source.instagram,
+      linkedin: hit._source.linkedin,
+      x: hit._source.x,
     }));
 
     // For debugging - log the results
