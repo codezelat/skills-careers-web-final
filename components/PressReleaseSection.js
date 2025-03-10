@@ -4,7 +4,7 @@ import { BsArrowUpRightCircleFill } from "react-icons/bs";
 import Image from "next/image";
 
 async function getPressReleases() {
-  const url = "http://localhost:3000/api/pressrelease/all";
+  const url = "/api/pressrelease/all";
   console.log("Fetching press releases from:", url);
 
   try {

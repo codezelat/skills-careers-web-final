@@ -2,7 +2,7 @@ import PressReleaseList from "./PressReleaseList";
 
 
 async function getPressReleases() {
-  try {const response = await fetch(`${process.env.NEXTAUTH_URL}/api/pressrelease/all`);
+  try {const response = await fetch("/api/pressrelease/all");
     if (!response.ok) throw new Error('Failed to fetch press releases');
     const data = await response.json();
     return data.pressreleases;
