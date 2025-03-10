@@ -1,4 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
+import { sendTicketEnrollmentNotification } from "@/lib/mailer";
 import { ObjectId } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
@@ -6,7 +7,8 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
   try {
     const data = await req.json();
-    const { ticketId, jobseekerId, name, email, contactNumber } = data;
+    const { ticketId, ticketName, jobseekerId, name, email, contactNumber } =
+      data;
 
     // Validate required fields
     if (!ticketId || !jobseekerId || !name || !email || !contactNumber) {
@@ -103,7 +105,19 @@ export async function POST(req) {
       await session.endSession();
       client.close();
 
+      try {
+        await sendTicketEnrollmentNotification({
+          ticketName,
+          name,
+          email,
+          contactNumber,
+        });
+      } catch (emailError) {
+        console.error("Email notification failed:", emailError);
+      }
+      
       revalidatePath("/tickets");
+
       return NextResponse.json(
         { message: "Successfully enrolled in the event!" },
         { status: 201 }
