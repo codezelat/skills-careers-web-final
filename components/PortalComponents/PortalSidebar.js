@@ -161,12 +161,33 @@ export default function SideMenuSection() {
                                         }`}
                                 >
                                     <img
-                                        src="/sidebar/pressrelease.png"
+                                        src="/sidebar/ticketIcon.png"
                                         alt="Candidates"
                                         className={`h-5 w-5 mr-6 ${activeButton === "Tickets" ? "filter invert brightness-0" : ""
                                             }`}
                                     />
                                     Tickets
+                                </button>
+                            </Link>
+                        )}
+
+                        {/*Booking record*/}
+                        {(session?.user?.role === "recruiter" || session?.user?.role === "recruiter") && (
+                            <Link href="/Portal/bookingRecord">
+                                <button
+                                    onClick={() => setActiveButton("Booking Record")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Booking Record"
+                                        ? "bg-[#001571] text-white"
+                                        : "bg-white text-[#001571] hover:bg-gray-100"
+                                        }`}
+                                >
+                                    <img
+                                        src="/sidebar/ticketIcon.png"
+                                        alt="Candidates"
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Booking Record" ? "filter invert brightness-0" : ""
+                                            }`}
+                                    />
+                                    Booking Record
                                 </button>
                             </Link>
                         )}
