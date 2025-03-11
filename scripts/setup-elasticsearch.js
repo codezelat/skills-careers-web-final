@@ -143,7 +143,7 @@ const collections = {
   //   }),
   // },
   pressreleases: {
-    indexName: "pressrelease",
+    indexName: "pressreleases",
     mappings: {
       properties: {
         pressreleaseId: {
@@ -156,6 +156,44 @@ const collections = {
     transform: (doc) => ({
       pressreleaseId: doc._id.toString(),
       title: doc.title,
+    }),
+  },
+  tickets: {
+    indexName: "tickets",
+    mappings: {
+      properties: {
+        ticketId: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
+        name: { type: "text", fields: { keyword: { type: "keyword" } } },
+        description: { type: "text" },
+        location: {
+          type: "text",
+          fields: { keyword: { type: "keyword" } },
+        },
+        date: { type: "date" },
+        startTime: { type: "keyword" },
+        endTime: { type: "keyword" },
+        capacity: { type: "keyword" },
+        closingDate: { type: "date" },
+        eventProfile: { type: "keyword" },
+        createdAt: { type: "date" },
+      },
+    },
+
+    transform: (doc) => ({
+      ticketId: doc._id.toString(),
+      name: doc.name,
+      description: doc.description,
+      location: doc.location,
+      date: doc.date,
+      startTime: doc.startTime,
+      endTime: doc.endTime,
+      capacity: doc.capacity,
+      closingDate: doc.closingDate,
+      eventProfile: doc.eventProfile,
+      createdAt: doc.createdAt,
     }),
   },
 };
