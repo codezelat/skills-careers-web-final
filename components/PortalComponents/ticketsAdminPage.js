@@ -18,6 +18,7 @@ export default function AdminsTicketsPage(props) {
     const [activeTab, setActiveTab] = useState("all");
     const [loading, setLoading] = useState(true);
     const [tickets, setTickets] = useState([]);
+    const [recruiters, setRecruiters] = useState([]);
     const [error, setError] = useState(null);
     const [isEditFormVisible, setIsEditFormVisible] = useState(false);
 
@@ -31,6 +32,8 @@ export default function AdminsTicketsPage(props) {
         endTime: "",
         capacity: "",
         closingDate: "",
+        recruiterId: "",
+        eventProfile: null,
     });
 
     // Edit form state
@@ -44,6 +47,8 @@ export default function AdminsTicketsPage(props) {
         endTime: "",
         capacity: "",
         closingDate: "",
+        recruiterId: "",
+        eventProfile: null,
     });
 
     useEffect(() => {
@@ -55,9 +60,11 @@ export default function AdminsTicketsPage(props) {
     useEffect(() => {
         if (session?.user?.id) {
             fetchTickets();
+            fetchRecruiters();
         }
     }, [session]);
 
+    // fetch tickets
     const fetchTickets = async () => {
         try {
 
@@ -71,6 +78,26 @@ export default function AdminsTicketsPage(props) {
         } catch (err) {
             setError(err.message);
             console.error("Error fetching tickets:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // fetch recruiters
+    const fetchRecruiters = async () => {
+        try {
+
+            const recruiterResponse = await fetch(`/api/recruiterdetails/all`);
+            if (!recruiterResponse.ok) {
+                throw new Error("Failed to fetch recruiters");
+            }
+            const recruiterData = await recruiterResponse.json();
+
+            setRecruiters(recruiterData.recruiters);
+            console.log("all recruiters : ", recruiterData.recruiters)
+        } catch (err) {
+            setError(err.message);
+            console.error("Error fetching recruiters:", err);
         } finally {
             setLoading(false);
         }
@@ -92,13 +119,23 @@ export default function AdminsTicketsPage(props) {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        const { name, value, type } = e.target;
+
+        if (type === "file") {
+            const file = e.target.files[0];
+            setFormData((prev) => ({
+                ...prev,
+                [name]: file,
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
 
+    // ticket add function
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -108,25 +145,25 @@ export default function AdminsTicketsPage(props) {
             const startTime12Hour = convertTo12HourFormat(formData.startTime);
             const endTime12Hour = convertTo12HourFormat(formData.endTime);
 
-            const recruiterResponse = await fetch(`/api/recruiterdetails/get?userId=${session.user.id}`);
-            if (!recruiterResponse.ok) {
-                throw new Error("Failed to fetch recruiter details");
+            // Create FormData object
+            const formDataToSend = new FormData();
+            formDataToSend.append("recruiterId", formData.recruiterId);
+            formDataToSend.append("name", formData.name);
+            formDataToSend.append("description", formData.description);
+            formDataToSend.append("location", formData.location);
+            formDataToSend.append("date", formData.date);
+            formDataToSend.append("startTime", startTime12Hour);
+            formDataToSend.append("endTime", endTime12Hour);
+            formDataToSend.append("capacity", formData.capacity);
+            formDataToSend.append("closingDate", formData.closingDate);
+            if (formData.eventProfile) {
+                formDataToSend.append("eventProfile", formData.eventProfile); // Append the file
             }
-            const recruiterData = await recruiterResponse.json();
 
-            const recruiterId = recruiterData.id;
-
+            // Send the request
             const response = await fetch("/api/ticket/add", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    startTime: startTime12Hour,
-                    endTime: endTime12Hour,
-                    recruiterId,
-                }),
+                body: formDataToSend, // No need to set Content-Type header for FormData
             });
 
             if (!response.ok) {
@@ -145,6 +182,8 @@ export default function AdminsTicketsPage(props) {
                 endTime: "",
                 capacity: "",
                 closingDate: "",
+                recruiterId: "",
+                eventProfile: null, // Reset eventProfile
             });
         } catch (error) {
             console.error("Ticket creation error:", error);
@@ -171,6 +210,7 @@ export default function AdminsTicketsPage(props) {
         return `${hour.toString().padStart(2, "0")}:${minutes}`;
     };
 
+    // ticket edit function
     const handleEdit = useCallback((ticket) => {
         setEditFormData({
             _id: ticket._id,
@@ -182,16 +222,26 @@ export default function AdminsTicketsPage(props) {
             endTime: convertTo24HourFormat(ticket.endTime),
             capacity: ticket.capacity,
             closingDate: ticket.closingDate,
+            recruiterId: ticket.recruiterId,
         });
         setIsEditFormVisible(true);
     }, []);
 
     const handleEditInputChange = (e) => {
-        const { name, value } = e.target;
-        setEditFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        const { name, value, type } = e.target;
+
+        if (type === "file") {
+            const file = e.target.files[0];
+            setEditFormData((prev) => ({
+                ...prev,
+                [name]: file,
+            }));
+        } else {
+            setEditFormData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
 
     const handleEditSubmit = async (e) => {
@@ -200,12 +250,26 @@ export default function AdminsTicketsPage(props) {
         setIsSubmitting(true);
 
         try {
+            // Create FormData object
+            const formDataToSend = new FormData();
+            formDataToSend.append("_id", editFormData._id);
+            formDataToSend.append("name", editFormData.name);
+            formDataToSend.append("description", editFormData.description);
+            formDataToSend.append("location", editFormData.location);
+            formDataToSend.append("date", editFormData.date);
+            formDataToSend.append("startTime", editFormData.startTime);
+            formDataToSend.append("endTime", editFormData.endTime);
+            formDataToSend.append("capacity", editFormData.capacity);
+            formDataToSend.append("closingDate", editFormData.closingDate);
+            formDataToSend.append("recruiterId", editFormData.recruiterId);
+            if (editFormData.eventProfile) {
+                formDataToSend.append("eventProfile", editFormData.eventProfile); // Append the file
+            }
+
+            // Send the request
             const response = await fetch("/api/ticket/update", {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(editFormData),
+                body: formDataToSend, // No need to set Content-Type header for FormData
             });
 
             if (!response.ok) {
@@ -244,12 +308,12 @@ export default function AdminsTicketsPage(props) {
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-xl font-bold text-[#001571]">Tickets</h1>
-                {/* <button
+                <button
                     className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
                     onClick={() => setIsFormVisible(true)}
                 >
                     <BsPlus size={25} className="mr-1" />Add New
-                </button> */}
+                </button>
             </div>
 
             {/* Tabs */}
@@ -325,6 +389,26 @@ export default function AdminsTicketsPage(props) {
                         {/* Form Content */}
                         <div className="flex-1 overflow-y-auto px-6 py-4">
                             <form onSubmit={handleSubmit} className="space-y-6">
+
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Recruiter
+                                    </label>
+                                    <select
+                                        name="recruiterId"
+                                        value={formData.recruiterId}
+                                        onChange={handleInputChange}
+                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
+                                        required
+                                    >
+                                        <option value="">Select a Recruiter</option>
+                                        {recruiters.map((recruiter) => (
+                                            <option key={recruiter._id} value={recruiter._id}>
+                                                {recruiter.recruiterName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <div>
                                     <label className="block text-base font-semibold text-[#001571]">
                                         Event Name
@@ -437,6 +521,18 @@ export default function AdminsTicketsPage(props) {
                                     />
                                 </div>
 
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Event Profile Image
+                                    </label>
+                                    <input
+                                        type="file"
+                                        name="eventProfile"
+                                        onChange={handleInputChange}
+                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
+                                    />
+                                </div>
+
                                 {/* Submit Button */}
                                 <div className="border-t border-gray-200 pt-6 flex justify-end">
                                     <button
@@ -472,6 +568,25 @@ export default function AdminsTicketsPage(props) {
                         {/* Form Content */}
                         <div className="flex-1 overflow-y-auto px-6 py-4">
                             <form onSubmit={handleEditSubmit} className="space-y-6">
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Recruiter
+                                    </label>
+                                    <select
+                                        name="recruiterId"
+                                        value={editFormData.recruiterId}
+                                        onChange={handleEditInputChange}
+                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
+                                        required
+                                    >
+                                        <option value="">Select a Recruiter</option>
+                                        {recruiters.map((recruiter) => (
+                                            <option key={recruiter._id} value={recruiter._id}>
+                                                {recruiter.recruiterName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <div>
                                     <label className="block text-base font-semibold text-[#001571]">
                                         Event Name
@@ -581,6 +696,18 @@ export default function AdminsTicketsPage(props) {
                                         rows="4"
                                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                                         required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Event Profile Image
+                                    </label>
+                                    <input
+                                        type="file"
+                                        name="eventProfile"
+                                        onChange={handleEditInputChange}
+                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                                     />
                                 </div>
 

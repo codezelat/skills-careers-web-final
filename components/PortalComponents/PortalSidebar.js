@@ -172,7 +172,7 @@ export default function SideMenuSection() {
                         )}
 
                         {/*Booking record*/}
-                        {(session?.user?.role === "recruiter" || session?.user?.role === "recruiter") && (
+                        {(session?.user?.role === "admin" || session?.user?.role === "recruiter") && (
                             <Link href="/Portal/bookingRecord">
                                 <button
                                     onClick={() => setActiveButton("Booking Record")}

@@ -1,4 +1,5 @@
 "use client"
+import BookingAdminPage from "@/components/PortalComponents/bookingAdminPage";
 import BookingRecruiterPage from "@/components/PortalComponents/bookingRecruiterPage";
 import { useSession } from "next-auth/react";
 
@@ -8,6 +9,9 @@ export default function BookingRecordPage() {
 
     return (
         <>
+            {session?.user?.role === "admin" && (
+                <BookingAdminPage/>
+            )}
             {session?.user?.role === "recruiter" && (
                 <BookingRecruiterPage/>
             )}

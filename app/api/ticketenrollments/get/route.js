@@ -1,15 +1,33 @@
 import { connectToDatabase } from "@/lib/db";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const jobseekerId = searchParams.get("jobseekerId");
+    const ticketId = searchParams.get("ticketId");
+
     const client = await connectToDatabase();
     const db = client.db();
+    let filter = {};
 
-    let query = db.collection("ticketenrollments").find({});
+    // Add recruiter filter if provided
+    if (jobseekerId) {
+      filter.jobseekerId = new ObjectId(jobseekerId);
+    }
 
+    if (ticketId) {
+      filter.ticketId = new ObjectId(ticketId);
+    }
+
+    // Create the base query
+    let query = db.collection("ticketenrollments").find(filter);
+
+    // Sort by createdAt in descending order (newest first)
     query = query.sort({ createdAt: -1 });
 
+    // Execute the query
     const ticketenrollments = await query.toArray();
     const count = ticketenrollments.length;
 
@@ -26,7 +44,7 @@ export async function GET(req) {
           "Surrogate-Control": "no-store",
           Pragma: "no-cache",
           Expires: "0",
-          "x-netlify-cache": "miss", 
+          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
         },
       }
     );
