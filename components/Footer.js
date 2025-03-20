@@ -77,7 +77,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="transition hover:opacity-75">
+                <a href="#landingPageFAQ" className="transition hover:opacity-75">
                   FAQ
                 </a>
               </li>

@@ -188,6 +188,8 @@ const StartingPage = () => {
         <div className="w-full py-28 flex flex-col items-center justify-center gap-24">
           <StoryComponent />
           <PressReleaseSection/>
+
+          <span id="landingPageFAQ"></span>
           <FaqComponent />
         </div>
       </div>
