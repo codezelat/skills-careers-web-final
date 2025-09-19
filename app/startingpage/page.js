@@ -32,8 +32,8 @@ const StartingPage = () => {
             <div className="md:col-span-2">
               <div className="mb-8">
                 <h1 className="text-4xl text-center lg:text-left md:text-left sm:text-left sm:text-5xl lg:text-6xl font-bold text-[#8A93BE] mt-12 md:mt-16 lg:mt-28">
-                  Your Future{" "}
-                  <span className="font-bold text-[#7d7d7d]">Start Here!</span>
+                  Your future{" "}
+                  <span className="font-bold text-[#7d7d7d]">starts here!</span>
                 </h1>
                 <p className="pt-4 text-center lg:text-left md:text-left sm:text-left text-base sm:text-lg text-[#001571]">
                   Explore personalized job opportunities, expert tools, and

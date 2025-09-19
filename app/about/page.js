@@ -3,7 +3,6 @@ import NavBar from "@/components/navBar";
 import Image from "next/image";
 
 function aboutPage() {
-
   const features = [
     {
       title: "Comprehensive Job Portal",
@@ -64,20 +63,21 @@ function aboutPage() {
 
       {/* Who We Are */}
       <div className="bg-[#000C3E] w-full flex flex-col items-center justify-center gap-28 py-28">
-
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] text-white grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-20">
           <div className="gap-8">
             <h1 className="text-xl sm:text-2xl md:text-4xl font-semibold mb-4">
               Who We Are
             </h1>
             <p className="text-sm sm:text-base md:text-lg leading-6 sm:leading-8">
-              At Skill Careers, we believe that finding the right job or the right
-              talent should be seamless and efficient. Founded with the mission
-              to bridge the gap between job seekers and recruiters, we are
-              committed to offering a platform that is both easy to use and
+              At Skill Careers, we believe that finding the right job or the
+              right talent should be seamless and efficient. Founded with the
+              mission to bridge the gap between job seekers and recruiters, we
+              are committed to offering a platform that is both easy to use and
               highly effective. Whether you're a job seeker looking to advance
               your career or a recruiter seeking top talent, Skill Careers is
-              here to support you every step of the way.
+              here to support you every step of the way. Developed with the
+              support of a grant and the generous contributions of Australian
+              alumni of Australia Awards Sri Lanka.
             </p>
           </div>
           <div className="flex justify-center flex-wrap gap-4 sm:gap-6">
@@ -108,7 +108,6 @@ function aboutPage() {
           </div>
         </div>
 
-
         {/* What We Offer */}
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] text-gray-100">
           <h3 className="text-xl md:text-2xl font-semibold mb-6">
@@ -117,9 +116,16 @@ function aboutPage() {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="bg-white text-blue-950 rounded-lg shadow-md p-6 w-full md:w-1/2">
               <div className="flex items-center mb-4">
-                <Image src="/images/global-search.png" alt="icon search" width={50} height={50} />
+                <Image
+                  src="/images/global-search.png"
+                  alt="icon search"
+                  width={50}
+                  height={50}
+                />
               </div>
-              <h4 className="text-lg font-bold  p-2 mb-5 font-sans">For Job Seekers</h4>
+              <h4 className="text-lg font-bold  p-2 mb-5 font-sans">
+                For Job Seekers
+              </h4>
 
               <p className="text-gray-800 ml-2 text-sm md:text-base font-sans">
                 Skill Careers provides access to thousands of job opportunities
@@ -131,9 +137,16 @@ function aboutPage() {
 
             <div className="bg-white text-blue-950 rounded-lg shadow-md p-6 w-full md:w-1/2">
               <div className="flex items-center mb-4">
-                <Image src="/images/buliding.png" alt="icon search" width={50} height={50} />
+                <Image
+                  src="/images/buliding.png"
+                  alt="icon search"
+                  width={50}
+                  height={50}
+                />
               </div>
-              <h4 className="text-lg font-bold  p-2 mb-5 font-sans ">For Recruiters</h4>
+              <h4 className="text-lg font-bold  p-2 mb-5 font-sans ">
+                For Recruiters
+              </h4>
 
               <p className="text-gray-800 text-sm md:text-base font-sans">
                 Our platform offers tailored recruitment packages, allowing
@@ -186,7 +199,12 @@ function aboutPage() {
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-col md:flex-row gap-6">
           <div className="bg-white text-blue-950 rounded-lg shadow-md p-6 w-full md:w-1/2">
             <div className="flex items-center mb-4">
-              <Image src="/images/vission.png" alt="icon search" width={50} height={50} />
+              <Image
+                src="/images/vission.png"
+                alt="icon search"
+                width={50}
+                height={50}
+              />
             </div>
             <h4 className="text-2xl font-bold  p-2 mb-5 font-sans">Vision</h4>
 
@@ -199,7 +217,12 @@ function aboutPage() {
 
           <div className="bg-white text-blue-950 rounded-lg shadow-md p-6 w-full md:w-1/2">
             <div className="flex items-center mb-4">
-              <Image src="/images/mission.png" alt="icon search" width={50} height={50} />
+              <Image
+                src="/images/mission.png"
+                alt="icon search"
+                width={50}
+                height={50}
+              />
             </div>
             <h4 className="text-2xl font-bold  p-2 mb-5 font-sans">Mission</h4>
 
@@ -216,11 +239,12 @@ function aboutPage() {
 
       {/* Commitment Section */}
       <div className="w-full bg-gray-50 text-blue-900 flex flex-col items-center py-20 md:py-28">
-
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-col md:flex-row items-center justify-between gap-10">
           {/* Text Content */}
           <div className="md:w-1/2 justify-start">
-            <h3 className="text-2xl font-bold text-start mb-8 font-sans ">Commitment to a Sustainable Future</h3>
+            <h3 className="text-2xl font-bold text-start mb-8 font-sans ">
+              Commitment to a sustainable future is attached
+            </h3>
 
             <p className="leading-relaxed text-lg font-sans">
               At Skill Careers, we believe that finding the right job or the
@@ -240,7 +264,6 @@ function aboutPage() {
                   className="h-6 w-6 ml-3 mr-5"
                 />
               </span>
-
             </button>
           </div>
 

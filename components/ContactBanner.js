@@ -21,7 +21,7 @@ export default function ContactBanner() {
               <FaMailBulk size={28} className="cursor-pointer" />
               <div className="flex flex-col">
                 <div className="font-semibold">Email</div>
-                <div className="text-sm">info@skillscareer.com</div>
+                <div className="text-sm">recruiter@skillscareers.com </div>
               </div>
             </div>
 
@@ -30,7 +30,7 @@ export default function ContactBanner() {
               <FaPhone size={28} className="cursor-pointer" />
               <div className="flex flex-col">
                 <div className="font-semibold">Phone</div>
-                <div className="text-sm">0112-234-763</div>
+                <div className="text-sm">+94 0766375151 | +94 773022020</div>
               </div>
             </div>
 
@@ -39,7 +39,7 @@ export default function ContactBanner() {
               <FaLocationArrow size={28} className="cursor-pointer" />
               <div className="flex flex-col">
                 <div className="font-semibold">Location</div>
-                <div className="text-sm">Union Place, Colombo 07</div>
+                <div className="text-sm">Skills Careers, SEGA Center, Soysapura, Moratuwa</div>
               </div>
             </div>
           </div>
