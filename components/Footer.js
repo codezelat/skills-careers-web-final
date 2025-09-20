@@ -62,17 +62,17 @@ export default function Footer() {
             <p className="font-medium text-white text-center sm:text-left">Quick Links</p>
             <ul className="mt-6 space-y-4 text-sm text-white font-medium text-center sm:text-left">
               <li>
-                <a href="#" className="transition hover:opacity-75">
+                <a href="privacypolicy" className="transition hover:opacity-75">
                   Privacy Policy
                 </a>
               </li>
-              {/*<li>
-                <a href="#" className="transition hover:opacity-75">
+              <li>
+                <a href="sustainabilitypolicy" className="transition hover:opacity-75">
                   Sustainability Policy
                 </a>
-              </li>*/}
+              </li>
               <li>
-                <a href="#" className="transition hover:opacity-75">
+                <a href="termsofuse" className="transition hover:opacity-75">
                   Terms of Use
                 </a>
               </li>
