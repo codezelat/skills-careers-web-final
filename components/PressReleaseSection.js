@@ -1,4 +1,3 @@
-
 // components/PressReleaseSection.js
 import Link from "next/link";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
@@ -12,13 +11,13 @@ async function getPressReleases() {
     const response = await fetch(url);
     if (!response.ok) {
       console.error("Response not OK:", response.status, response.statusText);
-      throw new Error('Failed to fetch press releases');
+      throw new Error("Failed to fetch press releases");
     }
     const data = await response.json();
     console.log("Fetched press releases:", data);
     return data.pressreleases;
   } catch (error) {
-    console.error('Error fetching press releases:', error);
+    console.error("Error fetching press releases:", error);
     return [];
   }
 }
@@ -51,7 +50,11 @@ export default async function PressReleaseSection() {
       <div className="w-full container mt-8">
         <div className="h-screen grid grid-cols-5 grid-rows-2 space-x-6">
           {/* Featured Press Release (Large Section) */}
-          <div className="col-span-3 row-span-2 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-4">
+
+          <Link
+            href={`/pressRelease/${featuredPressRelease?._id || ""}`}
+            className="col-span-3 row-span-2 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-4"
+          >
             <div className="relative h-[400px] w-full overflow-hidden">
               <Image
                 src={featuredPressRelease?.image || "/newsImage.png"}
@@ -66,43 +69,48 @@ export default async function PressReleaseSection() {
                 {featuredPressRelease?.title || "No Featured Press Release"}
               </h2>
               <p className="text-gray-700 mb-4">
-                {featuredPressRelease?.description || "No description available."}
+                {featuredPressRelease?.description ||
+                  "No description available."}
               </p>
               <p className="text-gray-500 mt-4">
-                {new Date(featuredPressRelease?.createdAt).toLocaleDateString() || "01 Oct 2024"}
+                {new Date(
+                  featuredPressRelease?.createdAt
+                ).toLocaleDateString() || "01 Oct 2024"}
               </p>
             </div>
-          </div>
+          </Link>
 
           {/* Smaller Press Releases */}
           <div className="flex flex-col gap-4 col-span-2 row-span-2">
-          {smallerPressReleases.map((pressrelease, index) => (
-            <div
-              key={index}
-              className="h-1/2 w-full bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-3"
-            >
-              <div className="bg-white relative h-[200px] w-full overflow-hidden">
-                <Image
-                  src={pressrelease?.image || "/newsImage.png"}
-                  alt="Small Press Release"
-                  fill
-                  priority
-                  className="object-cover object-top"
-                />
-              </div>
-              <div className="p-4 flex-grow">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
-                  {pressrelease?.title || "No Title"}
-                </h3>
-                <p className="text-gray-700 mb-4 text-md">
-                  {pressrelease?.description || "No description available."}
-                </p>
-                <p className="text-gray-500 mt-4">
-                  {new Date(pressrelease?.createdAt).toLocaleDateString() || "01 Oct 2024"}
-                </p>
-              </div>
-            </div>
-          ))}
+            {smallerPressReleases.map((pressrelease, index) => (
+              <Link
+                key={index}
+                href={`/pressRelease/${pressrelease?._id || ""}`}
+                className="h-1/2 w-full bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-3"
+              >
+                <div className="bg-white relative h-[200px] w-full overflow-hidden">
+                  <Image
+                    src={pressrelease?.image || "/newsImage.png"}
+                    alt="Small Press Release"
+                    fill
+                    priority
+                    className="object-cover object-top"
+                  />
+                </div>
+                <div className="p-4 flex-grow">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    {pressrelease?.title || "No Title"}
+                  </h3>
+                  <p className="text-gray-700 mb-4 text-md">
+                    {pressrelease?.description || "No description available."}
+                  </p>
+                  <p className="text-gray-500 mt-4">
+                    {new Date(pressrelease?.createdAt).toLocaleDateString() ||
+                      "01 Oct 2024"}
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
