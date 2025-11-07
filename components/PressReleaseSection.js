@@ -1,29 +1,71 @@
 // components/PressReleaseSection.js
+"use client";
 import Link from "next/link";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
-async function getPressReleases() {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/pressrelease/all`;
-  console.log("Fetching press releases from:", url);
+export default function PressReleaseSection() {
+  const [pressreleases, setPressreleases] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      console.error("Response not OK:", response.status, response.statusText);
-      throw new Error("Failed to fetch press releases");
+  useEffect(() => {
+    async function fetchPressReleases() {
+      try {
+        const response = await fetch("/api/pressrelease/all");
+        if (!response.ok) {
+          console.error(
+            "Response not OK:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch press releases");
+        }
+        const data = await response.json();
+        console.log("Fetched press releases:", data);
+        setPressreleases(data.pressreleases || []);
+      } catch (error) {
+        console.error("Error fetching press releases:", error);
+        setPressreleases([]);
+      } finally {
+        setLoading(false);
+      }
     }
-    const data = await response.json();
-    console.log("Fetched press releases:", data);
-    return data.pressreleases;
-  } catch (error) {
-    console.error("Error fetching press releases:", error);
-    return [];
-  }
-}
 
-export default async function PressReleaseSection() {
-  const pressreleases = await getPressReleases();
+    fetchPressReleases();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
+        <div className="w-full flex justify-between">
+          <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-xl">
+            <p>Latest Press Releases</p>
+          </div>
+          <div className="flex justify-end -2 gap-4 mb-8 text-[#001571] font-bold text-xl">
+            <Link href="/pressRelease">
+              <p className="flex">
+                View All
+                <span className="ml-3">
+                  <BsArrowUpRightCircleFill />
+                </span>
+              </p>
+            </Link>
+          </div>
+        </div>
+        <div className="w-full container mt-8">
+          <div className="h-screen grid grid-cols-5 grid-rows-2 space-x-6">
+            <div className="col-span-3 row-span-2 bg-gray-200 animate-pulse rounded-lg"></div>
+            <div className="flex flex-col gap-4 col-span-2 row-span-2">
+              <div className="h-1/2 w-full bg-gray-200 animate-pulse rounded-lg"></div>
+              <div className="h-1/2 w-full bg-gray-200 animate-pulse rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   console.log("Press releases in component:", pressreleases);
 
   // Ensure there are at least 3 press releases to match the layout

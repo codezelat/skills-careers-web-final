@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -9,15 +9,16 @@ import PortalLoading from "../loading";
 import AddPressrelease from "./AddPressrelease";
 import PressReleaseCard from "@/components/PortalComponents/pressReleaseCard";
 
-export default function PressReleaseList({ initialPressreleases }) {
+export default function PressReleaseList() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [showApplicationForm, setShowApplicationForm] = useState(false);
-  const [pressreleases, setPressreleases] = useState(initialPressreleases);
-  const [filteredPressreleases, setFilteredPressreleases] = useState(initialPressreleases);
+  const [pressreleases, setPressreleases] = useState([]);
+  const [filteredPressreleases, setFilteredPressreleases] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPressrelease, setSelectedPressrelease] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const pressPerPage = 16;
 
   useEffect(() => {
@@ -27,10 +28,31 @@ export default function PressReleaseList({ initialPressreleases }) {
   }, [status, router]);
 
   useEffect(() => {
+    async function fetchPressReleases() {
+      try {
+        const response = await fetch("/api/pressrelease/all");
+        if (!response.ok) throw new Error("Failed to fetch press releases");
+        const data = await response.json();
+        setPressreleases(data.pressreleases || []);
+        setFilteredPressreleases(data.pressreleases || []);
+      } catch (error) {
+        console.error("Error fetching press releases:", error);
+        setPressreleases([]);
+        setFilteredPressreleases([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPressReleases();
+  }, []);
+
+  useEffect(() => {
     setFilteredPressreleases(
-      pressreleases.filter(pressrelease =>
+      pressreleases.filter((pressrelease) =>
         pressrelease.title.toLowerCase().includes(searchQuery.toLowerCase())
-    ));
+      )
+    );
   }, [searchQuery, pressreleases]);
 
   const handlePressreleaseSelect = (pressrelease) => {
@@ -44,7 +66,10 @@ export default function PressReleaseList({ initialPressreleases }) {
   const totalPages = Math.ceil(filteredPressreleases.length / pressPerPage);
   const indexOfLastpress = currentPage * pressPerPage;
   const indexOfFirstpress = indexOfLastpress - pressPerPage;
-  const currentpress = filteredPressreleases.slice(indexOfFirstpress, indexOfLastpress);
+  const currentpress = filteredPressreleases.slice(
+    indexOfFirstpress,
+    indexOfLastpress
+  );
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -52,7 +77,7 @@ export default function PressReleaseList({ initialPressreleases }) {
     }
   };
 
-  if (status === "loading") return <PortalLoading />;
+  if (status === "loading" || loading) return <PortalLoading />;
 
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
@@ -63,7 +88,8 @@ export default function PressReleaseList({ initialPressreleases }) {
             className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
             onClick={() => setShowApplicationForm(true)}
           >
-            <BsPlus size={25} className="mr-1" />Add New
+            <BsPlus size={25} className="mr-1" />
+            Add New
           </button>
         )}
       </div>
@@ -91,13 +117,17 @@ export default function PressReleaseList({ initialPressreleases }) {
 
       <div className="grid gap-6 grid-cols-4 mt-10">
         {currentpress.length > 0 ? (
-          currentpress.map((pressrelease, index) => (
-            <PressReleaseCard
-              key={index}
-              pressrelease={pressrelease}
-              onViewPressrelease={() => handlePressreleaseSelect(pressrelease)}
-            />
-          )).reverse()
+          currentpress
+            .map((pressrelease, index) => (
+              <PressReleaseCard
+                key={index}
+                pressrelease={pressrelease}
+                onViewPressrelease={() =>
+                  handlePressreleaseSelect(pressrelease)
+                }
+              />
+            ))
+            .reverse()
         ) : (
           <p className="text-lg text-center font-bold text-red-500 py-20">
             No pressreleases found.
@@ -110,7 +140,11 @@ export default function PressReleaseList({ initialPressreleases }) {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === 1
+                ? "bg-gray-300"
+                : "bg-gray-200 hover:bg-gray-400"
+            }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -118,7 +152,11 @@ export default function PressReleaseList({ initialPressreleases }) {
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-blue-700 text-white' : 'bg-gray-200 hover:bg-gray-400'}`}
+              className={`px-4 py-2 rounded-lg ${
+                currentPage === index + 1
+                  ? "bg-blue-700 text-white"
+                  : "bg-gray-200 hover:bg-gray-400"
+              }`}
             >
               {index + 1}
             </button>
@@ -126,7 +164,11 @@ export default function PressReleaseList({ initialPressreleases }) {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-400'}`}
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === totalPages
+                ? "bg-gray-300"
+                : "bg-gray-200 hover:bg-gray-400"
+            }`}
           >
             <BsChevronRight size={15} />
           </button>
