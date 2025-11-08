@@ -5,7 +5,6 @@ import { ObjectId } from "mongodb";
 
 export async function POST(req) {
   let client;
-  let session;
 
   try {
     const data = await req.json();
@@ -66,49 +65,47 @@ export async function POST(req) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    session = client.startSession();
+    // Create user first
+    const userResult = await db.collection("users").insertOne({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      profileImage,
+      role: "admin",
+      createdAt: new Date(),
+    });
 
-    await session.withTransaction(async () => {
-      const userResult = await db.collection("users").insertOne(
-        {
-          firstName,
-          lastName,
-          email,
-          password: hashedPassword,
-          profileImage,
-          role: "admin",
-          createdAt: new Date(),
-        },
-        { session }
-      );
-
-      await db.collection("admins").insertOne(
-        {
-          firstName,
-          lastName,
-          contactNumber,
-          email,
-          password: hashedPassword,
-          profileImage,
-          userId: new ObjectId(userResult.insertedId),
-          createdAt: new Date(),
-        },
-        { session }
-      );
+    // Create admin with the userId
+    await db.collection("admins").insertOne({
+      firstName,
+      lastName,
+      contactNumber,
+      email,
+      password: hashedPassword,
+      profileImage,
+      userId: new ObjectId(userResult.insertedId),
+      createdAt: new Date(),
     });
 
     return NextResponse.json({ message: "Admin created!" }, { status: 201 });
   } catch (error) {
+    console.error("Admin signup error:", error);
     return NextResponse.json(
-      { message: "Something went wrong.", error: error.message },
+      {
+        message: "Something went wrong.",
+        error: error.message,
+        stack: error.stack,
+      },
       { status: 500 }
     );
   } finally {
-    if (session) {
-      await session.endSession();
-    }
     if (client) {
-      await client.close();
+      try {
+        await client.close();
+      } catch (e) {
+        console.error("Error closing client:", e);
+      }
     }
   }
 }
