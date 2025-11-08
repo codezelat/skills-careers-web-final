@@ -166,11 +166,22 @@ export const authOptions = {
     },
 
     async redirect({ url, baseUrl }) {
+      // Get the actual base URL from environment or request
+      const actualBaseUrl = process.env.NEXTAUTH_URL || baseUrl;
+
       // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (url.startsWith("/")) return `${actualBaseUrl}${url}`;
+
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
+      try {
+        const urlOrigin = new URL(url).origin;
+        const baseOrigin = new URL(actualBaseUrl).origin;
+        if (urlOrigin === baseOrigin) return url;
+      } catch (error) {
+        console.error("Redirect URL parsing error:", error);
+      }
+
+      return actualBaseUrl;
     },
   },
 
