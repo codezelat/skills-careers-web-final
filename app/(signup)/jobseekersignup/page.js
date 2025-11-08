@@ -35,6 +35,8 @@ async function createJobSeeker(
 function AuthForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -48,20 +50,26 @@ function AuthForm() {
 
   const validateForm = () => {
     const newErrors = {};
+    const nameRegex = /^[A-Za-z][A-Za-z\s'-]*$/;
+    const trimmedFirstName = formData.firstName.trim();
+    const trimmedLastName = formData.lastName.trim();
+    const trimmedEmail = formData.email.trim();
 
-    if (!formData.firstName) {
+    if (!trimmedFirstName) {
       newErrors.firstName = "The First Name field is required.";
-    } else if (!/^[A-Za-z\s]+$/.test(formData.firstName)) {
-      newErrors.firstName = "First Name must contain only letters.";
+    } else if (!nameRegex.test(trimmedFirstName)) {
+      newErrors.firstName =
+        "First Name may include letters, spaces, apostrophes, and hyphens.";
     }
 
-    if (!formData.lastName) {
+    if (!trimmedLastName) {
       newErrors.lastName = "The Last Name field is required.";
-    } else if (!/^[A-Za-z\s]+$/.test(formData.lastName)) {
-      newErrors.lastName = "Last Name must contain only letters.";
+    } else if (!nameRegex.test(trimmedLastName)) {
+      newErrors.lastName =
+        "Last Name may include letters, spaces, apostrophes, and hyphens.";
     }
-    if (!formData.email) newErrors.email = "The Email field is required.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
+    if (!trimmedEmail) newErrors.email = "The Email field is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail))
       newErrors.email = "Email address is invalid.";
 
     if (!formData.contactNumber) {
@@ -70,14 +78,26 @@ function AuthForm() {
       newErrors.contactNumber = "Contact Number must be exactly 10 digits.";
     }
 
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+    // Password validation - must match backend validation
     if (!formData.password) {
       newErrors.password = "The Password field is required.";
-    } else if (!passwordRegex.test(formData.password)) {
-      newErrors.password =
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+    } else {
+      if (formData.password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters long.";
+      } else if (!/[A-Z]/.test(formData.password)) {
+        newErrors.password =
+          "Password must include at least one uppercase letter.";
+      } else if (!/[a-z]/.test(formData.password)) {
+        newErrors.password =
+          "Password must include at least one lowercase letter.";
+      } else if (!/\d/.test(formData.password)) {
+        newErrors.password = "Password must include at least one number.";
+      } else if (
+        !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password)
+      ) {
+        newErrors.password =
+          "Password must include at least one special character.";
+      }
     }
 
     if (!formData.confirmPassword) {
@@ -97,18 +117,23 @@ function AuthForm() {
     setIsSubmitting(true);
 
     try {
+      const trimmedFirstName = formData.firstName.trim();
+      const trimmedLastName = formData.lastName.trim();
+      const trimmedEmail = formData.email.trim();
+      const trimmedContactNumber = formData.contactNumber.trim();
+
       const result = await createJobSeeker(
-        formData.firstName,
-        formData.lastName,
-        formData.email,
-        formData.contactNumber,
+        trimmedFirstName,
+        trimmedLastName,
+        trimmedEmail,
+        trimmedContactNumber,
         formData.password,
         formData.confirmPassword
       );
 
       Swal.fire({
-        icon: 'success',
-        title: 'Jobseeker Created!',
+        icon: "success",
+        title: "Jobseeker Created!",
         text: result.message,
         timer: 2000, // 2 seconds
         showConfirmButton: false,
@@ -123,12 +148,12 @@ function AuthForm() {
         confirmPassword: "",
       });
 
-      router.push(`/login?email=${encodeURIComponent(formData.email)}`);
+      router.push(`/login?email=${encodeURIComponent(trimmedEmail)}`);
     } catch (error) {
       setIsSubmitting(false);
       Swal.fire({
-        icon: 'error',
-        title: 'Failed to Create Jobseeker',
+        icon: "error",
+        title: "Failed to Create Jobseeker",
         text: error.message,
         timer: 2000, // 2 seconds
         showConfirmButton: false,
@@ -148,8 +173,9 @@ function AuthForm() {
               onChange={(e) =>
                 setFormData({ ...formData, [field]: e.target.value })
               }
-              className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors[field] ? "border-red-500" : "border-gray-300"
-                }`}
+              className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
+                errors[field] ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder={field === "firstName" ? "First Name" : "Last Name"}
             />
             {errors[field] && (
@@ -165,8 +191,9 @@ function AuthForm() {
           type="text"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.email ? "border-red-500" : "border-gray-300"
-            }`}
+          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
+            errors.email ? "border-red-500" : "border-gray-300"
+          }`}
           placeholder="Email"
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
@@ -182,8 +209,9 @@ function AuthForm() {
             const numericValue = e.target.value.replace(/\D/g, "");
             setFormData({ ...formData, contactNumber: numericValue });
           }}
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.contactNumber ? "border-red-500" : "border-gray-300"
-            }`}
+          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
+            errors.contactNumber ? "border-red-500" : "border-gray-300"
+          }`}
           placeholder="Contact Number"
           maxLength={10} // Ensures user can't type more than 10 digits
         />
@@ -194,16 +222,62 @@ function AuthForm() {
 
       {/* Password */}
       <label className="block">
-        <input
-          type="password"
-          value={formData.password}
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.password ? "border-red-500" : "border-gray-300"
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
+              errors.password ? "border-red-500" : "border-gray-300"
             }`}
-          placeholder="Enter Password"
-        />
+            placeholder="Enter Password"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 mt-0.5 text-gray-600 hover:text-blue-900 focus:outline-none"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
         {errors.password && (
           <p className="text-red-500 text-sm">{errors.password}</p>
         )}
@@ -211,23 +285,72 @@ function AuthForm() {
 
       {/* Confirm Password */}
       <label className="block">
-        <input
-          type="password"
-          value={formData.confirmPassword}
-          onChange={(e) =>
-            setFormData({ ...formData, confirmPassword: e.target.value })
-          }
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+        <div className="relative">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            value={formData.confirmPassword}
+            onChange={(e) =>
+              setFormData({ ...formData, confirmPassword: e.target.value })
+            }
+            className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
+              errors.confirmPassword ? "border-red-500" : "border-gray-300"
             }`}
-          placeholder="Confirm Password"
-        />
+            placeholder="Confirm Password"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 mt-0.5 text-gray-600 hover:text-blue-900 focus:outline-none"
+            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+          >
+            {showConfirmPassword ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
         {errors.confirmPassword && (
           <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
         )}
       </label>
 
       {/* Register Button */}
-      <Button disabled={isSubmitting} className="w-full py-3 mt-8 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <Button
+        disabled={isSubmitting}
+        className="w-full py-3 mt-8 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
         {isSubmitting ? "Please Wait..." : "Register"}
       </Button>
 

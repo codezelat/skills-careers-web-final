@@ -18,37 +18,63 @@ export const authOptions = {
     CredentialsProvider({
       async authorize(credentials) {
         const client = await connectToDatabase();
-        const userCollection = client.db().collection("users");
 
-        // Check if user exists in jobseekers collection
-        let user = await userCollection.findOne({
-          email: credentials.email,
-        });
+        try {
+          const db = client.db();
+          const userCollection = db.collection("users");
 
-        if (user) {
-          // Verify password for jobseeker
-          const isValid = await verifyPassword(
-            credentials.password,
-            user.password
-          );
-          if (!isValid) {
-            client.close();
-            throw new Error("Could not log you in!");
+          const user = await userCollection.findOne({
+            email: credentials.email,
+          });
+
+          if (user) {
+            const isValid = await verifyPassword(
+              credentials.password,
+              user.password
+            );
+
+            if (!isValid) {
+              throw new Error("Could not log you in!");
+            }
+
+            return {
+              id: user._id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
+              role: user.role,
+              profileImage: user.profileImage,
+            };
           }
-          client.close();
-          return {
-            id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            role: user.role,
-            profileImage: user.profileImage
-          };
-        }
 
-        // If no user is found in either collection
-        client.close();
-        throw new Error("No user found");
+          const admin = await db.collection("admins").findOne({
+            email: credentials.email,
+          });
+
+          if (admin) {
+            const isValid = await verifyPassword(
+              credentials.password,
+              admin.password
+            );
+
+            if (!isValid) {
+              throw new Error("Could not log you in!");
+            }
+
+            return {
+              id: admin._id,
+              firstName: admin.firstName,
+              lastName: admin.lastName,
+              email: admin.email,
+              role: "admin",
+              profileImage: admin.profileImage,
+            };
+          }
+
+          throw new Error("No user found");
+        } finally {
+          await client.close();
+        }
       },
     }),
     GoogleProvider({

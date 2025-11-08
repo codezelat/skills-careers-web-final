@@ -1,8 +1,12 @@
 import { hashPassword } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 export async function POST(req) {
+  let client;
+  let session;
+
   try {
     const data = await req.json();
     const {
@@ -39,8 +43,16 @@ export async function POST(req) {
     }
 
     // Connect to database
-    const client = await connectToDatabase();
+    client = await connectToDatabase();
     const db = client.db();
+
+    const existingUser = await db.collection("users").findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "User exists already!" },
+        { status: 422 }
+      );
+    }
 
     // Check if user already exists
     const existingAdmin = await db.collection("admins").findOne({ email });
@@ -54,28 +66,36 @@ export async function POST(req) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Insert user into the database
-    const result = await db.collection("admins").insertOne({
-      firstName,
-      lastName,
-      contactNumber,
-      email,
-      password: hashedPassword,
-      profileImage,
-      createdAt: new Date(),
+    session = client.startSession();
+
+    await session.withTransaction(async () => {
+      const userResult = await db.collection("users").insertOne(
+        {
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+          profileImage,
+          role: "admin",
+          createdAt: new Date(),
+        },
+        { session }
+      );
+
+      await db.collection("admins").insertOne(
+        {
+          firstName,
+          lastName,
+          contactNumber,
+          email,
+          password: hashedPassword,
+          profileImage,
+          userId: new ObjectId(userResult.insertedId),
+          createdAt: new Date(),
+        },
+        { session }
+      );
     });
-
-    if (result.insertedId) {
-      await db
-        .collection("admins")
-        .updateOne(
-          { _id: result.insertedId },
-          { $set: { adminId: new ObjectId(result.insertedId) } }
-        );
-    }
-
-    // Close the database connection
-    client.close();
 
     return NextResponse.json({ message: "Admin created!" }, { status: 201 });
   } catch (error) {
@@ -83,5 +103,12 @@ export async function POST(req) {
       { message: "Something went wrong.", error: error.message },
       { status: 500 }
     );
+  } finally {
+    if (session) {
+      await session.endSession();
+    }
+    if (client) {
+      await client.close();
+    }
   }
 }
