@@ -23,6 +23,8 @@ function Login() {
   const [showForgotPasswordPopup, setShowForgotPasswordPopup] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+  const [showRoleSelectionModal, setShowRoleSelectionModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -84,11 +86,20 @@ function Login() {
     }
   }
 
-  // Handle Google Sign In
+  // Handle Google Sign In - Show role selection modal first
   const handleGoogleSignIn = async () => {
+    setShowRoleSelectionModal(true);
+  };
+
+  // Handle role selection and proceed with Google sign in
+  const handleRoleSelection = async (role) => {
+    setSelectedRole(role);
+    setShowRoleSelectionModal(false);
+    
     try {
       await signIn("google", {
         redirect: false,
+        callbackUrl: role === "jobseeker" ? "/startingpage" : "/Portal/dashboard",
       });
     } catch (error) {
       setErrorMessage("Failed to sign in with Google. Please try again.");
@@ -286,9 +297,85 @@ function Login() {
         </div>
       )}
 
+      {/* Role Selection Modal */}
+      {showRoleSelectionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+            {/* Header */}
+            <div className="px-6 py-4" style={{ backgroundColor: 'rgb(30, 64, 175)' }}>
+              <h2 className="text-xl font-bold text-white text-center">
+                Choose Your Role
+              </h2>
+              <p className="text-blue-100 text-sm text-center mt-1">
+                Select how you'd like to continue with Google
+              </p>
+            </div>
+
+            {/* Role Options */}
+            <div className="p-6 space-y-4">
+              {/* Job Seeker Option */}
+              <div
+                onClick={() => handleRoleSelection("jobseeker")}
+                className="cursor-pointer group relative bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-4 hover:border-green-400 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-green-100 p-3 rounded-full group-hover:bg-green-200 transition-colors">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-800 text-lg">Job Seeker</h3>
+                    <p className="text-gray-600 text-sm">Looking for career opportunities</p>
+                  </div>
+                  <div className="text-green-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recruiter Option */}
+              <div
+                onClick={() => handleRoleSelection("recruiter")}
+                className="cursor-pointer group relative bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-4 hover:border-blue-400 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-blue-100 p-3 rounded-full group-hover:bg-blue-200 transition-colors">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-800 text-lg">Recruiter</h3>
+                    <p className="text-gray-600 text-sm">Hiring talented professionals</p>
+                  </div>
+                  <div className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gray-50 px-6 py-4 flex justify-center">
+              <button
+                onClick={() => setShowRoleSelectionModal(false)}
+                className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Forgot Password Popup */}
       {showForgotPasswordPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
           <div className="bg-white p-6 rounded-lg">
             <h2 className="text-xl font-bold mb-4">Forgot Password</h2>
             <form onSubmit={handleForgotPasswordSubmit}>
