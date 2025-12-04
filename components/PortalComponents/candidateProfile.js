@@ -99,7 +99,13 @@ export default function CandidateProfile() {
             throw new Error("Failed to fetch experience details");
           const newExperienceData = await experienceResponse.json();
 
-          setExperienceDetails(newExperienceData.experiences);
+          // Sort experiences: Current (no endDate) first, then by startDate descending
+          const sortedExperiences = newExperienceData.experiences.sort((a, b) => {
+            if (!a.endDate && b.endDate) return -1; // a is current, b is not
+            if (a.endDate && !b.endDate) return 1;  // b is current, a is not
+            return new Date(b.startDate) - new Date(a.startDate); // both current or both past
+          });
+          setExperienceDetails(sortedExperiences);
 
           const educationResponse = await fetch(
             `/api/jobseekerdetails/education/all?id=${jobSeekerData.jobseeker._id}`
@@ -108,7 +114,13 @@ export default function CandidateProfile() {
             throw new Error("Failed to fetch experience details");
           const educationeData = await educationResponse.json();
 
-          setEducationDetails(educationeData.educations);
+          // Sort education: Current (no endDate) first, then by startDate descending
+          const sortedEducation = educationeData.educations.sort((a, b) => {
+            if (!a.endDate && b.endDate) return -1;
+            if (a.endDate && !b.endDate) return 1;
+            return new Date(b.startDate) - new Date(a.startDate);
+          });
+          setEducationDetails(sortedEducation);
 
           const certificationResponse = await fetch(
             `/api/jobseekerdetails/certification/all?id=${jobSeekerData.jobseeker._id}`
@@ -117,7 +129,11 @@ export default function CandidateProfile() {
             throw new Error("Failed to fetch experience details");
           const certificationData = await certificationResponse.json();
 
-          setCertificationDetails(certificationData.licensesandcertifications);
+          // Sort certifications by receivedDate descending (latest first)
+          const sortedCertifications = certificationData.licensesandcertifications.sort((a, b) =>
+            new Date(b.receivedDate) - new Date(a.receivedDate)
+          );
+          setCertificationDetails(sortedCertifications);
         } catch (err) {
           setError(err.message);
           console.error("Fetch error:", err);
