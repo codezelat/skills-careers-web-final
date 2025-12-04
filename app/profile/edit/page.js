@@ -3,7 +3,11 @@
 import NavBar from "@/components/navBar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import EducationSection from "./EducationSection";
+import ExperienceSection from "./ExperienceSection";
+import CertificationSection from "./CertificationSection";
+import SkillSection from "./SkillSection";
 
 function EditProfileForm() {
   const router = useRouter();
@@ -24,43 +28,44 @@ function EditProfileForm() {
     religion: "",
     address: "",
     ethnicity: "",
-    experience: "",
-    education: "",
-    licensesCertifications: "",
     softSkills: "",
     professionalExpertise: "",
-    profileImage: "", // Added profile image field
+    profileImage: "",
+    educations: [],
+    experiences: [],
+    certifications: [],
   });
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login"); // Redirect to login if unauthenticated
+      router.push("/login");
     }
   }, [status, router]);
 
-  useEffect(() => {
+  const fetchJobSeekerDetails = useCallback(async () => {
     if (session?.user?.email) {
-      const fetchJobSeekerDetails = async (e) => {
-        try {
-          const response = await fetch(
-            `/api/jobseekerdetails/get?email=${session.user.email}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setJobSeekerDetails(data);
-          } else {
-            console.error("Failed to fetch job seeker details");
-          }
-        } catch (error) {
-          console.error("Error fetching job seeker details:", error);
+      try {
+        const response = await fetch(
+          `/api/jobseekerdetails/get?email=${session.user.email}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          // The API returns { jobseeker: { ... } }
+          setJobSeekerDetails(data.jobseeker);
+        } else {
+          console.error("Failed to fetch job seeker details");
         }
-      };
-
-      fetchJobSeekerDetails();
+      } catch (error) {
+        console.error("Error fetching job seeker details:", error);
+      }
     }
   }, [session]);
 
-  const handleInputChange = (e) => { 
+  useEffect(() => {
+    fetchJobSeekerDetails();
+  }, [fetchJobSeekerDetails]);
+
+  const handleInputChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
     setJobSeekerDetails((prev) => ({ ...prev, [name]: value }));
@@ -69,12 +74,16 @@ function EditProfileForm() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
+      // We only update the main jobseeker details here.
+      // Education, Experience, Certifications are handled in their own sections.
+      const { educations, experiences, certifications, _id, ...updateData } = jobSeekerDetails;
+
       const response = await fetch(`/api/jobseekerdetails/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(jobSeekerDetails),
+        body: JSON.stringify({ ...updateData, email: session.user.email }),
       });
       if (response.ok) {
         alert("Details updated successfully!");
@@ -91,12 +100,15 @@ function EditProfileForm() {
     router.push(`/profile`);
   };
 
+  if (status === "loading" || !jobSeekerDetails) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="p-4">
-      <div className="grid justify-center">
-      </div>
+      <div className="grid justify-center"></div>
 
-      <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">
+      <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2 max-w-4xl mx-auto">
         <button
           onClick={handleCloseForm}
           className="px-2 py-1 ml-auto border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
@@ -104,242 +116,195 @@ function EditProfileForm() {
           close
         </button>
         <h1 className="text-2xl font-bold mb-8">Update Job Seeker Details</h1>
-        {session ? (
-          <p className="text-sm font-bold text-gray-400 mb-1">
-            Edit your details now
-          </p>
-        ) : (
-          <p>Loading...</p>
-        )}
-        <form onSubmit={handleFormSubmit}>
-          <p
-            htmlFor="firstName"
-            className="text-base font-bold text-black mb-1"
-          >
-            First Name
-          </p>
-          <input
-            type="text"
-            name="firstName"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.firstName || ""}
-            onChange={handleInputChange}
-          />
 
-          <p htmlFor="lastName" className="text-base font-bold text-black mb-1">
-            Last Name
-          </p>
-          <input
-            type="text"
-            name="lastName"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.lastName || ""}
-            onChange={handleInputChange}
-          />
+        <form onSubmit={handleFormSubmit} className="w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div>
+              <p className="text-base font-bold text-black mb-1">First Name</p>
+              <input
+                type="text"
+                name="firstName"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.firstName || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p
-            htmlFor="contactNumber"
-            className="text-base font-bold text-black mb-1"
-          >
-            Contact Number
-          </p>
-          <input
-            type="text"
-            name="contactNumber"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.contactNumber || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Last Name</p>
+              <input
+                type="text"
+                name="lastName"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.lastName || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p htmlFor="position" className="text-base font-bold text-black mb-1">
-            Position
-          </p>
-          <input
-            type="text"
-            name="position"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.position || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Contact Number</p>
+              <input
+                type="text"
+                name="contactNumber"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.contactNumber || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p
-            htmlFor="personalProfile"
-            className="text-base font-bold text-black mb-1"
-          >
-            Personal Profile
-          </p>
-          <textarea
-            name="personalProfile"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.personalProfile || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Position</p>
+              <input
+                type="text"
+                name="position"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.position || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p htmlFor="dob" className="text-base font-bold text-black mb-1">
-            DOB
-          </p>
-          <input
-            type="date"
-            name="dob"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.dob || ""}
-            onChange={handleInputChange}
-          />
+            <div className="md:col-span-2">
+              <p className="text-base font-bold text-black mb-1">Personal Profile</p>
+              <textarea
+                name="personalProfile"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.personalProfile || ""}
+                onChange={handleInputChange}
+                rows={4}
+              />
+            </div>
 
-          <p
-            htmlFor="nationality"
-            className="text-base font-bold text-black mb-1"
-          >
-            Nationality
-          </p>
-          <input
-            type="text"
-            name="nationality"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.nationality || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">DOB</p>
+              <input
+                type="date"
+                name="dob"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.dob || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p
-            htmlFor="maritalStatus"
-            className="text-base font-bold text-black mb-1"
-          >
-            Marital Status
-          </p>
-          <input
-            type="text"
-            name="maritalStatus"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.maritalStatus || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Nationality</p>
+              <input
+                type="text"
+                name="nationality"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.nationality || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p
-            htmlFor="languages"
-            className="text-base font-bold text-black mb-1"
-          >
-            Languages
-          </p>
-          <input
-            type="text"
-            name="languages"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.languages || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Marital Status</p>
+              <input
+                type="text"
+                name="maritalStatus"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.maritalStatus || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p htmlFor="religion" className="text-base font-bold text-black mb-1">
-            Religion
-          </p>
-          <input
-            type="text"
-            name="religion"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.religion || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Languages</p>
+              <input
+                type="text"
+                name="languages"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.languages || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p htmlFor="address" className="text-base font-bold text-black mb-1">
-            Address
-          </p>
-          <input
-            type="text"
-            name="address"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.address || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Religion</p>
+              <input
+                type="text"
+                name="religion"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.religion || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p
-            htmlFor="ethnicity"
-            className="text-base font-bold text-black mb-1"
-          >
-            Ethnicity
-          </p>
-          <input
-            type="text"
-            name="ethnicity"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.ethnicity || ""}
-            onChange={handleInputChange}
-          />
+            <div className="md:col-span-2">
+              <p className="text-base font-bold text-black mb-1">Address</p>
+              <input
+                type="text"
+                name="address"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.address || ""}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <p
-            htmlFor="experience"
-            className="text-base font-bold text-black mb-1"
-          >
-            Experience
-          </p>
-          <input
-            type="text"
-            name="experience"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.experience || ""}
-            onChange={handleInputChange}
-          />
+            <div>
+              <p className="text-base font-bold text-black mb-1">Ethnicity</p>
+              <input
+                type="text"
+                name="ethnicity"
+                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                value={jobSeekerDetails.ethnicity || ""}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
 
-          <p
-            htmlFor="education"
-            className="text-base font-bold text-black mb-1"
-          >
-            Education
-          </p>
-          <input
-            type="text"
-            name="education"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.education || ""}
-            onChange={handleInputChange}
-          />
+          <hr className="my-8 border-gray-300" />
 
-          <p
-            htmlFor="licensesCertifications"
-            className="text-base font-bold text-black mb-1"
-          >
-            Licenses & Certifications
-          </p>
-          <input
-            type="text"
-            name="licensesCertifications"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.licensesCertifications || ""}
-            onChange={handleInputChange}
-          />
+          {/* Structured Sections */}
+          {jobSeekerDetails._id && (
+            <>
+              <ExperienceSection
+                experiences={jobSeekerDetails.experiences}
+                jobseekerId={jobSeekerDetails._id}
+                onRefresh={fetchJobSeekerDetails}
+              />
 
-          <p
-            htmlFor="softSkills"
-            className="text-base font-bold text-black mb-1"
-          >
-            Soft Skills
-          </p>
-          <input
-            type="text"
-            name="softSkills"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.softSkills || ""}
-            onChange={handleInputChange}
-          />
+              <EducationSection
+                educations={jobSeekerDetails.educations}
+                jobseekerId={jobSeekerDetails._id}
+                onRefresh={fetchJobSeekerDetails}
+              />
 
-          <p
-            htmlFor="professionalExpertise"
-            className="text-base font-bold text-black mb-1"
-          >
-            Professional Expertise
-          </p>
-          <input
-            type="text"
-            name="professionalExpertise"
-            className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            value={jobSeekerDetails.professionalExpertise || ""}
-            onChange={handleInputChange}
-          />
-          <br/>
+              <CertificationSection
+                certifications={jobSeekerDetails.certifications}
+                jobseekerId={jobSeekerDetails._id}
+                onRefresh={fetchJobSeekerDetails}
+              />
+            </>
+          )}
+
+          <hr className="my-8 border-gray-300" />
+
+          <div className="grid grid-cols-1 gap-4 mb-8">
+            <SkillSection
+              title="Soft Skills"
+              initialSkills={jobSeekerDetails.softSkills}
+              onSave={(newSkills) =>
+                setJobSeekerDetails((prev) => ({ ...prev, softSkills: newSkills }))
+              }
+            />
+
+            <SkillSection
+              title="Professional Expertise"
+              initialSkills={jobSeekerDetails.professionalExpertise}
+              onSave={(newSkills) =>
+                setJobSeekerDetails((prev) => ({
+                  ...prev,
+                  professionalExpertise: newSkills,
+                }))
+              }
+            />
+          </div>
 
           <button
             type="submit"
-            className="w-96 px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors"
+            className="w-full px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors font-bold"
           >
-            Update Details
+            Update Main Details
           </button>
         </form>
       </div>

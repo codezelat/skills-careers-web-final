@@ -431,7 +431,7 @@ export default function CandidateProfile() {
         `/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`
       );
       const updatedEducationData = await educationResponse.json();
-      setExperienceDetails(updatedEducationData.educations);
+      setEducationDetails(updatedEducationData.educations);
 
       setOpenCreateEducationoForm(false);
       setNewEducationData({
@@ -477,10 +477,10 @@ export default function CandidateProfile() {
       if (!response.ok) throw new Error("Failed to add education");
 
       const certificationResponse = await fetch(
-        `/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`
+        `/api/jobseekerdetails/certification/all?id=${jobSeekerDetails._id}`
       );
       const updatedCertificationData = await certificationResponse.json();
-      setNewCertificationData(
+      setCertificationDetails(
         updatedCertificationData.licensesandcertifications
       );
 
@@ -641,6 +641,58 @@ export default function CandidateProfile() {
       if (!response.ok) throw new Error("Failed to delete expertise");
     } catch (error) {
       console.error("Error deleting expertise:", error);
+    }
+  };
+
+  // update soft skill
+  const handleUpdateSoftSkill = async (oldSkill, newSkill) => {
+    try {
+      const updatedSoftSkills = jobSeekerDetails.softSkills.map((skill) =>
+        skill === oldSkill ? newSkill : skill
+      );
+
+      const updatedJobSeekerDetails = {
+        ...jobSeekerDetails,
+        softSkills: updatedSoftSkills,
+      };
+      setJobseekerDetails(updatedJobSeekerDetails);
+
+      const response = await fetch("/api/jobseekerdetails/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedJobSeekerDetails),
+      });
+
+      if (!response.ok) throw new Error("Failed to update soft skill");
+    } catch (error) {
+      console.error("Error updating soft skill:", error);
+      alert("Failed to update soft skill");
+    }
+  };
+
+  // update expertise
+  const handleUpdateExpertise = async (oldExpertise, newExpertise) => {
+    try {
+      const updatedExpertise = jobSeekerDetails.professionalExpertise.map((exp) =>
+        exp === oldExpertise ? newExpertise : exp
+      );
+
+      const updatedJobSeekerDetails = {
+        ...jobSeekerDetails,
+        professionalExpertise: updatedExpertise,
+      };
+      setJobseekerDetails(updatedJobSeekerDetails);
+
+      const response = await fetch("/api/jobseekerdetails/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedJobSeekerDetails),
+      });
+
+      if (!response.ok) throw new Error("Failed to update expertise");
+    } catch (error) {
+      console.error("Error updating expertise:", error);
+      alert("Failed to update expertise");
     }
   };
 
@@ -1070,10 +1122,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.softSkills?.map((skills, index) => (
               <SoftSkillsCard key={index} skills={skills} />
             )) ?? (
-              <p className="text-gray-500 text-sm">
-                No soft skills data available.
-              </p>
-            )}
+                <p className="text-gray-500 text-sm">
+                  No soft skills data available.
+                </p>
+              )}
           </div>
         </div>
 
@@ -1110,10 +1162,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
               <ExpertiseCard key={index} expertise={expertise} />
             )) ?? (
-              <p className="text-gray-500 text-sm">
-                No professional expertise data available.
-              </p>
-            )}
+                <p className="text-gray-500 text-sm">
+                  No professional expertise data available.
+                </p>
+              )}
           </div>
         </div>
 
@@ -1259,11 +1311,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateExperience}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-700"
-                  }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1357,11 +1408,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateEducation}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-700"
-                  }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1442,11 +1492,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateCertification}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-700"
-                  }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1501,11 +1550,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddSoftSkill}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-700"
-                  }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1559,11 +1607,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddExpertise}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-700"
-                  }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1689,12 +1736,13 @@ export default function CandidateProfile() {
                     key={index}
                     skill={skill}
                     onDelete={() => handleDeleteSoftSkill(skill)}
+                    onUpdate={handleUpdateSoftSkill}
                   />
                 )) ?? (
-                  <p className="text-gray-500 text-sm">
-                    No soft skills data available.
-                  </p>
-                )}
+                    <p className="text-gray-500 text-sm">
+                      No soft skills data available.
+                    </p>
+                  )}
               </div>
             </div>
           </div>
@@ -1722,13 +1770,14 @@ export default function CandidateProfile() {
                       key={index}
                       expertise={expertise}
                       onDelete={() => handleDeleteExpertise(expertise)}
+                      onUpdate={handleUpdateExpertise}
                     />
                   )
                 ) ?? (
-                  <p className="text-gray-500 text-sm">
-                    No professional expertise data available.
-                  </p>
-                )}
+                    <p className="text-gray-500 text-sm">
+                      No professional expertise data available.
+                    </p>
+                  )}
               </div>
             </div>
           </div>

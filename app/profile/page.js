@@ -220,75 +220,79 @@ function Profile() {
           <h1 className="text-xl font-bold mb-4">My Profile</h1>
 
           <div>
-            {/* <p className="text-sm text-gray-600">First Name </p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.firstName}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Last Name </p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.lastName}
-          </p> */}
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-[#001571] mb-3">Experience</h3>
+              {jobSeekerDetails.experiences && jobSeekerDetails.experiences.length > 0 ? (
+                <div className="space-y-4">
+                  {jobSeekerDetails.experiences.map((exp, index) => (
+                    <div key={index} className="border-l-4 border-blue-500 pl-4 py-2 bg-gray-50 rounded-r">
+                      <p className="font-bold text-lg">{exp.position}</p>
+                      <p className="font-semibold text-gray-700">{exp.companyName}</p>
+                      <p className="text-sm text-gray-500">
+                        {exp.city}, {exp.country} | {exp.startDate} - {exp.endDate}
+                      </p>
+                      {exp.description && <p className="text-gray-600 mt-2">{exp.description}</p>}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">No experience added.</p>
+              )}
+            </div>
 
-            <p className="text-sm text-gray-600">Contact Number</p>
-            <p className="text-base font-bold text-black mb-3">
-              {jobSeekerDetails.contactNumber}
-            </p>
-            <p className="text-sm text-gray-600">Position</p>
-            <p className="text-base font-bold text-black mb-3">
-              {jobSeekerDetails.position}
-            </p>
-            {/* <p className="text-sm text-gray-600">Personal Profile</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.personalProfile}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">DOB</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.dob}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Nationality</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.nationality}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Marital Status</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.maritalStatus}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Languages</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.languages}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Religion</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.religion}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Address</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.address}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Ethnicity</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.ethnicity}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Experience</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.experience}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Education</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.education}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Licenses & Certifications</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.licensesCertifications}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Soft Skills</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.softSkills}
-          </p> */}
-            {/* <p className="text-sm text-gray-600">Professional Expertise</p>
-          <p className="text-base font-bold text-black mb-3">
-            {jobSeekerDetails.professionalExpertise}
-          </p> */}
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-[#001571] mb-3">Education</h3>
+              {jobSeekerDetails.educations && jobSeekerDetails.educations.length > 0 ? (
+                <div className="space-y-4">
+                  {jobSeekerDetails.educations.map((edu, index) => (
+                    <div key={index} className="border-l-4 border-green-500 pl-4 py-2 bg-gray-50 rounded-r">
+                      <p className="font-bold text-lg">{edu.educationName}</p>
+                      <p className="font-semibold text-gray-700">{edu.location}</p>
+                      <p className="text-sm text-gray-500">
+                        {edu.startDate} - {edu.endDate}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">No education added.</p>
+              )}
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-[#001571] mb-3">Licenses & Certifications</h3>
+              {jobSeekerDetails.certifications && jobSeekerDetails.certifications.length > 0 ? (
+                <div className="space-y-4">
+                  {jobSeekerDetails.certifications.map((cert, index) => (
+                    <div key={index} className="border-l-4 border-yellow-500 pl-4 py-2 bg-gray-50 rounded-r">
+                      <p className="font-bold text-lg">{cert.certificateName}</p>
+                      <p className="font-semibold text-gray-700">{cert.organizationName}</p>
+                      <p className="text-sm text-gray-500">Received: {cert.receivedDate}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">No certifications added.</p>
+              )}
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-[#001571] mb-3">Soft Skills</h3>
+              {jobSeekerDetails.softSkills ? (
+                <p className="text-gray-700 whitespace-pre-wrap">{jobSeekerDetails.softSkills}</p>
+              ) : (
+                <p className="text-gray-500 italic">No soft skills added.</p>
+              )}
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-[#001571] mb-3">Professional Expertise</h3>
+              {jobSeekerDetails.professionalExpertise ? (
+                <p className="text-gray-700 whitespace-pre-wrap">{jobSeekerDetails.professionalExpertise}</p>
+              ) : (
+                <p className="text-gray-500 italic">No professional expertise added.</p>
+              )}
+            </div>
           </div>
         </div>
 

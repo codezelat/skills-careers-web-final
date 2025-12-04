@@ -1,17 +1,27 @@
 "use client";
 import React, { useState } from "react";
-import { RiDeleteBinFill } from "react-icons/ri";
+import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
+import { PiCheckCircle } from "react-icons/pi";
 
 export default function CertificationCardEdit({ certification, onDelete }) {
-    const [isHovered, setIsHovered] = useState(false);
+    const [isHoveredDelete, setIsHoveredDelete] = useState(false);
+    const [isHoveredEdit, setIsHoveredEdit] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const [formData, setFormData] = useState({
+        certificateName: certification.certificateName || "",
+        organizationName: certification.organizationName || "",
+        receivedDate: certification.receivedDate ? new Date(certification.receivedDate).toISOString().split('T')[0] : "",
+    });
 
     const handleDelete = async () => {
         const isConfirmed = window.confirm(
             "Are you sure you want to delete this certification?"
         );
-    
+
         if (!isConfirmed) return;
-    
+
         try {
             const response = await fetch(
                 `/api/jobseekerdetails/certification/delete?id=${certification._id}`,
@@ -19,11 +29,11 @@ export default function CertificationCardEdit({ certification, onDelete }) {
                     method: "DELETE",
                 }
             );
-    
+
             if (!response.ok) {
                 throw new Error("Failed to delete certification");
             }
-    
+
             if (onDelete) {
                 onDelete(certification._id);
             } else {
@@ -35,25 +45,96 @@ export default function CertificationCardEdit({ certification, onDelete }) {
         }
     };
 
-    const date = new Date(certification.receivedDate).getDate();
-        const monthName = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-        ];
-        const d = new Date(certification.receivedDate);
-        let month = monthName[d.getMonth()];
-        const year = new Date(certification.receivedDate).getFullYear();
-        const postedDate = `${month} ${year}`;
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const response = await fetch(`/api/jobseekerdetails/certification/update`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...formData, _id: certification._id }),
+            });
+
+            if (!response.ok) throw new Error("Failed to update certification");
+
+            setIsEditing(false);
+            window.location.reload(); // Refresh to show changes
+        } catch (error) {
+            console.error("Update error:", error);
+            alert(error.message || "Failed to update certification");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const monthName = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December",
+    ];
+    const d = new Date(certification.receivedDate);
+    let month = monthName[d.getMonth()];
+    const year = new Date(certification.receivedDate).getFullYear();
+    const postedDate = `${month} ${year}`;
+
+    if (isEditing) {
+        return (
+            <form onSubmit={handleUpdate} className="py-4 border-b-2 space-y-4">
+                <div>
+                    <label className="block text-sm font-semibold text-[#001571]">Certificate Name</label>
+                    <input
+                        type="text"
+                        name="certificateName"
+                        value={formData.certificateName}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-semibold text-[#001571]">Organization Name</label>
+                    <input
+                        type="text"
+                        name="organizationName"
+                        value={formData.organizationName}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        required
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-semibold text-[#001571]">Received Date</label>
+                    <input
+                        type="date"
+                        name="receivedDate"
+                        value={formData.receivedDate}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    />
+                </div>
+                <div className="flex justify-end gap-2 mt-2">
+                    <button
+                        type="button"
+                        onClick={() => setIsEditing(false)}
+                        className="px-3 py-2 text-gray-600 hover:text-gray-800"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="bg-[#001571] text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-800"
+                    >
+                        {isSubmitting ? "Saving..." : "Save"} <PiCheckCircle />
+                    </button>
+                </div>
+            </form>
+        );
+    }
 
     return (
         <div className="flex flex-row gap-2 py-4 border-b-2 justify-between">
@@ -68,20 +149,30 @@ export default function CertificationCardEdit({ certification, onDelete }) {
                     {certification.organizationName}
                 </div>
             </div>
-            <div className="flex flex-row items-center mr-6">
+            <div className="flex flex-row items-center mr-6 gap-2">
+                <button
+                    onClick={() => setIsEditing(true)}
+                    onMouseEnter={() => setIsHoveredEdit(true)}
+                    onMouseLeave={() => setIsHoveredEdit(false)}
+                    className="flex items-center justify-center bg-[#E8E8E8] text-white p-3 rounded-full shadow hover:bg-blue-600 transition-colors"
+                    aria-label="Edit certification"
+                >
+                    <RiEdit2Fill
+                        size={20}
+                        color={isHoveredEdit ? "#ffffff" : "#001571"} />
+                </button>
                 <button
                     onClick={handleDelete}
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
+                    onMouseEnter={() => setIsHoveredDelete(true)}
+                    onMouseLeave={() => setIsHoveredDelete(false)}
                     className="flex items-center justify-center bg-[#E8E8E8] text-white p-3 rounded-full shadow hover:bg-red-600 transition-colors"
                     aria-label="Delete certification"
                 >
                     <RiDeleteBinFill
                         size={20}
-                        color={isHovered ? "#ffffff" : "#001571"} />
+                        color={isHoveredDelete ? "#ffffff" : "#001571"} />
                 </button>
             </div>
-            {/* <div className="text-sm text-gray-500">Posted on: {postedDate}</div> */}
         </div>
     );
 }

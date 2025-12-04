@@ -7,7 +7,7 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    const userId = searchParams.get("userId"); 
+    const userId = searchParams.get("userId");
 
     if (!id && !userId) {
       return NextResponse.json(
@@ -48,8 +48,32 @@ export async function GET(req) {
       );
     }
 
+    const jobseekerId = jobseeker._id;
+
+    const educations = await db
+      .collection("educations")
+      .find({ jobseekerId: new ObjectId(jobseekerId) })
+      .toArray();
+
+    const experiences = await db
+      .collection("experiences")
+      .find({ jobseekerId: new ObjectId(jobseekerId) })
+      .toArray();
+
+    const certifications = await db
+      .collection("licensesandcertifications")
+      .find({ jobseekerId: new ObjectId(jobseekerId) })
+      .toArray();
+
+    const jobseekerDetails = {
+      ...jobseeker,
+      educations,
+      experiences,
+      certifications,
+    };
+
     return NextResponse.json(
-      { jobseeker },
+      { jobseeker: jobseekerDetails },
       {
         status: 200,
         headers: {
@@ -60,7 +84,7 @@ export async function GET(req) {
           "Surrogate-Control": "no-store",
           Pragma: "no-cache",
           Expires: "0",
-          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+          "x-netlify-cache": "miss",
         },
       }
     );
