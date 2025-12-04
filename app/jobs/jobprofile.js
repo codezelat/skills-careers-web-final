@@ -293,7 +293,7 @@ function JobProfile({ slug }) {
               <div className="flex items-center justify-between relative w-full px-[20px] xl:px-[0px] ">
 
                 <div className="swiper-button-prev-custom flex items-center justify-center">
-                  <img src="/left.png" />
+                  <img src="/left.png" alt="Left arrow" />
                 </div>
 
                 <Swiper
@@ -318,7 +318,7 @@ function JobProfile({ slug }) {
                 >
                   {featuredJobs.map((job, index) => (
                     <SwiperSlide key={index}>
-                      <JobCard job={job}/>
+                      <JobCard job={job} />
                     </SwiperSlide>
                   ))}
 
@@ -326,7 +326,7 @@ function JobProfile({ slug }) {
                 </Swiper>
 
                 <div className="swiper-button-next-custom flex items-center justify-center">
-                  <img src="/right.png" />
+                  <img src="/right.png" alt="Right arrow" />
                 </div>
 
               </div>

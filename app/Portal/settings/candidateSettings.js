@@ -1,3 +1,8 @@
+"use client";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import PortalLoading from "../loading";
 import CredentialsForm from "./credentialsEditForm";
 import PasswordReset from "@/components/PortalComponents/passwordReset";
 import Swal from "sweetalert2";
@@ -9,6 +14,7 @@ export default function CandidateSettings() {
     const [showCredentialsForm, setShowCredentialsForm] = useState(false);
     const [showResetPassword, setShowResetPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const [userDetails, setUserDetails] = useState({
         _id: '',
@@ -32,7 +38,6 @@ export default function CandidateSettings() {
                     }
 
                     setUserDetails(userData.user);
-                    console.log("first name : ", userDetails.firstName);
                 } catch (err) {
                     setError(err.message);
                 } finally {

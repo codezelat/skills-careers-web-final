@@ -146,10 +146,10 @@ function ApplicationForm({ jobid }) {
       }
     };
 
-    if (jobid) {
-      fetchJobDetails();
+    if (session?.user?.id) {
+      fetchJobSeekerDetails();
     }
-  }, [jobid]);
+  }, [session]);
 
   useEffect(() => {
     const fetchRecruiterDetails = async () => {

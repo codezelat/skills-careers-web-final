@@ -33,6 +33,29 @@ import ExpertiseCard from "./expertiseCard";
 import ExpertiseCardEdit from "./expertiseCardEdit";
 import GenerateCV from "@/lib/GenerateCV";
 
+// Sorting Helpers
+const sortExperiences = (experiences) => {
+  return experiences.sort((a, b) => {
+    if (!a.endDate && b.endDate) return -1; // a is current, b is not
+    if (a.endDate && !b.endDate) return 1;  // b is current, a is not
+    return new Date(b.startDate) - new Date(a.startDate); // both current or both past
+  });
+};
+
+const sortEducations = (educations) => {
+  return educations.sort((a, b) => {
+    if (!a.endDate && b.endDate) return -1;
+    if (a.endDate && !b.endDate) return 1;
+    return new Date(b.startDate) - new Date(a.startDate);
+  });
+};
+
+const sortCertifications = (certifications) => {
+  return certifications.sort((a, b) =>
+    new Date(b.receivedDate) - new Date(a.receivedDate)
+  );
+};
+
 export default function CandidateProfile() {
   const [activeTab, setActiveTab] = useState("Profile");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -100,11 +123,7 @@ export default function CandidateProfile() {
           const newExperienceData = await experienceResponse.json();
 
           // Sort experiences: Current (no endDate) first, then by startDate descending
-          const sortedExperiences = newExperienceData.experiences.sort((a, b) => {
-            if (!a.endDate && b.endDate) return -1; // a is current, b is not
-            if (a.endDate && !b.endDate) return 1;  // b is current, a is not
-            return new Date(b.startDate) - new Date(a.startDate); // both current or both past
-          });
+          const sortedExperiences = sortExperiences(newExperienceData.experiences);
           setExperienceDetails(sortedExperiences);
 
           const educationResponse = await fetch(
@@ -115,11 +134,7 @@ export default function CandidateProfile() {
           const educationeData = await educationResponse.json();
 
           // Sort education: Current (no endDate) first, then by startDate descending
-          const sortedEducation = educationeData.educations.sort((a, b) => {
-            if (!a.endDate && b.endDate) return -1;
-            if (a.endDate && !b.endDate) return 1;
-            return new Date(b.startDate) - new Date(a.startDate);
-          });
+          const sortedEducation = sortEducations(educationeData.educations);
           setEducationDetails(sortedEducation);
 
           const certificationResponse = await fetch(
@@ -130,9 +145,7 @@ export default function CandidateProfile() {
           const certificationData = await certificationResponse.json();
 
           // Sort certifications by receivedDate descending (latest first)
-          const sortedCertifications = certificationData.licensesandcertifications.sort((a, b) =>
-            new Date(b.receivedDate) - new Date(a.receivedDate)
-          );
+          const sortedCertifications = sortCertifications(certificationData.licensesandcertifications);
           setCertificationDetails(sortedCertifications);
         } catch (err) {
           setError(err.message);
@@ -404,7 +417,7 @@ export default function CandidateProfile() {
         `/api/jobseekerdetails/experience/all?id=${jobSeekerDetails._id}`
       );
       const updatedExperienceData = await experienceResponse.json();
-      setExperienceDetails(updatedExperienceData.experiences);
+      setExperienceDetails(sortExperiences(updatedExperienceData.experiences));
 
       setOpenCreateExperienceForm(false);
       setNewExperienceData({
@@ -461,7 +474,7 @@ export default function CandidateProfile() {
         `/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`
       );
       const updatedEducationData = await educationResponse.json();
-      setEducationDetails(updatedEducationData.educations);
+      setEducationDetails(sortEducations(updatedEducationData.educations));
 
       setOpenCreateEducationoForm(false);
       setNewEducationData({
@@ -515,7 +528,7 @@ export default function CandidateProfile() {
       );
       const updatedCertificationData = await certificationResponse.json();
       setCertificationDetails(
-        updatedCertificationData.licensesandcertifications
+        sortCertifications(updatedCertificationData.licensesandcertifications)
       );
 
       setOpenCreateCertificationForm(false);
