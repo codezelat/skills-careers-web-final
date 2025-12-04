@@ -74,48 +74,39 @@ export async function POST(req) {
       );
     }
 
-    // Start a session for transaction
-    const session = client.startSession();
-
+    // Execute operations sequentially without transaction
     try {
-      await session.withTransaction(async () => {
-        // Insert enrollment
-        await db.collection("ticketenrollments").insertOne(
-          {
-            ticketId: new ObjectId(ticketId),
-            jobseekerId: new ObjectId(jobseekerId),
-            name,
-            email,
-            contactNumber,
-            createdAt: new Date(),
-          },
-          { session }
-        );
-
-        // Update ticket's enrolled count
-        await db
-          .collection("tickets")
-          .updateOne(
-            { _id: new ObjectId(ticketId) },
-            { $set: { enrolledCount: (currentEnrollment + 1).toString() } },
-            { session }
-          );
+      // Insert enrollment
+      await db.collection("ticketenrollments").insertOne({
+        ticketId: new ObjectId(ticketId),
+        jobseekerId: new ObjectId(jobseekerId),
+        name,
+        email,
+        contactNumber,
+        createdAt: new Date(),
       });
 
-      await session.endSession();
+      // Update ticket's enrolled count
+      await db.collection("tickets").updateOne(
+        { _id: new ObjectId(ticketId) },
+        { $set: { enrolledCount: (currentEnrollment + 1).toString() } }
+      );
+
       client.close();
 
       try {
+        console.log("Sending email notification...");
         await sendTicketEnrollmentNotification({
           ticketName,
           name,
           email,
           contactNumber,
         });
+        console.log("Email notification sent.");
       } catch (emailError) {
         console.error("Email notification failed:", emailError);
       }
-      
+
       revalidatePath("/tickets");
 
       return NextResponse.json(
@@ -123,11 +114,12 @@ export async function POST(req) {
         { status: 201 }
       );
     } catch (error) {
-      await session.endSession();
+      console.error("Enrollment failed:", error);
       client.close();
       throw error;
     }
   } catch (error) {
+    console.error("API Error:", error);
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
       { status: 500 }

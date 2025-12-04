@@ -6,6 +6,7 @@ import { MdDateRange } from "react-icons/md";
 import { GiDuration } from "react-icons/gi";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
 
 export default function TicketsCard({ ticket, fetchTickets }) {
   const { data: session } = useSession();
@@ -79,9 +80,22 @@ export default function TicketsCard({ ticket, fetchTickets }) {
 
       setShowBookingForm(false);
       fetchTickets(); // Refresh the tickets list
-      alert("Enrollment successful!");
+
+      Swal.fire({
+        title: "Success!",
+        text: "Enrollment successful! Please check your email.",
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: false,
+      });
     } catch (err) {
       setError(err.message);
+      Swal.fire({
+        title: "Error!",
+        text: err.message,
+        icon: "error",
+        confirmButtonColor: "#001571",
+      });
     } finally {
       setIsSubmitting(false);
     }
