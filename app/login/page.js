@@ -40,6 +40,9 @@ function Login() {
   useEffect(() => {
     if (emailFromParams && emailInputRef.current) {
       emailInputRef.current.value = emailFromParams;
+      // Clear the query parameters from the URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
   }, [emailFromParams]);
 
@@ -48,7 +51,7 @@ function Login() {
     if (status === "authenticated" && session?.user) {
       setIsLoading(true);
       if (session.user.role === "jobseeker") {
-        router.push("/startingpage");
+        router.push("/Portal/profile");
       } else if (session.user.role === "recruiter") {
         router.push("/admindashboard");
       } else if (session.user.role === "admin") {
@@ -75,7 +78,7 @@ function Login() {
       const userRole = session.user.role;
 
       if (userRole === "jobseeker") {
-        router.push("/startingpage");
+        router.push("/Portal/profile");
       } else if (userRole === "recruiter") {
         router.push("/Portal/dashboard");
       } else if (userRole === "admin") {
@@ -100,7 +103,7 @@ function Login() {
       await signIn("google", {
         redirect: false,
         callbackUrl:
-          role === "jobseeker" ? "/startingpage" : "/Portal/dashboard",
+          role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard",
       });
     } catch (error) {
       setErrorMessage("Failed to sign in with Google. Please try again.");
@@ -273,7 +276,7 @@ function Login() {
               <div className="mt-3">
                 <Button
                   onClick={() =>
-                    signIn("linkedin", { callbackUrl: "/profile" })
+                    signIn("linkedin", { callbackUrl: "/Portal/profile" })
                   }
                 >
                   <span className="flex items-center justify-center py-1 px-5">
