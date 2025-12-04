@@ -23,13 +23,13 @@ ChartJS.register(
   Legend
 );
 
-export default function LineChart() {
+export default function LineChart({ chartData, chartLabels, label = "Job Posts" }) {
   const lineData = {
-    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    labels: chartLabels || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     datasets: [
       {
-        label: 'Job Posts',
-        data: [9, 10, 18, 22, 13, 25, 15],
+        label: label,
+        data: chartData || [0, 0, 0, 0, 0, 0, 0],
         borderColor: '#4F46E5',
         backgroundColor: 'rgba(79, 70, 229, 0.2)',
         fill: true,
@@ -110,8 +110,7 @@ export default function LineChart() {
 
   return (
     <>
-       
-        <Line data={lineData} options={lineOptions} plugins={[customXLabelPlugin]} />
+      <Line data={lineData} options={lineOptions} plugins={[customXLabelPlugin]} />
     </>
   );
 }

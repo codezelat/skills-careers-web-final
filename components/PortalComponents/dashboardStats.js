@@ -153,29 +153,21 @@ export default function DashboardStats() {
             {
               title: "Jobs",
               count: jobsCount,
-              growth: "+2.5% ",
-              since: "Since Yesterday",
               icon: "/portal-dashboard/flag.png",
             },
             {
               title: "Applications",
               count: applicationsCount,
-              growth: "+6.5% ",
-              since: "Since Yesterday",
               icon: "/portal-dashboard/document.png",
             },
             {
               title: "Recruiters",
               count: recruitersCount,
-              growth: "+1.5% ",
-              since: " Since Last Month",
               icon: "/portal-dashboard/buliding.png",
             },
             {
               title: "Candidates",
               count: candidatesCount,
-              growth: "+1.5% ",
-              since: "Since Last Month",
               icon: "/portal-dashboard/people.png",
             },
           ].map((item, idx) => (
@@ -203,23 +195,17 @@ export default function DashboardStats() {
           {[
             {
               title: "Applied Jobs",
-              count: appliedJobs.length, 
-              growth: "+2.5% ",
-              since: "Since Last Month",
+              count: appliedJobs.length,
               icon: "/portal-dashboard/flag.png",
             },
             {
               title: "Approved",
-              count: approvedApplications.length, 
-              growth: "+6.5% ",
-              since: "Since Last Month",
+              count: approvedApplications.length,
               icon: "/portal-dashboard/document.png",
             },
             {
               title: "Pending",
-              count: pendingApplications.length, 
-              growth: "+1.5% ",
-              since: " Since Last Month",
+              count: pendingApplications.length,
               icon: "/portal-dashboard/buliding.png",
             },
           ].map((item, idx) => (
@@ -247,23 +233,17 @@ export default function DashboardStats() {
           {[
             {
               title: "Applications",
-              count: jobApplications, 
-              growth: "+1.5% ",
-              since: "Since Last Month",
+              count: jobApplications,
               icon: "/portal-dashboard/document.png",
             },
             {
               title: "Active Jobs",
-              count: activeJobs.length, 
-              growth: "+6.5% ",
-              since: "Since Last Month",
+              count: activeJobs.length,
               icon: "/portal-dashboard/flag.png",
             },
             {
               title: "Inactive Jobs",
-              count: inactiveJobs.length, 
-              growth: "+6.5% ",
-              since: "Since Last Month",
+              count: inactiveJobs.length,
               icon: "/portal-dashboard/flag.png",
             },
           ].map((item, idx) => (

@@ -23,13 +23,13 @@ ChartJS.register(
   Legend
 );
 
-export default function BarChart() {
+export default function BarChart({ chartData, chartLabels, label = "Active Users" }) {
   const barData = {
-    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    labels: chartLabels || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     datasets: [
       {
-        label: 'Active Users',
-        data: [123, 521, 302, 459, 252, 289, 112],
+        label: label,
+        data: chartData || [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: 'rgba(79, 70, 229, 0.6)',
         borderRadius: 10, // Rounded edges
         barPercentage: 0.6, // Adjust bar width
@@ -89,8 +89,8 @@ export default function BarChart() {
 
   return (
     <>
-      
-        <Bar data={barData} options={barOptions} />
+
+      <Bar data={barData} options={barOptions} />
     </>
   );
 }

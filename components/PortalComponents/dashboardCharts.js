@@ -10,6 +10,12 @@ import { useRouter } from "next/navigation";
 export default function DashboardCharts() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [chartData, setChartData] = useState({
+    labels: [],
+    chart1: [],
+    chart2: []
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -17,6 +23,29 @@ export default function DashboardCharts() {
     }
   }, [status, router]);
 
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      if (session?.user?.id && session?.user?.role) {
+        try {
+          const response = await fetch(
+            `/api/analytics/weekly?userId=${session.user.id}&role=${session.user.role}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setChartData(data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch analytics:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchAnalytics();
+  }, [session]);
+
+  if (isLoading) return <PortalLoading />;
 
   return (
     <>
@@ -30,7 +59,7 @@ export default function DashboardCharts() {
                 <p className="flex">This Week</p>
               </Link>
             </div>
-            <LineChart />
+            <LineChart chartData={chartData.chart1} chartLabels={chartData.labels} label="Job Posts" />
           </div>
           {/* Active Users Chart */}
           <div className="bg-white shadow-md rounded-3xl p-4">
@@ -40,7 +69,7 @@ export default function DashboardCharts() {
                 <p className="flex">This Week</p>
               </Link>
             </div>
-            <BarChart />
+            <BarChart chartData={chartData.chart2} chartLabels={chartData.labels} label="New Users" />
           </div>
         </div>
       )}
@@ -55,7 +84,7 @@ export default function DashboardCharts() {
                 <p className="flex">This Week</p>
               </Link>
             </div>
-            <LineChart />
+            <LineChart chartData={chartData.chart1} chartLabels={chartData.labels} label="Profile Views" />
           </div>
           {/* Active Users Chart */}
           <div className="bg-white shadow-md rounded-3xl p-4">
@@ -65,7 +94,7 @@ export default function DashboardCharts() {
                 <p className="flex">This Week</p>
               </Link>
             </div>
-            <BarChart />
+            <BarChart chartData={chartData.chart2} chartLabels={chartData.labels} label="Applied Jobs" />
           </div>
         </div>
       )}
@@ -80,7 +109,7 @@ export default function DashboardCharts() {
                 <p className="flex">This Week</p>
               </Link>
             </div>
-            <BarChart />
+            <BarChart chartData={chartData.chart1} chartLabels={chartData.labels} label="Applications" />
           </div>
           {/* Job Posts Chart */}
           <div className="bg-white shadow-md rounded-3xl p-4">
@@ -90,7 +119,7 @@ export default function DashboardCharts() {
                 <p className="flex">This Week</p>
               </Link>
             </div>
-            <LineChart />
+            <LineChart chartData={chartData.chart2} chartLabels={chartData.labels} label="Job Posts" />
           </div>
         </div>
       )}
