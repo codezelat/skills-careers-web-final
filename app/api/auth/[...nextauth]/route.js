@@ -120,15 +120,15 @@ export const authOptions = {
 
   callbacks: {
     async signIn({ user, account }) {
-      // Only process for Google sign-in
-      if (account?.provider === "google") {
+      // Process for Google and LinkedIn sign-in
+      if (account?.provider === "google" || account?.provider === "linkedin") {
         const { email } = user;
 
         try {
           const client = await connectToDatabase();
           const db = client.db();
 
-          // Check if user exists in jobseekers collection
+          // Check if user exists in users collection
           const existingUser = await db.collection("users").findOne({ email });
 
           if (existingUser) {
@@ -143,20 +143,10 @@ export const authOptions = {
             return true; // Allow sign-in
           }
 
-          // If user doesn't exist, redirect to signup
-          if (!existingUser) {
-            alert("Not Account Found, Please Sign Up ...");
-          }
-          // await db.collection("jobseekers").insertOne({
-          //   email,
-          //   firstName: user.name?.split(" ")[0] || "",
-          //   lastName: user.name?.split(" ")[1] || "",
-          //   profileImage: user.image || "",
-          //   password: null,
-          // });
-
           client.close();
-          return true;
+
+          // If user doesn't exist, redirect to register page
+          return "/register?error=AccountNotFound";
         } catch (error) {
           console.error("Database error:", error);
           return false;
