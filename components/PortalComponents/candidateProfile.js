@@ -324,10 +324,20 @@ export default function CandidateProfile() {
 
       // Check if both updates were successful
       if (userResponse.ok && jobSeekerResponse.ok) {
-        alert("Details updated successfully!");
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Details updated successfully!',
+          timer: 2000,
+          showConfirmButton: false,
+        });
         setProfileEditForm(false); // Close the edit form if needed
       } else {
-        alert("Failed to update details!");
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update details!',
+        });
       }
     } catch (error) {
       console.error("Error updating details:", error);
@@ -408,7 +418,11 @@ export default function CandidateProfile() {
       });
     } catch (error) {
       console.error("Error adding experience:", error);
-      alert(`Error: ${error.message}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Error: ${error.message}`,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -458,7 +472,11 @@ export default function CandidateProfile() {
       });
     } catch (error) {
       console.error("Error adding education:", error);
-      alert(`Error: ${error.message}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Error: ${error.message}`,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -507,8 +525,12 @@ export default function CandidateProfile() {
         receivedDate: "",
       });
     } catch (error) {
-      console.error("Error adding education:", error);
-      alert(`Error: ${error.message}`);
+      console.error("Error adding certification:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Error: ${error.message}`,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -524,7 +546,11 @@ export default function CandidateProfile() {
     e.preventDefault();
 
     if (!newSoftSkill.trim()) {
-      alert("Please enter a soft skill.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Warning',
+        text: 'Please enter a soft skill.',
+      });
       return;
     }
 
@@ -558,7 +584,11 @@ export default function CandidateProfile() {
       setOpenCreateSoftskillsForm(false);
     } catch (error) {
       console.error("Error adding soft skill:", error);
-      alert(`Failed to add soft skill: ${error.message}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Failed to add soft skill: ${error.message}`,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -595,7 +625,11 @@ export default function CandidateProfile() {
     e.preventDefault();
 
     if (!newExpertise.trim()) {
-      alert("Please enter an expertise");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Warning',
+        text: 'Please enter an expertise',
+      });
       return;
     }
 
@@ -629,7 +663,11 @@ export default function CandidateProfile() {
       setOpenCreateExpertiseForm(false);
     } catch (error) {
       console.error("Error adding expertise", error);
-      alert(`Failed to add expertise : ${error.message}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Failed to add expertise : ${error.message}`,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -682,7 +720,11 @@ export default function CandidateProfile() {
       if (!response.ok) throw new Error("Failed to update soft skill");
     } catch (error) {
       console.error("Error updating soft skill:", error);
-      alert("Failed to update soft skill");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update soft skill',
+      });
     }
   };
 
@@ -708,7 +750,11 @@ export default function CandidateProfile() {
       if (!response.ok) throw new Error("Failed to update expertise");
     } catch (error) {
       console.error("Error updating expertise:", error);
-      alert("Failed to update expertise");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update expertise',
+      });
     }
   };
 

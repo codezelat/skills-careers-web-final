@@ -8,6 +8,7 @@ import EducationSection from "./EducationSection";
 import ExperienceSection from "./ExperienceSection";
 import CertificationSection from "./CertificationSection";
 import SkillSection from "./SkillSection";
+import Swal from "sweetalert2";
 
 function EditProfileForm() {
   const router = useRouter();
@@ -86,10 +87,21 @@ function EditProfileForm() {
         body: JSON.stringify({ ...updateData, email: session.user.email }),
       });
       if (response.ok) {
-        alert("Details updated successfully!");
-        router.push(`/profile`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Details updated successfully!',
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => {
+          router.push(`/profile`);
+        });
       } else {
-        alert("Failed to update details.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Failed to update details.',
+        });
       }
     } catch (error) {
       console.error("Error updating job seeker details:", error);

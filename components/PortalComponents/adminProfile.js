@@ -73,10 +73,20 @@ export default function AdminProfile() {
       }
 
       setShowCredentialsForm(false);
-      alert("Profile updated successfully!");
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Profile updated successfully!',
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Update failed:", error);
-      alert(error.message || "Update failed");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || "Update failed",
+      });
     } finally {
       setIsSubmitting(false);
     }

@@ -253,13 +253,28 @@ export default function RecruiterProfile({ slug }) {
         body: JSON.stringify(recruiterDetails),
       });
       if (response.ok) {
-        alert("Details updated successfully!");
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Details updated successfully!',
+          timer: 2000,
+          showConfirmButton: false,
+        });
         setShowApplicationForm(false);
       } else {
-        alert("Failed to update details.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update details.',
+        });
       }
     } catch (error) {
       console.error("Error updating recruiter details:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred while updating details.',
+      });
     } finally {
       setIsSubmitting(false);
     }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
 
 function PostedJobs(props) {
   const { data: session } = useSession();
@@ -41,50 +42,81 @@ function PostedJobs(props) {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/job/${_id}/publish`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ isPublished: !isPublished }),
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
       });
 
-      if (response.ok) {
-        setIsPublished(!isPublished);
-        // Notify parent component about the status change
-        props.onJobStatusChanged?.(_id, !isPublished);
-      } else {
-        alert("Failed to update job status");
+      if (result.isConfirmed) {
+        setIsLoading(true);
+        try {
+          const response = await fetch(`/api/job/${_id}`, {
+            method: "DELETE",
+          });
+          if (response.ok) {
+            Swal.fire(
+              'Deleted!',
+              'Your job has been deleted.',
+              'success'
+            );
+            // Optionally trigger a refresh or redirect
+          }
+        } catch (error) {
+          console.error("Error deleting job:", error);
+          Swal.fire(
+            'Error!',
+            'Failed to delete job.',
+            'error'
+          );
+        }
+        setIsLoading(false);
       }
     } catch (error) {
-      console.error("Error updating job status:", error);
-      alert("Error updating job status");
+      console.error("Error in publish toggle:", error);
     }
     setIsLoading(false);
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this job?")) {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
       setIsLoading(true);
       try {
         const response = await fetch(`/api/job/${_id}`, {
           method: "DELETE",
         });
-
         if (response.ok) {
-          // Notify parent component to refresh the jobs list
-          props.onJobDeleted?.(_id);
-        } else {
-          alert("Failed to delete job");
+          Swal.fire(
+            'Deleted!',
+            'Your job has been deleted.',
+            'success'
+          );
+          // Add logic to remove card from UI if needed, e.g. props.onDelete(_id)
         }
       } catch (error) {
         console.error("Error deleting job:", error);
-        alert("Error deleting job");
+        Swal.fire(
+          'Error!',
+          'Failed to delete job.',
+          'error'
+        );
       }
       setIsLoading(false);
     }
   };
 
-  const date = new Date(createdAt).getDate();
   const monthName = [
     "January",
     "February",
@@ -102,7 +134,7 @@ function PostedJobs(props) {
   const d = new Date(createdAt);
   let month = monthName[d.getMonth()];
   const year = new Date(createdAt).getFullYear();
-  const postedDate = `${date} ${month} ${year}`;
+  const postedDate = `${d.getDate()} ${month} ${year}`;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
@@ -123,11 +155,10 @@ function PostedJobs(props) {
           <button
             onClick={handlePublishToggle}
             disabled={isLoading}
-            className={`px-4 py-2 rounded transition-colors ${
-              isPublished
-                ? "bg-yellow-500 text-white hover:bg-yellow-600"
-                : "bg-green-500 text-white hover:bg-green-600"
-            }`}
+            className={`px-4 py-2 rounded transition-colors ${isPublished
+              ? "bg-yellow-500 text-white hover:bg-yellow-600"
+              : "bg-green-500 text-white hover:bg-green-600"
+              }`}
           >
             {isLoading ? "Loading..." : isPublished ? "Unpublish" : "Publish"}
           </button>

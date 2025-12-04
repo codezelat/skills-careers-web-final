@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { FaTimes } from "react-icons/fa";
 import PortalTicketsCard from "@/components/PortalComponents/portalTicketsCard";
 import PortalLoading from "@/app/Portal/loading";
+import Swal from "sweetalert2";
 
 export default function AdminsTicketsPage(props) {
     const router = useRouter();
@@ -185,9 +186,20 @@ export default function AdminsTicketsPage(props) {
                 recruiterId: "",
                 eventProfile: null, // Reset eventProfile
             });
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Ticket created successfully!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error("Ticket creation error:", error);
-            alert(error.message || "Failed to create ticket. Please try again.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || "Failed to create ticket. Please try again.",
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -278,9 +290,20 @@ export default function AdminsTicketsPage(props) {
 
             setIsEditFormVisible(false);
             fetchTickets();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Ticket updated successfully!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error("Ticket update error:", error);
-            alert(error.message || "Failed to update ticket. Please try again.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || "Failed to update ticket. Please try again.",
+            });
         } finally {
             setIsSubmitting(false);
         }

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { PiCheckCircle } from "react-icons/pi";
 import { FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function EducationCardEdit({ education, onDelete }) {
     const [isHoveredDelete, setIsHoveredDelete] = useState(false);
@@ -18,11 +19,17 @@ export default function EducationCardEdit({ education, onDelete }) {
     });
 
     const handleDelete = async () => {
-        const isConfirmed = window.confirm(
-            "Are you sure you want to delete this education?"
-        );
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this education?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
 
-        if (!isConfirmed) return;
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch(
@@ -41,9 +48,19 @@ export default function EducationCardEdit({ education, onDelete }) {
             } else {
                 window.location.reload();
             }
+
+            Swal.fire(
+                'Deleted!',
+                'Education has been deleted.',
+                'success'
+            );
         } catch (error) {
             console.error("Delete error:", error);
-            alert(error.message || "Failed to delete education");
+            Swal.fire(
+                'Error!',
+                error.message || "Failed to delete education",
+                'error'
+            );
         }
     };
 
@@ -63,7 +80,11 @@ export default function EducationCardEdit({ education, onDelete }) {
             window.location.reload(); // Refresh to show changes
         } catch (error) {
             console.error("Update error:", error);
-            alert(error.message || "Failed to update education");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || "Failed to update education",
+            });
         } finally {
             setIsSubmitting(false);
         }

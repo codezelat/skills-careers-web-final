@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
+import Swal from "sweetalert2";
 
 export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
   const router = useRouter();
@@ -38,15 +39,37 @@ export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this recruiter?")) {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You want to delete this recruiter?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
       setIsDeleting(true);
       try {
         const response = await fetch(`/api/recruiterdetails/delete?id=${_id}`, {
           method: "DELETE",
         });
-        if (response.ok) onDelete(_id);
+        if (response.ok) {
+          onDelete(_id);
+          Swal.fire(
+            'Deleted!',
+            'Recruiter has been deleted.',
+            'success'
+          );
+        }
       } catch (error) {
         console.error("Error deleting recruiter:", error);
+        Swal.fire(
+          'Error!',
+          'Failed to delete recruiter.',
+          'error'
+        );
       } finally {
         setIsDeleting(false);
       }
@@ -82,25 +105,24 @@ export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
           Edit
         </button>
         <button
-          className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${
-            localRestricted ? "bg-[#EC221F] hover:bg-red-700" : "bg-[#001571] hover:bg-blue-700"
-          }`}
+          className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${localRestricted ? "bg-[#EC221F] hover:bg-red-700" : "bg-[#001571] hover:bg-blue-700"
+            }`}
           onClick={handleRestrictToggle}
           disabled={isRestricting}
         >
           {isRestricting ? (
-  "Processing..."
-) : localRestricted ? (
-  <>
-    <BsFillEyeFill size={15} className="mr-2" />
-    Unrestrict
-  </>
-) : (
-  <>
-    <BsFillEyeFill size={15} className="mr-2" />
-    Restrict
-  </>
-)}
+            "Processing..."
+          ) : localRestricted ? (
+            <>
+              <BsFillEyeFill size={15} className="mr-2" />
+              Unrestrict
+            </>
+          ) : (
+            <>
+              <BsFillEyeFill size={15} className="mr-2" />
+              Restrict
+            </>
+          )}
         </button>
         {/*<button
           className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"

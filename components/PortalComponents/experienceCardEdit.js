@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { PiCheckCircle } from "react-icons/pi";
 import { FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function ExperienceCardEdit({ experience, onDelete }) {
     const [isHoveredDelete, setIsHoveredDelete] = useState(false);
@@ -21,11 +22,17 @@ export default function ExperienceCardEdit({ experience, onDelete }) {
     });
 
     const handleDelete = async () => {
-        const isConfirmed = window.confirm(
-            "Are you sure you want to delete this experience?"
-        );
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this experience?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
 
-        if (!isConfirmed) return;
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch(
@@ -44,9 +51,19 @@ export default function ExperienceCardEdit({ experience, onDelete }) {
             } else {
                 window.location.reload();
             }
+
+            Swal.fire(
+                'Deleted!',
+                'Experience has been deleted.',
+                'success'
+            );
         } catch (error) {
             console.error("Delete error:", error);
-            alert(error.message || "Failed to delete experience");
+            Swal.fire(
+                'Error!',
+                error.message || "Failed to delete experience",
+                'error'
+            );
         }
     };
 
@@ -66,7 +83,11 @@ export default function ExperienceCardEdit({ experience, onDelete }) {
             window.location.reload(); // Refresh to show changes
         } catch (error) {
             console.error("Update error:", error);
-            alert(error.message || "Failed to update experience");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || "Failed to update experience",
+            });
         } finally {
             setIsSubmitting(false);
         }

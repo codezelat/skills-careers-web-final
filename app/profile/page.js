@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import NavBar from "@/components/navBar";
 import AppliedJobs from "./appliedjobbscard";
+import Swal from "sweetalert2";
 
 function Profile() {
   const router = useRouter();
@@ -97,13 +98,21 @@ function Profile() {
 
     // Check file size (limit to 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert("File size should be less than 5MB");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'File size should be less than 5MB',
+      });
       return;
     }
 
     // Check file type
     if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please upload an image file',
+      });
       return;
     }
 
@@ -130,10 +139,20 @@ function Profile() {
         profileImage: data.imageUrl,
       }));
 
-      alert("Profile image uploaded successfully!");
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Profile image uploaded successfully!',
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert(`Failed to upload image: ${error.message}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Failed to upload image: ${error.message}`,
+      });
     }
   };
 

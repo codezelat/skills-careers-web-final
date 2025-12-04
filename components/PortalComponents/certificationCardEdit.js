@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { PiCheckCircle } from "react-icons/pi";
+import Swal from "sweetalert2";
 
 export default function CertificationCardEdit({ certification, onDelete }) {
     const [isHoveredDelete, setIsHoveredDelete] = useState(false);
@@ -16,11 +17,17 @@ export default function CertificationCardEdit({ certification, onDelete }) {
     });
 
     const handleDelete = async () => {
-        const isConfirmed = window.confirm(
-            "Are you sure you want to delete this certification?"
-        );
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this certification?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
 
-        if (!isConfirmed) return;
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch(
@@ -39,9 +46,19 @@ export default function CertificationCardEdit({ certification, onDelete }) {
             } else {
                 window.location.reload();
             }
+
+            Swal.fire(
+                'Deleted!',
+                'Certification has been deleted.',
+                'success'
+            );
         } catch (error) {
             console.error("Delete error:", error);
-            alert(error.message || "Failed to delete certification");
+            Swal.fire(
+                'Error!',
+                error.message || "Failed to delete certification",
+                'error'
+            );
         }
     };
 
@@ -61,7 +78,11 @@ export default function CertificationCardEdit({ certification, onDelete }) {
             window.location.reload(); // Refresh to show changes
         } catch (error) {
             console.error("Update error:", error);
-            alert(error.message || "Failed to update certification");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || "Failed to update certification",
+            });
         } finally {
             setIsSubmitting(false);
         }

@@ -1,10 +1,6 @@
-"use client"
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import PortalLoading from "../loading";
-import Image from "next/image";
 import CredentialsForm from "./credentialsEditForm";
 import PasswordReset from "@/components/PortalComponents/passwordReset";
+import Swal from "sweetalert2";
 
 export default function CandidateSettings() {
 
@@ -69,10 +65,20 @@ export default function CandidateSettings() {
             }
 
             setShowCredentialsForm(false);
-            alert('Profile updated successfully!');
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Profile updated successfully!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error('Update failed:', error);
-            alert(error.message || 'Update failed');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Update failed',
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -94,12 +100,20 @@ export default function CandidateSettings() {
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            alert("File size should be less than 5MB");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'File size should be less than 5MB',
+            });
             return;
         }
 
         if (!file.type.startsWith("image/")) {
-            alert("Please upload an image file");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please upload an image file',
+            });
             return;
         }
 
@@ -126,12 +140,22 @@ export default function CandidateSettings() {
                 profileImage: data.imageUrl,
             }));
 
-            alert("Logo uploaded successfully!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Logo uploaded successfully!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert(`Failed to upload image: ${error.message}`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Failed to upload image: ${error.message}`,
+            });
         }
-    };
+    }
 
 
     if (isLoading) {
@@ -226,7 +250,7 @@ export default function CandidateSettings() {
                                     <input
                                         type="text"
                                         name="User Name"
-                                        value={userDetails.firstName || ""}
+                                        value={userDetails.firstName}
                                         disabled
                                         className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
                                     />
@@ -238,7 +262,7 @@ export default function CandidateSettings() {
                                     <input
                                         type="text"
                                         name="User Name"
-                                        value={userDetails.lastName || ""}
+                                        value={userDetails.lastName}
                                         disabled
                                         className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
                                     />
@@ -255,7 +279,7 @@ export default function CandidateSettings() {
                                         type="text"
                                         name="email"
                                         disabled
-                                        value={userDetails.email || ""}
+                                        value={userDetails.email}
                                         className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
                                     />
                                 </div>

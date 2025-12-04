@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaEdit, FaTrash, FaPlus, FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function EducationSection({ educations, jobseekerId, onRefresh }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +36,17 @@ export default function EducationSection({ educations, jobseekerId, onRefresh })
     };
 
     const handleDelete = async (id) => {
-        if (!confirm("Are you sure you want to delete this education?")) return;
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch(
@@ -45,7 +56,11 @@ export default function EducationSection({ educations, jobseekerId, onRefresh })
             if (response.ok) {
                 onRefresh();
             } else {
-                alert("Failed to delete education.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to delete education.',
+                });
             }
         } catch (error) {
             console.error("Error deleting education:", error);
@@ -75,7 +90,11 @@ export default function EducationSection({ educations, jobseekerId, onRefresh })
                 setIsModalOpen(false);
                 onRefresh();
             } else {
-                alert("Failed to save education.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to save education.',
+                });
             }
         } catch (error) {
             console.error("Error saving education:", error);

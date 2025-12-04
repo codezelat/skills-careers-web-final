@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 function JobCard(props) {
     const { data: session } = useSession();
@@ -68,13 +69,35 @@ function JobCard(props) {
     };
 
     const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this job?")) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this job?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
             setIsLoading(true);
             try {
                 const response = await fetch(`/api/job/${_id}`, { method: "DELETE" });
-                if (response.ok) props.onJobDeleted?.(_id);
+                if (response.ok) {
+                    props.onJobDeleted?.(_id);
+                    Swal.fire(
+                        'Deleted!',
+                        'Job has been deleted.',
+                        'success'
+                    );
+                }
             } catch (error) {
                 console.error("Error deleting job:", error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to delete job.',
+                    'error'
+                );
             }
             setIsLoading(false);
         }
@@ -120,8 +143,8 @@ function JobCard(props) {
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
                                     className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${isPublished
-                                            ? "bg-[#001571] hover:bg-blue-700"
-                                            : "bg-[#EC221F] hover:bg-red-700"
+                                        ? "bg-[#001571] hover:bg-blue-700"
+                                        : "bg-[#EC221F] hover:bg-red-700"
                                         } text-white`}
                                 >
                                     <BsFillEyeFill size={15} className="mr-2" />
@@ -155,8 +178,8 @@ function JobCard(props) {
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
                                     className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${isPublished
-                                            ? "bg-[#EC221F] hover:bg-red-700"
-                                            : "bg-[#001571] hover:bg-blue-700"
+                                        ? "bg-[#EC221F] hover:bg-red-700"
+                                        : "bg-[#001571] hover:bg-blue-700"
                                         } text-white`}
                                 >
                                     <BsFillEyeFill size={15} className="mr-2" />

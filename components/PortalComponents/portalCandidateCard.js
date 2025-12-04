@@ -12,7 +12,7 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
   const [userDetails, setUserDetails] = useState({});
   const [localRestricted, setLocalRestricted] = useState(isRestricted);
   const [isRestricting, setIsRestricting] = useState(false);
-   const { data: session, status } = useSession();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setLocalRestricted(isRestricted);
@@ -59,7 +59,7 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
       onUpdate(result);
     } catch (error) {
       //console.error("Error updating restriction status:", error);
-      // alert(`Error updating candidate: ${error.message}`);
+      //console.error("Error updating restriction status:", error);
     } finally {
       setIsRestricting(false);
     }
@@ -107,11 +107,10 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
             Edit
           </button>
           <button
-            className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${
-              localRestricted
+            className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${localRestricted
                 ? "bg-[#EC221F] hover:bg-red-700"
                 : "bg-[#001571] hover:bg-blue-700"
-            }`}
+              }`}
             onClick={handleRestrictToggle}
             disabled={isRestricting}
           >

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaEdit, FaTrash, FaPlus, FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function CertificationSection({ certifications, jobseekerId, onRefresh }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,7 +33,17 @@ export default function CertificationSection({ certifications, jobseekerId, onRe
     };
 
     const handleDelete = async (id) => {
-        if (!confirm("Are you sure you want to delete this certification?")) return;
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (!result.isConfirmed) return;
 
         try {
             const response = await fetch(
@@ -42,7 +53,11 @@ export default function CertificationSection({ certifications, jobseekerId, onRe
             if (response.ok) {
                 onRefresh();
             } else {
-                alert("Failed to delete certification.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to delete certification.',
+                });
             }
         } catch (error) {
             console.error("Error deleting certification:", error);
@@ -72,7 +87,11 @@ export default function CertificationSection({ certifications, jobseekerId, onRe
                 setIsModalOpen(false);
                 onRefresh();
             } else {
-                alert("Failed to save certification.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to save certification.',
+                });
             }
         } catch (error) {
             console.error("Error saving certification:", error);

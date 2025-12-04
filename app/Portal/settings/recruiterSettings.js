@@ -1,3 +1,4 @@
+
 "use client"
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -5,6 +6,7 @@ import PortalLoading from "../loading";
 import Image from "next/image";
 import CredentialsForm from "./credentialsEditForm";
 import PasswordReset from "@/components/PortalComponents/passwordReset";
+import Swal from "sweetalert2";
 
 export default function RecruiterSettings() {
 
@@ -69,10 +71,20 @@ export default function RecruiterSettings() {
             }
 
             setShowCredentialsForm(false);
-            alert('Profile updated successfully!');
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Profile updated successfully!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error('Update failed:', error);
-            alert(error.message || 'Update failed');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Update failed',
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -94,12 +106,20 @@ export default function RecruiterSettings() {
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            alert("File size should be less than 5MB");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'File size should be less than 5MB',
+            });
             return;
         }
 
         if (!file.type.startsWith("image/")) {
-            alert("Please upload an image file");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please upload an image file',
+            });
             return;
         }
 
@@ -126,10 +146,20 @@ export default function RecruiterSettings() {
                 profileImage: data.imageUrl,
             }));
 
-            alert("Logo uploaded successfully!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Logo uploaded successfully!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert(`Failed to upload image: ${error.message}`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Failed to upload image: ${error.message} `,
+            });
         }
     }
 
