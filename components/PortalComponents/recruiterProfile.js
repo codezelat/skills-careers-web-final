@@ -152,7 +152,7 @@ export default function RecruiterProfile({ slug }) {
       });
 
       // Force session refresh
-      window.dispatchEvent(new Event('visibilitychange'));
+      window.dispatchEvent(new Event("visibilitychange"));
     } catch (error) {
       console.error("Error uploading image:", error);
       Swal.fire({

@@ -190,7 +190,7 @@ export default function CandidateProfile() {
       });
 
       // Force session refresh
-      window.dispatchEvent(new Event('visibilitychange'));
+      window.dispatchEvent(new Event("visibilitychange"));
     } catch (error) {
       console.error("Error uploading image:", error);
       Swal.fire({
@@ -1070,10 +1070,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.softSkills?.map((skills, index) => (
               <SoftSkillsCard key={index} skills={skills} />
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No soft skills data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No soft skills data available.
+              </p>
+            )}
           </div>
         </div>
 
@@ -1110,10 +1110,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
               <ExpertiseCard key={index} expertise={expertise} />
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No professional expertise data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No professional expertise data available.
+              </p>
+            )}
           </div>
         </div>
 
@@ -1259,10 +1259,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateExperience}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1356,10 +1357,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateEducation}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1440,10 +1442,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateCertification}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1498,10 +1501,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddSoftSkill}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1555,10 +1559,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddExpertise}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1686,10 +1691,10 @@ export default function CandidateProfile() {
                     onDelete={() => handleDeleteSoftSkill(skill)}
                   />
                 )) ?? (
-                    <p className="text-gray-500 text-sm">
-                      No soft skills data available.
-                    </p>
-                  )}
+                  <p className="text-gray-500 text-sm">
+                    No soft skills data available.
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -1720,10 +1725,10 @@ export default function CandidateProfile() {
                     />
                   )
                 ) ?? (
-                    <p className="text-gray-500 text-sm">
-                      No professional expertise data available.
-                    </p>
-                  )}
+                  <p className="text-gray-500 text-sm">
+                    No professional expertise data available.
+                  </p>
+                )}
               </div>
             </div>
           </div>

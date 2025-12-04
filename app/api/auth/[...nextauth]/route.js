@@ -171,9 +171,11 @@ export const authOptions = {
         try {
           const client = await connectToDatabase();
           const db = client.db();
-          
-          const user = await db.collection("users").findOne({ email: token.email });
-          
+
+          const user = await db
+            .collection("users")
+            .findOne({ email: token.email });
+
           if (user) {
             session.user.id = token.id;
             session.user.firstName = user.firstName || token.firstName;
@@ -190,7 +192,7 @@ export const authOptions = {
             session.user.role = token.role || "guest";
             session.user.profileImage = token.profileImage;
           }
-          
+
           await client.close();
         } catch (error) {
           console.error("Error fetching user in session callback:", error);
