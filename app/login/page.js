@@ -25,6 +25,7 @@ function Login() {
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
   const [showRoleSelectionModal, setShowRoleSelectionModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
+  const [selectedProvider, setSelectedProvider] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -91,22 +92,29 @@ function Login() {
 
   // Handle Google Sign In - Show role selection modal first
   const handleGoogleSignIn = async () => {
+    setSelectedProvider("google");
     setShowRoleSelectionModal(true);
   };
 
-  // Handle role selection and proceed with Google sign in
+  // Handle LinkedIn Sign In - Show role selection modal first
+  const handleLinkedInSignIn = async () => {
+    setSelectedProvider("linkedin");
+    setShowRoleSelectionModal(true);
+  };
+
+  // Handle role selection and proceed with sign in
   const handleRoleSelection = async (role) => {
     setSelectedRole(role);
     setShowRoleSelectionModal(false);
 
     try {
-      await signIn("google", {
+      await signIn(selectedProvider, {
         redirect: false,
         callbackUrl:
           role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard",
       });
     } catch (error) {
-      setErrorMessage("Failed to sign in with Google. Please try again.");
+      setErrorMessage(`Failed to sign in with ${selectedProvider}. Please try again.`);
     }
   };
 
@@ -275,9 +283,7 @@ function Login() {
 
               <div className="mt-3">
                 <Button
-                  onClick={() =>
-                    signIn("linkedin", { callbackUrl: "/Portal/profile" })
-                  }
+                  onClick={handleLinkedInSignIn}
                 >
                   <span className="flex items-center justify-center py-1 px-5">
                     <img
@@ -314,7 +320,7 @@ function Login() {
                 Choose Your Role
               </h2>
               <p className="text-blue-100 text-sm text-center mt-1">
-                Select how you'd like to continue with Google
+                Select how you'd like to continue with {selectedProvider === "google" ? "Google" : "LinkedIn"}
               </p>
             </div>
 
