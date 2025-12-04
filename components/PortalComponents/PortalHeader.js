@@ -7,6 +7,7 @@ export default function HeaderSection() {
 
     const { data: session, status } = useSession();
     console.log("Session Data:", session);
+    console.log("Profile Image URL:", session?.user?.profileImage);
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -42,7 +43,7 @@ export default function HeaderSection() {
                     {session?.user?.profileImage ? (
                         <Image
                             src={session?.user?.profileImage}
-                            alt="Admin Profile"
+                            alt={`${session?.user?.role || 'User'} Profile`}
                             width={50}
                             height={50}
                             className="rounded-md border-2 border-[#001571]"
@@ -50,7 +51,7 @@ export default function HeaderSection() {
                     ) : (
                         <Image
                             src="/default-avatar.jpg"
-                            alt="Admin Profile"
+                            alt={`${session?.user?.role || 'User'} Profile`}
                             width={50}
                             height={50}
                             className="rounded-md border-2 border-[#001571]"

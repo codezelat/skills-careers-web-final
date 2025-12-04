@@ -79,6 +79,12 @@ export async function POST(request) {
     );
     console.log('MongoDB update result:', result);
 
+    // Also update the users collection if the user exists there (for session)
+    await db.collection("users").updateOne(
+      { email },
+      { $set: { profileImage: cloudinaryResponse.secure_url } }
+    );
+
     if (result.modifiedCount === 0) {
       console.log('No document was modified in MongoDB');
       return NextResponse.json(

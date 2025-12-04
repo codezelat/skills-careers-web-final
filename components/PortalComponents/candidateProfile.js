@@ -16,6 +16,7 @@ import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
 import ExperienceCard from "@/components/PortalComponents/experienceCard";
 import EducationCard from "@/components/PortalComponents/educationCard";
 import CertificationCard from "@/components/PortalComponents/certificationCard";
@@ -136,12 +137,24 @@ export default function CandidateProfile() {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("File size should be less than 5MB");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "File size should be less than 5MB.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Please upload an image file.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       return;
     }
 
@@ -168,10 +181,25 @@ export default function CandidateProfile() {
         profileImage: data.imageUrl,
       }));
 
-      alert("Logo uploaded successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Profile image uploaded successfully!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      // Force session refresh
+      window.dispatchEvent(new Event('visibilitychange'));
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert(`Failed to upload image: ${error.message}`);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.message || "Failed to upload image.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     }
   };
 
@@ -181,12 +209,24 @@ export default function CandidateProfile() {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("File size should be less than 5MB");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "File size should be less than 5MB.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Please upload an image file.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       return;
     }
 
@@ -213,10 +253,22 @@ export default function CandidateProfile() {
         coverImage: data.imageUrl,
       }));
 
-      alert("Logo uploaded successfully!");
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Background image uploaded successfully!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert(`Failed to upload image: ${error.message}`);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.message || "Failed to upload image.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     }
   };
 

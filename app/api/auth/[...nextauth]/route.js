@@ -71,6 +71,30 @@ export const authOptions = {
             };
           }
 
+          const recruiter = await db.collection("recruiters").findOne({
+            email: credentials.email,
+          });
+
+          if (recruiter) {
+            const isValid = await verifyPassword(
+              credentials.password,
+              recruiter.password
+            );
+
+            if (!isValid) {
+              throw new Error("Could not log you in!");
+            }
+
+            return {
+              id: recruiter._id,
+              firstName: recruiter.recruiterName,
+              lastName: "",
+              email: recruiter.email,
+              role: "recruiter",
+              profileImage: recruiter.logo,
+            };
+          }
+
           throw new Error("No user found");
         } finally {
           await client.close();
@@ -143,17 +167,49 @@ export const authOptions = {
 
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.firstName = token.firstName;
-        session.user.lastName = token.lastName;
-        session.user.email = token.email;
-        session.user.role = token.role || "guest";
-        session.user.profileImage = token.profileImage;
+        // Fetch fresh user data from database to get updated profile image
+        try {
+          const client = await connectToDatabase();
+          const db = client.db();
+          
+          const user = await db.collection("users").findOne({ email: token.email });
+          
+          if (user) {
+            session.user.id = token.id;
+            session.user.firstName = user.firstName || token.firstName;
+            session.user.lastName = user.lastName || token.lastName;
+            session.user.email = user.email;
+            session.user.role = user.role || token.role || "guest";
+            session.user.profileImage = user.profileImage; // Fresh from DB
+          } else {
+            // Fallback to token if user not found
+            session.user.id = token.id;
+            session.user.firstName = token.firstName;
+            session.user.lastName = token.lastName;
+            session.user.email = token.email;
+            session.user.role = token.role || "guest";
+            session.user.profileImage = token.profileImage;
+          }
+          
+          await client.close();
+        } catch (error) {
+          console.error("Error fetching user in session callback:", error);
+          // Fallback to token data on error
+          session.user.id = token.id;
+          session.user.firstName = token.firstName;
+          session.user.lastName = token.lastName;
+          session.user.email = token.email;
+          session.user.role = token.role || "guest";
+          session.user.profileImage = token.profileImage;
+        }
       }
       return session;
     },
 
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
+      if (trigger === "update" && session?.profileImage) {
+        token.profileImage = session.profileImage;
+      }
       if (user) {
         token.id = user.id;
         token.firstName = user.firstName;
