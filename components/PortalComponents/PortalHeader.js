@@ -50,7 +50,7 @@ export default function HeaderSection() {
               alt={`${session?.user?.role || "User"} Profile`}
               width={50}
               height={50}
-              className="rounded-md border-2 border-[#001571]"
+              className="rounded-full border-2 border-[#001571]"
             />
           ) : (
             <Image
@@ -58,7 +58,7 @@ export default function HeaderSection() {
               alt={`${session?.user?.role || "User"} Profile`}
               width={50}
               height={50}
-              className="rounded-md border-2 border-[#001571]"
+              className="rounded-full border-2 border-[#001571]"
             />
           )}
         </div>
