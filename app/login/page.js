@@ -54,7 +54,7 @@ function Login() {
       if (session.user.role === "jobseeker") {
         router.push("/Portal/profile");
       } else if (session.user.role === "recruiter") {
-        router.push("/admindashboard");
+        router.push("/Portal/dashboard");
       } else if (session.user.role === "admin") {
         router.push("/admindashboard");
       }
