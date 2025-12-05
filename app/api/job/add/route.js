@@ -23,14 +23,17 @@ export async function POST(req) {
       'jobTypes',
       'jobDescription',
       'keyResponsibilities',
+      'shortDescription',
+      'requiredQualifications',
+      'perksAndBenefits',
     ];
 
     const missingFields = requiredFields.filter(field => !data[field]);
     if (missingFields.length > 0) {
       return NextResponse.json(
-        { 
+        {
           message: "Missing required fields",
-          missing: missingFields 
+          missing: missingFields
         },
         { status: 422 }
       );

@@ -105,7 +105,10 @@ export default function RecruiterPostedJobs(props) {
         location: '',
         jobTypes: [],
         jobDescription: '',
-        keyResponsibilities: ''
+        keyResponsibilities: '',
+        shortDescription: '',
+        requiredQualifications: '',
+        perksAndBenefits: ''
     });
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -114,6 +117,18 @@ export default function RecruiterPostedJobs(props) {
             [name]: value
         }));
         setFormErrors(prev => ({ ...prev, [name]: '' }));
+    };
+
+    const handleShortDescriptionChange = (e) => {
+        const { name, value } = e.target;
+        const words = value.trim().split(/\s+/);
+        if (words.length <= 15 || value === "") {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+            setFormErrors(prev => ({ ...prev, [name]: '' }));
+        }
     };
     const handleJobTypeChange = (type) => {
         setFormData(prev => ({
@@ -131,6 +146,9 @@ export default function RecruiterPostedJobs(props) {
         if (formData.jobTypes.length === 0) errors.jobTypes = 'At least one job type is required';
         if (!formData.jobDescription.trim()) errors.jobDescription = 'Description is required';
         if (!formData.keyResponsibilities.trim()) errors.keyResponsibilities = 'Responsibilities are required';
+        if (!formData.shortDescription.trim()) errors.shortDescription = 'Short description is required';
+        if (!formData.requiredQualifications.trim()) errors.requiredQualifications = 'Qualifications are required';
+        if (!formData.perksAndBenefits.trim()) errors.perksAndBenefits = 'Perks & Benefits are required';
         return errors;
     };
 
@@ -182,8 +200,12 @@ export default function RecruiterPostedJobs(props) {
                 jobTitle: '',
                 location: '',
                 jobTypes: [],
+                jobTypes: [],
                 jobDescription: '',
-                keyResponsibilities: ''
+                keyResponsibilities: '',
+                shortDescription: '',
+                requiredQualifications: '',
+                perksAndBenefits: ''
             });
 
         } catch (error) {
@@ -482,6 +504,57 @@ export default function RecruiterPostedJobs(props) {
                                     />
                                     {formErrors.keyResponsibilities && (
                                         <p className="text-red-500 text-sm mt-1">{formErrors.keyResponsibilities}</p>
+                                    )}
+                                </div>
+
+                                {/* Short Description */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Short Description (Max 15 words)
+                                    </label>
+                                    <textarea
+                                        name="shortDescription"
+                                        value={formData.shortDescription}
+                                        onChange={handleShortDescriptionChange}
+                                        rows="2"
+                                        className={`mt-2 block w-full border ${formErrors.shortDescription ? 'border-red-500' : 'border-[#B0B6D3]'} rounded-xl shadow-sm px-4 py-3`}
+                                    />
+                                    {formErrors.shortDescription && (
+                                        <p className="text-red-500 text-sm mt-1">{formErrors.shortDescription}</p>
+                                    )}
+                                </div>
+
+                                {/* Required Qualifications */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Required Qualifications
+                                    </label>
+                                    <textarea
+                                        name="requiredQualifications"
+                                        value={formData.requiredQualifications}
+                                        onChange={handleInputChange}
+                                        rows="4"
+                                        className={`mt-2 block w-full border ${formErrors.requiredQualifications ? 'border-red-500' : 'border-[#B0B6D3]'} rounded-xl shadow-sm px-4 py-3`}
+                                    />
+                                    {formErrors.requiredQualifications && (
+                                        <p className="text-red-500 text-sm mt-1">{formErrors.requiredQualifications}</p>
+                                    )}
+                                </div>
+
+                                {/* Perks & Benefits */}
+                                <div>
+                                    <label className="block text-base font-semibold text-[#001571]">
+                                        Perks & Benefits
+                                    </label>
+                                    <textarea
+                                        name="perksAndBenefits"
+                                        value={formData.perksAndBenefits}
+                                        onChange={handleInputChange}
+                                        rows="4"
+                                        className={`mt-2 block w-full border ${formErrors.perksAndBenefits ? 'border-red-500' : 'border-[#B0B6D3]'} rounded-xl shadow-sm px-4 py-3`}
+                                    />
+                                    {formErrors.perksAndBenefits && (
+                                        <p className="text-red-500 text-sm mt-1">{formErrors.perksAndBenefits}</p>
                                     )}
                                 </div>
 
