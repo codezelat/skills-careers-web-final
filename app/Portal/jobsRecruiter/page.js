@@ -40,33 +40,27 @@ export default function RecruiterPostedJobs(props) {
     const [jobs, setJobs] = useState([]);
     const [error, setError] = useState(null);
 
+    const handleJobStatusChanged = (jobId, newStatus) => {
+        setJobs(prevJobs => prevJobs.map(job =>
+            job._id === jobId ? { ...job, isPublished: newStatus } : job
+        ));
+    };
+
+    const handleJobDeleted = (jobId) => {
+        setJobs(prevJobs => prevJobs.filter(job => job._id !== jobId));
+    };
+
+    const filteredJobs = jobs.filter(job => {
+        if (activeTab === "all") return job.isPublished;
+        if (activeTab === "restricted") return !job.isPublished;
+        return true;
+    });
+
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login"); // Redirect to login if unauthenticated
         }
     }, [status, router]);
-
-    // useEffect(() => {
-    //     if (session?.user?.email) {
-    //         const fetchRecruiterDetails = async () => {
-    //             try {
-    //                 console.log(session.user.id);
-    //                 const response = await fetch(
-    //                     `/api/recruiterdetails/get?userId=${session.user.id}`
-    //                 );
-    //                 if (response.ok) {
-    //                     const data = await response.json();
-    //                     setRecruiterDetails(data);
-    //                 } else {
-    //                     console.error("Failed to fetch recruiter details");
-    //                 }
-    //             } catch (error) {
-    //                 console.error("Error fetching recruiter details:", error);
-    //             }
-    //         };
-    //         fetchRecruiterDetails();
-    //     }
-    // }, [session]);
 
     useEffect(() => {
         if (session?.user?.email) {
@@ -208,11 +202,11 @@ export default function RecruiterPostedJobs(props) {
     const [currentPage, setCurrentPage] = useState(1);
     const recruitersPerPage = 6;
 
-    const totalPages = Math.ceil(jobs.length / recruitersPerPage);
+    const totalPages = Math.ceil(filteredJobs.length / recruitersPerPage);
 
     const indexOfLastRecruiter = currentPage * recruitersPerPage;
     const indexOfFirstRecruiter = indexOfLastRecruiter - recruitersPerPage;
-    const currentRecruiters = jobs.slice(indexOfFirstRecruiter, indexOfLastRecruiter);
+    const currentRecruiters = filteredJobs.slice(indexOfFirstRecruiter, indexOfLastRecruiter);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
@@ -320,6 +314,8 @@ export default function RecruiterPostedJobs(props) {
                                     <JobCard
                                         key={index}
                                         job={job}
+                                        onJobStatusChanged={handleJobStatusChanged}
+                                        onJobDeleted={handleJobDeleted}
                                     />
                                 ))
                         ) : (
@@ -332,104 +328,46 @@ export default function RecruiterPostedJobs(props) {
             ) : (
                 <>
                     <div className="flex-grow ">
-                        <div className="bg-[#E6E8F1] flex items-center pl-4 pr-4 mb-5 py-4 rounded-lg shadow-sm w-full">
+                        <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
                             <IoSearchSharp size={25} className="text-[#001571]" />
                             <input
                                 type="text"
-                                placeholder="Search Recruiters..."
-                                className="ml-2 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
+                                placeholder="Search Restricted Jobs..."
+                                className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
                             />
                         </div>
                     </div>
-                    {/* Action Buttons */}
-                    <div className="flex gap-4 mb-4 items-center bg-green">
-                        <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                            <span className="mr-2">
-                                <input
-                                    type="checkbox"
-                                    className="form-checkbox h-4 w-4 text-blue-600 rounded"
-                                />
-                            </span>
-                            Select More
-                        </button>
 
-                        <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                            <span className="mr-2">
-                                <BsFillEyeFill size={20} />
-                            </span>
-                            Unrestricted
-                        </button>
-
-                        <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                            <span className="mr-2">
-                                <RiDeleteBinFill size={20} />
-                            </span>
-                            Delete
-                        </button>
-                    </div>
-
-                    {/* Table */}
-                    {/* <div className="overflow-x-auto bg-white shadow rounded-lg">
-                        <table className="w-full table-auto">
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full border-collapse">
                             <thead>
                                 <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                                    <th className="px-4 py-3"></th>
-                                    <th className="px-2 py-3"></th>
-                                    <th className="px-4 py-3">Recruiter Name</th>
-                                    <th className="px-4 py-3">Email</th>
-                                    <th className="px-4 py-3">Phone</th>
-                                    <th className="px-24 py-3">Actions</th>
+                                    <th className="py-3 w-[3%]"></th>
+                                    <th className="py-3 w-[24.25%]">Position</th>
+                                    <th className="py-3 w-[24.25%]">Published Date</th>
+                                    <th className="py-3 w-[24.25%]">Applications</th>
+                                    <th className="py-3 w-[24.25%]">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {RecruitersList.filter(
-                                    (recruiter) => recruiter.type === "Restricted"
-                                ).map((recruiter, id) => (
-                                    <tr
-                                        key={id}
-                                        className="text-gray-700 hover:bg-gray-50 border-b text-sm"
-                                    >
-                                        <td className="px-4 py-3">
-                                            <input type="checkbox" />
-                                        </td>
-                                        <td className="px-2 py-3 flex items-left gap-3">
-                                            <div className="w-8 h-8 text-white flex justify-center items-center rounded-full">
-                                                <Image
-                                                    src={recruiter.logo}
-                                                    width={35}
-                                                    height={35}
-                                                    alt="logo"
-                                                />
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 text-black font-semibold">
-                                            {recruiter.name}
-                                        </td>
-                                        <td className="px-4 py-3 text-black font-semibold">
-                                            {recruiter.email}
-                                        </td>
-                                        <td className="px-4 py-3 text-black font-semibold">
-                                            {recruiter.phone}
-                                        </td>
-                                        <td className="px-4 py-3 flex gap-2 justify-end">
-                                            <button className="flex bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800">
-                                                <span className="mr-2">
-                                                    <BsFillEyeFill size={15} />
-                                                </span>
-                                                Unrestricted
-                                            </button>
-                                            <button className="flex bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
-                                                <span className="mr-2">
-                                                    <RiDeleteBinFill size={20} />
-                                                </span>
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
                         </table>
-                    </div> */}
+                    </div>
+                    <div className="grid gap-4 grid-cols-1">
+                        {currentRecruiters.length > 0 ? (
+                            currentRecruiters
+                                .map((job, index) => (
+                                    <JobCard
+                                        key={index}
+                                        job={job}
+                                        onJobStatusChanged={handleJobStatusChanged}
+                                        onJobDeleted={handleJobDeleted}
+                                    />
+                                ))
+                        ) : (
+                            <p className="text-lg text-center font-bold text-red-500 py-20">
+                                No restricted jobs found.
+                            </p>
+                        )}
+                    </div>
                 </>
             )}
 
