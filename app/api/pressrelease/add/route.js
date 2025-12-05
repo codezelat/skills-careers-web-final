@@ -1,16 +1,9 @@
 import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
+import cloudinary from "@/lib/cloudinary";
 import { writeFile } from "fs/promises";
 import path from "path";
 import os from "os";
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 export async function POST(req) {
   let client;

@@ -130,7 +130,7 @@ function AddPressrelease({ onClose }) {
                 {/* File upload UI */}
                 <div className="flex justify-center items-center">
                   <Image
-                    src="/images/miyuri_img/upload.png"
+                    src="/images/image-placeholder.jpg"
                     alt="upload"
                     width={40}
                     height={40}
@@ -177,7 +177,7 @@ function AddPressrelease({ onClose }) {
               <div className="flex items-center space-x-3 ">
                 {isSubmitting ? "Creating..." : "Create Press Release"}
                 <Image
-                  src="/images/miyuri_img/whitetick.png"
+                  src="/images/image-placeholder.jpg"
                   alt="tick"
                   width={20}
                   height={10}
