@@ -15,6 +15,7 @@ export default function RecruiterSettings() {
     const [showResetPassword, setShowResetPassword] = useState(false);
     const [showCredentialsForm, setShowCredentialsForm] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const [userDetails, setUserDetails] = useState({
         _id: '',
