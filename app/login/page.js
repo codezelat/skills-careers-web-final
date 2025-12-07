@@ -56,7 +56,7 @@ function Login() {
       } else if (session.user.role === "recruiter") {
         router.push("/Portal/dashboard");
       } else if (session.user.role === "admin") {
-        router.push("/admindashboard");
+        router.push("/Portal/dashboard");
       }
     }
   }, [session, status, router]);

@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 import AnnoucementEdit from "@/app/Portal/annoucements/annoucementEdit";
 import Swal from "sweetalert2"; // Import SweetAlert
 
-export default function AnnoucementsCard(props, isSelected, onSelect, onViewAnnouncementDelete) {
+export default function AnnoucementsCard({
+  announcement,
+  isSelected,
+  onSelect,
+  onViewAnnouncementDelete,
+}) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [showApplicationForm, setShowApplicationForm] = useState(false);
@@ -23,12 +28,12 @@ export default function AnnoucementsCard(props, isSelected, onSelect, onViewAnno
     announcementTitle,
     announcementDescription,
     createdAt,
-  } = props.announcement;
+  } = announcement;
 
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch(`/api/announcement/update`, {
         method: "PUT",
@@ -71,9 +76,9 @@ export default function AnnoucementsCard(props, isSelected, onSelect, onViewAnno
 
   const handleEditClick = () => {
     setAnnouncementDetails({
-      _id: props.announcement._id,
-      announcementTitle: props.announcement.announcementTitle,
-      announcementDescription: props.announcement.announcementDescription
+      _id: announcement._id,
+      announcementTitle: announcement.announcementTitle,
+      announcementDescription: announcement.announcementDescription
     });
     setShowApplicationForm(true);
   };
@@ -132,7 +137,7 @@ export default function AnnoucementsCard(props, isSelected, onSelect, onViewAnno
               <span>Edit</span>
             </button>
             <button
-            onClick={handleViewDelete}
+              onClick={handleViewDelete}
               className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
               type="button"
             >
@@ -158,12 +163,12 @@ export default function AnnoucementsCard(props, isSelected, onSelect, onViewAnno
 
       {/* if other */}
       {session?.user?.role !== "admin" && (
-         <div className="flex flex-col bg-[#E6E8F1] w-full py-5 px-7 gap-5 rounded-2xl">
-         <h1 className="font-bold text-base">{announcementTitle}</h1>
-         <p className="font-semibold text-sm">{announcementDescription}</p>
-         <p className="font-semibold text-xs">{postedDate}</p>
-     </div>
- )}
+        <div className="flex flex-col bg-[#E6E8F1] w-full py-5 px-7 gap-5 rounded-2xl">
+          <h1 className="font-bold text-base">{announcementTitle}</h1>
+          <p className="font-semibold text-sm">{announcementDescription}</p>
+          <p className="font-semibold text-xs">{postedDate}</p>
+        </div>
+      )}
     </>
   );
 }

@@ -18,7 +18,7 @@ function AdminLoginForm() {
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
       if (session.user.role === "admin") {
-        router.push("/admindashboard");
+        router.push("/Portal/dashboard");
       } else {
         router.push("/");
       }
@@ -42,7 +42,7 @@ function AdminLoginForm() {
       const userRole = session.user.role;
 
       if (userRole === "admin") {
-        router.push("/admindashboard");
+        router.push("/Portal/dashboard");
       } else {
         router.push("/");
       }

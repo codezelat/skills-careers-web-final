@@ -1,6 +1,7 @@
 "use client";
 
 import { RiDeleteBinFill } from "react-icons/ri";
+import DeleteConfirmation from "./DeleteConfirmation"; // Ensure import
 import PortalLoading from "../loading";
 import { IoSearchSharp } from "react-icons/io5";
 import {
@@ -25,6 +26,7 @@ export default function Annoucements() {
 
   const [announcements, setAnnouncements] = useState([]); // Original Announcements
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]); // Added for selection
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
@@ -84,6 +86,50 @@ export default function Annoucements() {
     setSelectedAnnouncementDelete(null);
   };
 
+  const handleSelectOne = (id, isSelected) => {
+    if (isSelected) {
+      setSelectedIds((prev) => [...prev, id]);
+    } else {
+      setSelectedIds((prev) => prev.filter((item) => item !== id));
+    }
+  };
+
+  const handleSelectAll = (isChecked) => {
+    if (isChecked) {
+      setSelectedIds(filteredAnnouncements.map((a) => a._id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+
+    // Optional: Add confirmation for bulk delete
+    const confirmed = window.confirm(`Are you sure you want to delete ${selectedIds.length} announcements?`);
+    if (!confirmed) return;
+
+    try {
+      setLoading(true);
+      // Assuming API supports single delete, we might need to loop or update API
+      // Ideally API should support bulk delete. Since standard is usually single, I will loop for now or check if API supports array.
+      // Based on typical implementation in this codebase, likely single. Let's loop for safety or better yet, just implement loop here.
+
+      for (const id of selectedIds) {
+        await fetch(`/api/announcement/delete?id=${id}`, { method: "DELETE" });
+      }
+
+      // Refresh
+      fetchAnnouncments();
+      setSelectedIds([]);
+    } catch (error) {
+      console.error("Bulk delete failed", error);
+      alert("Failed to delete selected announcements");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // pagination function
   const [currentPage, setCurrentPage] = useState(1);
   const annoucementsPerPage = 6;
@@ -141,12 +187,21 @@ export default function Annoucements() {
                     <input
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      checked={
+                        filteredAnnouncements.length > 0 &&
+                        selectedIds.length === filteredAnnouncements.length
+                      }
+                      onChange={(e) => handleSelectAll(e.target.checked)}
                     />
                   </span>
-                  Select More
+                  Select All
                 </button>
 
-                <button className="flex bg-[#EC221F] text-white px-6 py-3 rounded-2xl shadow hover:bg-red-600">
+                <button
+                  onClick={handleBulkDelete}
+                  disabled={selectedIds.length === 0}
+                  className={`flex text-white px-6 py-3 rounded-2xl shadow ${selectedIds.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#EC221F] hover:bg-red-600'}`}
+                >
                   <span className="mr-2">
                     <RiDeleteBinFill size={20} />
                   </span>
@@ -177,6 +232,8 @@ export default function Annoucements() {
                   <AnnoucementsCard
                     key={index}
                     announcement={announcement}
+                    isSelected={selectedIds.includes(announcement._id)}
+                    onSelect={(isSelected) => handleSelectOne(announcement._id, isSelected)}
                     onViewAnnouncement={() =>
                       handleAnnouncementSelect(announcement)
                     }
@@ -200,11 +257,10 @@ export default function Annoucements() {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`px-[10px] py-2 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-300"
-                  : "bg-gray-200 hover:bg-gray-400"
-              }`}
+              className={`px-[10px] py-2 rounded-lg ${currentPage === 1
+                ? "bg-gray-300"
+                : "bg-gray-200 hover:bg-gray-400"
+                }`}
             >
               <BsChevronLeft size={15} />
             </button>
@@ -212,11 +268,10 @@ export default function Annoucements() {
               <button
                 key={index + 1}
                 onClick={() => handlePageChange(index + 1)}
-                className={`px-4 py-2 rounded-lg ${
-                  currentPage === index + 1
-                    ? "bg-blue-700 text-white"
-                    : "bg-gray-200 hover:bg-gray-400"
-                }`}
+                className={`px-4 py-2 rounded-lg ${currentPage === index + 1
+                  ? "bg-blue-700 text-white"
+                  : "bg-gray-200 hover:bg-gray-400"
+                  }`}
               >
                 {index + 1}
               </button>
@@ -224,17 +279,25 @@ export default function Annoucements() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`px-[10px] py-2 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-300"
-                  : "bg-gray-200 hover:bg-gray-400"
-              }`}
+              className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
+                ? "bg-gray-300"
+                : "bg-gray-200 hover:bg-gray-400"
+                }`}
             >
               <BsChevronRight size={15} />
             </button>
           </nav>
         </div>
       </div>
+      {selectedAnnouncementDelete && (
+        <DeleteConfirmation
+          announcement={selectedAnnouncementDelete}
+          onClose={() => {
+            handleCloseAnnouncementDelete();
+            fetchAnnouncments(); // Refresh after delete
+          }}
+        />
+      )}
     </>
   );
 }
