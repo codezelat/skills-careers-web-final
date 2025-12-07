@@ -1,7 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
-import { reindexCollection } from "@/lib/elasticsearch-utils";
 import { ObjectId } from "mongodb";
-import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function DELETE(req) {
@@ -32,9 +30,6 @@ export async function DELETE(req) {
       );
     }
 
-    await reindexCollection(db, "tickets");
-
-    revalidatePath("/tickets");
     return NextResponse.json(
       { message: "Ticket deleted successfully" },
       { status: 200 }

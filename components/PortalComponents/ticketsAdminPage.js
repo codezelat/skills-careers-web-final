@@ -309,6 +309,46 @@ export default function AdminsTicketsPage(props) {
         }
     };
 
+    // ticket delete function
+    const handleDelete = async (ticket) => {
+        const result = await Swal.fire({
+            title: 'Delete Ticket?',
+            text: `Are you sure you want to delete "${ticket.name}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                try {
+                    const response = await fetch(`/api/ticket/delete?id=${ticket._id}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to delete ticket');
+                    }
+                    return await response.json();
+                } catch (error) {
+                    Swal.showValidationMessage(
+                        `Request failed: ${error}`
+                    );
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Deleted!',
+                'The ticket has been deleted.',
+                'success'
+            );
+            fetchTickets();
+        }
+    };
+
     const [currentPage, setCurrentPage] = useState(1);
     const ticketsPerPage = 6;
     const totalPages = Math.ceil(tickets.length / ticketsPerPage);
@@ -383,7 +423,7 @@ export default function AdminsTicketsPage(props) {
                     <div className="grid gap-4 grid-cols-1">
                         {currentTickets.length > 0 ? (
                             currentTickets.map((ticket, index) => (
-                                <PortalTicketsCard key={index} ticket={ticket} onEdit={handleEdit} />
+                                <PortalTicketsCard key={index} ticket={ticket} onEdit={handleEdit} onDelete={handleDelete} />
                             ))
                         ) : (
                             <p className="text-lg text-center font-bold text-red-500 py-20">

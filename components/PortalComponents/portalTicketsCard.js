@@ -4,7 +4,7 @@ import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
-function PortalTicketsCard({ ticket, onEdit }) {
+function PortalTicketsCard({ ticket, onEdit, onDelete }) {
     const { data: session } = useSession();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +52,7 @@ function PortalTicketsCard({ ticket, onEdit }) {
                     <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
                         <button
                             onClick={() => onEdit(ticket)}
-                            className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                            className="flex items-center justify-center bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
                         >
                             <RiEdit2Fill size={20} className="mr-2" />
                             Edit
@@ -60,14 +60,20 @@ function PortalTicketsCard({ ticket, onEdit }) {
                         <button
                             onClick={handlePublishToggle}
                             disabled={isLoading}
-                            className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${
-                                isPublished
-                                    ? "bg-[#EC221F] hover:bg-red-700"
-                                    : "bg-[#001571] hover:bg-blue-700"
-                            } text-white`}
+                            className={`flex items-center justify-center py-2 px-4 rounded-lg shadow ${isPublished
+                                ? "bg-[#EC221F] hover:bg-red-700"
+                                : "bg-[#001571] hover:bg-blue-700"
+                                } text-white`}
                         >
                             <BsFillEyeFill size={15} className="mr-2" />
                             {isLoading ? "Loading..." : isPublished ? "Unpublish" : "Publish"}
+                        </button>
+                        <button
+                            onClick={() => onDelete(ticket)}
+                            className="flex items-center justify-center bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
+                        >
+                            <RiDeleteBinFill size={20} className="mr-2" />
+                            Delete
                         </button>
                     </div>
                 </div>
