@@ -4,6 +4,17 @@ import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
 
+const RECRUITER_CATEGORIES = [
+    "IT - Hardware, Network & Telecoms",
+    "Accounting, Banking, Finance & Insurance",
+    "Sales, Marketing & Digital",
+    "Corporate & Senior Management",
+    "HR, Administration & Office Support",
+    "Civil Engineering, Architecture & Design",
+    "Mechanical, Electrical & Technical Engineerings",
+    "Manufacturing, Operations & Quality",
+];
+
 export default function RecruiterEdit({
     recruiterDetails,
     onClose,
@@ -11,6 +22,23 @@ export default function RecruiterEdit({
     onInputChange,
     isSubmitting,
 }) {
+    const [isOther, setIsOther] = useState(
+        recruiterDetails.category && !RECRUITER_CATEGORIES.includes(recruiterDetails.category)
+    );
+
+    const handleCategoryChange = (e) => {
+        const val = e.target.value;
+        if (val === "Other") {
+            setIsOther(true);
+            // Don't update the parent category yet, or clear it, dependent on UX. 
+            // Better to clear it so input starts empty, or keep previous if switching back?
+            // Let's clear it so they can type fresh.
+            onInputChange({ target: { name: "category", value: "" } });
+        } else {
+            setIsOther(false);
+            onInputChange(e);
+        }
+    };
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             {/* Popup Container */}
@@ -58,13 +86,36 @@ export default function RecruiterEdit({
                                 <label className="block text-sm font-semibold text-[#001571]">
                                     Recruiter Category
                                 </label>
-                                <input
-                                    type="text"
-                                    name="industry"
-                                    value={recruiterDetails.industry || ""}
-                                    onChange={onInputChange}
+                                <select
+                                    name="category"
+                                    value={
+                                        isOther
+                                            ? "Other"
+                                            : RECRUITER_CATEGORIES.includes(recruiterDetails.category)
+                                                ? recruiterDetails.category
+                                                : ""
+                                    }
+                                    onChange={handleCategoryChange}
                                     className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                                />
+                                >
+                                    <option value="">Select Category</option>
+                                    {RECRUITER_CATEGORIES.map((cat) => (
+                                        <option key={cat} value={cat}>
+                                            {cat}
+                                        </option>
+                                    ))}
+                                    <option value="Other">Other</option>
+                                </select>
+                                {isOther && (
+                                    <input
+                                        type="text"
+                                        name="category"
+                                        placeholder="Type your category"
+                                        value={recruiterDetails.category || ""}
+                                        onChange={onInputChange}
+                                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                    />
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-[#001571]">

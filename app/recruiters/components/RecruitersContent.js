@@ -15,7 +15,7 @@ export default function RecruitersContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
   const [error, setError] = useState(null);
-  const [selectedIndustry, setSelectedIndustry] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
 
@@ -47,10 +47,11 @@ export default function RecruitersContent() {
     // Otherwise, filter based on dropdowns
     let filtered = recruiters;
 
-    if (selectedIndustry) {
+    if (selectedCategory) {
       filtered = filtered.filter(
         (recruiter) =>
-          recruiter.industry?.toLowerCase() === selectedIndustry.toLowerCase()
+          (recruiter.category || recruiter.industry)?.toLowerCase() ===
+          selectedCategory.toLowerCase()
       );
     }
 
@@ -62,11 +63,11 @@ export default function RecruitersContent() {
     }
 
     setFilteredRecruiters(filtered);
-  }, [selectedIndustry, selectedLocation, recruiters, searchResults]);
+  }, [selectedCategory, selectedLocation, recruiters, searchResults]);
 
-  const industries = [...new Set(recruiters.map((r) => r.industry))].filter(
-    Boolean
-  );
+  const categories = [
+    ...new Set(recruiters.map((r) => r.category || r.industry)),
+  ].filter(Boolean);
   const locations = [...new Set(recruiters.map((r) => r.location))].filter(
     Boolean
   );
@@ -104,12 +105,12 @@ export default function RecruitersContent() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
           <DropdownButton
-            buttonName="Industry"
-            selected={selectedIndustry || "Industry"}
-            dropdownItems={["All Industries", ...industries]}
-            onSelect={(industry) => {
-              setSelectedIndustry(
-                industry === "All Industries" ? null : industry
+            buttonName="Category"
+            selected={selectedCategory || "Category"}
+            dropdownItems={["All Categories", ...categories]}
+            onSelect={(category) => {
+              setSelectedCategory(
+                category === "All Categories" ? null : category
               );
               setSearchResults(null); // Reset search results when changing filters
             }}
@@ -129,7 +130,7 @@ export default function RecruitersContent() {
 
         <div className="w-full pt-20">
           {isLoading ? (
-            <RecruiterLoading/>
+            <RecruiterLoading />
           ) : filteredRecruiters.length > 0 ? (
             filteredRecruiters.map((recruiter, index) => (
               <RecruiterCard key={index} recruiter={recruiter} />

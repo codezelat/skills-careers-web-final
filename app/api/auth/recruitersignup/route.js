@@ -10,6 +10,7 @@ export async function POST(req) {
       firstName,
       lastName,
       recruiterName,
+      category,
       employeeRange,
       email,
       contactNumber,
@@ -131,6 +132,7 @@ export async function POST(req) {
 
       const recruiterResult = await db.collection("recruiters").insertOne({
         recruiterName,
+        category,
         email,
         employeeRange,
         contactNumber,

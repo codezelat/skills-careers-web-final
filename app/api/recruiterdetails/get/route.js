@@ -72,6 +72,7 @@ export async function GET(req) {
         website: recruiter.website,
         companyDescription: recruiter.companyDescription,
         industry: recruiter.industry,
+        category: recruiter.category,
         location: recruiter.location,
         facebook: recruiter.facebook,
         instagram: recruiter.instagram,

@@ -27,6 +27,7 @@ export default function RecruiterProfile({ slug }) {
         createdAt: "",
         location: "",
         industry: "",
+        category: "",
         membership: "",
         coverImage: "",
         website: "",
@@ -221,7 +222,9 @@ export default function RecruiterProfile({ slug }) {
 
     // Recruiter details update 
     const handleInputChange = (e) => {
-        e.preventDefault();
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
         const { name, value } = e.target;
         setRecruiterDetails((prev) => ({ ...prev, [name]: value }));
     };
@@ -501,7 +504,7 @@ export default function RecruiterProfile({ slug }) {
                                             className="rounded-full"
                                         />
                                         <p className="text-black ml-2 font-semibold text-base">
-                                            {recruiterDetails.industry}
+                                            {recruiterDetails.category || recruiterDetails.industry}
                                         </p>
                                     </div>
                                     <div className="flex items-center">

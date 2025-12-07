@@ -11,6 +11,7 @@ async function createRecruiter(
   firstName,
   lastName,
   recruiterName,
+  category,
   employeeRange,
   email,
   contactNumber,
@@ -23,6 +24,7 @@ async function createRecruiter(
       firstName,
       lastName,
       recruiterName,
+      category,
       employeeRange,
       email,
       contactNumber,
@@ -49,8 +51,11 @@ function AuthForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isOtherCategory, setIsOtherCategory] = useState(false);
 
   const recruiterNameInputRef = useRef();
+  const categoryInputRef = useRef();
+  const customCategoryInputRef = useRef();
   const firstNameInputRef = useRef();
   const lastNameInputRef = useRef();
   const employeeRangeInputRef = useRef();
@@ -133,6 +138,10 @@ function AuthForm() {
     const enteredFirstName = firstNameInputRef.current.value;
     const enteredLastName = lastNameInputRef.current.value;
     const enteredRecruiterName = recruiterNameInputRef.current.value;
+    let enteredCategory = categoryInputRef.current.value;
+    if (enteredCategory === "Other") {
+      enteredCategory = customCategoryInputRef.current.value;
+    }
     const enteredEmployeeRangeName = employeeRangeInputRef.current.value;
     const enteredEmail = emailInputRef.current.value;
     const enteredContactNumber = contactNumberInputRef.current.value;
@@ -144,6 +153,7 @@ function AuthForm() {
         enteredFirstName,
         enteredLastName,
         enteredRecruiterName,
+        enteredCategory,
         enteredEmployeeRangeName,
         enteredEmail,
         enteredContactNumber,
@@ -215,6 +225,52 @@ function AuthForm() {
           className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
           placeholder="Recruiter Name"
         />
+      </label>
+      <label className="block">
+        <select
+          id="category"
+          required
+          ref={categoryInputRef}
+          onChange={(e) => setIsOtherCategory(e.target.value === "Other")}
+          className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 text-blue-900 font-medium"
+        >
+          <option value="">Select Category</option>
+          <option value="IT - Hardware, Network & Telecoms">
+            IT - Hardware, Network & Telecoms
+          </option>
+          <option value="Accounting, Banking, Finance & Insurance">
+            Accounting, Banking, Finance & Insurance
+          </option>
+          <option value="Sales, Marketing & Digital">
+            Sales, Marketing & Digital
+          </option>
+          <option value="Corporate & Senior Management">
+            Corporate & Senior Management
+          </option>
+          <option value="HR, Administration & Office Support">
+            HR, Administration & Office Support
+          </option>
+          <option value="Civil Engineering, Architecture & Design">
+            Civil Engineering, Architecture & Design
+          </option>
+          <option value="Mechanical, Electrical & Technical Engineerings">
+            Mechanical, Electrical & Technical Engineerings
+          </option>
+          <option value="Manufacturing, Operations & Quality">
+            Manufacturing, Operations & Quality
+          </option>
+          <option value="Other">Other</option>
+        </select>
+        {isOtherCategory && (
+          <input
+            type="text"
+            id="customCategory"
+            required
+            ref={customCategoryInputRef}
+            className="w-full p-3 border border-gray-300 rounded-lg mt-2 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
+            placeholder="Type your category"
+          />
+        )}
       </label>
       <label className="block">
         <select

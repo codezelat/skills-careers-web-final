@@ -16,19 +16,6 @@ function RecruiterProfile({ slug }) {
   const router = useRouter();
   const [recruiterDetails, setRecruiterDetails] = useState({
     id: "",
-    recruiterName: "",
-    employeeRange: "",
-    email: "",
-    contactNumber: "",
-    website: "",
-    companyDescription: "",
-    industry: "",
-    location: "",
-    logo: "",
-    facebook: "",
-    instagram: "",
-    linkedin: "",
-    x: "",
   });
   const [jobs, setJobs] = useState([]);
   const [error, setError] = useState(null);
@@ -135,7 +122,7 @@ function RecruiterProfile({ slug }) {
 
           <div className="pl-4 sm:pl-10 pt-8 sm:pt-14">
             <h1 className="text-center sm:text-left text-2xl sm:text-4xl md:text-3xl font-bold text-black mt-8 sm:mt-12">
-              {recruiterDetails.recruiterName}
+              {recruiterDetails.recruiterName} {recruiterDetails.location}
             </h1>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between pr-2 sm:pr-5 space-y-4 sm:space-y-0 mt-5 text-sm w-full">
@@ -161,7 +148,7 @@ function RecruiterProfile({ slug }) {
                     className="rounded-full"
                   />
                   <p className="text-black ml-2 font-semibold text-base">
-                    {recruiterDetails.industry}
+                    {recruiterDetails.category || recruiterDetails.industry}
                   </p>
                 </div>
                 <div className="flex items-center">

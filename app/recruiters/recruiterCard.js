@@ -25,6 +25,7 @@ function RecruiterCard(props) {
     contactNumber,
     companyDescription,
     industry,
+    category,
     location,
     logo,
     createdAt,
@@ -123,7 +124,7 @@ function RecruiterCard(props) {
                 <div className="flex items-center gap-2">
                   <BiSolidCategory size={20} className="text-[#001571]" />
                   <p className="text-black font-semibold">
-                    {industry}
+                    {category || industry}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
