@@ -17,6 +17,16 @@ export default function AdminInquiriesClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [addInquiryForm, setAddInquiryForm] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("All");
+
+  const handleFilterChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
+  const displayedInquiries = inquiries.filter((inquiry) => {
+    if (filterStatus === "All") return true;
+    return (inquiry.status || "Pending") === filterStatus;
+  });
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -68,6 +78,8 @@ export default function AdminInquiriesClient() {
     return <PortalLoading />;
   }
 
+
+
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
       <div className="flex justify-between items-center mb-6">
@@ -83,15 +95,35 @@ export default function AdminInquiriesClient() {
         )}
       </div>
 
+      {/* Filter Section */}
+      {session?.user?.role === "admin" && (
+        <div className="flex justify-end mb-4">
+          <div className="flex items-center gap-2">
+            <label className="text-[#001571] font-semibold text-sm">Filter by Status:</label>
+            <select
+              value={filterStatus}
+              onChange={handleFilterChange}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2"
+            >
+              <option value="All">All</option>
+              <option value="Pending">Pending</option>
+              <option value="Solved">Solved</option>
+              <option value="Declined">Declined</option>
+            </select>
+          </div>
+        </div>
+      )}
+
       <div className="w-full overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
             <tr className="text-[#8A93BE] text-base font-semibold text-left">
-              <th className="py-3 pl-12 w-[25%]">Profile Name</th>
-              <th className="py-3 w-[20%]">User Type</th>
-              <th className="py-3 w-[20%]">Date</th>
-              <th className="py-3 w-[20%]">Time</th>
-              <th className="py-3 w-[15%]">Action</th>
+              <th className="py-3 pl-12 w-[20%]">Profile Name</th>
+              <th className="py-3 w-[15%]">User Type</th>
+              <th className="py-3 w-[15%]">Date</th>
+              <th className="py-3 w-[15%]">Time</th>
+              <th className="py-3 w-[15%]">Status</th>
+              <th className="py-3 w-[20%]">Action</th>
             </tr>
           </thead>
         </table>
@@ -99,8 +131,8 @@ export default function AdminInquiriesClient() {
 
       {session?.user?.role === "admin" && (
         <div className="grid gap-4 grid-cols-1">
-          {inquiries.length > 0 ? (
-            inquiries.map((inquiry, index) => (
+          {displayedInquiries.length > 0 ? (
+            displayedInquiries.map((inquiry, index) => (
               <InquiryCard key={index} inquiry={inquiry} />
             ))
           ) : (

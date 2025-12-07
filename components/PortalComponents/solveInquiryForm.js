@@ -3,9 +3,9 @@ import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-export default function SolveInquiryForm({ inquiry, onClose }) {
+export default function SolveInquiryForm({ inquiry, onClose, onSuccess }) {
   const [inquiryDetails, setInquiryDetails] = useState(inquiry);
-  const [error,setError] = useState();
+  const [error, setError] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
@@ -13,11 +13,11 @@ export default function SolveInquiryForm({ inquiry, onClose }) {
     setInquiryDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-// SolveInquiryForm.js
-const submitHandler = async (e) => {
+  // SolveInquiryForm.js
+  const submitHandler = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+
     try {
       const response = await fetch(`/api/inquiry/update?id=${inquiryDetails._id}`, {
         method: "PUT",
@@ -26,7 +26,7 @@ const submitHandler = async (e) => {
         },
         body: JSON.stringify(inquiryDetails),
       });
-  
+
       if (response.ok) {
         Swal.fire({
           icon: "success",
@@ -36,6 +36,7 @@ const submitHandler = async (e) => {
           timerProgressBar: true,
           showConfirmButton: false,
         }).then(() => {
+          if (onSuccess) onSuccess(inquiryDetails);
           onClose(); // Close the form after the alert
         });
       } else {
@@ -62,7 +63,7 @@ const submitHandler = async (e) => {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white w-full max-w-4xl min-h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide flex flex-col">
