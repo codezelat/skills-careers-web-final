@@ -165,7 +165,7 @@ const StartingPage = () => {
             </div>
 
             {/* Right Image Section */}
-            <div className="relative w-full h-[800px] md:h-auto lg:h-auto sm:h-[800px]">
+            <div className="hidden md:block relative w-full h-[800px] md:h-auto lg:h-auto sm:h-[800px]">
               <Image
                 src="/images/girlPic.png"
                 alt="Illustration"
@@ -187,7 +187,7 @@ const StartingPage = () => {
       <div className="bg-[#F5F5F5] w-full flex items-center justify-center">
         <div className="w-full py-28 flex flex-col items-center justify-center gap-24">
           <StoryComponent />
-          <PressReleaseSection/>
+          <PressReleaseSection />
 
           <span id="landingPageFAQ"></span>
           <FaqComponent />
