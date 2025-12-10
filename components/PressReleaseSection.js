@@ -37,123 +37,106 @@ export default function PressReleaseSection() {
 
   if (loading) {
     return (
-      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
-        <div className="w-full flex justify-between">
-          <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-xl">
-            <p>Latest Press Releases</p>
-          </div>
-          <div className="flex justify-end -2 gap-4 mb-8 text-[#001571] font-bold text-xl">
-            <Link href="/pressRelease">
-              <p className="flex">
-                View All
-                <span className="ml-3">
-                  <BsArrowUpRightCircleFill />
-                </span>
-              </p>
-            </Link>
-          </div>
+      <div className="w-full max-w-[1280px] mx-auto px-4 xl:px-0 py-12">
+        <div className="flex justify-between items-center mb-8">
+          <div className="h-8 w-64 bg-gray-200 animate-pulse rounded-lg"></div>
+          <div className="h-8 w-32 bg-gray-200 animate-pulse rounded-lg"></div>
         </div>
-        <div className="w-full container mt-8">
-          <div className="h-screen grid grid-cols-5 grid-rows-2 space-x-6">
-            <div className="col-span-3 row-span-2 bg-gray-200 animate-pulse rounded-lg"></div>
-            <div className="flex flex-col gap-4 col-span-2 row-span-2">
-              <div className="h-1/2 w-full bg-gray-200 animate-pulse rounded-lg"></div>
-              <div className="h-1/2 w-full bg-gray-200 animate-pulse rounded-lg"></div>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:h-[600px]">
+          <div className="lg:col-span-3 bg-gray-200 animate-pulse rounded-2xl h-[400px] lg:h-full"></div>
+          <div className="lg:col-span-2 flex flex-col gap-6 h-full">
+            <div className="flex-1 bg-gray-200 animate-pulse rounded-2xl h-[200px] lg:h-auto"></div>
+            <div className="flex-1 bg-gray-200 animate-pulse rounded-2xl h-[200px] lg:h-auto"></div>
           </div>
         </div>
       </div>
     );
   }
 
-  console.log("Press releases in component:", pressreleases);
-
   // Ensure there are at least 3 press releases to match the layout
-  const featuredPressRelease = pressreleases[0]; // First press release is featured
-  const smallerPressReleases = pressreleases.slice(1, 3); // Next two are smaller
+  const featuredPressRelease = pressreleases[0] || null;
+  const smallerPressReleases = pressreleases.slice(1, 3);
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px]">
-      <div className="w-full flex justify-between">
-        <div className="flex justify-start gap-4 mb-8 text-[#33448D] font-bold text-xl">
-          <p>Latest Press Releases</p>
+    <div className="w-full max-w-[1280px] mx-auto px-4 xl:px-0 py-12">
+      <div className="flex justify-between items-end mb-8">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-[#33448D] font-bold text-3xl">Latest Press Releases</h2>
+          <div className="h-1 w-20 bg-[#33448D] rounded-full"></div>
         </div>
-        <div className="flex justify-end -2 gap-4 mb-8 text-[#001571] font-bold text-xl">
-          <Link href="/pressRelease">
-            <p className="flex">
-              View All
-              <span className="ml-3">
-                <BsArrowUpRightCircleFill />
-              </span>
-            </p>
-          </Link>
-        </div>
+
+        <Link href="/pressRelease" className="group flex items-center gap-2 text-[#001571] font-bold text-lg hover:text-[#33448D] transition-colors">
+          View All
+          <BsArrowUpRightCircleFill className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+        </Link>
       </div>
-      <div className="w-full container mt-8">
-        <div className="h-screen grid grid-cols-5 grid-rows-2 space-x-6">
-          {/* Featured Press Release (Large Section) */}
 
-          <Link
-            href={`/pressRelease/${featuredPressRelease?._id || ""}`}
-            className="col-span-3 row-span-2 bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-4"
-          >
-            <div className="relative h-[400px] w-full overflow-hidden">
-              <Image
-                src={featuredPressRelease?.image || "/newsImage.png"}
-                alt="Featured Press Release"
-                fill
-                className="object-cover object-top"
-                priority
-              />
-            </div>
-            <div className="p-6 flex-grow">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:h-[600px]">
+        {/* Featured Press Release (Large Section) */}
+        <Link
+          href={featuredPressRelease ? `/pressRelease/${featuredPressRelease._id}` : "#"}
+          className="lg:col-span-3 flex flex-col bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group h-full"
+        >
+          <div className="relative w-full h-64 lg:h-[60%] overflow-hidden">
+            <Image
+              src={featuredPressRelease?.image || "/newsImage.png"}
+              alt="Featured Press Release"
+              fill
+              className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+              priority
+            />
+          </div>
+          <div className="p-6 lg:p-8 flex flex-col flex-1">
+            <div className="flex-1">
+              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[#33448D] transition-colors">
                 {featuredPressRelease?.title || "No Featured Press Release"}
-              </h2>
-              <p className="text-gray-700 mb-4">
-                {featuredPressRelease?.description ||
-                  "No description available."}
-              </p>
-              <p className="text-gray-500 mt-4">
-                {new Date(
-                  featuredPressRelease?.createdAt
-                ).toLocaleDateString() || "01 Oct 2024"}
+              </h3>
+              <p className="text-gray-600 text-base lg:text-lg line-clamp-3 lg:line-clamp-4">
+                {featuredPressRelease?.description || "No description available."}
               </p>
             </div>
-          </Link>
+            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-gray-500 text-sm font-medium">
+              <span>{new Date(featuredPressRelease?.createdAt || Date.now()).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span className="text-[#33448D] group-hover:translate-x-2 transition-transform">Read article &rarr;</span>
+            </div>
+          </div>
+        </Link>
 
-          {/* Smaller Press Releases */}
-          <div className="flex flex-col gap-4 col-span-2 row-span-2">
-            {smallerPressReleases.map((pressrelease, index) => (
-              <Link
-                key={index}
-                href={`/pressRelease/${pressrelease?._id || ""}`}
-                className="h-1/2 w-full bg-white border border-gray-200 overflow-y-auto rounded-lg shadow-lg hide-scrollbar p-3"
-              >
-                <div className="bg-white relative h-[200px] w-full overflow-hidden">
-                  <Image
-                    src={pressrelease?.image || "/newsImage.png"}
-                    alt="Small Press Release"
-                    fill
-                    priority
-                    className="object-cover object-top"
-                  />
-                </div>
-                <div className="p-4 flex-grow">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+        {/* Smaller Press Releases */}
+        <div className="lg:col-span-2 flex flex-col gap-6 h-full">
+          {smallerPressReleases.map((pressrelease, index) => (
+            <Link
+              key={index}
+              href={`/pressRelease/${pressrelease?._id || ""}`}
+              className="flex-1 flex flex-col bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group"
+            >
+              <div className="relative w-full h-40 overflow-hidden shrink-0">
+                <Image
+                  src={pressrelease?.image || "/newsImage.png"}
+                  alt="Press Release"
+                  fill
+                  className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#33448D] transition-colors">
                     {pressrelease?.title || "No Title"}
-                  </h3>
-                  <p className="text-gray-700 mb-4 text-md">
+                  </h4>
+                  <p className="text-gray-600 text-sm line-clamp-2">
                     {pressrelease?.description || "No description available."}
                   </p>
-                  <p className="text-gray-500 mt-4">
-                    {new Date(pressrelease?.createdAt).toLocaleDateString() ||
-                      "01 Oct 2024"}
-                  </p>
                 </div>
-              </Link>
-            ))}
-          </div>
+                <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs font-medium">
+                  <span>{new Date(pressrelease?.createdAt || Date.now()).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+
+          {/* Fallback if less than 2 items in small list but we want to maintain grid? 
+                (Optional: If pressreleases.length < 3, the layout handles it gracefully by just rendering what's there) 
+            */}
         </div>
       </div>
     </div>
