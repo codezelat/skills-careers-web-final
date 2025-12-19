@@ -40,7 +40,6 @@ export default function AdminProfile() {
           }
 
           setUserDetails(userData.user);
-          console.log("first name : ", userDetails.firstName);
         } catch (err) {
           setError(err.message);
         } finally {

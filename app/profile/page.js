@@ -1,6 +1,6 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
-import ApplicationForm from "@/app/jobs/[jobid]/apply/applicationForm";
+import ApplicationForm from "@/app/jobs/[jobid]/apply/JobApplicationForm";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";

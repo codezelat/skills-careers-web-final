@@ -3,7 +3,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { BsPlus } from "react-icons/bs";
 import PortalLoading from "../loading";
 import InquiryCard from "@/components/PortalComponents/inquiryCard";
@@ -28,7 +28,7 @@ export default function AdminInquiriesClient() {
     return (inquiry.status || "Pending") === filterStatus;
   });
 
-  const fetchInquiries = async () => {
+  const fetchInquiries = useCallback(async () => {
     if (!session?.user?.role) return;
     try {
       setIsLoading(true);
@@ -42,7 +42,7 @@ export default function AdminInquiriesClient() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [session]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -52,7 +52,7 @@ export default function AdminInquiriesClient() {
 
   useEffect(() => {
     fetchInquiries();
-  }, [session]);
+  }, [fetchInquiries]);
 
   if (isLoading) {
     return <PortalLoading />;
