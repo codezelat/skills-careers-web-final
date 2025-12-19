@@ -58,7 +58,7 @@ function NavBar() {
             className="transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
             prefetch={true}
           >
-            TICKETS
+            EVENTS
           </Link>
           <Link
             href="/about"

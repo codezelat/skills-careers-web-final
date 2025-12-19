@@ -135,8 +135,8 @@ export default function SideMenuSection() {
                         {(session?.user?.role === "admin" || session?.user?.role === "recruiter") && (
                             <Link href="/Portal/tickets">
                                 <button
-                                    onClick={() => setActiveButton("Tickets")}
-                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Tickets"
+                                    onClick={() => setActiveButton("Events")}
+                                    className={`flex w-full items-center py-4 px-6 rounded-2xl font-sans text-md font-medium ${activeButton === "Events"
                                         ? "bg-[#001571] text-white"
                                         : "bg-white text-[#001571] hover:bg-gray-100"
                                         }`}
@@ -144,10 +144,10 @@ export default function SideMenuSection() {
                                     <img
                                         src="/sidebar/ticketIcon.png"
                                         alt="Candidates"
-                                        className={`h-5 w-5 mr-6 ${activeButton === "Tickets" ? "filter invert brightness-0" : ""
+                                        className={`h-5 w-5 mr-6 ${activeButton === "Events" ? "filter invert brightness-0" : ""
                                             }`}
                                     />
-                                    Tickets
+                                    Events
                                 </button>
                             </Link>
                         )}

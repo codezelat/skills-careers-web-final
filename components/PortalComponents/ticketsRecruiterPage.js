@@ -170,7 +170,7 @@ export default function RecruitersTicketsPage(props) {
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: 'Ticket created successfully!',
+                text: 'Event created successfully!',
                 timer: 2000,
                 showConfirmButton: false,
             });
@@ -265,7 +265,7 @@ export default function RecruitersTicketsPage(props) {
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: 'Ticket updated successfully!',
+                text: 'Event updated successfully!',
                 timer: 2000,
                 showConfirmButton: false,
             });
@@ -278,6 +278,47 @@ export default function RecruitersTicketsPage(props) {
             });
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+
+    // ticket delete function
+    const handleDelete = async (ticket) => {
+        const result = await Swal.fire({
+            title: 'Delete Event?',
+            text: `Are you sure you want to delete "${ticket.name}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                try {
+                    const response = await fetch(`/api/ticket/delete?id=${ticket._id}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to delete event');
+                    }
+                    return await response.json();
+                } catch (error) {
+                    Swal.showValidationMessage(
+                        `Request failed: ${error}`
+                    );
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Deleted!',
+                'The event has been deleted.',
+                'success'
+            );
+            fetchTickets();
         }
     };
 
@@ -303,7 +344,7 @@ export default function RecruitersTicketsPage(props) {
         <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-xl font-bold text-[#001571]">Tickets</h1>
+                <h1 className="text-xl font-bold text-[#001571]">Events</h1>
                 <button
                     className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
                     onClick={() => setIsFormVisible(true)}
@@ -333,7 +374,7 @@ export default function RecruitersTicketsPage(props) {
                             <IoSearchSharp size={25} className="text-[#001571]" />
                             <input
                                 type="text"
-                                placeholder="Search Tickets..."
+                                placeholder="Search Events..."
                                 className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
                             />
                         </div>
@@ -354,12 +395,12 @@ export default function RecruitersTicketsPage(props) {
                             <tbody>
                                 {currentTickets.length > 0 ? (
                                     currentTickets.map((ticket, index) => (
-                                        <PortalTicketsCard key={index} ticket={ticket} onEdit={handleEdit} />
+                                        <PortalTicketsCard key={index} ticket={ticket} onEdit={handleEdit} onDelete={handleDelete} />
                                     ))
                                 ) : (
                                     <tr>
                                         <td colSpan="5" className="text-lg text-center font-bold text-red-500 py-20">
-                                            No tickets found.
+                                            No events found.
                                         </td>
                                     </tr>
                                 )}
@@ -375,7 +416,7 @@ export default function RecruitersTicketsPage(props) {
                     <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
                         {/* Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                            <h4 className="text-2xl font-semibold text-[#001571]">Add Ticket</h4>
+                            <h4 className="text-2xl font-semibold text-[#001571]">Add Event</h4>
                             <button
                                 onClick={() => setIsFormVisible(false)}
                                 className="text-gray-500 hover:text-red-500 focus:outline-none"
@@ -526,7 +567,7 @@ export default function RecruitersTicketsPage(props) {
                                         disabled={isSubmitting}
                                         className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
                                     >
-                                        {isSubmitting ? "Creating..." : "Create Ticket"}
+                                        {isSubmitting ? "Creating..." : "Create Event"}
                                         <PiCheckCircle className="ml-2" size={20} />
                                     </button>
                                 </div>
@@ -542,7 +583,7 @@ export default function RecruitersTicketsPage(props) {
                     <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
                         {/* Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                            <h4 className="text-2xl font-semibold text-[#001571]">Edit Ticket</h4>
+                            <h4 className="text-2xl font-semibold text-[#001571]">Edit Event</h4>
                             <button
                                 onClick={() => setIsEditFormVisible(false)}
                                 className="text-gray-500 hover:text-red-500 focus:outline-none"
@@ -693,7 +734,7 @@ export default function RecruitersTicketsPage(props) {
                                         disabled={isSubmitting}
                                         className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
                                     >
-                                        {isSubmitting ? "Updating..." : "Update Ticket"}
+                                        {isSubmitting ? "Updating..." : "Update Event"}
                                         <PiCheckCircle className="ml-2" size={20} />
                                     </button>
                                 </div>

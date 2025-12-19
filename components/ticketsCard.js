@@ -37,7 +37,7 @@ export default function TicketsCard({ ticket, fetchTickets }) {
     setIsSubmitting(true);
 
     if (!session) {
-      setError("You must be logged in to book a ticket.");
+      setError("You must be logged in to book an event.");
       setIsSubmitting(false);
       return;
     }
@@ -76,7 +76,7 @@ export default function TicketsCard({ ticket, fetchTickets }) {
       const data = await response.json();
 
       if (!response.ok)
-        throw new Error(data.message || "Failed to book ticket.");
+        throw new Error(data.message || "Failed to book event.");
 
       setShowBookingForm(false);
       fetchTickets(); // Refresh the tickets list
