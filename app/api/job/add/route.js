@@ -67,7 +67,8 @@ export async function POST(req) {
       ...data,
       recruiterId: new ObjectId(data.recruiterId),
       createdAt: new Date(),
-      postedDate: new Date()
+      postedDate: new Date(),
+      isPublished: true
     });
 
     return NextResponse.json(

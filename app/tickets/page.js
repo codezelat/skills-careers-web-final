@@ -14,7 +14,7 @@ export default function TicketsPage() {
     const fetchTicketsWithRecruiters = useCallback(async () => {
         try {
             // Fetch tickets
-            const ticketsResponse = await fetch('/api/ticket/all');
+            const ticketsResponse = await fetch('/api/ticket/all?published=true');
             const ticketsData = await ticketsResponse.json();
 
             if (!ticketsResponse.ok) throw new Error('Failed to fetch tickets');
@@ -74,7 +74,7 @@ export default function TicketsPage() {
                             <RecruiterLoading />
                         ) : tickets.length > 0 ? (
                             tickets.map((ticket) => (
-                                <TicketsCard key={ticket._id} ticket={ticket} fetchTickets={fetchTicketsWithRecruiters}/>
+                                <TicketsCard key={ticket._id} ticket={ticket} fetchTickets={fetchTicketsWithRecruiters} />
                             ))
                         ) : (
                             <p className="text-lg text-center font-bold py-20">

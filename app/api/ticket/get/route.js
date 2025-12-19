@@ -51,8 +51,8 @@ export async function GET(req) {
 
     if (!tickets || tickets.length === 0) {
       return NextResponse.json(
-        { message: "No tickets found" },
-        { status: 404 }
+        { tickets: [] },
+        { status: 200 }
       );
     }
 

@@ -20,14 +20,19 @@ function PortalTicketsCard({ ticket, onEdit, onDelete }) {
     const handlePublishToggle = async () => {
         setIsLoading(true);
         try {
+            const formData = new FormData();
+            formData.append("_id", _id);
+            formData.append("isPublished", String(!isPublished));
+
             const response = await fetch(`/api/ticket/update`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ _id, isPublished: !isPublished }),
+                body: formData,
             });
 
             if (response.ok) {
                 setIsPublished(!isPublished);
+            } else {
+                console.error("Failed to update ticket status");
             }
         } catch (error) {
             console.error("Error updating ticket status:", error);
@@ -36,49 +41,53 @@ function PortalTicketsCard({ ticket, onEdit, onDelete }) {
     };
 
     return (
-        <div className="gap-1 bg-white rounded-lg hover:shadow-md">
-            <div className="w-full items-center">
-                <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex items-center">
-                    <div className="py-3 text-black font-semibold w-[3%]"></div>
-                    <div className="py-3 text-black font-semibold w-[24.25%]">
-                        {name}
-                    </div>
-                    <div className="py-3 text-black font-semibold w-[24.25%]">
-                        {formatDate(date)}
-                    </div>
-                    <div className="py-3 text-black font-semibold w-[24.25%]">
-                        {location}
-                    </div>
-                    <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
-                        <button
-                            onClick={() => onEdit(ticket)}
-                            className="flex items-center justify-center bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
-                        >
-                            <RiEdit2Fill size={20} className="mr-2" />
-                            Edit
-                        </button>
-                        <button
-                            onClick={handlePublishToggle}
-                            disabled={isLoading}
-                            className={`flex items-center justify-center py-2 px-4 rounded-lg shadow ${isPublished
-                                ? "bg-[#EC221F] hover:bg-red-700"
-                                : "bg-[#001571] hover:bg-blue-700"
-                                } text-white`}
-                        >
-                            <BsFillEyeFill size={15} className="mr-2" />
-                            {isLoading ? "Loading..." : isPublished ? "Unpublish" : "Publish"}
-                        </button>
+        <tr className="hover:bg-gray-50 border-b border-gray-100 last:border-0 transition-colors duration-200">
+            <td className="py-4 px-4 align-middle">
+                {/* Placeholder or Checkbox could go here */}
+            </td>
+            <td className="py-4 px-4 align-middle">
+                <div className="font-semibold text-[#001571] truncate max-w-[200px]" title={name}>
+                    {name}
+                </div>
+            </td>
+            <td className="py-4 px-4 align-middle whitespace-nowrap text-gray-600 font-medium">
+                {formatDate(date)}
+            </td>
+            <td className="py-4 px-4 align-middle">
+                <div className="text-gray-600 truncate max-w-[150px]" title={location}>
+                    {location}
+                </div>
+            </td>
+            <td className="py-4 px-4 align-middle text-right">
+                <div className="flex gap-2 justify-end">
+                    <button
+                        onClick={() => onEdit(ticket)}
+                        className="flex items-center justify-center bg-gray-100 text-[#001571] px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        onClick={handlePublishToggle}
+                        disabled={isLoading}
+                        className={`flex items-center justify-center px-3 py-2 rounded-lg text-white font-medium text-sm transition-colors min-w-[100px] ${isPublished
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-[#001571] hover:bg-blue-800"
+                            }`}
+                    >
+                        {isLoading ? "..." : isPublished ? "Unpublish" : "Publish"}
+                    </button>
+                    {/* onDelete prop might not be passed in Recruiter view based on previous file content, but just in case keeping it consistent if passed */}
+                    {onDelete && (
                         <button
                             onClick={() => onDelete(ticket)}
-                            className="flex items-center justify-center bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
+                            className="flex items-center justify-center bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm"
                         >
-                            <RiDeleteBinFill size={20} className="mr-2" />
                             Delete
                         </button>
-                    </div>
+                    )}
                 </div>
-            </div>
-        </div>
+            </td>
+        </tr>
     );
 }
 

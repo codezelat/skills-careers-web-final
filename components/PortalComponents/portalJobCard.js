@@ -21,11 +21,16 @@ function JobCard(props) {
     const { _id, createdAt, jobTitle, recruiterId } = props.job;
 
     useEffect(() => {
+        const controller = new AbortController();
+        const { signal } = controller;
+
         const fetchCounts = async () => {
+            if (!_id) return;
             try {
                 // Fetch application count
                 const appResponse = await fetch(
-                    `/api/jobapplication/get?jobId=${_id}`
+                    `/api/jobapplication/get?jobId=${_id}`,
+                    { signal }
                 );
                 if (appResponse.ok) {
                     const appData = await appResponse.json();
@@ -35,7 +40,8 @@ function JobCard(props) {
                 // Fetch recruiter details for admin
                 if (session?.user?.role === 'admin' && recruiterId) {
                     const recruiterResponse = await fetch(
-                        `/api/recruiterdetails/get?id=${recruiterId}`
+                        `/api/recruiterdetails/get?id=${recruiterId}`,
+                        { signal }
                     );
                     if (recruiterResponse.ok) {
                         const recruiterData = await recruiterResponse.json();
@@ -43,11 +49,15 @@ function JobCard(props) {
                     }
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                if (error.name !== 'AbortError') {
+                    console.error("Error fetching data:", error);
+                }
             }
         };
         fetchCounts();
-    }, [recruiterId, session?.user?.role]);
+
+        return () => controller.abort();
+    }, [_id, recruiterId, session?.user?.role]);
 
     const handlePublishToggle = async () => {
         setIsLoading(true);
@@ -134,21 +144,29 @@ function JobCard(props) {
                             <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
                                 <button
                                     onClick={handleViewJob}
-                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                                    title="Edit Job"
+                                    className="flex items-center justify-center p-2.5 bg-[#001571] text-white rounded-xl shadow-sm hover:shadow-md hover:bg-blue-800 transition-all duration-200"
                                 >
-                                    <RiEdit2Fill size={20} className="mr-2" />
-                                    Edit
+                                    <RiEdit2Fill size={18} />
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={isLoading}
+                                    title="Delete Job"
+                                    className="flex items-center justify-center p-2.5 bg-red-50 text-[#EC221F] border border-red-100 rounded-xl shadow-sm hover:shadow-md hover:bg-[#EC221F] hover:text-white transition-all duration-200"
+                                >
+                                    <RiDeleteBinFill size={18} />
                                 </button>
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
-                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${isPublished
-                                        ? "bg-[#001571] hover:bg-blue-700"
-                                        : "bg-[#EC221F] hover:bg-red-700"
-                                        } text-white`}
+                                    title={isPublished ? "Restrict Job" : "Unrestrict Job"}
+                                    className={`flex items-center justify-center p-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-white ${isPublished
+                                        ? "bg-amber-500 hover:bg-amber-600"
+                                        : "bg-emerald-500 hover:bg-emerald-600"
+                                        }`}
                                 >
-                                    <BsFillEyeFill size={15} className="mr-2" />
-                                    {isLoading ? "Loading..." : isPublished ? "Restrict" : "Unrestrict"}
+                                    <BsFillEyeFill size={18} />
                                 </button>
                             </div>
                         </>
@@ -173,6 +191,14 @@ function JobCard(props) {
                                 >
                                     <RiEdit2Fill size={20} className="mr-2" />
                                     Edit
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={isLoading}
+                                    className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
+                                >
+                                    <RiDeleteBinFill size={20} className="mr-2" />
+                                    Delete
                                 </button>
                                 <button
                                     onClick={handlePublishToggle}

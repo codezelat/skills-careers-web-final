@@ -341,28 +341,30 @@ export default function RecruitersTicketsPage(props) {
 
                     {/* Tickets Table */}
                     <div className="w-full overflow-x-auto">
-                        <table className="w-full border-collapse">
+                        <table className="w-full border-collapse table-fixed">
                             <thead>
-                                <tr className="text-[#8A93BE] text-base font-semibold text-left">
-                                    <th className="py-3 w-[3%]"></th>
-                                    <th className="py-3 w-[24.25%]">Event Name</th>
-                                    <th className="py-3 w-[24.25%]">Date</th>
-                                    <th className="py-3 w-[24.25%]">Location</th>
-                                    <th className="py-3 w-[24.25%]">Actions</th>
+                                <tr className="text-[#8A93BE] text-base font-semibold text-left border-b border-gray-200">
+                                    <th className="py-3 px-4 w-[5%]"></th>
+                                    <th className="py-3 px-4 w-[25%]">Event Name</th>
+                                    <th className="py-3 px-4 w-[20%]">Date</th>
+                                    <th className="py-3 px-4 w-[20%]">Location</th>
+                                    <th className="py-3 px-4 w-[30%] text-right">Actions</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                {currentTickets.length > 0 ? (
+                                    currentTickets.map((ticket, index) => (
+                                        <PortalTicketsCard key={index} ticket={ticket} onEdit={handleEdit} />
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" className="text-lg text-center font-bold text-red-500 py-20">
+                                            No tickets found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
                         </table>
-                    </div>
-                    <div className="grid gap-4 grid-cols-1">
-                        {currentTickets.length > 0 ? (
-                            currentTickets.map((ticket, index) => (
-                                <PortalTicketsCard key={index} ticket={ticket} onEdit={handleEdit} />
-                            ))
-                        ) : (
-                            <p className="text-lg text-center font-bold text-red-500 py-20">
-                                No tickets found.
-                            </p>
-                        )}
                     </div>
                 </>
             )}

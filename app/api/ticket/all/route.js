@@ -16,6 +16,12 @@ export async function GET(req) {
       filter.recruiterId = new ObjectId(recruiterId);
     }
 
+    // Add published filter if provided
+    const published = searchParams.get("published");
+    if (published === "true") {
+      filter.isPublished = true;
+    }
+
     // Create the base query
     let query = db.collection("tickets").find(filter);
 

@@ -24,9 +24,10 @@ export async function PUT(req) {
     const capacity = formData.get("capacity");
     const closingDate = formData.get("closingDate");
     const eventProfile = formData.get("eventProfile");
+    const isPublished = formData.get("isPublished");
 
-    if (!_id || !name || !location || !date || !startTime) {
-      return NextResponse.json({ message: "Invalid input." }, { status: 422 });
+    if (!_id) {
+      return NextResponse.json({ message: "Ticket ID is required." }, { status: 422 });
     }
 
     const client = await connectToDatabase();
@@ -40,8 +41,23 @@ export async function PUT(req) {
       return NextResponse.json({ message: "Ticket not found." }, { status: 404 });
     }
 
-    let eventProfileUrl = existingTicket.eventProfile; 
-    if (eventProfile) {
+    const updateFields = {};
+
+    if (name) updateFields.name = name;
+    if (description) updateFields.description = description;
+    if (location) updateFields.location = location;
+    if (date) updateFields.date = date;
+    if (startTime) updateFields.startTime = startTime;
+    if (endTime) updateFields.endTime = endTime;
+    if (capacity !== null && capacity !== undefined && capacity !== "") {
+      updateFields.capacity = parseInt(capacity);
+    }
+    if (closingDate) updateFields.closingDate = closingDate;
+    if (isPublished !== null && isPublished !== undefined) {
+      updateFields.isPublished = isPublished === 'true';
+    }
+
+    if (eventProfile && typeof eventProfile === 'object' && eventProfile.size > 0) {
       const buffer = await eventProfile.arrayBuffer();
       const base64Image = Buffer.from(buffer).toString("base64");
 
@@ -52,39 +68,34 @@ export async function PUT(req) {
           resource_type: "auto",
         }
       );
-      eventProfileUrl = cloudinaryResponse.secure_url;
+      updateFields.eventProfile = cloudinaryResponse.secure_url;
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return NextResponse.json(
+        { message: "No data provided for update." },
+        { status: 400 }
+      );
     }
 
     const result = await db.collection("tickets").updateOne(
       { _id: new ObjectId(_id) },
       {
-        $set: {
-          name,
-          description,
-          location,
-          date,
-          startTime,
-          endTime,
-          capacity: capacity === "" ? null : parseInt(capacity),
-          closingDate,
-          eventProfile: eventProfileUrl,
-          recruiterId: existingTicket.recruiterId, 
-          createdAt: existingTicket.createdAt, 
-        },
+        $set: updateFields,
       }
     );
 
     client.close();
 
-    if (result.modifiedCount > 0) {
+    if (result.matchedCount > 0) {
       return NextResponse.json(
         { message: "Ticket updated successfully." },
         { status: 200 }
       );
     } else {
       return NextResponse.json(
-        { message: "No changes were made." },
-        { status: 200 }
+        { message: "Ticket not found or no changes made." },
+        { status: 404 }
       );
     }
   } catch (error) {
