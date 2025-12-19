@@ -155,7 +155,7 @@ export async function GET(req) {
                 // Applied Jobs
                 if (!target || target === "chart2") {
                     const applications = await db.collection("jobapplication").find({
-                        jobseekerId: jobseeker._id,
+                        jobseekerId: { $in: [jobseeker._id, jobseeker._id.toString()] },
                         appliedAt: { $gte: startPeriod, $lte: endPeriod }
                     }).toArray();
 
@@ -173,16 +173,40 @@ export async function GET(req) {
                 }
             }
 
+
         } else if (role === "recruiter") {
             // Recruiter: Applications (Chart 1) & Job Posts (Chart 2)
-            const recruiter = await db.collection("recruiters").findOne({ _id: new ObjectId(userId) });
+            console.log("Fetching for Recruiter View. UserId:", userId);
+
+            // Try to find recruiter by _id or userId
+            const query = {
+                $or: []
+            };
+
+            if (ObjectId.isValid(userId)) {
+                query.$or.push({ _id: new ObjectId(userId) });
+                query.$or.push({ userId: new ObjectId(userId) });
+            }
+
+            if (query.$or.length === 0) {
+                console.log("Invalid User ID format for Recruiter lookup");
+                return NextResponse.json({
+                    labels: [], chart1: [], chart2: []
+                }, { status: 200 });
+            }
+
+            const recruiter = await db.collection("recruiters").findOne(query);
 
             if (recruiter) {
+                console.log("Recruiter found:", recruiter._id);
+                console.log("Date Range:", startPeriod, "to", endPeriod);
+
                 if (!target || target === "chart1") {
                     const applications = await db.collection("jobapplication").find({
-                        recruiterId: recruiter._id,
+                        recruiterId: { $in: [recruiter._id, recruiter._id.toString()] },
                         appliedAt: { $gte: startPeriod, $lte: endPeriod }
                     }).toArray();
+                    console.log("Applications found:", applications.length);
 
                     applications.forEach(app => {
                         const appDate = new Date(app.appliedAt);
@@ -199,9 +223,10 @@ export async function GET(req) {
 
                 if (!target || target === "chart2") {
                     const jobs = await db.collection("jobs").find({
-                        recruiterId: recruiter._id,
+                        recruiterId: { $in: [recruiter._id, recruiter._id.toString()] },
                         createdAt: { $gte: startPeriod, $lte: endPeriod }
                     }).toArray();
+                    console.log("Jobs found:", jobs.length);
 
                     jobs.forEach(job => {
                         const jobDate = new Date(job.createdAt);
@@ -215,6 +240,8 @@ export async function GET(req) {
                         if (index !== -1) chart2Data[index]++;
                     });
                 }
+            } else {
+                console.log("Recruiter NOT found for ID:", userId);
             }
         }
 
