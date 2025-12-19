@@ -58,10 +58,12 @@ const sortCertifications = (certifications) => {
 
 export default function CandidateProfile() {
   const [activeTab, setActiveTab] = useState("Profile");
+  const [isProfileUploading, setIsProfileUploading] = useState(false);
+  const [isCoverUploading, setIsCoverUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession(); // Add update method
 
   const [ProfileEditForm, setProfileEditForm] = useState(false);
   const [BioDataForm, setBioDataForm] = useState(false);
@@ -188,6 +190,7 @@ export default function CandidateProfile() {
     }
 
     try {
+      setIsProfileUploading(true);
       const formData = new FormData();
       formData.append("image", file);
       formData.append("email", jobSeekerDetails.email);
@@ -218,8 +221,14 @@ export default function CandidateProfile() {
         showConfirmButton: false,
       });
 
-      // Force session refresh
-      window.dispatchEvent(new Event("visibilitychange"));
+      // Update session with new image
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          profileImage: data.imageUrl
+        }
+      });
     } catch (error) {
       console.error("Error uploading image:", error);
       Swal.fire({
@@ -229,6 +238,8 @@ export default function CandidateProfile() {
         timer: 2000,
         showConfirmButton: false,
       });
+    } finally {
+      setIsProfileUploading(false);
     }
   };
 
@@ -260,6 +271,7 @@ export default function CandidateProfile() {
     }
 
     try {
+      setIsCoverUploading(true);
       const formData = new FormData();
       formData.append("image", file);
       formData.append("email", jobSeekerDetails.email);
@@ -298,6 +310,8 @@ export default function CandidateProfile() {
         timer: 2000,
         showConfirmButton: false,
       });
+    } finally {
+      setIsCoverUploading(false);
     }
   };
 
@@ -821,6 +835,14 @@ export default function CandidateProfile() {
         <div className="">
           {/* Background Image */}
           <div className="bg-red-300 relative w-full h-[300px] rounded-t-2xl overflow-hidden flex items-top justify-end">
+            {isCoverUploading && (
+              <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center">
+                <div className="text-white font-semibold flex flex-col items-center">
+                  <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
+                  Uploading Cover...
+                </div>
+              </div>
+            )}
             {jobSeekerDetails.coverImage ? (
               <Image
                 src={jobSeekerDetails.coverImage}
@@ -866,6 +888,14 @@ export default function CandidateProfile() {
             <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px] mt-[-92px] ml-10 flex items-top justify-center relative">
               {/* Profile picture container */}
               <div className="relative border-4 border-[#001571] bg-white rounded-full overflow-hidden w-24 h-24 sm:w-28 sm:h-28 lg:w-[180px] lg:h-[180px]">
+                {isProfileUploading && (
+                  <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center">
+                    <div className="text-white text-xs font-semibold flex flex-col items-center">
+                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mb-1"></div>
+                      Uploading...
+                    </div>
+                  </div>
+                )}
                 {jobSeekerDetails.profileImage ? (
                   <Image
                     src={jobSeekerDetails.profileImage}

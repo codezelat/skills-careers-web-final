@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 async function applyJob(
   jobId,
@@ -54,11 +55,16 @@ export default function JobApplicationForm({ onClose, jobid }) {
   const [contactNumber, setContactNumber] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Redirect recruiters from accessing this page
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role === "recruiter") {
-      alert("Recruiters cannot apply for jobs");
+      Swal.fire({
+        icon: "warning",
+        title: "Access Denied",
+        text: "Recruiters cannot apply for jobs",
+      });
       router.push(`/jobs`); // Redirect to the jobs page or a relevant page
     }
   }, [session, status, router, jobid]);
@@ -165,34 +171,50 @@ export default function JobApplicationForm({ onClose, jobid }) {
     );
   }
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const maxSize = 5 * 1024 * 1024; // 5MB limit
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      validateAndSetFile(files[0]);
+    }
+  };
+
+  const validateAndSetFile = (file) => {
+    const maxSize = 5 * 1024 * 1024; // 5MB limit
     setFileError("");
 
+    if (
+      ![
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ].includes(file.type)
+    ) {
+      setFileError("Please upload only PDF or DOC/DOCX files");
+      setSelectedFile(null);
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setFileError("File size should be less than 5MB");
+      setSelectedFile(null);
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
-      if (
-        ![
-          "application/pdf",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ].includes(file.type)
-      ) {
-        setFileError("Please upload only PDF or DOC/DOCX files");
-        setSelectedFile(null);
-        event.target.value = null;
-        return;
-      }
-
-      if (file.size > maxSize) {
-        setFileError("File size should be less than 5MB");
-        setSelectedFile(null);
-        event.target.value = null;
-        return;
-      }
-
-      setSelectedFile(file);
+      validateAndSetFile(file);
     }
   };
 
@@ -208,6 +230,7 @@ export default function JobApplicationForm({ onClose, jobid }) {
 
     if (status === "authenticated") {
       try {
+        setIsSubmitting(true);
         const result = await applyJob(
           jobid,
           jobDetails.jobTitle,
@@ -219,8 +242,13 @@ export default function JobApplicationForm({ onClose, jobid }) {
           email,
           contactNumber
         );
-        console.log(result);
-        alert(result.message);
+
+        await Swal.fire({
+          icon: "success",
+          title: "Application Submitted!",
+          text: result.message,
+          confirmButtonColor: "#001571",
+        });
 
         setFirstName("");
         setLastName("");
@@ -231,12 +259,28 @@ export default function JobApplicationForm({ onClose, jobid }) {
         router.push(`/jobs/${jobid}`);
       } catch (error) {
         console.log(error.message);
-        alert(error.message);
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: error.message,
+          confirmButtonColor: "#EF4444",
+        });
+      } finally {
+        setIsSubmitting(false);
       }
     } else if (status === "loading") {
-      alert("Please wait till user logs...");
+      Swal.fire({
+        icon: "info",
+        title: "Please Wait",
+        text: "Please wait till user logs...",
+      });
     } else if (status === "unauthenticated") {
-      alert("Please Login to apply");
+      Swal.fire({
+        icon: "warning",
+        title: "Authentication Required",
+        text: "Please Login to apply",
+        confirmButtonColor: "#001571",
+      });
     }
   }
 
@@ -286,7 +330,11 @@ export default function JobApplicationForm({ onClose, jobid }) {
                 <label className="block text-sm font-semibold text-blue-900">
                   Resume/CV
                 </label>
-                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                <div
+                  className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md transition-colors hover:bg-gray-50"
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                >
                   <div className="space-y-3 text-center">
                     {/* File upload UI */}
                     <div className="flex justify-center items-center">
@@ -308,9 +356,12 @@ export default function JobApplicationForm({ onClose, jobid }) {
                         <input
                           type="file"
                           id="cv"
+                          className="hidden"
                           onChange={handleFileChange}
                           accept=".pdf,.doc,.docx"
                         />
+                        {/* Hidden input needs label association or trigger */}
+                        <label htmlFor="cv" className="absolute inset-0 cursor-pointer"></label>
                         {fileError && (
                           <p className="text-red-500 text-sm mt-1">{fileError}</p>
                         )}
@@ -388,14 +439,23 @@ export default function JobApplicationForm({ onClose, jobid }) {
               <div className="flex justify-start gap-4">
                 <button
                   type="submit"
-                  className="bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700"
+                  disabled={isSubmitting}
+                  className={`bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700 flex items-center gap-2 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
                 >
-                  Submit Application
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit Application"
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-gray-200 text-blue-900 px-4 py-2 rounded-md font-medium hover:bg-gray-300 border-blue-900 border-2"
+                  disabled={isSubmitting}
+                  className="bg-gray-200 text-blue-900 px-4 py-2 rounded-md font-medium hover:bg-gray-300 border-blue-900 border-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Back to Profile
                 </button>

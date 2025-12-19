@@ -28,6 +28,22 @@ export default function AdminInquiriesClient() {
     return (inquiry.status || "Pending") === filterStatus;
   });
 
+  const fetchInquiries = async () => {
+    if (!session?.user?.role) return;
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/inquiry/all`);
+      if (!response.ok) throw new Error("Failed to fetch inquiries.");
+      const data = await response.json();
+      setInquiries(data.inquiries);
+      setFilteredInquiries(data.inquiries);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/admin");
@@ -35,50 +51,12 @@ export default function AdminInquiriesClient() {
   }, [status, router]);
 
   useEffect(() => {
-    const fetchInquiries = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`/api/inquiry/all`);
-        if (!response.ok) throw new Error("Failed to fetch inquiries.");
-        const data = await response.json();
-        setInquiries(data.inquiries);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (session?.user?.role) {
-      fetchInquiries();
-    }
-  }, [session]);
-
-  useEffect(() => {
-    const fetchFilteredInquiries = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`/api/inquiry/get?userId=${session.user.id}`);
-        if (!response.ok) throw new Error("Failed to fetch inquiries.");
-        const data = await response.json();
-        setFilteredInquiries(data.inquiries);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (session?.user?.role) {
-      fetchFilteredInquiries();
-    }
+    fetchInquiries();
   }, [session]);
 
   if (isLoading) {
     return <PortalLoading />;
   }
-
-
 
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
@@ -162,6 +140,7 @@ export default function AdminInquiriesClient() {
           <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
             <AddInquiry
               onClose={() => setAddInquiryForm(false)}
+              onInquiryAdded={fetchInquiries}
             />
           </div>
         </div>

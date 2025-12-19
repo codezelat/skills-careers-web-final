@@ -7,35 +7,39 @@ import BarChart from "./barChart";
 import PortalLoading from "@/app/Portal/loading";
 import { useRouter } from "next/navigation";
 
-export default function DashboardCharts() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [chartData, setChartData] = useState({
-    labels: [],
-    chart1: [],
-    chart2: []
-  });
+// Reusable Chart Component
+const ChartWidget = ({ title, target, ChartComponent, label, session }) => {
+  const [data, setData] = useState([]);
+  const [labels, setLabels] = useState([]);
+  const [filter, setFilter] = useState("week"); // week, month, year, custom
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/admin");
-    }
-  }, [status, router]);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       if (session?.user?.id && session?.user?.role) {
+        if (filter === "custom" && (!startDate || !endDate)) return;
+
         try {
-          const response = await fetch(
-            `/api/analytics/weekly?userId=${session.user.id}&role=${session.user.role}`
-          );
+          setIsLoading(true);
+          const queryParams = new URLSearchParams({
+            userId: session.user.id,
+            role: session.user.role,
+            filter,
+            target, // Fetch specific chart data
+            ...(filter === "custom" && { startDate, endDate })
+          });
+
+          const response = await fetch(`/api/analytics/weekly?${queryParams}`);
           if (response.ok) {
-            const data = await response.json();
-            setChartData(data);
+            const apiData = await response.json();
+            setLabels(apiData.labels);
+            // Dynamic Key Access: apiData.chart1 or apiData.chart2
+            setData(apiData[target] || []);
           }
         } catch (error) {
-          console.error("Failed to fetch analytics:", error);
+          console.error(`Failed to fetch analytics for ${target}:`, error);
         } finally {
           setIsLoading(false);
         }
@@ -43,86 +47,127 @@ export default function DashboardCharts() {
     };
 
     fetchAnalytics();
-  }, [session]);
+  }, [session, filter, startDate, endDate, target]);
 
-  if (isLoading) return <PortalLoading />;
+  const FilterDropdown = () => (
+    <div className="flex flex-col sm:flex-row gap-2 items-end sm:items-center">
+      {filter === "custom" && (
+        <div className="flex gap-2">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="bg-gray-50 border border-gray-300 text-[#001571] text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2"
+          />
+          <span className="text-gray-500 self-center">-</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-gray-50 border border-gray-300 text-[#001571] text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2"
+          />
+        </div>
+      )}
+      <select
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        className="bg-gray-50 border border-gray-300 text-[#001571] text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 font-bold"
+      >
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="year">This Year</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+  );
 
   return (
-    <>
-      {session?.user?.role === "admin" && (
-        <div className="grid grid-cols-2 gap-6">
-          {/* Job Posts Chart */}
-          <div className="bg-white shadow-md rounded-3xl p-4">
-            <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
-              <p>Job Posts</p>
-              <Link href="">
-                <p className="flex">This Week</p>
-              </Link>
-            </div>
-            <LineChart chartData={chartData.chart1} chartLabels={chartData.labels} label="Job Posts" />
-          </div>
-          {/* Active Users Chart */}
-          <div className="bg-white shadow-md rounded-3xl p-4">
-            <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
-              <p>Active Users</p>
-              <Link href="">
-                <p className="flex">This Week</p>
-              </Link>
-            </div>
-            <BarChart chartData={chartData.chart2} chartLabels={chartData.labels} label="New Users" />
-          </div>
+    <div className="bg-white shadow-md rounded-3xl p-4">
+      <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
+        <p>{title}</p>
+        <FilterDropdown />
+      </div>
+      {isLoading ? (
+        <div className="h-64 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
         </div>
+      ) : (
+        <ChartComponent chartData={data} chartLabels={labels} label={label} />
+      )}
+    </div>
+  );
+};
+
+export default function DashboardCharts() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/admin");
+    }
+  }, [status, router]);
+
+  if (status === "loading") return <PortalLoading />;
+
+  return (
+    <div className="grid grid-cols-2 gap-6">
+      {session?.user?.role === "admin" && (
+        <>
+          <ChartWidget
+            title="Job Posts"
+            target="chart1"
+            ChartComponent={LineChart}
+            label="Job Posts"
+            session={session}
+          />
+          <ChartWidget
+            title="Active Users"
+            target="chart2"
+            ChartComponent={BarChart}
+            label="New Users"
+            session={session}
+          />
+        </>
       )}
 
       {session?.user?.role === "jobseeker" && (
-        <div className="grid grid-cols-2 gap-6">
-          {/* Job Posts Chart */}
-          <div className="bg-white shadow-md rounded-3xl p-4">
-            <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
-              <p>Profile Views</p>
-              <Link href="">
-                <p className="flex">This Week</p>
-              </Link>
-            </div>
-            <LineChart chartData={chartData.chart1} chartLabels={chartData.labels} label="Profile Views" />
-          </div>
-          {/* Active Users Chart */}
-          <div className="bg-white shadow-md rounded-3xl p-4">
-            <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
-              <p>Applied Jobs</p>
-              <Link href="">
-                <p className="flex">This Week</p>
-              </Link>
-            </div>
-            <BarChart chartData={chartData.chart2} chartLabels={chartData.labels} label="Applied Jobs" />
-          </div>
-        </div>
+        <>
+          <ChartWidget
+            title="Profile Views"
+            target="chart1"
+            ChartComponent={LineChart}
+            label="Profile Views"
+            session={session}
+          />
+          <ChartWidget
+            title="Applied Jobs"
+            target="chart2"
+            ChartComponent={BarChart}
+            label="Applied Jobs"
+            session={session}
+          />
+        </>
       )}
 
       {session?.user?.role === "recruiter" && (
-        <div className="grid grid-cols-2 gap-6">
-          {/* Active Users Chart */}
-          <div className="bg-white shadow-md rounded-3xl p-4">
-            <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
-              <p>Applications</p>
-              <Link href="">
-                <p className="flex">This Week</p>
-              </Link>
-            </div>
-            <BarChart chartData={chartData.chart1} chartLabels={chartData.labels} label="Applications" />
-          </div>
-          {/* Job Posts Chart */}
-          <div className="bg-white shadow-md rounded-3xl p-4">
-            <div className="flex justify-between gap-4 mb-8 text-[#001571] font-bold text-lg lg:text-lg md:text-xl sm:text-lg">
-              <p>Job Posts</p>
-              <Link href="">
-                <p className="flex">This Week</p>
-              </Link>
-            </div>
-            <LineChart chartData={chartData.chart2} chartLabels={chartData.labels} label="Job Posts" />
-          </div>
-        </div>
+        <>
+          <ChartWidget
+            title="Applications"
+            target="chart1"
+            ChartComponent={BarChart}
+            label="Applications"
+            session={session}
+          />
+          <ChartWidget
+            title="Job Posts"
+            target="chart2"
+            ChartComponent={LineChart}
+            label="Job Posts"
+            session={session}
+          />
+        </>
       )}
-    </>
+    </div>
   );
 }

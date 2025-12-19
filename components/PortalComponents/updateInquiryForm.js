@@ -129,6 +129,7 @@ export default function UpdateInquiryForm({ inquiry, onClose, onUpdate }) {
 
                   <button
                     type="button"
+                    onClick={onClose}
                     className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
                   >
                     Done

@@ -5,7 +5,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import Swal from "sweetalert2";
 import { useSession } from "next-auth/react";
 
-function AddInquiry({ onClose }) {
+function AddInquiry({ onClose, onInquiryAdded }) {
   const { data: session } = useSession(); // Get session data
   const [inquiryTitle, setInquiryTitle] = useState("");
   const [inquiryDescription, setInquiryDescription] = useState("");
@@ -22,7 +22,7 @@ function AddInquiry({ onClose }) {
       try {
         const response = await fetch("/api/jobseekerdetails/all");
         const data = await response.json();
-        
+
         // Find the current user's details from the fetched job seekers
         const currentUserDetails = data.jobseekers.find(
           (jobseeker) => jobseeker.userId === session?.user?.id
@@ -52,8 +52,8 @@ function AddInquiry({ onClose }) {
       method: "POST",
       body: JSON.stringify({
         userId: session.user.id,
-        userName: userName, 
-        userRole: userRole, 
+        userName: userName,
+        userRole: userRole,
         inquiryTitle,
         inquiryDescription,
       }),
@@ -95,6 +95,7 @@ function AddInquiry({ onClose }) {
         timer: 2000, // 2-second timer
       }).then(() => {
         clearForm(); // Clear the form
+        if (onInquiryAdded) onInquiryAdded(); // Trigger refresh
         onClose(); // Close the form
       });
     } catch (error) {

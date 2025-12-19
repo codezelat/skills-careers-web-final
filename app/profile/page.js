@@ -40,6 +40,7 @@ function Profile() {
   const [error, setError] = useState(null);
 
   const [imageFile, setImageFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -117,6 +118,7 @@ function Profile() {
     }
 
     try {
+      setIsUploading(true);
       const formData = new FormData();
       formData.append("image", file);
       formData.append("email", session.user.email);
@@ -145,6 +147,8 @@ function Profile() {
         text: 'Profile image uploaded successfully!',
         timer: 2000,
         showConfirmButton: false,
+      }).then(() => {
+        window.location.reload();
       });
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -153,6 +157,8 @@ function Profile() {
         title: 'Error',
         text: `Failed to upload image: ${error.message}`,
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -176,24 +182,33 @@ function Profile() {
               <div className="flex items-start gap-6">
                 {/* Profile Image */}
                 <div className="flex flex-col items-center space-y-2">
-                  {jobSeekerDetails.profileImage ? (
-                    <Image
-                      src={jobSeekerDetails.profileImage}
-                      alt="Profile"
-                      width={100}
-                      height={100}
-                      className="rounded-full object-cover mb-4 shadow-lg"
-                      onError={(e) => {
-                        console.error("Error loading image:", e);
-                        // Optionally set a fallback image
-                        e.target.src = "/fallback-profile-image.png"; // Make sure to add a fallback image in your public folder
-                      }}
-                    />
-                  ) : (
-                    <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center">
-                      <span className="text-gray-500">No Image</span>
-                    </div>
-                  )}
+                  <div className="relative">
+                    {isUploading && (
+                      <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center rounded-full">
+                        <div className="text-white text-xs font-semibold flex flex-col items-center">
+                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mb-1"></div>
+                        </div>
+                      </div>
+                    )}
+                    {jobSeekerDetails.profileImage ? (
+                      <Image
+                        src={jobSeekerDetails.profileImage}
+                        alt="Profile"
+                        width={100}
+                        height={100}
+                        className="rounded-full object-cover mb-4 shadow-lg"
+                        onError={(e) => {
+                          console.error("Error loading image:", e);
+                          // Optionally set a fallback image
+                          e.target.src = "/fallback-profile-image.png"; // Make sure to add a fallback image in your public folder
+                        }}
+                      />
+                    ) : (
+                      <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center">
+                        <span className="text-gray-500">No Image</span>
+                      </div>
+                    )}
+                  </div>
 
                   <div>
                     <input

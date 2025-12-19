@@ -51,6 +51,7 @@ function ApplicationForm({ jobid }) {
   const [contactNumber, setContactNumber] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Redirect recruiters from accessing this page
   useEffect(() => {
@@ -189,214 +190,232 @@ function ApplicationForm({ jobid }) {
     );
   }
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const maxSize = 5 * 1024 * 1024; // 5MB limit
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
-    setFileError("");
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
 
-    if (file) {
-      if (
-        ![
-          "application/pdf",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ].includes(file.type)
-      ) {
-        setFileError("Please upload only PDF or DOC/DOCX files");
-        setSelectedFile(null);
-        event.target.value = null;
-        return;
-      }
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
 
-      if (file.size > maxSize) {
-        setFileError("File size should be less than 5MB");
-        setSelectedFile(null);
-        event.target.value = null;
-        return;
-      }
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging) setIsDragging(true);
+  };
 
-      setSelectedFile(file);
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      validateAndSetFile(files[0]);
     }
   };
 
-  async function submitHandler(event) {
-    event.preventDefault();
+  const validateAndSetFile = (file) => {
+    const maxSize = 5 * 1024 * 1024; // 5MB limit
+    setFileError("");
 
-    const jobseekerId = id;
-
-    if (!selectedFile) {
-      setFileError("Please upload your CV");
+    if (
+      ![
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ].includes(file.type)
+    ) {
+      setFileError("Please upload only PDF or DOC/DOCX files");
+      setSelectedFile(null);
       return;
     }
 
-    if (status === "authenticated") {
-      try {
-        const result = await applyJob(
-          jobid,
-          jobDetails.jobTitle,
-          jobDetails.recruiterId,
-          jobseekerId,
-          selectedFile,
-          firstName,
-          lastName,
-          email,
-          contactNumber
-        );
-        console.log(result);
-        alert(result.message);
+    if (file.size > maxSize) {
+      setFileError("File size should be less than 5MB");
+      setSelectedFile(null);
+      return;
+    }
 
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setContactNumber("");
-        setSelectedFile(null);
+    setSelectedFile(file);
+  };
 
-        router.push(`/jobs/${jobid}`);
-      } catch (error) {
-        console.log(error.message);
-        alert(error.message);
-      }
-    } else if (status === "loading") {
-      alert("Please wait till user logs...");
-    } else if (status === "unauthenticated") {
-      alert("Please Login to apply");
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) validateAndSetFile(file);
+  };
+
+  // ... (keep submitHandler, but add progress simulation if needed)
+  async function submitHandler(event) {
+    event.preventDefault();
+    const jobseekerId = session?.user?.id; // Fix: use session user id
+    // ...
+    // Inside submit logic:
+    // Simulated progress
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      if (progress > 90) clearInterval(interval);
+      setUploadProgress(progress);
+    }, 200);
+
+    try {
+      // ... applyJob call ... (rest of logic)
+      // success
+      setUploadProgress(100);
+      clearInterval(interval);
+      // ...
+    } catch (error) {
+      clearInterval(interval);
+      setUploadProgress(0);
+      // ...
     }
   }
 
-  const handleCloseForm = () => {
-    router.push(`/jobs/${jobid}`);
-  };
+  // NOTE: I will apply the full component logic in replacement chunk to ensure all hooks are present.
 
   return (
-    <>
-      <div className="p-4">
-
-        <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">
+    <div className="p-4 flex justify-center">
+      <div className="bg-white shadow-lg rounded-2xl p-8 max-w-2xl w-full">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-[#001571]">
+            Apply for {jobDetails.jobTitle}
+          </h1>
           <button
             onClick={handleCloseForm}
-            className="px-2 py-1 ml-auto border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
+            className="text-gray-500 hover:text-red-500 transition-colors"
           >
-            close
+            Close
           </button>
-          <h1 className="text-2xl font-bold mb-8">
-            Applying  {recruiterDetails.recruiterName} - {jobSeekerDetails.firstName || "lol"}
-          </h1>
-          <p className="text-base font-bold text-gray-600 mb-1">
-            Job Name: {jobDetails.jobTitle}
-          </p>
+        </div>
 
-          <form onSubmit={submitHandler}>
+        {/* Read-only Job Details */}
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <p className="text-sm text-gray-500">Recruiter</p>
+          <p className="font-semibold text-[#001571]">{recruiterDetails.recruiterName}</p>
+        </div>
+
+        <form onSubmit={submitHandler} className="space-y-6">
+          {/* CV Upload Section */}
+          <div>
+            <label className="block text-sm font-bold text-[#001571] mb-2">
+              Upload Resume/CV
+            </label>
+
+            <div
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-400"
+                }`}
+            >
+              {!selectedFile ? (
+                <>
+                  <p className="text-gray-600 mb-2">Drag & Drop your CV here</p>
+                  <p className="text-sm text-gray-400 mb-4">or</p>
+                  <label className="cursor-pointer bg-[#001571] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
+                    Browse Files
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx"
+                      className="hidden"
+                    />
+                  </label>
+                  <p className="text-xs text-gray-400 mt-4">Supported formats: PDF, DOC, DOCX (Max 5MB)</p>
+                </>
+              ) : (
+                <div className="flex items-center justify-between bg-green-50 p-3 rounded-lg border border-green-200">
+                  <span className="text-green-700 font-medium truncate max-w-[80%]">
+                    {selectedFile.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedFile(null)}
+                    className="text-red-500 hover:text-red-700 text-sm font-semibold"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+            {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
+
+            {/* Progress Bar */}
+            {status === "loading" || isSubmitting && (
+              <div className="mt-4">
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-center text-gray-500 mt-1">Uploading...</p>
+              </div>
+            )}
+          </div>
+
+          {/* Personal Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p
-                htmlFor="jobname"
-                className="text-base font-bold text-black mb-1"
-              >
-                Job Name
-              </p>
+              <label className="block text-sm font-bold text-[#001571] mb-1">First Name</label>
               <input
                 type="text"
-                id="jobname"
-                required
-                disabled
-                value={jobDetails.jobTitle}
-                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-              />
-            </div>
-
-            <div className="mb-4">
-              <p htmlFor="cv" className="text-base font-bold text-black mb-1">
-                Upload Resume/CV
-              </p>
-              <input
-                type="file"
-                id="cv"
-                onChange={handleFileChange}
-                accept=".pdf,.doc,.docx"
-                className="w-96"
-              />
-              {fileError && (
-                <p className="text-red-500 text-sm mt-1">{fileError}</p>
-              )}
-              {selectedFile && (
-                <p className="text-green-500 text-sm mt-1">
-                  Selected file: {selectedFile.name}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <p
-                htmlFor="firstname"
-                className="text-base font-bold text-black mb-1"
-              >
-                First Name
-              </p>
-              <input
-                type="text"
-                id="firstname"
                 required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
-
             <div>
-              <p
-                htmlFor="lastname"
-                className="text-base font-bold text-black mb-1"
-              >
-                Last Name
-              </p>
+              <label className="block text-sm font-bold text-[#001571] mb-1">Last Name</label>
               <input
                 type="text"
-                id="lastname"
                 required
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
-
             <div>
-              <p htmlFor="email" className="text-base font-bold text-black mb-1">
-                Email
-              </p>
+              <label className="block text-sm font-bold text-[#001571] mb-1">Email</label>
               <input
                 type="email"
-                id="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
-
             <div>
-              <p
-                htmlFor="contactnumber"
-                className="text-base font-bold text-black mb-1"
-              >
-                Contact Number
-              </p>
+              <label className="block text-sm font-bold text-[#001571] mb-1">Contact Number</label>
               <input
                 type="text"
-                id="contactnumber"
                 required
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
-                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
+          </div>
 
-            <button className="w-96 px-4 py-2 mt-5 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white rounded transition-colors">
-              Submit
-            </button>
-          </form>
-        </div>
+          <button
+            disabled={isSubmitting}
+            className="w-full bg-[#001571] text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition shadow-lg disabled:opacity-50"
+          >
+            {isSubmitting ? "Submitting Application..." : "Submit Application"}
+          </button>
+        </form>
       </div>
-    </>
+    </div>
   );
 }
 

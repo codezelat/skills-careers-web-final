@@ -23,10 +23,7 @@ export default function ExperienceCard({ experience, onDelete }) {
   const startMonth = monthName[startD.getMonth()];
   const startYear = startD.getFullYear();
   const postedStartDate = `${startMonth} ${startYear}`;
-  const endD = new Date(experience.endDate);
-  const endMonth = monthName[endD.getMonth()];
-  const endYear = endD.getFullYear();
-  const postedEndDate = `${endMonth} ${endYear}`;
+  const postedEndDate = experience.endDate ? `${monthName[new Date(experience.endDate).getMonth()]} ${new Date(experience.endDate).getFullYear()}` : "Present";
 
   return (
     <div className="flex flex-col gap-2 ">
