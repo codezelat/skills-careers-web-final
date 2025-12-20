@@ -2,11 +2,11 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { RiEdit2Fill } from "react-icons/ri";
+import { RiEdit2Fill, RiDeleteBin6Line } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useSession } from "next-auth/react";
 
-export default function PortalCandidateCard({ jobseeker, onUpdate }) {
+export default function PortalCandidateCard({ jobseeker, onUpdate, isSelected, onSelect, onDelete }) {
   const router = useRouter();
   const { _id, userId, email, contactNumber, isRestricted } = jobseeker;
   const [userDetails, setUserDetails] = useState({});
@@ -70,7 +70,9 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
       <div className="flex items-center px-4 py-3 w-[3%]">
         <input
           type="checkbox"
-          className="form-checkbox text-[#001571] border-gray-300 rounded"
+          checked={isSelected || false}
+          onChange={() => onSelect && onSelect(_id)}
+          className="form-checkbox text-[#001571] border-gray-300 rounded cursor-pointer"
         />
       </div>
       <div className="flex items-center pl-4 w-[24.25%]">
@@ -98,35 +100,44 @@ export default function PortalCandidateCard({ jobseeker, onUpdate }) {
         </div>
       )}
       {session?.user?.role === "admin" && (
-        <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center">
+        <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%] items-center text-xs">
           <button
-            className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+            className="flex items-center justify-center bg-[#001571] text-white px-3 py-2 rounded-lg shadow hover:bg-blue-800"
             onClick={() => router.push(`/Portal/candidates/${_id}`)}
           >
-            <RiEdit2Fill size={20} className="mr-2" />
+            <RiEdit2Fill size={16} className="mr-1" />
             Edit
           </button>
+
           <button
-            className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${localRestricted
-                ? "bg-[#EC221F] hover:bg-red-700"
-                : "bg-[#001571] hover:bg-blue-700"
+            className={`flex items-center justify-center text-white px-3 py-2 rounded-lg shadow ${localRestricted
+              ? "bg-[#EC221F] hover:bg-red-700"
+              : "bg-[#001571] hover:bg-blue-700"
               }`}
             onClick={handleRestrictToggle}
             disabled={isRestricting}
           >
             {isRestricting ? (
-              "Processing..."
+              "..."
             ) : localRestricted ? (
               <>
-                <BsFillEyeFill size={15} className="mr-2" />
+                <BsFillEyeFill size={16} className="mr-1" />
                 Unrestrict
               </>
             ) : (
               <>
-                <BsFillEyeFill size={15} className="mr-2" />
+                <BsFillEyeFill size={16} className="mr-1" />
                 Restrict
               </>
             )}
+          </button>
+
+          <button
+            className="flex items-center justify-center bg-[#EC221F] text-white px-3 py-2 rounded-lg shadow hover:bg-red-700"
+            onClick={() => onDelete && onDelete(_id)}
+          >
+            <RiDeleteBin6Line size={16} className="mr-1" />
+            Delete
           </button>
         </div>
       )}

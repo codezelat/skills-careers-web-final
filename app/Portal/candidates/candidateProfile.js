@@ -29,7 +29,142 @@ export default function CandidateProfile({ slug }) {
     const [isCoverUploading, setIsCoverUploading] = useState(false);
 
     const router = useRouter();
-    // ... (keep existing hooks)
+    const { data: session } = useSession();
+    // State Definitions
+    const [userDetails, setUserDetails] = useState({});
+    const [jobSeekerDetails, setJobseekerDetails] = useState({});
+    const [experienceDetails, setExperienceDetails] = useState([]);
+    const [educationDetails, setEducationDetails] = useState([]);
+    const [certificationDetails, setCertificationDetails] = useState([]);
+
+    // Form Visibility States
+    const [ProfileEditForm, setProfileEditForm] = useState(false);
+    const [BioDataForm, setBioDataForm] = useState(false);
+    const [openCreateExperienceForm, setOpenCreateExperienceForm] = useState(false);
+    const [openEditExperienceForm, setOpenEditExperienceForm] = useState(false);
+    const [openCreateEducationForm, setOpenCreateEducationoForm] = useState(false);
+    const [openEditEducationForm, setOpenEditEducationoForm] = useState(false);
+    const [openCreateCertificationForm, setOpenCreateCertificationForm] = useState(false);
+    const [openEditCertificationForm, setOpenEditCertificationForm] = useState(false);
+    const [openCreateSoftskillsForm, setOpenCreateSoftskillsForm] = useState(false);
+    const [openEditSoftskillsForm, setOpenEditSoftskillsForm] = useState(false);
+    const [openCreateExpertiseForm, setOpenCreateExpertiseForm] = useState(false);
+    const [openEditExpertiseForm, setOpenEditExpertiseForm] = useState(false);
+
+    // Form Data States
+    const [newExperienceData, setNewExperienceData] = useState({});
+    const [newEducationData, setNewEducationData] = useState({});
+    const [newCertificationData, setNewCertificationData] = useState({});
+    const [newSoftSkill, setNewSoftSkill] = useState("");
+    const [newExpertise, setNewExpertise] = useState("");
+
+    // Helper Functions (Placeholders)
+    const handleInputChange = () => { };
+    const handleUserInputChange = () => { };
+    const jobseekerUpdateSubmitHandler = () => { };
+    const handleCreateExperience = () => { };
+    const handleExperienceInputChange = () => { };
+    const handleCreateEducation = () => { };
+    const handleEducationInputChange = () => { };
+    const handleCreateCertification = () => { };
+    const handleCertificationInputChange = () => { };
+    const handleAddSoftSkill = () => { };
+    const handleDeleteSoftSkill = () => { };
+    const handleAddExpertise = () => { };
+    const handleDeleteExpertise = () => { };
+    const triggerFileInput = (id) => {
+        const element = document.getElementById(id);
+        if (element) element.click();
+    };
+
+    // Data Fetching
+    useEffect(() => {
+        const fetchJobseekerDetails = async () => {
+            // If no slug is passed, and we are not a jobseeker viewing our own profile, we might wait or handle error
+            // But assuming this component is reusable, we prioritize slug if available.
+
+            let queryParam = "";
+            if (slug) {
+                queryParam = `?id=${slug}`;
+            } else if (session?.user?.id && session?.user?.role === "jobseeker") {
+                // Fallback: if no slug, but logged in as jobseeker, fetch my own
+                queryParam = `?userId=${session.user.id}`;
+            } else {
+                return; // Not ready or invalid context
+            }
+
+            try {
+                const response = await fetch(`/api/jobseekerdetails/get${queryParam}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.jobseeker) {
+                        setJobseekerDetails(data.jobseeker);
+                        // The userDetails part (firstName, lastName) might be in the jobseeker object or separate.
+                        // Based on typical schema, jobseeker collection has linked userId. 
+                        // However, the UI expects `userDetails` for name. 
+                        // Let's assume for now we use jobseeker data or try to get user part.
+                        // Looking at the view component, it accesses `userDetails.firstName`.
+                        // The API returns { jobseeker: { ...fields, educations: [], experiences: [] } }
+
+                        // If the jobseeker object contains firstName/lastName directly (sometimes flattened), use it.
+                        // Or if it has a nested `user` object. 
+                        // Let's check if we need to fetch user details separately or if the API joins it.
+                        // The `jobseekerdetails/get` API does NOT appear to join 'users' collection for firstName/lastName.
+                        // It only fetches from `jobseekers` and related sub-collections.
+                        // So `jobseeker.firstName` might be undefined if it's only in `users`.
+                        // Let's check if we can get it from session if it's the same user, OR if we need another call.
+
+                        // For now, populate direct jobseeker details
+                        setExperienceDetails(data.jobseeker.experiences || []);
+                        setEducationDetails(data.jobseeker.educations || []);
+                        setCertificationDetails(data.jobseeker.certifications || []);
+
+                        // Attempt to set basic details. 
+                        // If the API doesn't return firstName/lastName, we might see "undefined undefined".
+                        // In that case, we might need to fetch the user record separately or rely on what's in jobseeker.
+                        setUserDetails({
+                            firstName: data.jobseeker.firstName || "",
+                            lastName: data.jobseeker.lastName || "",
+                            // If they are not in jobseeker, we might need a separate fetch.
+                        })
+                    }
+                } else {
+                    console.error("Failed to fetch jobseeker details");
+                }
+            } catch (error) {
+                console.error("Error fetching jobseeker details:", error);
+            }
+        };
+
+        if (session || slug) {
+            fetchJobseekerDetails();
+        }
+    }, [slug, session]);
+
+    // Record Profile View
+    useEffect(() => {
+        if (jobSeekerDetails?._id && session?.user) {
+            // Check if the current user is NOT the owner (by ID comparison) OR if they are explicitly a recruiter
+            // We use loose comparison for ID in case of type differences (string vs Object)
+            const isOwner = session.user.id == jobSeekerDetails.userId;
+            const isRecruiter = session.user.role === 'recruiter';
+
+            if (!isOwner || isRecruiter) {
+                const recordView = async () => {
+                    try {
+                        await fetch("/api/jobseekerdetails/view", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ jobseekerId: jobSeekerDetails._id }),
+                        });
+                    } catch (err) {
+                        console.error("Failed to record profile view", err);
+                    }
+                };
+                recordView();
+            }
+        }
+    }, [jobSeekerDetails?._id, session]);
 
     // Image update functions
     const handleImageChange = async (e) => {
@@ -1032,7 +1167,7 @@ export default function CandidateProfile({ slug }) {
 
 
                 {/* Edit Experience Popup */}
-                {openEditxperienceForm && (
+                {openEditExperienceForm && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
                             <div className="flex items-center justify-between p-6 pb-0">

@@ -132,9 +132,27 @@ export async function GET(req) {
         } else if (role === "jobseeker") {
             // Jobseeker: Profile Views (Chart 1) & Applied Jobs (Chart 2)
 
-            const jobseeker = await db.collection("jobseekers").findOne({ userId: new ObjectId(userId) });
+            // Jobseeker: Profile Views (Chart 1) & Applied Jobs (Chart 2)
+            console.log("Fetching for Jobseeker View. UserId:", userId);
+
+            const query = { $or: [] };
+            if (ObjectId.isValid(userId)) {
+                query.$or.push({ _id: new ObjectId(userId) });
+                query.$or.push({ userId: new ObjectId(userId) });
+            }
+
+            if (query.$or.length === 0) {
+                console.log("Invalid User ID format for Jobseeker lookup");
+                return NextResponse.json({
+                    labels: [], chart1: [], chart2: []
+                }, { status: 200 });
+            }
+
+            const jobseeker = await db.collection("jobseekers").findOne(query);
 
             if (jobseeker) {
+                console.log("Jobseeker found:", jobseeker._id);
+
                 // Profile Views
                 if (!target || target === "chart1") {
                     if (jobseeker.views && Array.isArray(jobseeker.views)) {
@@ -149,6 +167,8 @@ export async function GET(req) {
                             }
                             if (index !== -1) chart1Data[index]++;
                         });
+                    } else {
+                        console.log("No views data found for jobseeker");
                     }
                 }
 
@@ -171,6 +191,8 @@ export async function GET(req) {
                         if (index !== -1) chart2Data[index]++;
                     });
                 }
+            } else {
+                console.log("Jobseeker NOT found for ID:", userId);
             }
 
 
