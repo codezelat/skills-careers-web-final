@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/lib/db";
-import { reindexCollection } from "@/lib/elasticsearch-utils";
 import { ObjectId } from "mongodb";
+
 import { NextResponse } from "next/server";
 
 export async function DELETE(req) {
@@ -24,6 +24,7 @@ export async function DELETE(req) {
       _id: new ObjectId(recruiterId),
     });
 
+
     if (result.deletedCount === 0) {
       return NextResponse.json(
         { message: "Recruiter not found" },
@@ -31,7 +32,8 @@ export async function DELETE(req) {
       );
     }
 
-    await reindexCollection(db, "recruiters");
+    // Removed elastic search reindex
+    // await reindexCollection(db, "recruiters");
 
     return NextResponse.json(
       { message: "Recruiter deleted successfully" },

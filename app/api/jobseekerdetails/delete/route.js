@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/lib/db";
-import { reindexCollection } from "@/lib/elasticsearch-utils";
 import { ObjectId } from "mongodb";
+
 import { NextResponse } from "next/server";
 
 export async function DELETE(req) {

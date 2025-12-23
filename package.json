@@ -3,15 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"node scripts/setup-elasticsearch.js && next dev\" \"node scripts/sync-elasticsearch.js\"",
-    "setup-elastic": "node scripts/setup-elasticsearch.js",
-    "sync-elastic": "node scripts/sync-elasticsearch.js",
-    "build": "node scripts/setup-elasticsearch.js && next build",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.17.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

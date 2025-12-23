@@ -1,18 +1,8 @@
-// app/api/job/search/route.js
-import { Client } from "@elastic/elasticsearch";
+import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-// Create the client instance
-const client = new Client({
-  cloud: {
-    id: process.env.ELASTIC_CLOUD_ID,
-  },
-  auth: {
-    apiKey: process.env.ELASTIC_API_KEY,
-  },
-});
-
 export async function GET(req) {
+  let client;
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
@@ -24,67 +14,53 @@ export async function GET(req) {
       return NextResponse.json({ jobs: [] });
     }
 
-    // Perform the search
-    const result = await client.search({
-      index: "jobs",
-      body: {
-        query: {
-          bool: {
-            should: [
-              // Wildcard match for jobId
-              // {
-              //   wildcard: {
-              //     jobId: `*${query}*`, // This will match the number anywhere in the phone number
-              //   },
-              // },
-              // Regular text search for other fields
-              {
-                multi_match: {
-                  query: query,
-                  fields: [
-                    "jobTitle",
-                    "location",
-                    "jobCategory",
-                    "jobExperience",
-                  ],
-                  type: "phrase_prefix",
-                },
-              },
-            ],
-          },
-        },
-      },
-    });
+    // Connect to database
+    client = await connectToDatabase();
+    const db = client.db();
 
-    // Extract and format the results
-    const jobs = result.hits.hits.map((hit) => ({
-      jobId: hit._source.jobId,
-      jobTitle: hit._source.jobTitle,
-      recruiterId: hit._source.recruiterId,
-      location: hit._source.location,
-      jobCategory: hit._source.jobCategory,
-      jobExperience: hit._source.jobExperience,
-      createdAt: hit._source.createdAt,
-      jobTypes: hit._source.jobTypes,
-      shortDescription: hit._source.shortDescription,
+    // Create regex for case-insensitive partial match
+    const searchRegex = new RegExp(query, "i");
+
+    // Perform the search using MongoDB
+    const jobs = await db
+      .collection("jobs")
+      .find({
+        $or: [
+          { jobTitle: { $regex: searchRegex } },
+          { location: { $regex: searchRegex } },
+          { jobCategory: { $regex: searchRegex } },
+          { jobExperience: { $regex: searchRegex } },
+        ],
+      })
+      .toArray();
+
+    // Transform _id to string to match previous format if necessary, 
+    // although client component might handle _id. 
+    // The previous implementation mapped _id to jobId.
+    const formattedJobs = jobs.map((job) => ({
+      ...job,
+      jobId: job._id.toString(),
+      _id: undefined, // Remove original _id to avoid confusion if jobId is used
     }));
 
     // For debugging - log the results
-    console.log("Search results:", jobs);
+    console.log(`Found ${formattedJobs.length} jobs matching "${query}"`);
 
-    return NextResponse.json({ jobs });
+    return NextResponse.json({ jobs: formattedJobs });
   } catch (error) {
-    console.log(error);
     console.error("Search error:", error);
 
-    // Send a more detailed error response
     return NextResponse.json(
       {
         message: "Failed to search jobs",
         error: error.message,
-        stack: error.stack,
       },
       { status: 500 }
     );
+  } finally {
+    if (client) {
+      client.close();
+    }
   }
 }
+

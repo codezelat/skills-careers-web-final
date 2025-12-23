@@ -1,18 +1,8 @@
-// app/api/ticket/search/route.js
-import { Client } from "@elastic/elasticsearch";
+import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-// Create the client instance
-const client = new Client({
-  cloud: {
-    id: process.env.ELASTIC_CLOUD_ID,
-  },
-  auth: {
-    apiKey: process.env.ELASTIC_API_KEY,
-  },
-});
-
 export async function GET(req) {
+  let client;
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
@@ -24,72 +14,49 @@ export async function GET(req) {
       return NextResponse.json({ tickets: [] });
     }
 
-    // Perform the search
-    const result = await client.search({
-      index: "tickets",
-      body: {
-        query: {
-          bool: {
-            should: [
-              // Text search for text fields
-              {
-                multi_match: {
-                  query: query,
-                  fields: [
-                    "name",
-                    "location",
-                    // "date" removed from here
-                  ],
-                  type: "phrase_prefix",
-                },
-              },
-              // If you need to match dates, you could add something like this:
-              // (only if the query looks like a date)
-              // {
-              //   range: {
-              //     date: {
-              //       gte: parsedDateFromQuery,
-              //       lte: parsedDateFromQuery
-              //     }
-              //   }
-              // }
-            ],
-          },
-        },
-      },
-    });
+    // Connect to database
+    client = await connectToDatabase();
+    const db = client.db();
 
-    // Extract and format the results
-    const tickets = result.hits.hits.map((hit) => ({
-      ticketId: hit._source.ticketId,
-      name: hit._source.name,
-      description: hit._source.description,
-      location: hit._source.location,
-      date: hit._source.date,
-      startTime: hit._source.startTime,
-      endTime: hit._source.endTime,
-      capacity: hit._source.capacity,
-      closingDate: hit._source.closingDate,
-      eventProfile: hit._source.eventProfile,
-      createdAt: hit._source.createdAt,
+    // Create regex for case-insensitive partial match
+    const searchRegex = new RegExp(query, "i");
+
+    // Perform the search using MongoDB
+    const tickets = await db
+      .collection("tickets")
+      .find({
+        $or: [
+          { name: { $regex: searchRegex } },
+          { location: { $regex: searchRegex } },
+        ],
+      })
+      .toArray();
+
+    // Transform _id to ticketId to match previous format
+    const formattedTickets = tickets.map((ticket) => ({
+      ...ticket,
+      ticketId: ticket._id.toString(),
+      _id: undefined,
     }));
 
     // For debugging - log the results
-    console.log("Search results:", tickets);
+    console.log(`Found ${formattedTickets.length} tickets matching "${query}"`);
 
-    return NextResponse.json({ tickets });
+    return NextResponse.json({ tickets: formattedTickets });
   } catch (error) {
-    console.log(error);
     console.error("Search error:", error);
 
-    // Send a more detailed error response
     return NextResponse.json(
       {
         message: "Failed to search tickets",
         error: error.message,
-        stack: error.stack,
       },
       { status: 500 }
     );
+  } finally {
+    if (client) {
+      client.close();
+    }
   }
 }
+

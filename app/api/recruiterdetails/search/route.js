@@ -1,17 +1,8 @@
-import { Client } from "@elastic/elasticsearch";
+import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-// Create the client instance
-const client = new Client({
-  cloud: {
-    id: process.env.ELASTIC_CLOUD_ID,
-  },
-  auth: {
-    apiKey: process.env.ELASTIC_API_KEY,
-  },
-});
-
 export async function GET(req) {
+  let client;
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
@@ -23,52 +14,47 @@ export async function GET(req) {
       return NextResponse.json({ recruiters: [] });
     }
 
-    // Perform the search
-    const result = await client.search({
-      index: "recruiters",
-      body: {
-        query: {
-          multi_match: {
-            query: query,
-            fields: ["recruiterName", "email^2"], // Boost email matches
-            type: "phrase_prefix",
-          },
-        },
-      },
-    });
+    // Connect to database
+    client = await connectToDatabase();
+    const db = client.db();
 
-    // Extract and format the results
-    const recruiters = result.hits.hits.map((hit) => ({
-      recruiterName: hit._source.recruiterName,
-      email: hit._source.email,
-      employeeRange: hit._source.employeeRange,
-      contactNumber: hit._source.contactNumber,
-      companyDescription: hit._source.companyDescription,
-      industry: hit._source.industry,
-      location: hit._source.location,
-      logo: hit._source.logo,
-      createdAt: hit._source.createdAt,
-      facebook: hit._source.facebook,
-      instagram: hit._source.instagram,
-      linkedin: hit._source.linkedin,
-      x: hit._source.x,
-    }));
+    // Create regex for case-insensitive partial match
+    const searchRegex = new RegExp(query, "i");
+
+    // Perform the search using MongoDB
+    // Note: recruiterId is usually _id in Mongo, but we are searching Name and Email as per original requirements
+    const recruiters = await db
+      .collection("recruiters")
+      .find({
+        $or: [
+          { recruiterName: { $regex: searchRegex } },
+          { email: { $regex: searchRegex } },
+        ],
+      })
+      .toArray();
+
+    // No specific transform was needed in original code other than _source spread, 
+    // but here we just return the docs directly. 
+    // If client needs specific fields we can map them, but Mongo returns full doc by default.
 
     // For debugging - log the results
-    console.log("Search results:", recruiters);
+    console.log(`Found ${recruiters.length} recruiters matching "${query}"`);
 
     return NextResponse.json({ recruiters });
   } catch (error) {
     console.error("Search error:", error);
 
-    // Send a more detailed error response
     return NextResponse.json(
       {
         message: "Failed to search recruiters",
         error: error.message,
-        stack: error.stack,
       },
       { status: 500 }
     );
+  } finally {
+    if (client) {
+      client.close();
+    }
   }
 }
+
