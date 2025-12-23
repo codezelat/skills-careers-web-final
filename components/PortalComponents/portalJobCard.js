@@ -169,7 +169,7 @@ function JobCard(props) {
                                         }`}
                                 >
                                     <BsFillEyeFill size={18} className="mr-2" />
-                                    {isPublished ? "Restrict" : "Unrestrict"}
+                                    {isPublished ? "Unpublish" : "Publish"}
                                 </button>
                             </div>
                         </>
@@ -194,16 +194,18 @@ function JobCard(props) {
                                 >
                                     Edit
                                 </button>
-                                <button
-                                    onClick={handlePublishToggle}
-                                    disabled={isLoading}
-                                    className={`flex items-center justify-center px-3 py-2 rounded-lg text-white font-medium text-sm transition-colors min-w-[100px] ${isPublished
-                                        ? "bg-red-500 hover:bg-red-600"
-                                        : "bg-[#001571] hover:bg-blue-800"
-                                        }`}
-                                >
-                                    {isLoading ? "..." : isPublished ? "Unpublish" : "Publish"}
-                                </button>
+                                {isPublished && (
+                                    <button
+                                        onClick={handlePublishToggle}
+                                        disabled={isLoading}
+                                        className={`flex items-center justify-center px-3 py-2 rounded-lg text-white font-medium text-sm transition-colors min-w-[100px] ${isPublished
+                                            ? "bg-red-500 hover:bg-red-600"
+                                            : "bg-[#001571] hover:bg-blue-800"
+                                            }`}
+                                    >
+                                        {isLoading ? "..." : isPublished ? "Unpublish" : "Publish"}
+                                    </button>
+                                )}
                                 <button
                                     onClick={handleDelete}
                                     disabled={isLoading}

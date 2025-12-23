@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {
   try {
-    const jobId = params.id;
+    const { id: jobId } = await params;
     const data = await req.json();
     const { isPublished } = data;
 
@@ -43,8 +43,8 @@ export async function PATCH(req, { params }) {
     }
 
     return NextResponse.json(
-      { 
-        message: `Job ${isPublished ? "published" : "unpublished"} successfully` 
+      {
+        message: `Job ${isPublished ? "published" : "unpublished"} successfully`
       },
       { status: 200 }
     );

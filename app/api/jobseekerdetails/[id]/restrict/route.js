@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {
   try {
-    const candidateId = params.id;
+    const { id: candidateId } = await params;
     const data = await req.json();
     const { isRestricted } = data;
 
@@ -47,7 +47,7 @@ export async function PATCH(req, { params }) {
     client.close();
 
     return NextResponse.json(
-      { 
+      {
         message: `Recruiter ${isRestricted ? "restricted" : "unrestricted"} successfully`,
         updateCandidate
       },

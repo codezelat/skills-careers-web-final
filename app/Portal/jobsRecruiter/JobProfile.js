@@ -9,6 +9,7 @@ import { FaDribbble, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaTimes, FaT
 import { MdOutlineEdit } from "react-icons/md";
 import { PiCheckCircle } from "react-icons/pi";
 import PortalLoading from "../loading";
+import Swal from "sweetalert2";
 
 export default function JobProfile({ slug }) {
 
@@ -40,7 +41,7 @@ export default function JobProfile({ slug }) {
                     const jobData = await jobResponse.json();
                     setJobDetails(jobData);
                     setEditedJobDetails(jobData);
-                    console.log("hi",jobData)
+                    console.log("hi", jobData)
 
                     const recruiterResponse = await fetch(`/api/recruiterdetails/get?id=${jobData.recruiterId}`);
                     if (!recruiterResponse.ok) throw new Error("Failed to fetch recruiter");
@@ -83,6 +84,16 @@ export default function JobProfile({ slug }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+
+        Swal.fire({
+            title: 'Updating Job...',
+            text: 'Please wait while we update the job details.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         try {
             const response = await fetch('/api/job/update', {
                 method: 'PUT',
@@ -91,7 +102,8 @@ export default function JobProfile({ slug }) {
                 },
                 body: JSON.stringify({
                     id: slug,
-                    ...editedJobDetails
+                    ...editedJobDetails,
+                    isPublished: false
                 }),
             });
 
@@ -107,11 +119,22 @@ export default function JobProfile({ slug }) {
             setShortDescriptionForm(false);
             setQualificationsForm(false);
             setPerksForm(false);
-            alert('Job updated successfully!');
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated!',
+                text: 'Job updated successfully! It is now pending approval.',
+                timer: 2000,
+                showConfirmButton: false
+            });
 
         } catch (error) {
             console.error('Error updating job:', error);
-            alert(`Error: ${error.message}`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Failed to update job',
+            });
         } finally {
             setIsSubmitting(false);
         }

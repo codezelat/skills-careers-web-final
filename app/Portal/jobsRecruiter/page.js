@@ -63,7 +63,7 @@ export default function RecruiterPostedJobs(props) {
     }, [status, router]);
 
     useEffect(() => {
-        if (session?.user?.email) {
+        if (session?.user?.email && session?.user?.id) {
             const fetchJobs = async () => {
                 try {
                     const recruiterResponse = await fetch(`/api/recruiterdetails/get?userId=${session.user.id}`);
@@ -71,15 +71,20 @@ export default function RecruiterPostedJobs(props) {
                     const recruiterData = await recruiterResponse.json();
                     setRecruiterDetails(recruiterData);
 
-                    const response = await fetch(
-                        `/api/job/all?recruiterId=${recruiterData.id}&showAll=true`
-                    );
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch jobs.");
+                    if (recruiterData?.id) {
+                        const response = await fetch(
+                            `/api/job/all?recruiterId=${recruiterData.id}&showAll=true`
+                        );
+                        if (!response.ok) {
+                            throw new Error("Failed to fetch jobs.");
+                        }
+                        const data = await response.json();
+                        setJobs(data.jobs);
+                        console.log("jobs", data)
+                    } else {
+                        console.error("Recruiter ID not found");
                     }
-                    const data = await response.json();
-                    setJobs(data.jobs);
-                    console.log("jobs", data)
+
                 } catch (err) {
                     setError(err.message);
                     console.error("Error fetching jobs:", err);
@@ -163,6 +168,15 @@ export default function RecruiterPostedJobs(props) {
 
         setIsSubmitting(true);
 
+        Swal.fire({
+            title: 'Creating Job...',
+            text: 'Please wait while we create the job post.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         try {
             const response = await fetch('/api/job/add', {
                 method: 'POST',
@@ -208,9 +222,21 @@ export default function RecruiterPostedJobs(props) {
                 perksAndBenefits: ''
             });
 
+            Swal.fire({
+                icon: 'success',
+                title: 'Created!',
+                text: 'Job post created successfully! It is currently pending approval.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
         } catch (error) {
             console.error('Submission error:', error);
-            alert(error.message || 'Failed to create job. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Failed to create job. Please try again.',
+            });
         } finally {
             setIsSubmitting(false);
         }
