@@ -145,28 +145,31 @@ function JobCard(props) {
                                 <button
                                     onClick={handleViewJob}
                                     title="Edit Job"
-                                    className="flex items-center justify-center p-2.5 bg-[#001571] text-white rounded-xl shadow-sm hover:shadow-md hover:bg-blue-800 transition-all duration-200"
+                                    className="flex items-center justify-center bg-[#001571] text-white px-3 py-2 rounded-xl shadow-sm hover:shadow-md hover:bg-blue-800 transition-all duration-200"
                                 >
-                                    <RiEdit2Fill size={18} />
+                                    <RiEdit2Fill size={18} className="mr-2" />
+                                    Edit
                                 </button>
                                 <button
                                     onClick={handleDelete}
                                     disabled={isLoading}
                                     title="Delete Job"
-                                    className="flex items-center justify-center p-2.5 bg-red-50 text-[#EC221F] border border-red-100 rounded-xl shadow-sm hover:shadow-md hover:bg-[#EC221F] hover:text-white transition-all duration-200"
+                                    className="flex items-center justify-center bg-red-50 text-[#EC221F] border border-red-100 px-3 py-2 rounded-xl shadow-sm hover:shadow-md hover:bg-[#EC221F] hover:text-white transition-all duration-200"
                                 >
-                                    <RiDeleteBinFill size={18} />
+                                    <RiDeleteBinFill size={18} className="mr-2" />
+                                    Delete
                                 </button>
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
                                     title={isPublished ? "Restrict Job" : "Unrestrict Job"}
-                                    className={`flex items-center justify-center p-2.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-white ${isPublished
+                                    className={`flex items-center justify-center px-3 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-white ${isPublished
                                         ? "bg-amber-500 hover:bg-amber-600"
                                         : "bg-emerald-500 hover:bg-emerald-600"
                                         }`}
                                 >
-                                    <BsFillEyeFill size={18} />
+                                    <BsFillEyeFill size={18} className="mr-2" />
+                                    {isPublished ? "Restrict" : "Unrestrict"}
                                 </button>
                             </div>
                         </>
@@ -187,36 +190,33 @@ function JobCard(props) {
                             <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
                                 <button
                                     onClick={handleViewJob}
-                                    className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                                    className="flex items-center justify-center bg-gray-100 text-[#001571] px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
                                 >
-                                    <RiEdit2Fill size={20} className="mr-2" />
                                     Edit
-                                </button>
-                                <button
-                                    onClick={handleDelete}
-                                    disabled={isLoading}
-                                    className="flex items-center justify-center w-1/2 bg-[#EC221F] text-white px-4 py-2 rounded-lg shadow hover:bg-red-700"
-                                >
-                                    <RiDeleteBinFill size={20} className="mr-2" />
-                                    Delete
                                 </button>
                                 <button
                                     onClick={handlePublishToggle}
                                     disabled={isLoading}
-                                    className={`flex items-center justify-center w-1/2 py-2 rounded-lg shadow ${isPublished
-                                        ? "bg-[#EC221F] hover:bg-red-700"
-                                        : "bg-[#001571] hover:bg-blue-700"
-                                        } text-white`}
+                                    className={`flex items-center justify-center px-3 py-2 rounded-lg text-white font-medium text-sm transition-colors min-w-[100px] ${isPublished
+                                        ? "bg-red-500 hover:bg-red-600"
+                                        : "bg-[#001571] hover:bg-blue-800"
+                                        }`}
                                 >
-                                    <BsFillEyeFill size={15} className="mr-2" />
-                                    {isLoading ? "Loading..." : isPublished ? "Restrict" : "Unrestrict"}
+                                    {isLoading ? "..." : isPublished ? "Unpublish" : "Publish"}
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={isLoading}
+                                    className="flex items-center justify-center bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm"
+                                >
+                                    Delete
                                 </button>
                             </div>
                         </>
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

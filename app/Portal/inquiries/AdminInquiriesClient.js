@@ -46,7 +46,7 @@ export default function AdminInquiriesClient() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/admin");
+      router.push("/login");
     }
   }, [status, router]);
 
