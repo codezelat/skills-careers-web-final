@@ -246,6 +246,7 @@ export default function RecruitersTicketsPage(props) {
             formDataToSend.append("endTime", editFormData.endTime);
             formDataToSend.append("capacity", editFormData.capacity);
             formDataToSend.append("closingDate", editFormData.closingDate);
+            formDataToSend.append("isPublished", "false"); // Force unpublish on edit
             if (editFormData.eventProfile) {
                 formDataToSend.append("eventProfile", editFormData.eventProfile); // Append the file
             }

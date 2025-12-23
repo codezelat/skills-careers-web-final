@@ -32,7 +32,7 @@ function JobsClient() {
   useEffect(() => {
     async function fetchJobsAndRecruiters() {
       try {
-        const jobsResponse = await fetch("/api/job/all");
+        const jobsResponse = await fetch("/api/job/all", { cache: 'no-store' });
         if (!jobsResponse.ok) throw new Error("Failed to fetch jobs.");
         const jobsData = await jobsResponse.json();
         const jobs = jobsData.jobs;
@@ -156,7 +156,7 @@ function JobsClient() {
             <DropdownButton
               buttonName="Industry"
               selected={selectedIndustry || "Industry"}
-              dropdownItems={["All Industries", "Creative & Design","Education & Training","Technology & Development","Operations & Logistics","Marketing & Sales"]}
+              dropdownItems={["All Industries", "Creative & Design", "Education & Training", "Technology & Development", "Operations & Logistics", "Marketing & Sales"]}
               onSelect={(industry) => {
                 setSelectedIndustry(industry === "All Industries" ? null : industry);
                 setSearchResults(null); // Reset search results when changing filters

@@ -25,6 +25,7 @@ export async function GET(req) {
     const tickets = await db
       .collection("tickets")
       .find({
+        isPublished: true,
         $or: [
           { name: { $regex: searchRegex } },
           { location: { $regex: searchRegex } },

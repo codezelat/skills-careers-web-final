@@ -25,6 +25,7 @@ export async function GET(req) {
     const jobs = await db
       .collection("jobs")
       .find({
+        isPublished: true,
         $or: [
           { jobTitle: { $regex: searchRegex } },
           { location: { $regex: searchRegex } },

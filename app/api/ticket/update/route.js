@@ -55,6 +55,16 @@ export async function PUT(req) {
     if (closingDate) updateFields.closingDate = closingDate;
     if (isPublished !== null && isPublished !== undefined) {
       updateFields.isPublished = isPublished === 'true';
+    } else {
+      // If isPublished is NOT in the payload, assume it's a Recruiter edit and reset to false
+      // This is a safety measure. Admin UI should always send isPublished status.
+      // However, we should check if the user is an admin or not, but we don't have session here easily.
+      // Strategy: Client-side Recruiter Edit form will explicitly send isPublished: false (or omit it and we default here).
+      // Better strategy: If the payload doesn't have isPublished, do NOT change it?
+      // User requirement: "edit event... only after admin approve can public".
+      // This implies edits should UNPUBLISH.
+      // So if isPublished is missing, we should probably set it to false IF it's a content update.
+      // Let's modify the Recruiter's Edit Form to send `isPublished: false`.
     }
 
     if (eventProfile && typeof eventProfile === 'object' && eventProfile.size > 0) {

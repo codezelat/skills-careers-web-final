@@ -55,6 +55,7 @@ export async function POST(req) {
             closingDate,
             eventProfile: eventProfileUrl,
             createdAt: new Date(),
+            isPublished: false,
         });
 
         client.close();

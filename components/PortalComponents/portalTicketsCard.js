@@ -66,16 +66,18 @@ function PortalTicketsCard({ ticket, onEdit, onDelete }) {
                     >
                         Edit
                     </button>
-                    <button
-                        onClick={handlePublishToggle}
-                        disabled={isLoading}
-                        className={`flex items-center justify-center px-3 py-2 rounded-lg text-white font-medium text-sm transition-colors min-w-[100px] ${isPublished
-                            ? "bg-red-500 hover:bg-red-600"
-                            : "bg-[#001571] hover:bg-blue-800"
-                            }`}
-                    >
-                        {isLoading ? "..." : isPublished ? "Unpublish" : "Publish"}
-                    </button>
+                    {session?.user?.role === "admin" && (
+                        <button
+                            onClick={handlePublishToggle}
+                            disabled={isLoading}
+                            className={`flex items-center justify-center px-3 py-2 rounded-lg text-white font-medium text-sm transition-colors min-w-[100px] ${isPublished
+                                ? "bg-red-500 hover:bg-red-600"
+                                : "bg-[#001571] hover:bg-blue-800"
+                                }`}
+                        >
+                            {isLoading ? "..." : isPublished ? "Unpublish" : "Publish"}
+                        </button>
+                    )}
                     {/* onDelete prop might not be passed in Recruiter view based on previous file content, but just in case keeping it consistent if passed */}
                     {onDelete && (
                         <button

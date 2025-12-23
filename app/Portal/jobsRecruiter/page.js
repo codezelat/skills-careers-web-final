@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import JobCard from "@/components/PortalComponents/portalJobCard";
 import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function RecruiterPostedJobs(props) {
     const router = useRouter();
@@ -99,7 +100,7 @@ export default function RecruiterPostedJobs(props) {
     //create job functions
     const JOB_TYPE_OPTIONS = [
         'On Site',
-        'Hybride',
+        'Hybrid',
         'Remote',
         'Full-Time',
         'Part-Time',

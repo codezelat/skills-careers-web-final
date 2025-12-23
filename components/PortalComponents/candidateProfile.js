@@ -50,6 +50,42 @@ const sortEducations = (educations) => {
   });
 };
 
+const SOFT_SKILLS_LIST = [
+  "Communication", "Active listening", "Critical thinking", "Analytical thinking", "Creative thinking",
+  "Systems thinking", "Strategic thinking", "Problem-solving", "Decision-making", "Negotiation",
+  "Persuasion", "Conflict management", "Empathy", "Emotional intelligence", "Self-awareness",
+  "Resilience", "Adaptability", "Flexibility", "Agility", "Integrity", "Accountability",
+  "Dependability", "Attention to detail", "Time management", "Task prioritization",
+  "Organization and planning", "Leadership", "People management", "Delegation",
+  "Coaching and mentoring", "Talent management", "Teamwork", "Collaboration", "Cooperation",
+  "Coordination", "Relationship building", "Trust building", "Stakeholder management",
+  "Client management", "Influencing others", "Leading change", "Initiative", "Lifelong learning",
+  "Learning agility", "Motivation", "Stress tolerance", "Self-control", "Global citizenship",
+  "Customer-focused mindset"
+];
+
+const EDUCATION_QUALIFICATIONS = [
+  "GCE Ordinary Level",
+  "GCE Advanced Level",
+  "Diploma",
+  "Higher Diploma (HND / ND)",
+  "Bachelor’s Degree",
+  "Professional Qualification",
+  "Postgraduate Diploma",
+  "Master’s Degree",
+  "PhD / Doctorate",
+  "Vocational/Apprenticeship",
+  "Other"
+];
+
+const SRI_LANKA_DISTRICTS = [
+  "Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya",
+  "Galle", "Matara", "Hambantota", "Jaffna", "Kilinochchi", "Mannar",
+  "Mullaitivu", "Vavuniya", "Puttalam", "Kurunegala", "Anuradhapura",
+  "Polonnaruwa", "Badulla", "Monaragala", "Ratnapura", "Kegalle",
+  "Trincomalee", "Batticaloa", "Ampara"
+];
+
 const sortCertifications = (certifications) => {
   return certifications.sort((a, b) =>
     new Date(b.receivedDate) - new Date(a.receivedDate)
@@ -466,6 +502,8 @@ export default function CandidateProfile() {
     startDate: "",
     endDate: "",
   });
+  const [isOtherEducation, setIsOtherEducation] = useState(false);
+
   const handleCreateEducation = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -497,6 +535,7 @@ export default function CandidateProfile() {
         startDate: "",
         endDate: "",
       });
+      setIsOtherEducation(false);
     } catch (error) {
       console.error("Error adding education:", error);
       Swal.fire({
@@ -510,7 +549,17 @@ export default function CandidateProfile() {
   };
   const handleEducationInputChange = (e) => {
     const { name, value } = e.target;
-    setNewEducationData((prev) => ({ ...prev, [name]: value }));
+    if (name === "educationQualificationSelect") {
+      if (value === "Other") {
+        setIsOtherEducation(true);
+        setNewEducationData((prev) => ({ ...prev, educationName: "" }));
+      } else {
+        setIsOtherEducation(false);
+        setNewEducationData((prev) => ({ ...prev, educationName: value }));
+      }
+    } else {
+      setNewEducationData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   // Create new Certification
@@ -569,6 +618,31 @@ export default function CandidateProfile() {
 
   // Create soft skill
   const [newSoftSkill, setNewSoftSkill] = useState("");
+  const [softSkillSuggestions, setSoftSkillSuggestions] = useState([]);
+  const [showSoftSkillSuggestions, setShowSoftSkillSuggestions] = useState(false);
+
+  const handleSoftSkillInputChange = (e) => {
+    const value = e.target.value;
+    setNewSoftSkill(value);
+
+    if (value.trim()) {
+      const filtered = SOFT_SKILLS_LIST.filter(skill =>
+        skill.toLowerCase().includes(value.toLowerCase()) &&
+        !jobSeekerDetails.softSkills?.includes(skill)
+      );
+      setSoftSkillSuggestions(filtered);
+      setShowSoftSkillSuggestions(true);
+    } else {
+      setSoftSkillSuggestions([]);
+      setShowSoftSkillSuggestions(false);
+    }
+  };
+
+  const selectSoftSkillRequest = (skill) => {
+    setNewSoftSkill(skill);
+    setShowSoftSkillSuggestions(false);
+  };
+
   const handleAddSoftSkill = async (e) => {
     e.preventDefault();
 
@@ -1360,25 +1434,51 @@ export default function CandidateProfile() {
                       <label className="block text-sm font-semibold text-[#001571]">
                         Country
                       </label>
-                      <input
-                        type="text"
+                      <select
                         name="country"
                         value={newExperienceData.country}
-                        onChange={handleExperienceInputChange}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setNewExperienceData(prev => ({
+                            ...prev,
+                            country: val,
+                            city: val === "Sri Lanka" ? "" : prev.city // Reset city if switching to Sri Lanka to force selection
+                          }));
+                        }}
                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                      />
+                      >
+                        <option value="" disabled>Select Country</option>
+                        <option value="Sri Lanka">Sri Lanka</option>
+                        <option value="International">International</option>
+                      </select>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-[#001571]">
                         City
                       </label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={newExperienceData.city}
-                        onChange={handleExperienceInputChange}
-                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                      />
+                      {newExperienceData.country === "Sri Lanka" ? (
+                        <select
+                          name="city"
+                          value={newExperienceData.city}
+                          onChange={handleExperienceInputChange}
+                          className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                        >
+                          <option value="" disabled>Select District</option>
+                          {SRI_LANKA_DISTRICTS.map((district, index) => (
+                            <option key={index} value={district}>{district}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          name="city"
+                          placeholder={newExperienceData.country === "International" ? "Enter city..." : "Select country first"}
+                          value={newExperienceData.city}
+                          onChange={handleExperienceInputChange}
+                          disabled={!newExperienceData.country}
+                          className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1456,14 +1556,27 @@ export default function CandidateProfile() {
                     <label className="block text-sm font-semibold text-[#001571]">
                       Education Qualification
                     </label>
-                    <input
-                      type="text"
-                      name="educationName"
-                      placeholder="O/L, A/L or degree name..."
-                      value={newEducationData.educationName}
+                    <select
+                      name="educationQualificationSelect"
+                      value={isOtherEducation ? "Other" : EDUCATION_QUALIFICATIONS.includes(newEducationData.educationName) ? newEducationData.educationName : ""}
                       onChange={handleEducationInputChange}
                       className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                    />
+                    >
+                      <option value="" disabled>Select Qualification</option>
+                      {EDUCATION_QUALIFICATIONS.map((qual, index) => (
+                        <option key={index} value={qual}>{qual}</option>
+                      ))}
+                    </select>
+                    {isOtherEducation && (
+                      <input
+                        type="text"
+                        name="educationName"
+                        placeholder="Enter your qualification..."
+                        value={newEducationData.educationName}
+                        onChange={handleEducationInputChange}
+                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      />
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-[#001571]">
@@ -1631,9 +1744,9 @@ export default function CandidateProfile() {
               </div>
 
               {/* Scrollable Form Content */}
-              <div className="flex-1 overflow-y-auto px-6 py-4">
+              <div className="flex-1 overflow-y-auto px-6 py-4 pb-40">
                 <form onSubmit={handleAddSoftSkill} className="space-y-6">
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-semibold text-[#001571]">
                       Soft Skills
                     </label>
@@ -1641,10 +1754,23 @@ export default function CandidateProfile() {
                       type="text"
                       name="softSkill"
                       value={newSoftSkill}
-                      onChange={(e) => setNewSoftSkill(e.target.value)}
+                      onChange={handleSoftSkillInputChange}
                       className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                       placeholder="Enter a soft skill (e.g., Communication, Teamwork)"
                     />
+                    {showSoftSkillSuggestions && softSkillSuggestions.length > 0 && (
+                      <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
+                        {softSkillSuggestions.map((skill, index) => (
+                          <li
+                            key={index}
+                            onClick={() => selectSoftSkillRequest(skill)}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
+                          >
+                            {skill}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </form>
               </div>

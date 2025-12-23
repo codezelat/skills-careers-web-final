@@ -32,6 +32,14 @@ export async function POST(req) {
       );
     }
 
+    if (!ticket.isPublished) {
+      client.close();
+      return NextResponse.json(
+        { message: "This event is not yet published." },
+        { status: 403 }
+      );
+    }
+
     // Check if registration is closed
     const currentDate = new Date();
     const closingDate = new Date(ticket.closingDate);

@@ -1,6 +1,22 @@
 "use client";
+import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { PiCheckCircle } from "react-icons/pi";
+
+const RELIGION_LIST = [
+    "Buddhism",
+    "Hinduism",
+    "Islam",
+    "Christianity (Catholic / Other)",
+    "Other",
+    "Prefer not to say"
+];
+
+const LANGUAGES_LIST = [
+    "Sinhala",
+    "Tamil",
+    "English"
+];
 
 export default function BioDataForm({
     jobSeekerDetails,
@@ -9,6 +25,77 @@ export default function BioDataForm({
     isSubmitting,
     onClose,
 }) {
+    const [religionSuggestions, setReligionSuggestions] = useState([]);
+    const [showReligionSuggestions, setShowReligionSuggestions] = useState(false);
+
+    const [languageSuggestions, setLanguageSuggestions] = useState([]);
+    const [showLanguageSuggestions, setShowLanguageSuggestions] = useState(false);
+
+    const handleReligionInputChange = (e) => {
+        const { name, value } = e.target;
+        handleInputChange(e); // Update parent state
+
+        if (value.trim()) {
+            const filtered = RELIGION_LIST.filter(religion =>
+                religion.toLowerCase().includes(value.toLowerCase())
+            );
+            setReligionSuggestions(filtered);
+            setShowReligionSuggestions(true);
+        } else {
+            setReligionSuggestions([]);
+            setShowReligionSuggestions(false);
+        }
+    };
+
+    const selectReligion = (religion) => {
+        // Create a synthetic event to pass to handleInputChange
+        const event = {
+            target: {
+                name: "religion",
+                value: religion
+            }
+        };
+        handleInputChange(event);
+        setShowReligionSuggestions(false);
+    };
+
+    const handleLanguageInputChange = (e) => {
+        const { name, value } = e.target;
+        handleInputChange(e);
+
+        // Get the last value after comma
+        const lastValue = value.split(',').pop().trim();
+
+        if (lastValue) {
+            const filtered = LANGUAGES_LIST.filter(lang =>
+                lang.toLowerCase().startsWith(lastValue.toLowerCase())
+            );
+            setLanguageSuggestions(filtered);
+            setShowLanguageSuggestions(true);
+        } else {
+            setLanguageSuggestions([]);
+            setShowLanguageSuggestions(false);
+        }
+    };
+
+    const selectLanguage = (lang) => {
+        const currentLanguages = jobSeekerDetails.languages ? jobSeekerDetails.languages.split(',') : [];
+        // Remove the last partial entry
+        currentLanguages.pop();
+        // Add the selected language
+        currentLanguages.push(lang);
+
+        const newValue = currentLanguages.join(', ') + ', ';
+
+        const event = {
+            target: {
+                name: "languages",
+                value: newValue
+            }
+        };
+        handleInputChange(event);
+        setShowLanguageSuggestions(false);
+    };
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             {/* Popup Container */}
@@ -25,7 +112,7 @@ export default function BioDataForm({
                 </div>
 
                 {/* Scrollable Form Content */}
-                <div className="flex-1 overflow-y-auto px-6 py-4">
+                <div className="flex-1 overflow-y-auto px-6 py-4 pb-40">
                     <form onSubmit={jobseekerUpdateSubmitHandler} className="space-y-6">
                         <div>
                             <label className="block text-sm font-semibold text-[#001571]">
@@ -51,7 +138,7 @@ export default function BioDataForm({
                                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                             />
                         </div>
-                        <div>
+                        <div className="relative">
                             <label className="block text-sm font-semibold text-[#001571]">
                                 Languages
                             </label>
@@ -59,10 +146,24 @@ export default function BioDataForm({
                                 type="text"
                                 name="languages"
                                 value={jobSeekerDetails.languages || ""}
-                                placeholder="example: English, French, Spanish, ...etc"
-                                onChange={handleInputChange}
+                                placeholder="example: English, French (Type to search, comma separated)"
+                                onChange={handleLanguageInputChange}
                                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                autoComplete="off"
                             />
+                            {showLanguageSuggestions && languageSuggestions.length > 0 && (
+                                <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
+                                    {languageSuggestions.map((lang, index) => (
+                                        <li
+                                            key={index}
+                                            onClick={() => selectLanguage(lang)}
+                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
+                                        >
+                                            {lang}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-[#001571]">
@@ -104,7 +205,7 @@ export default function BioDataForm({
                                 <option value="Single">Single</option>
                             </select>
                         </div>
-                        <div>
+                        <div className="relative">
                             <label className="block text-sm font-semibold text-[#001571]">
                                 Religion
                             </label>
@@ -112,9 +213,24 @@ export default function BioDataForm({
                                 type="text"
                                 name="religion"
                                 value={jobSeekerDetails.religion || ""}
-                                onChange={handleInputChange}
+                                onChange={handleReligionInputChange}
                                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                                placeholder="Select or type religion"
+                                autoComplete="off"
                             />
+                            {showReligionSuggestions && religionSuggestions.length > 0 && (
+                                <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
+                                    {religionSuggestions.map((religion, index) => (
+                                        <li
+                                            key={index}
+                                            onClick={() => selectReligion(religion)}
+                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
+                                        >
+                                            {religion}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-[#001571]">

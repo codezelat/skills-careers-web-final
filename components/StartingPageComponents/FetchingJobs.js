@@ -23,7 +23,7 @@ const FetchingJobs = () => {
   useEffect(() => {
     async function fetchJobs() {
       try {
-        const response = await fetch("/api/job/all");
+        const response = await fetch("/api/job/all", { cache: 'no-store' });
         if (!response.ok) throw new Error("Failed to fetch jobs.");
         const data = await response.json();
 
