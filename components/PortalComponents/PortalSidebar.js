@@ -1,10 +1,28 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { usePathname } from 'next/navigation';
 
 export default function SideMenuSection() {
     const [activeButton, setActiveButton] = useState("");
     const { data: session, status } = useSession();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        if (pathname.includes("/dashboard")) setActiveButton("Dashboard");
+        else if (pathname.includes("/jobApplications")) setActiveButton("Applications"); // Check before 'jobs' to avoid conflict if 'jobs' check was loose (though current 'jobs' check is specific enough)
+        else if (pathname.includes("/jobs") || pathname === "/jobs") setActiveButton("Job Posts");
+        else if (pathname.includes("/recruiter") || pathname === "/recruiters") setActiveButton("Recruiters");
+        else if (pathname.includes("/candidates")) setActiveButton("Candidates");
+        else if (pathname.includes("/tickets")) setActiveButton("Events");
+        else if (pathname.includes("/bookingRecord")) setActiveButton("Booking Record");
+        else if (pathname.includes("/annoucements")) setActiveButton("Announcements");
+        else if (pathname.includes("/pressrelease")) setActiveButton("Press Releases");
+        else if (pathname.includes("/profile")) setActiveButton("My Profile");
+        else if (pathname.includes("/inquiries")) setActiveButton("Help & Contact");
+        else if (pathname.includes("/settings")) setActiveButton("Settings");
+    }, [pathname]);
+
 
     return (
         <>
