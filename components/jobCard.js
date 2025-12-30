@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-function JobCard({job, onApply}) {
+function JobCard({ job, onApply }) {
   const router = useRouter();
   const {
     _id,
@@ -65,7 +65,7 @@ function JobCard({job, onApply}) {
         {jobTitle}
       </h2>
       <div className="flex items-center gap-2 mb-4 justify-start sm:justify-start">
-        {jobTypes &&
+        {Array.isArray(jobTypes) ? (
           jobTypes.map((type, index) => (
             <span
               key={index}
@@ -74,7 +74,14 @@ function JobCard({job, onApply}) {
             >
               {type}
             </span>
-          ))}
+          ))
+        ) : typeof jobTypes === "string" ? (
+          <span
+            className="px-2 py-1 rounded-[5px] text-xs font-semibold text-white bg-[#001571]"
+          >
+            {jobTypes}
+          </span>
+        ) : null}
       </div>
 
       <p className="text-xl font-bold text-[#000000] text-left sm:text-left">

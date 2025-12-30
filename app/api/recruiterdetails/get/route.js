@@ -1,9 +1,8 @@
-import { connectToDatabase } from "@/lib/db";
+import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb"; // Add this import
+import { ObjectId } from "mongodb";
 
 export async function GET(req) {
-  let client;
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
@@ -34,7 +33,7 @@ export async function GET(req) {
       );
     }
 
-    client = await connectToDatabase();
+    const client = await clientPromise;
     const db = client.db();
     const recruiter = await db.collection("recruiters").findOne(query);
 
@@ -65,7 +64,7 @@ export async function GET(req) {
         employeeRange: recruiter.employeeRange,
         contactNumber: recruiter.contactNumber,
         telephoneNumber: recruiter.telephoneNumber,
-        userId: recruiter.userId.toString(),
+        userId: recruiter.userId ? recruiter.userId.toString() : null,
         createdAt: recruiter.createdAt,
         logo: recruiter.logo,
         coverImage: recruiter.coverImage,
@@ -112,9 +111,5 @@ export async function GET(req) {
         },
       }
     );
-  } finally {
-    if (client) {
-      await client.close();
-    }
   }
 }

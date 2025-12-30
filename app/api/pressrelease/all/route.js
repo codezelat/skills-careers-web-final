@@ -1,14 +1,14 @@
-import { connectToDatabase } from "@/lib/db";
+import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
-export async function GET(req) { 
+export async function GET(req) {
   try {
-    const client = await connectToDatabase();
+    const client = await clientPromise;
     const db = client.db();
 
     // Fetch all appointments
     const pressreleases = await db.collection("pressreleases").find().toArray();
-    client.close();
+    // Do NOT close the client: client.close();
 
     return NextResponse.json(
       { pressreleases },
@@ -27,6 +27,7 @@ export async function GET(req) {
       }
     );
   } catch (error) {
+    console.error("API Error in /api/pressrelease/all:", error);
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
       { status: 500 }
