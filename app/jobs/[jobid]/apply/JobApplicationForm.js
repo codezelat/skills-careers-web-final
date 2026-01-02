@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -141,7 +141,9 @@ export default function JobApplicationForm({ onClose, jobid }) {
       const fetchJobSeekerDetails = async () => {
         try {
           setIsLoading(true);
-          const response = await fetch(`/api/jobseekerdetails/get?userId=${session.user.id}`);
+          const response = await fetch(
+            `/api/jobseekerdetails/get?userId=${session.user.id}`
+          );
           const data = await response.json();
 
           if (!response.ok) {
@@ -162,7 +164,9 @@ export default function JobApplicationForm({ onClose, jobid }) {
   // Auto-fill form fields with job seeker profile details
   useEffect(() => {
     if (jobSeekerDetails && Object.keys(jobSeekerDetails).length > 0) {
-      setFirstName(jobSeekerDetails.firstName || session?.user?.firstName || "");
+      setFirstName(
+        jobSeekerDetails.firstName || session?.user?.firstName || ""
+      );
       setLastName(jobSeekerDetails.lastName || session?.user?.lastName || "");
       setEmail(jobSeekerDetails.email || session?.user?.email || "");
       setContactNumber(jobSeekerDetails.contactNumber || "");
@@ -371,9 +375,14 @@ export default function JobApplicationForm({ onClose, jobid }) {
                           accept=".pdf,.doc,.docx"
                         />
                         {/* Hidden input needs label association or trigger */}
-                        <label htmlFor="cv" className="absolute inset-0 cursor-pointer"></label>
+                        <label
+                          htmlFor="cv"
+                          className="absolute inset-0 cursor-pointer"
+                        ></label>
                         {fileError && (
-                          <p className="text-red-500 text-sm mt-1">{fileError}</p>
+                          <p className="text-red-500 text-sm mt-1">
+                            {fileError}
+                          </p>
                         )}
                         {selectedFile && (
                           <p className="text-green-500 text-sm mt-1">
@@ -450,7 +459,9 @@ export default function JobApplicationForm({ onClose, jobid }) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700 flex items-center gap-2 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  className={`bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700 flex items-center gap-2 ${
+                    isSubmitting ? "opacity-75 cursor-not-allowed" : ""
+                  }`}
                 >
                   {isSubmitting ? (
                     <>
@@ -475,6 +486,5 @@ export default function JobApplicationForm({ onClose, jobid }) {
         )}
       </div>
     </div>
-
   );
 }
