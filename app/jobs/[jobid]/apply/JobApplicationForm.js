@@ -159,6 +159,16 @@ export default function JobApplicationForm({ onClose, jobid }) {
     }
   }, [session]);
 
+  // Auto-fill form fields with job seeker profile details
+  useEffect(() => {
+    if (jobSeekerDetails && Object.keys(jobSeekerDetails).length > 0) {
+      setFirstName(jobSeekerDetails.firstName || session?.user?.firstName || "");
+      setLastName(jobSeekerDetails.lastName || session?.user?.lastName || "");
+      setEmail(jobSeekerDetails.email || session?.user?.email || "");
+      setContactNumber(jobSeekerDetails.contactNumber || "");
+    }
+  }, [jobSeekerDetails, session]);
+
   // if (isLoading) {
   //   return <div className="text-center py-4">Loading Application Form ...</div>;
   // }
@@ -320,9 +330,9 @@ export default function JobApplicationForm({ onClose, jobid }) {
                   type="text"
                   id="jobname"
                   required
-                  disabled
+                  readOnly
                   value={jobDetails.jobTitle}
-                  className="mt-1 block w-full rounded-md border-gray-300 border-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg font-medium"
+                  className="mt-1 block w-full rounded-md border-gray-300 border-2 shadow-sm sm:text-lg font-medium bg-gray-50 text-gray-900 cursor-not-allowed"
                 />
               </div>
 
