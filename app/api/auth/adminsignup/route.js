@@ -102,7 +102,6 @@ export async function POST(req) {
   } finally {
     if (client) {
       try {
-        await client.close();
       } catch (e) {
         console.error("Error closing client:", e);
       }

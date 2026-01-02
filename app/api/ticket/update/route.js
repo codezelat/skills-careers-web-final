@@ -95,8 +95,6 @@ export async function PUT(req) {
       }
     );
 
-    client.close();
-
     if (result.matchedCount > 0) {
       return NextResponse.json(
         { message: "Ticket updated successfully." },

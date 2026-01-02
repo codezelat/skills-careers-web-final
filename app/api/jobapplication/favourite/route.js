@@ -33,7 +33,6 @@ export async function PATCH(req) {
       );
 
     // Close the database connection
-    client.close();
 
     if (result.matchedCount === 0) {
       return NextResponse.json({ message: "Job Application not found" }, { status: 404 });

@@ -19,7 +19,7 @@ export async function GET(req) {
       .toArray();
 
     const count = jobapplications.length;
-    client.close();
+    // Don't close the connection - it's cached and reused
 
     return NextResponse.json({ jobapplications, count }, { status: 200 });
   } catch (error) {

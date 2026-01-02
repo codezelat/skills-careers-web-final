@@ -21,8 +21,6 @@ export async function GET() {
       }).toUpperCase()
     }));
 
-    client.close();
-
     return NextResponse.json(
       {
         applications: formattedApplications,

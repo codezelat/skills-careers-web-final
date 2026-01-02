@@ -34,8 +34,6 @@ export async function PUT(req) {
       .collection("educations")
       .updateOne({ _id: new ObjectId(_id) }, { $set: updateData });
 
-    client.close();
-
     if (result.modifiedCount > 0) {
       return NextResponse.json(
         { message: "Details updated successfully." },

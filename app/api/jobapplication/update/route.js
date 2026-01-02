@@ -49,6 +49,5 @@ export async function PUT(req) {
       { status: 500 }
     );
   } finally {
-    await client.close();
   }
 }

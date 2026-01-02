@@ -37,8 +37,6 @@ export async function GET(req) {
     // Fetch inquiries based on filter
     const inquiries = await db.collection("inquiries").find(filter).toArray();
 
-    client.close();
-
     return NextResponse.json({ inquiries }, { status: 200 });
   } catch (error) {
     console.log(error)

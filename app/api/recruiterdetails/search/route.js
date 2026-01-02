@@ -53,7 +53,6 @@ export async function GET(req) {
     );
   } finally {
     if (client) {
-      client.close();
     }
   }
 }

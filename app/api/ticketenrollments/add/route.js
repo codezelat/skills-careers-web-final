@@ -25,7 +25,6 @@ export async function POST(req) {
     });
 
     if (!ticket) {
-      client.close();
       return NextResponse.json(
         { message: "Ticket not found." },
         { status: 404 }
@@ -33,7 +32,6 @@ export async function POST(req) {
     }
 
     if (!ticket.isPublished) {
-      client.close();
       return NextResponse.json(
         { message: "This event is not yet published." },
         { status: 403 }
@@ -45,7 +43,6 @@ export async function POST(req) {
     const closingDate = new Date(ticket.closingDate);
 
     if (currentDate > closingDate) {
-      client.close();
       return NextResponse.json(
         {
           message:
@@ -59,7 +56,6 @@ export async function POST(req) {
     const currentEnrollment = parseInt(ticket.enrolledCount);
     // Only check capacity if it's not null (unlimited)
     if (ticket.capacity !== null && currentEnrollment >= ticket.capacity) {
-      client.close();
       return NextResponse.json(
         { message: "House Full! This event has reached its maximum capacity." },
         { status: 400 }
@@ -75,7 +71,6 @@ export async function POST(req) {
       });
 
     if (existingEnrollment) {
-      client.close();
       return NextResponse.json(
         { message: "You have already enrolled for this ticket" },
         { status: 409 }
@@ -100,8 +95,6 @@ export async function POST(req) {
         { $set: { enrolledCount: (currentEnrollment + 1).toString() } }
       );
 
-      client.close();
-
       try {
         console.log("Sending email notification...");
         await sendTicketEnrollmentNotification({
@@ -123,7 +116,6 @@ export async function POST(req) {
       );
     } catch (error) {
       console.error("Enrollment failed:", error);
-      client.close();
       throw error;
     }
   } catch (error) {

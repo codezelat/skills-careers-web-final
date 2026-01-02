@@ -12,8 +12,6 @@ export async function GET(req) {
 
     const ticketenrollments = await query.toArray();
     const count = ticketenrollments.length;
-
-    client.close();
     return NextResponse.json(
       { ticketenrollments, count },
       {

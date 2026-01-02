@@ -8,7 +8,7 @@ export async function GET(req) {
 
     // Fetch all appointments
     const pressreleases = await db.collection("pressreleases").find().toArray();
-    // Do NOT close the client: client.close();
+    // Do NOT close the client:
 
     return NextResponse.json(
       { pressreleases },

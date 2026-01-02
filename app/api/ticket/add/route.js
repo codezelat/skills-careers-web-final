@@ -58,8 +58,6 @@ export async function POST(req) {
             isPublished: false,
         });
 
-        client.close();
-
         return NextResponse.json({ message: "Ticket created!" }, { status: 201 });
     } catch (error) {
         return NextResponse.json(

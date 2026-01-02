@@ -42,8 +42,6 @@ export async function POST(request) {
       }
     );
 
-    client.close();
-
     if (result.modifiedCount === 0) {
       return NextResponse.json(
         { error: 'Failed to update password' },

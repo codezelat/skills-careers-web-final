@@ -68,7 +68,6 @@ export async function POST(req) {
     );
   } finally {
     if (client) {
-      client.close();
     }
   }
 }

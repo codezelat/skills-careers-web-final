@@ -99,7 +99,6 @@ export async function POST(req) {
 
     const existingUser = await db.collection("users").findOne({ email });
     if (existingUser) {
-      client.close();
       return NextResponse.json(
         { message: "User exists already!" },
         { status: 422 }
@@ -110,7 +109,6 @@ export async function POST(req) {
       .collection("recruiters")
       .findOne({ email });
     if (existingRecruiter) {
-      client.close();
       return NextResponse.json(
         { message: "Recruiter exists already!" },
         { status: 422 }
@@ -139,8 +137,6 @@ export async function POST(req) {
         userId: new ObjectId(userResult.insertedId),
         createdAt: new Date(),
       });
-
-      client.close();
       return NextResponse.json(
         { message: "User and recruiter created!" },
         { status: 201 }
@@ -154,7 +150,6 @@ export async function POST(req) {
           console.error("Cleanup error:", cleanupError);
         }
       }
-      client.close();
       throw insertError;
     }
   } catch (error) {

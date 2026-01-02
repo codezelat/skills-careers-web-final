@@ -11,8 +11,6 @@ export async function GET(req) {
 
     const count = jobseekers.length;
 
-    client.close();
-
     return NextResponse.json(
       { jobseekers, count },
       {

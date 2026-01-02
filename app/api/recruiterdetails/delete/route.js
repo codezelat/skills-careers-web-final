@@ -46,7 +46,6 @@ export async function DELETE(req) {
     );
   } finally {
     if (client) {
-      client.close();
     }
   }
 }

@@ -38,8 +38,6 @@ export async function POST(request) {
     // Send email
     const resetUrl = `${process.env.NEXTAUTH_URL}/resetPassword?token=${resetToken}`;
     await sendPasswordResetEmail(email, resetUrl);
-
-    client.close();
     return new Response(JSON.stringify({ message: 'Reset email sent' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

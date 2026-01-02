@@ -85,7 +85,6 @@ export async function GET() {
     );
   } finally {
     if (client) {
-      await client.close();
     }
   }
 }

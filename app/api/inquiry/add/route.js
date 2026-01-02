@@ -44,7 +44,6 @@ export async function POST(req) {
     });
 
     // Close the database connection
-    client.close();
     return NextResponse.json({ message: "Inquiry created!" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

@@ -25,8 +25,6 @@ export async function POST(req) {
             }
         );
 
-        client.close();
-
         if (result.matchedCount === 0) {
             return NextResponse.json(
                 { message: "Jobseeker not found" },

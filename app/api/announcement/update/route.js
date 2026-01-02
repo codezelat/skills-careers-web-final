@@ -53,7 +53,6 @@ export async function PUT(req) {
     );
   } finally {
     if (client) {
-      client.close();
     }
   }
 }

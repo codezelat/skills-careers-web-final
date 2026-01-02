@@ -91,7 +91,6 @@ export async function POST(req) {
   } finally {
     // Ensure database connection is closed
     if (client) {
-      await client.close();
     }
   }
 }

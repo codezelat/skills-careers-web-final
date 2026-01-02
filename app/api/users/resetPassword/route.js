@@ -56,14 +56,12 @@ export async function POST(req) {
       .findOne({ _id: new ObjectId(userId) });
 
     if (!user) {
-      await client.close();
       return NextResponse.json({ message: "User not found." }, { status: 404 });
     }
 
     // Verify old password
     const isValidPassword = await verifyPassword(oldPassword, user.password);
     if (!isValidPassword) {
-      await client.close();
       return NextResponse.json(
         { message: "Old password is incorrect." },
         { status: 422 }
@@ -72,7 +70,6 @@ export async function POST(req) {
 
     // Check if new password is different
     if (oldPassword === newPassword) {
-      await client.close();
       return NextResponse.json(
         { message: "New password must be different from old password." },
         { status: 422 }
@@ -87,8 +84,6 @@ export async function POST(req) {
         { _id: new ObjectId(userId) },
         { $set: { password: hashedPassword } }
       );
-
-    await client.close();
     return NextResponse.json(
       { message: "Password updated successfully!" },
       { status: 200 }

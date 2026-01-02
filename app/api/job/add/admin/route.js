@@ -52,7 +52,6 @@ export async function POST(req) {
     });
 
     if (!recruiter) {
-      await client.close();
       return NextResponse.json(
         { message: "Recruiter not found" },
         { status: 404 }
@@ -65,8 +64,6 @@ export async function POST(req) {
       recruiterId: new ObjectId(data.recruiterId),
       createdAt: new Date(),
     });
-
-    await client.close();
     
     return NextResponse.json(
       {

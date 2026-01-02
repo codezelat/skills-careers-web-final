@@ -117,6 +117,5 @@ export async function POST(req) {
       { status: 500 }
     );
   } finally {
-    await client.close();
   }
 }

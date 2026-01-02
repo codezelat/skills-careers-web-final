@@ -25,7 +25,6 @@ export async function POST(req) {
     });
 
     // Close the database connection
-    client.close();
     return NextResponse.json(
       { message: "Announcement created!" },
       { status: 201 }

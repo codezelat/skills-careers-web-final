@@ -31,8 +31,6 @@ export async function PUT(req) {
       .collection("users")
       .updateOne({ email }, { $set: updatedDetails }, { upsert: false });
 
-    client.close();
-
     if (result.modifiedCount > 0) {
 
       return NextResponse.json(
@@ -52,7 +50,6 @@ export async function PUT(req) {
     );
   } finally {
     if (client) {
-      client.close();
     }
   }
 }

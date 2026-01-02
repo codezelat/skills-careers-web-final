@@ -104,7 +104,6 @@ export async function POST(request) {
   } finally {
     if (client) {
       console.log('Closing MongoDB connection');
-      client.close();
     }
   }
 }

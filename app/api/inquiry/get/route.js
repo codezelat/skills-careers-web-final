@@ -41,7 +41,6 @@ export async function GET(req) {
     );
   } finally {
     if (client) {
-      await client.close();
     }
   }
 }

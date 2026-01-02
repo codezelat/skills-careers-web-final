@@ -23,8 +23,6 @@ export async function POST(req) {
       createdAt: new Date(),
     });
 
-    client.close();
-
     return NextResponse.json(
       { message: "Licenses & Certifications Added!" },
       { status: 201 }

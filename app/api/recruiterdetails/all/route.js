@@ -9,7 +9,6 @@ export async function GET(req) {
     // Fetch all recruiters
     const recruiters = await db.collection("recruiters").find().toArray();
     const count = recruiters.length;
-    client.close();
 
     return NextResponse.json(
       { recruiters, count },

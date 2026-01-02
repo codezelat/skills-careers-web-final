@@ -267,8 +267,6 @@ export async function GET(req) {
             }
         }
 
-        client.close();
-
         return NextResponse.json({
             labels,
             chart1: chart1Data,

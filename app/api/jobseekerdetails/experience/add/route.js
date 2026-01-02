@@ -35,8 +35,6 @@ export async function POST(req) {
       createdAt: new Date(),
     });
 
-    client.close();
-
     return NextResponse.json({ message: "Experience Added!" }, { status: 201 });
   } catch (error) {
     return NextResponse.json(

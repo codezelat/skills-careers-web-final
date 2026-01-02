@@ -33,7 +33,7 @@ export async function GET(req) {
     const jobs = await db.collection("jobs").find(filter).toArray();
     const count = jobs.length;
 
-    // Do NOT close the client: client.close();
+    // Do NOT close the client:
 
     return NextResponse.json(
       { jobs, count },

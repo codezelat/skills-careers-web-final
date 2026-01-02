@@ -34,8 +34,6 @@ export async function PUT(req) {
       .collection("licensesandcertifications")
       .updateOne({ _id: new ObjectId(_id) }, { $set: updateData });
 
-    client.close();
-
     if (result.modifiedCount > 0) {
       return NextResponse.json(
         { message: "Details updated successfully." },

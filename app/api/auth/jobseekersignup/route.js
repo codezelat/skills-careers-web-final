@@ -123,7 +123,6 @@ export async function POST(req) {
       .findOne({ email: normalizedEmail });
 
     if (existingUser) {
-      client.close();
       return NextResponse.json(
         { message: "User exists already!" },
         { status: 422 }
@@ -131,7 +130,6 @@ export async function POST(req) {
     }
 
     if (existingJobseeker) {
-      client.close();
       return NextResponse.json(
         { message: "User exists already!" },
         { status: 422 }
@@ -163,8 +161,6 @@ export async function POST(req) {
         createdAt: new Date(),
       });
       console.log("Jobseeker created with ID:", jobseekerResult.insertedId);
-
-      client.close();
       console.log("User & Jobseeker created successfully");
       return NextResponse.json(
         { message: "User & Jobseeker created!" },
@@ -181,7 +177,6 @@ export async function POST(req) {
           console.error("Cleanup error:", cleanupError);
         }
       }
-      client.close();
       throw insertError;
     }
   } catch (error) {

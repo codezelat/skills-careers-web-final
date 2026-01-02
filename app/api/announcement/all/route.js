@@ -9,7 +9,6 @@ export async function GET(req) {
     // Fetch all appointments
     const announcements = await db.collection("announcements").find().toArray();
     const count = announcements.length;
-    client.close();
 
     return NextResponse.json(
       { announcements, count },

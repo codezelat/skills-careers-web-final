@@ -62,6 +62,5 @@ export async function GET(request) {
       { status: 500 }
     );
   } finally {
-    await client.close();
   }
 }

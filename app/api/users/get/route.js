@@ -33,8 +33,6 @@ export async function GET(req) {
         .findOne({ _id: new ObjectId(id) });
     }
 
-    client.close();
-
     if (user) {
       return NextResponse.json({ user },
         {

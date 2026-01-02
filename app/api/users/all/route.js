@@ -11,8 +11,6 @@ export async function GET(req) {
 
     const count = users.length;
 
-    client.close();
-
     return NextResponse.json(
       { users, count },
       { status: 200 }
