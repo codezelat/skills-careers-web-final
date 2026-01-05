@@ -13,6 +13,7 @@ export default function HeaderSection() {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [selectedJobType, setSelectedJobType] = useState("All");
   const searchRef = useRef(null);
   const debounceTimerRef = useRef(null);
 
@@ -20,6 +21,16 @@ export default function HeaderSection() {
   console.log("Profile Image URL:", session?.user?.profileImage);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+  const jobTypeOptions = [
+    "All",
+    "Onsite",
+    "Hybrid",
+    "Remote",
+    "Full Time",
+    "Part Time",
+    "Freelance",
+  ];
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -34,7 +45,7 @@ export default function HeaderSection() {
   }, []);
 
   // Fetch job suggestions based on search query
-  const fetchSuggestions = useCallback(async (query) => {
+  const fetchSuggestions = useCallback(async (query, jobType = "All") => {
     if (!query || query.length < 2) {
       setSuggestions([]);
       setShowSuggestions(false);
@@ -49,7 +60,16 @@ export default function HeaderSection() {
       if (!response.ok) throw new Error("Search failed");
 
       const data = await response.json();
-      const jobs = data.jobs || [];
+      let jobs = data.jobs || [];
+
+      // Filter by job type if not "All"
+      if (jobType !== "All") {
+        jobs = jobs.filter((job) =>
+          Array.isArray(job.jobTypes)
+            ? job.jobTypes.includes(jobType)
+            : job.jobTypes === jobType
+        );
+      }
 
       // Fetch recruiter details for each job
       const jobsWithDetails = await Promise.all(
@@ -96,8 +116,19 @@ export default function HeaderSection() {
 
     // Set new timer for debounced search
     debounceTimerRef.current = setTimeout(() => {
-      fetchSuggestions(value);
+      fetchSuggestions(value, selectedJobType);
     }, 300);
+  };
+
+  // Handle job type filter change
+  const handleJobTypeChange = (e) => {
+    const jobType = e.target.value;
+    setSelectedJobType(jobType);
+
+    // Re-fetch suggestions with new filter if there's a search query
+    if (searchQuery.trim().length >= 2) {
+      fetchSuggestions(searchQuery, jobType);
+    }
   };
 
   // Handle search submission
@@ -110,29 +141,24 @@ export default function HeaderSection() {
     }
 
     setIsSearching(true);
+    setShowSuggestions(false);
 
     try {
-      const userRole = session?.user?.role?.toLowerCase();
-      let targetPage;
+      // All users go to public jobs page for search
+      let searchUrl = `/jobs?search=${encodeURIComponent(trimmedQuery)}`;
 
-      // Route based on user role
-      if (userRole === "admin") {
-        targetPage = "/Portal/jobsAdmin";
-      } else if (userRole === "recruiter") {
-        targetPage = "/Portal/jobsRecruiter";
-      } else {
-        // Job seeker or any other role goes to public jobs page
-        targetPage = "/jobs";
+      // Add job type filter if not "All"
+      if (selectedJobType !== "All") {
+        searchUrl += `&jobType=${encodeURIComponent(selectedJobType)}`;
       }
 
-      // Navigate to appropriate page with search query parameter
-      router.push(`${targetPage}?search=${encodeURIComponent(trimmedQuery)}`);
+      router.push(searchUrl);
     } catch (error) {
       console.error("Search navigation error:", error);
     } finally {
       setIsSearching(false);
     }
-  }, [searchQuery, router, session?.user?.role]);
+  }, [searchQuery, selectedJobType, router]);
 
   // Handle suggestion selection
   const handleSuggestionClick = (job) => {
@@ -140,16 +166,16 @@ export default function HeaderSection() {
     setSearchQuery("");
     setSuggestions([]);
 
-    // Navigate to job detail page
+    // Navigate based on user role for suggestion clicks
     const userRole = session?.user?.role?.toLowerCase();
+    const jobId = job._id || job.jobId;
+
     if (userRole === "admin") {
-      router.push(`/Portal/jobsAdmin/JobProfile?id=${job._id || job.jobId}`);
+      router.push(`/Portal/jobsAdmin/${jobId}`);
     } else if (userRole === "recruiter") {
-      router.push(
-        `/Portal/jobsRecruiter/JobProfile?id=${job._id || job.jobId}`
-      );
+      router.push(`/Portal/jobsRecruiter/${jobId}`);
     } else {
-      router.push(`/jobs/${job._id || job.jobId}`);
+      router.push(`/jobs/${jobId}`);
     }
   };
 
@@ -176,7 +202,7 @@ export default function HeaderSection() {
 
         {/* Middle Section */}
         <div className="flex-grow mx-8 h-full relative" ref={searchRef}>
-          <div className="bg-white flex items-center pl-8 pr-4 h-full rounded-2xl shadow-sm w-full">
+          <div className="bg-white flex items-center pl-8 pr-4 h-full rounded-2xl shadow-sm w-full gap-2">
             <button
               onClick={handleSearch}
               disabled={isSearching || searchQuery.trim().length < 2}
@@ -194,8 +220,22 @@ export default function HeaderSection() {
               onKeyPress={handleKeyPress}
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
               disabled={isSearching}
-              className="ml-2 text-gray-500 outline-none w-full text-[16px] disabled:opacity-50"
+              className="ml-2 text-gray-500 outline-none flex-1 text-[16px] disabled:opacity-50"
             />
+            <div className="border-l border-gray-300 pl-4 pr-2">
+              <select
+                value={selectedJobType}
+                onChange={handleJobTypeChange}
+                disabled={isSearching}
+                className="text-gray-600 outline-none text-[14px] font-medium disabled:opacity-50 cursor-pointer bg-transparent"
+              >
+                {jobTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Suggestions Dropdown */}

@@ -16,6 +16,7 @@ function JobsClient() {
   const [error, setError] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedIndustry, setSelectedIndustry] = useState(null);
+  const [selectedJobType, setSelectedJobType] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
@@ -23,12 +24,20 @@ function JobsClient() {
   const searchParams = useSearchParams();
   const industryQueryParam = searchParams.get("industry");
   const searchQueryParam = searchParams.get("search");
+  const jobTypeQueryParam = searchParams.get("jobType");
 
   useEffect(() => {
     if (industryQueryParam) {
       setSelectedIndustry(industryQueryParam);
     }
   }, [industryQueryParam]);
+
+  // Handle job type query from URL parameter
+  useEffect(() => {
+    if (jobTypeQueryParam) {
+      setSelectedJobType(jobTypeQueryParam);
+    }
+  }, [jobTypeQueryParam]);
 
   // Handle search query from URL parameter
   useEffect(() => {
@@ -159,8 +168,19 @@ function JobsClient() {
       );
     }
 
+    if (selectedJobType) {
+      filtered = filtered.filter((job) => {
+        if (Array.isArray(job.jobTypes)) {
+          return job.jobTypes.some(
+            (type) => type.toLowerCase() === selectedJobType.toLowerCase()
+          );
+        }
+        return job.jobTypes?.toLowerCase() === selectedJobType.toLowerCase();
+      });
+    }
+
     setFilteredJobs(filtered);
-  }, [selectedLocation, selectedIndustry, jobs, searchResults]);
+  }, [selectedLocation, selectedIndustry, selectedJobType, jobs, searchResults]);
 
   const industries = [...new Set(jobs.map((job) => job.industry))].filter(
     Boolean
@@ -168,6 +188,18 @@ function JobsClient() {
   const locations = [...new Set(jobs.map((job) => job.location))].filter(
     Boolean
   );
+  
+  // Extract unique job types from all jobs
+  const jobTypes = [
+    ...new Set(
+      jobs.flatMap((job) => {
+        if (Array.isArray(job.jobTypes)) {
+          return job.jobTypes;
+        }
+        return job.jobTypes ? [job.jobTypes] : [];
+      })
+    ),
+  ].filter(Boolean);
 
   const handleSearchResults = (results) => {
     setSearchResults(results);
@@ -201,7 +233,7 @@ function JobsClient() {
             <JobSearch onSearchResults={handleSearchResults} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 mb-8">
             <DropdownButton
               buttonName="Location"
               selected={selectedLocation || "Location"}
@@ -227,6 +259,17 @@ function JobsClient() {
               onSelect={(industry) => {
                 setSelectedIndustry(
                   industry === "All Industries" ? null : industry
+                );
+                setSearchResults(null); // Reset search results when changing filters
+              }}
+            />
+            <DropdownButton
+              buttonName="Job Type"
+              selected={selectedJobType || "Job Type"}
+              dropdownItems={["All Job Types", ...jobTypes]}
+              onSelect={(jobType) => {
+                setSelectedJobType(
+                  jobType === "All Job Types" ? null : jobType
                 );
                 setSearchResults(null); // Reset search results when changing filters
               }}
