@@ -10,7 +10,7 @@ import PhoneNumberInput from "@/components/PhoneInput";
 import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
 
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 export default function Candidates() {
   const [activeTab, setActiveTab] = useState("all");
@@ -127,10 +127,10 @@ export default function Candidates() {
         newJobseeker.confirmPassword
       );
       Swal.fire({
-        icon: 'success',
-        title: 'Success',
+        icon: "success",
+        title: "Success",
         text: result.message,
-        confirmButtonColor: '#001571'
+        confirmButtonColor: "#001571",
       });
       setNewJobseekerForm(false);
 
@@ -139,10 +139,10 @@ export default function Candidates() {
       setJobseekers(data.jobseekers);
     } catch (error) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: error.message,
-        confirmButtonColor: '#001571'
+        confirmButtonColor: "#001571",
       });
     } finally {
       setIsSubmitting(false);
@@ -174,7 +174,10 @@ export default function Candidates() {
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.length === filteredJobseekers.length && filteredJobseekers.length > 0) {
+    if (
+      selectedIds.length === filteredJobseekers.length &&
+      filteredJobseekers.length > 0
+    ) {
       setSelectedIds([]);
     } else {
       setSelectedIds(filteredJobseekers.map((js) => js._id));
@@ -183,76 +186,76 @@ export default function Candidates() {
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#EC221F',
-      cancelButtonColor: '#001571',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonColor: "#EC221F",
+      cancelButtonColor: "#001571",
+      confirmButtonText: "Yes, delete it!",
     });
 
     if (!result.isConfirmed) return;
 
     // Show loading
     Swal.fire({
-      title: 'Deleting...',
-      text: 'Please wait',
+      title: "Deleting...",
+      text: "Please wait",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
 
     try {
       const response = await fetch(`/api/jobseekerdetails/delete?id=${id}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete");
 
       // Update State
-      setJobseekers(prev => prev.filter(js => js._id !== id));
-      setFilteredJobseekers(prev => prev.filter(js => js._id !== id));
+      setJobseekers((prev) => prev.filter((js) => js._id !== id));
+      setFilteredJobseekers((prev) => prev.filter((js) => js._id !== id));
 
       Swal.fire({
-        title: 'Deleted!',
-        text: 'Candidate has been deleted.',
-        icon: 'success',
+        title: "Deleted!",
+        text: "Candidate has been deleted.",
+        icon: "success",
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     } catch (error) {
       console.error("Delete failed", error);
       Swal.fire({
-        title: 'Error!',
-        text: 'Failed to delete candidate.',
-        icon: 'error',
-        confirmButtonColor: '#001571'
+        title: "Error!",
+        text: "Failed to delete candidate.",
+        icon: "error",
+        confirmButtonColor: "#001571",
       });
     }
   };
 
   const handleBulkDelete = async () => {
     const result = await Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: `You are about to delete ${selectedIds.length} candidates. This cannot be undone!`,
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#EC221F',
-      cancelButtonColor: '#001571',
-      confirmButtonText: 'Yes, delete all!'
+      confirmButtonColor: "#EC221F",
+      cancelButtonColor: "#001571",
+      confirmButtonText: "Yes, delete all!",
     });
 
     if (!result.isConfirmed) return;
 
     // Show loading
     Swal.fire({
-      title: 'Deleting...',
-      text: 'Processing your request',
+      title: "Deleting...",
+      text: "Processing your request",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
 
     // Optimistic Update can stay if we want, but better to wait for feedback
@@ -260,29 +263,35 @@ export default function Candidates() {
 
     // Execute deletes
     try {
-      await Promise.all(idsToDelete.map(id =>
-        fetch(`/api/jobseekerdetails/delete?id=${id}`, { method: 'DELETE' })
-      ));
+      await Promise.all(
+        idsToDelete.map((id) =>
+          fetch(`/api/jobseekerdetails/delete?id=${id}`, { method: "DELETE" })
+        )
+      );
 
       // Update State
-      setJobseekers(prev => prev.filter(js => !idsToDelete.includes(js._id)));
-      setFilteredJobseekers(prev => prev.filter(js => !idsToDelete.includes(js._id)));
+      setJobseekers((prev) =>
+        prev.filter((js) => !idsToDelete.includes(js._id))
+      );
+      setFilteredJobseekers((prev) =>
+        prev.filter((js) => !idsToDelete.includes(js._id))
+      );
       setSelectedIds([]);
 
       Swal.fire({
-        title: 'Deleted!',
-        text: 'Selected candidates have been deleted.',
-        icon: 'success',
+        title: "Deleted!",
+        text: "Selected candidates have been deleted.",
+        icon: "success",
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     } catch (error) {
       console.error("Bulk delete failed", error);
       Swal.fire({
-        title: 'Partial Error',
-        text: 'Some deletions might have failed.',
-        icon: 'error',
-        confirmButtonColor: '#001571'
+        title: "Partial Error",
+        text: "Some deletions might have failed.",
+        icon: "error",
+        confirmButtonColor: "#001571",
       });
     }
   };
@@ -321,18 +330,20 @@ export default function Candidates() {
         <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-6 py-3 flex rounded-2xl ${activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
-              }`}
+            className={`px-6 py-3 flex rounded-2xl ${
+              activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+            }`}
           >
             All Candidates
             <PiCheckCircle size={20} className="ml-2" />
           </button>
           <button
             onClick={() => setActiveTab("restricted")}
-            className={`px-6 py-3 flex rounded-2xl ${activeTab === "restricted"
-              ? "bg-[#001571] text-white"
-              : "text-[#B0B6D3]"
-              }`}
+            className={`px-6 py-3 flex rounded-2xl ${
+              activeTab === "restricted"
+                ? "bg-[#001571] text-white"
+                : "text-[#B0B6D3]"
+            }`}
           >
             Restricted Candidates
             <PiCheckCircle size={20} className="ml-2" />
@@ -361,7 +372,10 @@ export default function Candidates() {
                   <input
                     type="checkbox"
                     className="form-checkbox text-[#001571] border-gray-300 rounded cursor-pointer"
-                    checked={selectedIds.length > 0 && selectedIds.length === filteredJobseekers.length}
+                    checked={
+                      selectedIds.length > 0 &&
+                      selectedIds.length === filteredJobseekers.length
+                    }
                     onChange={handleSelectAll}
                   />
                 )}
@@ -399,10 +413,11 @@ export default function Candidates() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
-              ? "bg-gray-300"
-              : "bg-gray-200 hover:bg-gray-400"
-              }`}
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === 1
+                ? "bg-gray-300"
+                : "bg-gray-200 hover:bg-gray-400"
+            }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -414,10 +429,11 @@ export default function Candidates() {
               <button
                 key={index + 1}
                 onClick={() => handlePageChange(index + 1)}
-                className={`px-4 py-2 rounded-lg ${currentPage === index + 1
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-200 hover:bg-gray-400"
-                  }`}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === index + 1
+                    ? "bg-blue-700 text-white"
+                    : "bg-gray-200 hover:bg-gray-400"
+                }`}
               >
                 {index + 1}
               </button>
@@ -429,11 +445,12 @@ export default function Candidates() {
               currentPage ===
               Math.ceil(filteredJobseekers.length / candidatesPerPage)
             }
-            className={`px-[10px] py-2 rounded-lg ${currentPage ===
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage ===
               Math.ceil(filteredJobseekers.length / candidatesPerPage)
-              ? "bg-gray-300"
-              : "bg-gray-200 hover:bg-gray-400"
-              }`}
+                ? "bg-gray-300"
+                : "bg-gray-200 hover:bg-gray-400"
+            }`}
           >
             <BsChevronRight size={15} />
           </button>
@@ -500,7 +517,9 @@ export default function Candidates() {
                   </div>
                   <PhoneNumberInput
                     value={newJobseeker.contactNumber}
-                    onChange={(phone) => setNewJobseeker({ ...newJobseeker, contactNumber: phone })}
+                    onChange={(phone) =>
+                      setNewJobseeker({ ...newJobseeker, contactNumber: phone })
+                    }
                     label="Phone"
                     placeholder="Enter phone number"
                     required
@@ -539,10 +558,11 @@ export default function Candidates() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl text-sm font-semibold ${isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-700"
-                      }`}
+                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl text-sm font-semibold ${
+                      isSubmitting
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-blue-700"
+                    }`}
                   >
                     {isSubmitting ? "Adding..." : "Add Recruiter"}
                   </button>

@@ -37,7 +37,7 @@ import GenerateCV from "@/lib/GenerateCV";
 const sortExperiences = (experiences) => {
   return experiences.sort((a, b) => {
     if (!a.endDate && b.endDate) return -1; // a is current, b is not
-    if (a.endDate && !b.endDate) return 1;  // b is current, a is not
+    if (a.endDate && !b.endDate) return 1; // b is current, a is not
     return new Date(b.startDate) - new Date(a.startDate); // both current or both past
   });
 };
@@ -51,17 +51,55 @@ const sortEducations = (educations) => {
 };
 
 const SOFT_SKILLS_LIST = [
-  "Communication", "Active listening", "Critical thinking", "Analytical thinking", "Creative thinking",
-  "Systems thinking", "Strategic thinking", "Problem-solving", "Decision-making", "Negotiation",
-  "Persuasion", "Conflict management", "Empathy", "Emotional intelligence", "Self-awareness",
-  "Resilience", "Adaptability", "Flexibility", "Agility", "Integrity", "Accountability",
-  "Dependability", "Attention to detail", "Time management", "Task prioritization",
-  "Organization and planning", "Leadership", "People management", "Delegation",
-  "Coaching and mentoring", "Talent management", "Teamwork", "Collaboration", "Cooperation",
-  "Coordination", "Relationship building", "Trust building", "Stakeholder management",
-  "Client management", "Influencing others", "Leading change", "Initiative", "Lifelong learning",
-  "Learning agility", "Motivation", "Stress tolerance", "Self-control", "Global citizenship",
-  "Customer-focused mindset"
+  "Communication",
+  "Active listening",
+  "Critical thinking",
+  "Analytical thinking",
+  "Creative thinking",
+  "Systems thinking",
+  "Strategic thinking",
+  "Problem-solving",
+  "Decision-making",
+  "Negotiation",
+  "Persuasion",
+  "Conflict management",
+  "Empathy",
+  "Emotional intelligence",
+  "Self-awareness",
+  "Resilience",
+  "Adaptability",
+  "Flexibility",
+  "Agility",
+  "Integrity",
+  "Accountability",
+  "Dependability",
+  "Attention to detail",
+  "Time management",
+  "Task prioritization",
+  "Organization and planning",
+  "Leadership",
+  "People management",
+  "Delegation",
+  "Coaching and mentoring",
+  "Talent management",
+  "Teamwork",
+  "Collaboration",
+  "Cooperation",
+  "Coordination",
+  "Relationship building",
+  "Trust building",
+  "Stakeholder management",
+  "Client management",
+  "Influencing others",
+  "Leading change",
+  "Initiative",
+  "Lifelong learning",
+  "Learning agility",
+  "Motivation",
+  "Stress tolerance",
+  "Self-control",
+  "Global citizenship",
+  "Customer-focused mindset",
 ];
 
 const EDUCATION_QUALIFICATIONS = [
@@ -75,20 +113,40 @@ const EDUCATION_QUALIFICATIONS = [
   "Master’s Degree",
   "PhD / Doctorate",
   "Vocational/Apprenticeship",
-  "Other"
+  "Other",
 ];
 
 const SRI_LANKA_DISTRICTS = [
-  "Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya",
-  "Galle", "Matara", "Hambantota", "Jaffna", "Kilinochchi", "Mannar",
-  "Mullaitivu", "Vavuniya", "Puttalam", "Kurunegala", "Anuradhapura",
-  "Polonnaruwa", "Badulla", "Monaragala", "Ratnapura", "Kegalle",
-  "Trincomalee", "Batticaloa", "Ampara"
+  "Colombo",
+  "Gampaha",
+  "Kalutara",
+  "Kandy",
+  "Matale",
+  "Nuwara Eliya",
+  "Galle",
+  "Matara",
+  "Hambantota",
+  "Jaffna",
+  "Kilinochchi",
+  "Mannar",
+  "Mullaitivu",
+  "Vavuniya",
+  "Puttalam",
+  "Kurunegala",
+  "Anuradhapura",
+  "Polonnaruwa",
+  "Badulla",
+  "Monaragala",
+  "Ratnapura",
+  "Kegalle",
+  "Trincomalee",
+  "Batticaloa",
+  "Ampara",
 ];
 
 const sortCertifications = (certifications) => {
-  return certifications.sort((a, b) =>
-    new Date(b.receivedDate) - new Date(a.receivedDate)
+  return certifications.sort(
+    (a, b) => new Date(b.receivedDate) - new Date(a.receivedDate)
   );
 };
 
@@ -165,7 +223,9 @@ export default function CandidateProfile() {
           const newExperienceData = await experienceResponse.json();
 
           // Sort experiences: Current (no endDate) first, then by startDate descending
-          const sortedExperiences = sortExperiences(newExperienceData.experiences);
+          const sortedExperiences = sortExperiences(
+            newExperienceData.experiences
+          );
           setExperienceDetails(sortedExperiences);
 
           const educationResponse = await fetch(
@@ -187,7 +247,9 @@ export default function CandidateProfile() {
           const certificationData = await certificationResponse.json();
 
           // Sort certifications by receivedDate descending (latest first)
-          const sortedCertifications = sortCertifications(certificationData.licensesandcertifications);
+          const sortedCertifications = sortCertifications(
+            certificationData.licensesandcertifications
+          );
           setCertificationDetails(sortedCertifications);
         } catch (err) {
           setError(err.message);
@@ -266,8 +328,8 @@ export default function CandidateProfile() {
         ...session,
         user: {
           ...session?.user,
-          profileImage: data.imageUrl
-        }
+          profileImage: data.imageUrl,
+        },
       });
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -399,24 +461,24 @@ export default function CandidateProfile() {
       // Check if both updates were successful
       if (userResponse.ok && jobSeekerResponse.ok) {
         // Update local state to reflect the changes
-        setJobseekerDetails(prev => ({
+        setJobseekerDetails((prev) => ({
           ...prev,
-          contactNumber: userDetails.contactNumber
+          contactNumber: userDetails.contactNumber,
         }));
-        
+
         Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Details updated successfully!',
+          icon: "success",
+          title: "Success",
+          text: "Details updated successfully!",
           timer: 2000,
           showConfirmButton: false,
         });
         setProfileEditForm(false); // Close the edit form if needed
       } else {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to update details!',
+          icon: "error",
+          title: "Error",
+          text: "Failed to update details!",
         });
       }
     } catch (error) {
@@ -499,8 +561,8 @@ export default function CandidateProfile() {
     } catch (error) {
       console.error("Error adding experience:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: `Error: ${error.message}`,
       });
     } finally {
@@ -556,8 +618,8 @@ export default function CandidateProfile() {
     } catch (error) {
       console.error("Error adding education:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: `Error: ${error.message}`,
       });
     } finally {
@@ -620,8 +682,8 @@ export default function CandidateProfile() {
     } catch (error) {
       console.error("Error adding certification:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: `Error: ${error.message}`,
       });
     } finally {
@@ -636,16 +698,18 @@ export default function CandidateProfile() {
   // Create soft skill
   const [newSoftSkill, setNewSoftSkill] = useState("");
   const [softSkillSuggestions, setSoftSkillSuggestions] = useState([]);
-  const [showSoftSkillSuggestions, setShowSoftSkillSuggestions] = useState(false);
+  const [showSoftSkillSuggestions, setShowSoftSkillSuggestions] =
+    useState(false);
 
   const handleSoftSkillInputChange = (e) => {
     const value = e.target.value;
     setNewSoftSkill(value);
 
     if (value.trim()) {
-      const filtered = SOFT_SKILLS_LIST.filter(skill =>
-        skill.toLowerCase().includes(value.toLowerCase()) &&
-        !jobSeekerDetails.softSkills?.includes(skill)
+      const filtered = SOFT_SKILLS_LIST.filter(
+        (skill) =>
+          skill.toLowerCase().includes(value.toLowerCase()) &&
+          !jobSeekerDetails.softSkills?.includes(skill)
       );
       setSoftSkillSuggestions(filtered);
       setShowSoftSkillSuggestions(true);
@@ -665,9 +729,9 @@ export default function CandidateProfile() {
 
     if (!newSoftSkill.trim()) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Warning',
-        text: 'Please enter a soft skill.',
+        icon: "warning",
+        title: "Warning",
+        text: "Please enter a soft skill.",
       });
       return;
     }
@@ -703,8 +767,8 @@ export default function CandidateProfile() {
     } catch (error) {
       console.error("Error adding soft skill:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: `Failed to add soft skill: ${error.message}`,
       });
     } finally {
@@ -744,9 +808,9 @@ export default function CandidateProfile() {
 
     if (!newExpertise.trim()) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Warning',
-        text: 'Please enter an expertise',
+        icon: "warning",
+        title: "Warning",
+        text: "Please enter an expertise",
       });
       return;
     }
@@ -782,8 +846,8 @@ export default function CandidateProfile() {
     } catch (error) {
       console.error("Error adding expertise", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: `Failed to add expertise : ${error.message}`,
       });
     } finally {
@@ -839,9 +903,9 @@ export default function CandidateProfile() {
     } catch (error) {
       console.error("Error updating soft skill:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to update soft skill',
+        icon: "error",
+        title: "Error",
+        text: "Failed to update soft skill",
       });
     }
   };
@@ -849,8 +913,8 @@ export default function CandidateProfile() {
   // update expertise
   const handleUpdateExpertise = async (oldExpertise, newExpertise) => {
     try {
-      const updatedExpertise = jobSeekerDetails.professionalExpertise.map((exp) =>
-        exp === oldExpertise ? newExpertise : exp
+      const updatedExpertise = jobSeekerDetails.professionalExpertise.map(
+        (exp) => (exp === oldExpertise ? newExpertise : exp)
       );
 
       const updatedJobSeekerDetails = {
@@ -869,9 +933,9 @@ export default function CandidateProfile() {
     } catch (error) {
       console.error("Error updating expertise:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to update expertise',
+        icon: "error",
+        title: "Error",
+        text: "Failed to update expertise",
       });
     }
   };
@@ -1318,10 +1382,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.softSkills?.map((skills, index) => (
               <SoftSkillsCard key={index} skills={skills} />
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No soft skills data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No soft skills data available.
+              </p>
+            )}
           </div>
         </div>
 
@@ -1358,10 +1422,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
               <ExpertiseCard key={index} expertise={expertise} />
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No professional expertise data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No professional expertise data available.
+              </p>
+            )}
           </div>
         </div>
 
@@ -1456,15 +1520,17 @@ export default function CandidateProfile() {
                         value={newExperienceData.country}
                         onChange={(e) => {
                           const val = e.target.value;
-                          setNewExperienceData(prev => ({
+                          setNewExperienceData((prev) => ({
                             ...prev,
                             country: val,
-                            city: val === "Sri Lanka" ? "" : prev.city // Reset city if switching to Sri Lanka to force selection
+                            city: val === "Sri Lanka" ? "" : prev.city, // Reset city if switching to Sri Lanka to force selection
                           }));
                         }}
                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                       >
-                        <option value="" disabled>Select Country</option>
+                        <option value="" disabled>
+                          Select Country
+                        </option>
                         <option value="Sri Lanka">Sri Lanka</option>
                         <option value="International">International</option>
                       </select>
@@ -1480,16 +1546,24 @@ export default function CandidateProfile() {
                           onChange={handleExperienceInputChange}
                           className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                         >
-                          <option value="" disabled>Select District</option>
+                          <option value="" disabled>
+                            Select District
+                          </option>
                           {SRI_LANKA_DISTRICTS.map((district, index) => (
-                            <option key={index} value={district}>{district}</option>
+                            <option key={index} value={district}>
+                              {district}
+                            </option>
                           ))}
                         </select>
                       ) : (
                         <input
                           type="text"
                           name="city"
-                          placeholder={newExperienceData.country === "International" ? "Enter city..." : "Select country first"}
+                          placeholder={
+                            newExperienceData.country === "International"
+                              ? "Enter city..."
+                              : "Select country first"
+                          }
                           value={newExperienceData.city}
                           onChange={handleExperienceInputChange}
                           disabled={!newExperienceData.country}
@@ -1533,10 +1607,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateExperience}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                    }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-blue-700"
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1575,13 +1650,25 @@ export default function CandidateProfile() {
                     </label>
                     <select
                       name="educationQualificationSelect"
-                      value={isOtherEducation ? "Other" : EDUCATION_QUALIFICATIONS.includes(newEducationData.educationName) ? newEducationData.educationName : ""}
+                      value={
+                        isOtherEducation
+                          ? "Other"
+                          : EDUCATION_QUALIFICATIONS.includes(
+                              newEducationData.educationName
+                            )
+                          ? newEducationData.educationName
+                          : ""
+                      }
                       onChange={handleEducationInputChange}
                       className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                     >
-                      <option value="" disabled>Select Qualification</option>
+                      <option value="" disabled>
+                        Select Qualification
+                      </option>
                       {EDUCATION_QUALIFICATIONS.map((qual, index) => (
-                        <option key={index} value={qual}>{qual}</option>
+                        <option key={index} value={qual}>
+                          {qual}
+                        </option>
                       ))}
                     </select>
                     {isOtherEducation && (
@@ -1643,10 +1730,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateEducation}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                    }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-blue-700"
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1727,10 +1815,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateCertification}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                    }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-blue-700"
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1775,19 +1864,20 @@ export default function CandidateProfile() {
                       className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                       placeholder="Enter a soft skill (e.g., Communication, Teamwork)"
                     />
-                    {showSoftSkillSuggestions && softSkillSuggestions.length > 0 && (
-                      <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
-                        {softSkillSuggestions.map((skill, index) => (
-                          <li
-                            key={index}
-                            onClick={() => selectSoftSkillRequest(skill)}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
-                          >
-                            {skill}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    {showSoftSkillSuggestions &&
+                      softSkillSuggestions.length > 0 && (
+                        <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
+                          {softSkillSuggestions.map((skill, index) => (
+                            <li
+                              key={index}
+                              onClick={() => selectSoftSkillRequest(skill)}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
+                            >
+                              {skill}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                   </div>
                 </form>
               </div>
@@ -1798,10 +1888,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddSoftSkill}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                    }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-blue-700"
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1855,10 +1946,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddExpertise}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                    }`}
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-blue-700"
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1987,10 +2079,10 @@ export default function CandidateProfile() {
                     onUpdate={handleUpdateSoftSkill}
                   />
                 )) ?? (
-                    <p className="text-gray-500 text-sm">
-                      No soft skills data available.
-                    </p>
-                  )}
+                  <p className="text-gray-500 text-sm">
+                    No soft skills data available.
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -2022,10 +2114,10 @@ export default function CandidateProfile() {
                     />
                   )
                 ) ?? (
-                    <p className="text-gray-500 text-sm">
-                      No professional expertise data available.
-                    </p>
-                  )}
+                  <p className="text-gray-500 text-sm">
+                    No professional expertise data available.
+                  </p>
+                )}
               </div>
             </div>
           </div>

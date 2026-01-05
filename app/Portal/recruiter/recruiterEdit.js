@@ -171,7 +171,11 @@ export default function RecruiterEdit({
               </div>
               <PhoneNumberInput
                 value={recruiterDetails.telephoneNumber || ""}
-                onChange={(phone) => onInputChange({ target: { name: "telephoneNumber", value: phone } })}
+                onChange={(phone) =>
+                  onInputChange({
+                    target: { name: "telephoneNumber", value: phone },
+                  })
+                }
                 label="Phone"
                 placeholder="Enter phone number"
               />

@@ -69,7 +69,11 @@ export default function CredentialsForm({
               </div>
               <PhoneNumberInput
                 value={userDetails.contactNumber || ""}
-                onChange={(phone) => onInputChange({ target: { name: "contactNumber", value: phone } })}
+                onChange={(phone) =>
+                  onInputChange({
+                    target: { name: "contactNumber", value: phone },
+                  })
+                }
                 label="Phone"
                 placeholder="Enter phone number"
               />
@@ -84,7 +88,9 @@ export default function CredentialsForm({
             onClick={onSubmit}
             disabled={isSubmitting}
             className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-              isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+              isSubmitting
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-700"
             }`}
           >
             {isSubmitting ? "Saving..." : "Save"}

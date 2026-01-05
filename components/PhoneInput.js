@@ -5,7 +5,7 @@ import "react-phone-input-2/lib/style.css";
 
 /**
  * Reusable Phone Input Component with country code selection and flags
- * 
+ *
  * @param {Object} props - Component props
  * @param {string} props.value - Phone number value
  * @param {Function} props.onChange - onChange handler that receives the phone number
@@ -46,7 +46,9 @@ export default function PhoneNumberInput({
         searchPlaceholder="Search country"
         countryCodeEditable={false}
         containerClass="phone-input-container"
-        inputClass={`phone-input-field ${error ? "border-red-500" : ""} ${inputClass}`}
+        inputClass={`phone-input-field ${
+          error ? "border-red-500" : ""
+        } ${inputClass}`}
         buttonClass="phone-input-dropdown"
         dropdownClass="phone-input-dropdown-list"
         searchClass="phone-input-search"

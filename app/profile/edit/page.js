@@ -80,9 +80,10 @@ function EditProfileForm() {
     try {
       // We only update the main jobseeker details here.
       // Education, Experience, Certifications are handled in their own sections.
-      const { educations, experiences, certifications, _id, ...updateData } = jobSeekerDetails;
+      const { educations, experiences, certifications, _id, ...updateData } =
+        jobSeekerDetails;
 
-      console.log('Submitting data:', updateData); // Debug log
+      console.log("Submitting data:", updateData); // Debug log
 
       const response = await fetch(`/api/jobseekerdetails/update`, {
         method: "PUT",
@@ -93,9 +94,9 @@ function EditProfileForm() {
       });
       if (response.ok) {
         Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Details updated successfully!',
+          icon: "success",
+          title: "Success",
+          text: "Details updated successfully!",
           timer: 2000,
           showConfirmButton: false,
         }).then(() => {
@@ -103,11 +104,11 @@ function EditProfileForm() {
         });
       } else {
         const errorData = await response.json();
-        console.error('Update failed:', errorData); // Debug log
+        console.error("Update failed:", errorData); // Debug log
         Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Failed to update details.',
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to update details.",
         });
       }
     } catch (error) {
@@ -162,7 +163,12 @@ function EditProfileForm() {
 
             <PhoneNumberInput
               value={jobSeekerDetails.contactNumber || ""}
-              onChange={(phone) => setJobSeekerDetails((prev) => ({ ...prev, contactNumber: phone }))}
+              onChange={(phone) =>
+                setJobSeekerDetails((prev) => ({
+                  ...prev,
+                  contactNumber: phone,
+                }))
+              }
               label="Contact Number"
               placeholder="Enter phone number"
             />
@@ -179,7 +185,9 @@ function EditProfileForm() {
             </div>
 
             <div className="md:col-span-2">
-              <p className="text-base font-bold text-black mb-1">Personal Profile</p>
+              <p className="text-base font-bold text-black mb-1">
+                Personal Profile
+              </p>
               <textarea
                 name="personalProfile"
                 className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
@@ -212,7 +220,9 @@ function EditProfileForm() {
             </div>
 
             <div>
-              <p className="text-base font-bold text-black mb-1">Marital Status</p>
+              <p className="text-base font-bold text-black mb-1">
+                Marital Status
+              </p>
               <input
                 type="text"
                 name="maritalStatus"
@@ -299,7 +309,10 @@ function EditProfileForm() {
               title="Soft Skills"
               initialSkills={jobSeekerDetails.softSkills}
               onSave={(newSkills) =>
-                setJobSeekerDetails((prev) => ({ ...prev, softSkills: newSkills }))
+                setJobSeekerDetails((prev) => ({
+                  ...prev,
+                  softSkills: newSkills,
+                }))
               }
             />
 
