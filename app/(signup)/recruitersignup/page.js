@@ -235,29 +235,51 @@ function AuthForm() {
           className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 text-blue-900 font-medium"
         >
           <option value="">Select Category</option>
-          <option value="IT - Hardware, Network & Telecoms">
-            IT - Hardware, Network & Telecoms
+          <option value="IT & Software">IT & Software</option>
+          <option value="Engineering & Technical">
+            Engineering & Technical
           </option>
-          <option value="Accounting, Banking, Finance & Insurance">
-            Accounting, Banking, Finance & Insurance
+          <option value="Accounting & Finance">Accounting & Finance</option>
+          <option value="Banking & Insurance">Banking & Insurance</option>
+          <option value="Sales & Marketing">Sales & Marketing</option>
+          <option value="Human Resources">Human Resources</option>
+          <option value="Admin & Office Support">Admin & Office Support</option>
+          <option value="Customer Service">Customer Service</option>
+          <option value="Management & Strategy">Management & Strategy</option>
+          <option value="Logistics & Transport">Logistics & Transport</option>
+          <option value="Construction & Property">
+            Construction & Property
           </option>
-          <option value="Sales, Marketing & Digital">
-            Sales, Marketing & Digital
+          <option value="Manufacturing & Operations">
+            Manufacturing & Operations
           </option>
-          <option value="Corporate & Senior Management">
-            Corporate & Senior Management
+          <option value="Hospitality & Hotels">Hospitality & Hotels</option>
+          <option value="Travel & Tourism">Travel & Tourism</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Education & Training">Education & Training</option>
+          <option value="Media & Design">Media & Design</option>
+          <option value="Legal">Legal</option>
+          <option value="Government & Public Sector">
+            Government & Public Sector
           </option>
-          <option value="HR, Administration & Office Support">
-            HR, Administration & Office Support
+          <option value="Agriculture & Environment">
+            Agriculture & Environment
           </option>
-          <option value="Civil Engineering, Architecture & Design">
-            Civil Engineering, Architecture & Design
+          <option value="Science & Research">Science & Research</option>
+          <option value="Apparel & Textile">Apparel & Textile</option>
+          <option value="Supermarkets, Showrooms & Retail">
+            Supermarkets, Showrooms & Retail
           </option>
-          <option value="Mechanical, Electrical & Technical Engineerings">
-            Mechanical, Electrical & Technical Engineerings
+          <option value="Fashion, Beauty & Luxury">
+            Fashion, Beauty & Luxury
           </option>
-          <option value="Manufacturing, Operations & Quality">
-            Manufacturing, Operations & Quality
+          <option value="Security">Security</option>
+          <option value="BPO / Call Center">BPO / Call Center</option>
+          <option value="Imports & Exports">Imports & Exports</option>
+          <option value="NGO / Non-Profit">NGO / Non-Profit</option>
+          <option value="Overseas Jobs">Overseas Jobs</option>
+          <option value="Part-time & Flexible Jobs">
+            Part-time & Flexible Jobs
           </option>
           <option value="Other">Other</option>
         </select>
