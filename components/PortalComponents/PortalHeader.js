@@ -15,7 +15,7 @@ export default function HeaderSection() {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const searchRef = useRef(null);
   const debounceTimerRef = useRef(null);
-  
+
   console.log("Session Data:", session);
   console.log("Profile Image URL:", session?.user?.profileImage);
 
@@ -43,17 +43,21 @@ export default function HeaderSection() {
 
     setIsLoadingSuggestions(true);
     try {
-      const response = await fetch(`/api/job/search?query=${encodeURIComponent(query)}`);
+      const response = await fetch(
+        `/api/job/search?query=${encodeURIComponent(query)}`
+      );
       if (!response.ok) throw new Error("Search failed");
-      
+
       const data = await response.json();
       const jobs = data.jobs || [];
-      
+
       // Fetch recruiter details for each job
       const jobsWithDetails = await Promise.all(
         jobs.slice(0, 5).map(async (job) => {
           try {
-            const recruiterResponse = await fetch(`/api/recruiterdetails/get?id=${job.recruiterId}`);
+            const recruiterResponse = await fetch(
+              `/api/recruiterdetails/get?id=${job.recruiterId}`
+            );
             const recruiterData = await recruiterResponse.json();
             return {
               ...job,
@@ -99,18 +103,18 @@ export default function HeaderSection() {
   // Handle search submission
   const handleSearch = useCallback(async () => {
     const trimmedQuery = searchQuery.trim();
-    
+
     // Don't search if query is empty or too short
     if (!trimmedQuery || trimmedQuery.length < 2) {
       return;
     }
 
     setIsSearching(true);
-    
+
     try {
       const userRole = session?.user?.role?.toLowerCase();
       let targetPage;
-      
+
       // Route based on user role
       if (userRole === "admin") {
         targetPage = "/Portal/jobsAdmin";
@@ -120,7 +124,7 @@ export default function HeaderSection() {
         // Job seeker or any other role goes to public jobs page
         targetPage = "/jobs";
       }
-      
+
       // Navigate to appropriate page with search query parameter
       router.push(`${targetPage}?search=${encodeURIComponent(trimmedQuery)}`);
     } catch (error) {
@@ -135,13 +139,15 @@ export default function HeaderSection() {
     setShowSuggestions(false);
     setSearchQuery("");
     setSuggestions([]);
-    
+
     // Navigate to job detail page
     const userRole = session?.user?.role?.toLowerCase();
     if (userRole === "admin") {
       router.push(`/Portal/jobsAdmin/JobProfile?id=${job._id || job.jobId}`);
     } else if (userRole === "recruiter") {
-      router.push(`/Portal/jobsRecruiter/JobProfile?id=${job._id || job.jobId}`);
+      router.push(
+        `/Portal/jobsRecruiter/JobProfile?id=${job._id || job.jobId}`
+      );
     } else {
       router.push(`/jobs/${job._id || job.jobId}`);
     }
@@ -171,7 +177,7 @@ export default function HeaderSection() {
         {/* Middle Section */}
         <div className="flex-grow mx-8 h-full relative" ref={searchRef}>
           <div className="bg-white flex items-center pl-8 pr-4 h-full rounded-2xl shadow-sm w-full">
-            <button 
+            <button
               onClick={handleSearch}
               disabled={isSearching || searchQuery.trim().length < 2}
               className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"

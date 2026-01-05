@@ -88,7 +88,7 @@ function JobsClient() {
   useEffect(() => {
     async function fetchJobsAndRecruiters() {
       try {
-        const jobsResponse = await fetch("/api/job/all", { cache: 'no-store' });
+        const jobsResponse = await fetch("/api/job/all", { cache: "no-store" });
         if (!jobsResponse.ok) throw new Error("Failed to fetch jobs.");
         const jobsData = await jobsResponse.json();
         const jobs = jobsData.jobs;
@@ -165,7 +165,9 @@ function JobsClient() {
   const industries = [...new Set(jobs.map((job) => job.industry))].filter(
     Boolean
   );
-  const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
+  const locations = [...new Set(jobs.map((job) => job.location))].filter(
+    Boolean
+  );
 
   const handleSearchResults = (results) => {
     setSearchResults(results);
@@ -205,16 +207,27 @@ function JobsClient() {
               selected={selectedLocation || "Location"}
               dropdownItems={["All Locations", ...locations]}
               onSelect={(location) => {
-                setSelectedLocation(location === "All Locations" ? null : location);
+                setSelectedLocation(
+                  location === "All Locations" ? null : location
+                );
                 setSearchResults(null); // Reset search results when changing filters
               }}
             />
             <DropdownButton
               buttonName="Industry"
               selected={selectedIndustry || "Industry"}
-              dropdownItems={["All Industries", "Creative & Design", "Education & Training", "Technology & Development", "Operations & Logistics", "Marketing & Sales"]}
+              dropdownItems={[
+                "All Industries",
+                "Creative & Design",
+                "Education & Training",
+                "Technology & Development",
+                "Operations & Logistics",
+                "Marketing & Sales",
+              ]}
               onSelect={(industry) => {
-                setSelectedIndustry(industry === "All Industries" ? null : industry);
+                setSelectedIndustry(
+                  industry === "All Industries" ? null : industry
+                );
                 setSearchResults(null); // Reset search results when changing filters
               }}
             />

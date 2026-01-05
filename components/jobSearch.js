@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 export default function JobSearch({ onSearchResults }) {
   const searchParams = useSearchParams();
   const urlSearchQuery = searchParams.get("search");
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [jobResults, setJobResults] = useState([]);
   const [jobLoading, setJobLoading] = useState(false);
