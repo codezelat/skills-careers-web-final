@@ -39,17 +39,31 @@ export default function ContactBanner() {
               <FaLocationArrow size={28} className="cursor-pointer" />
               <div className="flex flex-col">
                 <div className="font-semibold">Location</div>
-                <div className="text-sm">Skills Careers, SEGA Center, Soysapura, Moratuwa</div>
+                <div className="text-sm">
+                  Skills Careers, SEGA Center, Soysapura, Moratuwa
+                </div>
               </div>
             </div>
           </div>
 
           {/* Social Icons Section */}
           <div className=" flex sm:justify-start sm:mt-6 lg:mt-0 lg:justify-start items-start space-x-6 px-4 lg:px-0 text-gray-50">
-            <FaLinkedin size={40} className="cursor-pointer hover:text-gray-400" />
-            <FaTwitter size={40} className="cursor-pointer hover:text-gray-400" />
-            <FaInstagram size={40} className="cursor-pointer hover:text-gray-400" />
-            <FaFacebook size={40} className="cursor-pointer hover:text-gray-400" />
+            <FaLinkedin
+              size={40}
+              className="cursor-pointer hover:text-gray-400"
+            />
+            <FaTwitter
+              size={40}
+              className="cursor-pointer hover:text-gray-400"
+            />
+            <FaInstagram
+              size={40}
+              className="cursor-pointer hover:text-gray-400"
+            />
+            <FaFacebook
+              size={40}
+              className="cursor-pointer hover:text-gray-400"
+            />
           </div>
         </div>
       </div>
