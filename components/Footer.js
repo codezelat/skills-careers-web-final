@@ -161,22 +161,22 @@ export default function Footer() {
             </p>
             <div className="flex justify-center space-x-4 order-1 md:order-2">
               <img
-                src="/visa.png"
+                src="/Visa.png"
                 alt="Visa"
                 className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
               />
               <img
-                src="/dinersclub.png"
+                src="/DinersClub.png"
                 alt="Diners Club"
                 className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
               />
               <img
-                src="/amex.png"
+                src="/Amex.png"
                 alt="Amex"
                 className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
               />
               <img
-                src="/discover.png"
+                src="/Discover.png"
                 alt="Discover"
                 className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
               />
