@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Button from "../../components/Button";
+import Button from "@/components/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { getSession, signIn, useSession } from "next-auth/react";
@@ -114,7 +114,9 @@ function Login() {
           role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard",
       });
     } catch (error) {
-      setErrorMessage(`Failed to sign in with ${selectedProvider}. Please try again.`);
+      setErrorMessage(
+        `Failed to sign in with ${selectedProvider}. Please try again.`
+      );
     }
   };
 
@@ -282,9 +284,7 @@ function Login() {
               </div>
 
               <div className="mt-3">
-                <Button
-                  onClick={handleLinkedInSignIn}
-                >
+                <Button onClick={handleLinkedInSignIn}>
                   <span className="flex items-center justify-center py-1 px-5">
                     <img
                       src="/images/linkedin-icon.png"
@@ -320,7 +320,8 @@ function Login() {
                 Choose Your Role
               </h2>
               <p className="text-blue-100 text-sm text-center mt-1">
-                Select how you'd like to continue with {selectedProvider === "google" ? "Google" : "LinkedIn"}
+                Select how you'd like to continue with{" "}
+                {selectedProvider === "google" ? "Google" : "LinkedIn"}
               </p>
             </div>
 

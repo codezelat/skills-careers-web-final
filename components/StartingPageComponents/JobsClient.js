@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import JobCard from "@/components/jobCard";
 import Image from "next/image";
-import DropdownButton from "../../components/dropDownButton";
+import DropdownButton from "@/components/dropDownButton";
 import JobLoading from "./jobLoading";
 import { useSearchParams } from "next/navigation";
 import JobSearch from "@/components/jobSearch";

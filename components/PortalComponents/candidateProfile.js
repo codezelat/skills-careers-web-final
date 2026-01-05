@@ -262,7 +262,7 @@ export default function CandidateProfile() {
 
       if (session?.user?.id) fetchData();
     }
-  }, [session?.user?.id]);
+  }, [session?.user?.id, session?.user?.email]);
 
   // image updae functions
   const handleImageChange = async (e) => {

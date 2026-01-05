@@ -15,7 +15,6 @@ export default function StoryComponent() {
     <>
       <div className="w-full">
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex justify-between">
-
           <div className="flex justify-start gap-4 text-[#33448D] font-bold text-lg lg:text-xl md:text-xl sm:text-lg">
             <p>Success Stories from Our Community</p>
           </div>
@@ -34,7 +33,7 @@ export default function StoryComponent() {
           <div className="flex items-center justify-between relative w-full px-[20px] xl:px-[0px]">
             {/* Left navigation button */}
             <div className="swiper-button-prev-custom flex items-center justify-center">
-              <img src="/left.png" />
+              <img src="/left.png" alt="Previous" />
             </div>
             <Swiper
               spaceBetween={20}
@@ -74,7 +73,7 @@ export default function StoryComponent() {
                           width={50}
                           height={50}
                           alt="User"
-                          className="rounded-full border border-4 border-[#001571]"
+                          className="rounded-full border-4 border-[#001571]"
                         />
                       </div>
                       <div className="col-span-2">
@@ -96,7 +95,7 @@ export default function StoryComponent() {
             </Swiper>
             {/* Right navigation button */}
             <div className="swiper-button-next-custom flex items-center justify-center">
-              <img src="/right.png" />
+              <img src="/right.png" alt="Next" />
             </div>
           </div>
         </div>

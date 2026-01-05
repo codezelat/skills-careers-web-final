@@ -2,8 +2,8 @@
 
 import NavBar from "@/components/navBar";
 import Link from "next/link";
-import Button from "../../../components/Button";
-import PhoneNumberInput from "../../../components/PhoneInput";
+import Button from "@/components/Button";
+import PhoneNumberInput from "@/components/PhoneInput";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import Swal from "sweetalert2"; // Import SweetAlert2

@@ -63,7 +63,7 @@ export default function RecruitersTicketsPage(props) {
     if (session?.user?.id) {
       fetchTickets();
     }
-  }, [session]);
+  }, [session, fetchTickets]);
 
   // Fetch tickets
   const fetchTickets = async () => {

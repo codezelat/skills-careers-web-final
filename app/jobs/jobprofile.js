@@ -4,18 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import NavBar from "@/components/navBar";
-import SwiperComponent from "../../components/jobCard";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
-import JobApplicationForm from './[jobid]/apply/JobApplicationForm';
+import SwiperComponent from "@/components/jobCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import JobApplicationForm from "./[jobid]/apply/JobApplicationForm";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 import JobLoading from "../jobLoading";
 import Footer from "@/components/Footer";
-import JobCard from "../../components/jobCard";
+import JobCard from "@/components/jobCard";
 import Loading from "../loading";
 
 function JobProfile({ slug }) {
@@ -31,7 +31,7 @@ function JobProfile({ slug }) {
     requiredQualifications: "",
     perksAndBenefits: "",
     createdAt: "",
-    postedDate: ""
+    postedDate: "",
   });
 
   const [recruiterDetails, setRecruiterDetails] = useState({
@@ -47,7 +47,7 @@ function JobProfile({ slug }) {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
 
   const [jobs, setJobs] = useState([]);
-  const [featuredJobs, setFeaturedJobs] = useState([])
+  const [featuredJobs, setFeaturedJobs] = useState([]);
 
   // Fetch jobs data
   useEffect(() => {
@@ -206,20 +206,24 @@ function JobProfile({ slug }) {
                 {jobDetails.jobTitle}
               </h1>
               <div className="flex items-center">
-                {jobDetails.jobTypes && jobDetails.jobTypes.map((type, index) => (
-                  <span
-                    key={index}
-                    className={`px-2 py-1/2 rounded-lg mr-2 text-white ${index % 2 === 0 ? 'bg-[#001571]' : 'bg-[#00B6B4]'
+                {jobDetails.jobTypes &&
+                  jobDetails.jobTypes.map((type, index) => (
+                    <span
+                      key={index}
+                      className={`px-2 py-1/2 rounded-lg mr-2 text-white ${
+                        index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
                       }`}
-                  >
-                    {type}
-                  </span>
-                ))}
+                    >
+                      {type}
+                    </span>
+                  ))}
               </div>
-
             </div>
             <div className="flex flex-wrap gap-4 mt-4 sm:mt-0">
-              <button onClick={handleViewRecruiter} className="flex border border-2 border-[#001571] hover:bg-blue-700 text-[#001571] font-bold py-2 px-4 rounded mr-4">
+              <button
+                onClick={handleViewRecruiter}
+                className="flex border-2 border-[#001571] hover:bg-blue-700 text-[#001571] font-bold py-2 px-4 rounded mr-4"
+              >
                 View Company Profile
                 <span className="pl-3 mt-1">
                   <BsArrowUpRightCircleFill />
@@ -243,9 +247,7 @@ function JobProfile({ slug }) {
 
           <div className="bg-white">
             <h3 className="text-xl font-bold mb-2">Job Description</h3>
-            <p className="font-Montserrat">
-              {jobDetails.jobDescription}
-            </p>
+            <p className="font-Montserrat">{jobDetails.jobDescription}</p>
 
             <hr className="border-b-2 border-[#B0B6D3] mt-10 mb-5" />
 
@@ -289,9 +291,7 @@ function JobProfile({ slug }) {
                 <JobLoading />
               </div>
             ) : Array.isArray(featuredJobs) && featuredJobs.length > 0 ? (
-
               <div className="flex items-center justify-between relative w-full px-[20px] xl:px-[0px] ">
-
                 <div className="swiper-button-prev-custom flex items-center justify-center">
                   <img src="/left.png" alt="Left arrow" />
                 </div>
@@ -328,7 +328,6 @@ function JobProfile({ slug }) {
                 <div className="swiper-button-next-custom flex items-center justify-center">
                   <img src="/right.png" alt="Right arrow" />
                 </div>
-
               </div>
             ) : (
               // Display "No Jobs found" if no jobs are available

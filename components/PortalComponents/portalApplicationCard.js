@@ -10,11 +10,11 @@ export default function PortalApplicationCard({ application }) {
   const [recruiterdetails, setRecruiterdetails] = useState([]);
 
   const handleView = () => {
-    router.push(`/Portal/jobApplications/${application._id}`)
+    router.push(`/Portal/jobApplications/${application._id}`);
   };
 
   const handleViewJob = () => {
-    router.push(`/Portal/jobApplications/job/${application.jobId}`)
+    router.push(`/Portal/jobApplications/job/${application.jobId}`);
   };
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export default function PortalApplicationCard({ application }) {
       try {
         const recruiterUrl = `/api/recruiterdetails/get?id=${application.recruiterId}`;
         const recruiterResponse = await fetch(recruiterUrl);
-        if (!recruiterResponse.ok) throw new Error('Failed to fetch recruiter details');
+        if (!recruiterResponse.ok)
+          throw new Error("Failed to fetch recruiter details");
         const recruiterdata = await recruiterResponse.json();
-        setRecruiterdetails(recruiterdata)
+        setRecruiterdetails(recruiterdata);
         console.log("recruiter : ", recruiterdata);
-
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
       } finally {
       }
     };
@@ -38,7 +38,7 @@ export default function PortalApplicationCard({ application }) {
     if (session?.user?.id) {
       fetchData();
     }
-  }, [session?.user?.id]);
+  }, [session?.user?.id, application.recruiterId]);
 
   const date = new Date(application.appliedAt).getDate();
   const monthName = [
@@ -72,9 +72,7 @@ export default function PortalApplicationCard({ application }) {
             {application.jobTitle || "No title"}
           </div>
 
-          <div className="py-3 w-[23.33%]">
-            {postedDate || "Unknown date"}
-          </div>
+          <div className="py-3 w-[23.33%]">{postedDate || "Unknown date"}</div>
 
           <div className="py-3 w-[23.33%]">
             {application.email || "No email"}
@@ -100,13 +98,9 @@ export default function PortalApplicationCard({ application }) {
             {recruiterdetails.recruiterName || "No title"}
           </div>
 
-          <div className="py-3 w-[20%]">
-            {postedDate || "Unknown date"}
-          </div>
+          <div className="py-3 w-[20%]">{postedDate || "Unknown date"}</div>
 
-          <div className="py-3 w-[20%]">
-            {application.status || "No email"}
-          </div>
+          <div className="py-3 w-[20%]">{application.status || "No email"}</div>
 
           <div className="flex gap-2 justify-end w-[20%] items-center">
             <button

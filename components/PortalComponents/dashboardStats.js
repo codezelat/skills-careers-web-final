@@ -130,7 +130,7 @@ export default function DashboardStats() {
     if (session?.user?.role === "jobseeker") {
       fetchJobseekerDetails();
     }
-  }, [session?.user?.role]);
+  }, [session?.user?.role, fetchRecruiterDetails, fetchJobseekerDetails]);
 
   // Recruiter Calculations
   const activeJobs = jobs.filter((job) => job.isPublished === true);

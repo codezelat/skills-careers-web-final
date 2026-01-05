@@ -309,7 +309,7 @@ export default function CandidateProfile({ slug }) {
         recordView();
       }
     }
-  }, [jobSeekerDetails?._id, session]);
+  }, [jobSeekerDetails?._id, jobSeekerDetails?.userId, session]);
 
   // Image update functions
   const handleImageChange = async (e) => {

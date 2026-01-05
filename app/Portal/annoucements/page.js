@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { PiCheckCircle } from "react-icons/pi";
 import AddAnnouncement from "./AddAnnouncement";
-import { handleCloseForm, handleOpenForm } from "@/handlers";
+import { handleCloseForm, handleOpenForm } from "@/lib/handlers";
 
 export default function Annoucements() {
   const router = useRouter();
@@ -106,7 +106,9 @@ export default function Annoucements() {
     if (selectedIds.length === 0) return;
 
     // Optional: Add confirmation for bulk delete
-    const confirmed = window.confirm(`Are you sure you want to delete ${selectedIds.length} announcements?`);
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${selectedIds.length} announcements?`
+    );
     if (!confirmed) return;
 
     try {
@@ -200,7 +202,11 @@ export default function Annoucements() {
                 <button
                   onClick={handleBulkDelete}
                   disabled={selectedIds.length === 0}
-                  className={`flex text-white px-6 py-3 rounded-2xl shadow ${selectedIds.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#EC221F] hover:bg-red-600'}`}
+                  className={`flex text-white px-6 py-3 rounded-2xl shadow ${
+                    selectedIds.length === 0
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[#EC221F] hover:bg-red-600"
+                  }`}
                 >
                   <span className="mr-2">
                     <RiDeleteBinFill size={20} />
@@ -233,7 +239,9 @@ export default function Annoucements() {
                     key={index}
                     announcement={announcement}
                     isSelected={selectedIds.includes(announcement._id)}
-                    onSelect={(isSelected) => handleSelectOne(announcement._id, isSelected)}
+                    onSelect={(isSelected) =>
+                      handleSelectOne(announcement._id, isSelected)
+                    }
                     onViewAnnouncement={() =>
                       handleAnnouncementSelect(announcement)
                     }
@@ -257,10 +265,11 @@ export default function Annoucements() {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`px-[10px] py-2 rounded-lg ${currentPage === 1
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-                }`}
+              className={`px-[10px] py-2 rounded-lg ${
+                currentPage === 1
+                  ? "bg-gray-300"
+                  : "bg-gray-200 hover:bg-gray-400"
+              }`}
             >
               <BsChevronLeft size={15} />
             </button>
@@ -268,10 +277,11 @@ export default function Annoucements() {
               <button
                 key={index + 1}
                 onClick={() => handlePageChange(index + 1)}
-                className={`px-4 py-2 rounded-lg ${currentPage === index + 1
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-200 hover:bg-gray-400"
-                  }`}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === index + 1
+                    ? "bg-blue-700 text-white"
+                    : "bg-gray-200 hover:bg-gray-400"
+                }`}
               >
                 {index + 1}
               </button>
@@ -279,10 +289,11 @@ export default function Annoucements() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-                }`}
+              className={`px-[10px] py-2 rounded-lg ${
+                currentPage === totalPages
+                  ? "bg-gray-300"
+                  : "bg-gray-200 hover:bg-gray-400"
+              }`}
             >
               <BsChevronRight size={15} />
             </button>

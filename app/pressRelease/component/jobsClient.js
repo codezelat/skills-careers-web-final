@@ -7,7 +7,7 @@ import NavBar from "@/components/navBar";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
-import DropdownButton from "../../../components/dropDownButton";
+import DropdownButton from "@/components/dropDownButton";
 import JobLoading from "../../jobLoading";
 import Footer from "@/components/Footer";
 import JobApplicationForm from "../[jobid]/apply/JobApplicationForm";
@@ -49,8 +49,12 @@ function JobsClient({ initialJobs }) {
   }, [searchQuery, selectedLocation, selectedIndustry, jobs]);
 
   // Get unique industries and locations
-  const industries = [...new Set(jobs.map((job) => job.industry))].filter(Boolean);
-  const locations = [...new Set(jobs.map((job) => job.location))].filter(Boolean);
+  const industries = [...new Set(jobs.map((job) => job.industry))].filter(
+    Boolean
+  );
+  const locations = [...new Set(jobs.map((job) => job.location))].filter(
+    Boolean
+  );
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -104,7 +108,9 @@ function JobsClient({ initialJobs }) {
               selected={selectedLocation || "Location"}
               dropdownItems={["All Locations", ...locations]}
               onSelect={(location) =>
-                setSelectedLocation(location === "All Locations" ? null : location)
+                setSelectedLocation(
+                  location === "All Locations" ? null : location
+                )
               }
             />
             <DropdownButton
@@ -112,7 +118,9 @@ function JobsClient({ initialJobs }) {
               selected={selectedIndustry || "Industry"}
               dropdownItems={["All Industries", ...industries]}
               onSelect={(industry) =>
-                setSelectedIndustry(industry === "All Industries" ? null : industry)
+                setSelectedIndustry(
+                  industry === "All Industries" ? null : industry
+                )
               }
             />
           </div>

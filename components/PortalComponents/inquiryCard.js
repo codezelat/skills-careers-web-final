@@ -23,21 +23,22 @@ export default function InquiryCard({ inquiry }) {
     if (session?.user?.email) {
       const fetchData = async () => {
         try {
-
-          const userResponse = await fetch(`/api/users/get?id=${inquiry.userId}`);
+          const userResponse = await fetch(
+            `/api/users/get?id=${inquiry.userId}`
+          );
           // if (!userResponse.ok) throw new Error("Failed to fetch user data");
           const userData = await userResponse.json();
 
           setUserDetails(userData.user);
-
         } catch (err) {
           setError(err.message);
           console.error("Fetch error:", err);
         } finally {
         }
-      }; fetchData();
+      };
+      fetchData();
     }
-  }, [session]);
+  }, [session, inquiry.userId]);
 
   const handleViewInquiry = () => {
     setShowInquiry(true);
@@ -94,12 +95,13 @@ export default function InquiryCard({ inquiry }) {
         </div>
         <div className="py-1 font-semibold w-[15%] flex items-center">
           <span
-            className={`px-3 py-1 rounded-full text-xs ${status === "Solved"
-              ? "bg-green-100 text-green-700"
-              : status === "Declined"
+            className={`px-3 py-1 rounded-full text-xs ${
+              status === "Solved"
+                ? "bg-green-100 text-green-700"
+                : status === "Declined"
                 ? "bg-red-100 text-red-700"
                 : "bg-yellow-100 text-yellow-700"
-              }`}
+            }`}
           >
             {status}
           </span>

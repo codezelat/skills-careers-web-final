@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import Button from "../../../components/Button";
-import PhoneNumberInput from "../../../components/PhoneInput";
+import Button from "@/components/Button";
+import PhoneNumberInput from "@/components/PhoneInput";
 import Swal from "sweetalert2";
 
 async function createJobSeeker(

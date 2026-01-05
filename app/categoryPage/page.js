@@ -1,6 +1,6 @@
 "use client";
 import NavBar from "@/components/navBar";
-import { categories } from "../../lib/categories";
+import { categories } from "@/lib/categories";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
@@ -40,8 +40,8 @@ export default function CategoryPage() {
                 <span className="font-bold text-[#001571]">Categories</span>
               </h1>
               <p className="text-[#8A93BE] mt-3 font-semibold text-base">
-                Explore the diverse range of job categories to find the perfect fit
-                for your skills and interests.
+                Explore the diverse range of job categories to find the perfect
+                fit for your skills and interests.
               </p>
             </div>
             <div className="bg-[#E6E8F1] rounded-md h-auto">
