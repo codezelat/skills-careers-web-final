@@ -11,8 +11,8 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
-// Position set to Parkland Building in Colombo
-const position = [6.9271, 79.8612];
+// Position set to SEGA Center, Moratuwa
+const position = [6.7729, 79.8816];
 
 export default function LeafletMap() {
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function LeafletMap() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <Marker position={position}>
-        <Popup>Level 12, Parkland Building, 33 Park St, Colombo 00200</Popup>
+        <Popup>Skills Careers, SEGA Center, Soysapura, Moratuwa</Popup>
       </Marker>
     </MapContainer>
   );

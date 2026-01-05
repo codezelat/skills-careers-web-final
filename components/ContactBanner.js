@@ -30,7 +30,7 @@ export default function ContactBanner() {
               <FaPhone size={28} className="cursor-pointer" />
               <div className="flex flex-col">
                 <div className="font-semibold">Phone</div>
-                <div className="text-sm">+94 0766375151 | +94 773022020</div>
+                <div className="text-sm">+94 77 178 7373</div>
               </div>
             </div>
 
