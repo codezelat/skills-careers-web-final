@@ -48,7 +48,6 @@ export default function Recruiters() {
         const response = await fetch("/api/recruiterdetails/all");
         const data = await response.json();
         setRecruiters(data.recruiters);
-
       } catch (error) {
         console.error("Error fetching recruiters:", error);
       } finally {
@@ -222,18 +221,20 @@ export default function Recruiters() {
       <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
         <button
           onClick={() => setActiveTab("all")}
-          className={`px-6 py-3 flex rounded-2xl ${activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
-            }`}
+          className={`px-6 py-3 flex rounded-2xl ${
+            activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+          }`}
         >
           All Recruiters
           <PiCheckCircle size={20} className="ml-2" />
         </button>
         <button
           onClick={() => setActiveTab("restricted")}
-          className={`px-6 py-3 flex rounded-2xl ${activeTab === "restricted"
+          className={`px-6 py-3 flex rounded-2xl ${
+            activeTab === "restricted"
               ? "bg-[#001571] text-white"
               : "text-[#B0B6D3]"
-            }`}
+          }`}
         >
           Restricted Recruiters
           <PiCheckCircle size={20} className="ml-2" />
@@ -287,10 +288,11 @@ export default function Recruiters() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === 1
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-              }`}
+            }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -302,10 +304,11 @@ export default function Recruiters() {
               <button
                 key={index + 1}
                 onClick={() => handlePageChange(index + 1)}
-                className={`px-4 py-2 rounded-lg ${currentPage === index + 1
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === index + 1
                     ? "bg-blue-700 text-white"
                     : "bg-gray-200 hover:bg-gray-400"
-                  }`}
+                }`}
               >
                 {index + 1}
               </button>
@@ -317,11 +320,12 @@ export default function Recruiters() {
               currentPage ===
               Math.ceil(filteredRecruiters.length / recruitersPerPage)
             }
-            className={`px-[10px] py-2 rounded-lg ${currentPage ===
-                Math.ceil(filteredRecruiters.length / recruitersPerPage)
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage ===
+              Math.ceil(filteredRecruiters.length / recruitersPerPage)
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-              }`}
+            }`}
           >
             <BsChevronRight size={15} />
           </button>
