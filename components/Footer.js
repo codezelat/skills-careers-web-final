@@ -122,7 +122,9 @@ export default function Footer() {
                 </p>
                 <div className="flex space-x-4 mb-4">
                   <a
-                    href="#"
+                    href="https://www.linkedin.com/company/skills-careers/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-300 hover:text-white transition-colors duration-200"
                   >
                     <FaLinkedin size={20} />

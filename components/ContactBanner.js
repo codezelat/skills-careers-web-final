@@ -48,7 +48,7 @@ export default function ContactBanner() {
 
           {/* Social Icons Section */}
           <div className="flex sm:justify-start sm:mt-6 lg:mt-0 lg:justify-start items-center space-x-5 px-4 lg:px-0 text-gray-50">
-            <a href="#" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/company/skills-careers/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <FaLinkedin
                 size={24}
                 className="cursor-pointer hover:text-gray-300 transition-colors duration-200"
