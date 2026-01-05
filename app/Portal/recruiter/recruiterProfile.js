@@ -472,12 +472,54 @@ export default function RecruiterProfile({ slug }) {
 
                 {/* Social Links */}
                 <div className="pr-8 sm:pr-6 flex justify-end mt-4 space-x-2 sm:space-x-4 text-blue-900 ">
-                  <FaLinkedin size={24} className="cursor-pointer" />
-                  <FaTwitter size={24} className="cursor-pointer" />
-                  <FaInstagram size={24} className="cursor-pointer" />
-                  <FaFacebook size={24} className="cursor-pointer" />
-                  <FaGithub size={24} className="cursor-pointer" />
-                  <FaDribbble size={24} className="cursor-pointer" />
+                  {recruiterDetails.linkedin && (
+                    <a
+                      href={recruiterDetails.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaLinkedin
+                        size={24}
+                        className="cursor-pointer hover:opacity-80"
+                      />
+                    </a>
+                  )}
+                  {recruiterDetails.x && (
+                    <a
+                      href={recruiterDetails.x}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaTwitter
+                        size={24}
+                        className="cursor-pointer hover:opacity-80"
+                      />
+                    </a>
+                  )}
+                  {recruiterDetails.instagram && (
+                    <a
+                      href={recruiterDetails.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaInstagram
+                        size={24}
+                        className="cursor-pointer hover:opacity-80"
+                      />
+                    </a>
+                  )}
+                  {recruiterDetails.facebook && (
+                    <a
+                      href={recruiterDetails.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaFacebook
+                        size={24}
+                        className="cursor-pointer hover:opacity-80"
+                      />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
