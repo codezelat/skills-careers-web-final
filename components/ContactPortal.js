@@ -66,7 +66,7 @@ export default function ContactSection() {
               <Image
                 src="/images/ppl4.png"
                 alt="Person 1"
-                layout="fill"
+                fill
                 className="object-cover"
                 priority
               />
@@ -75,7 +75,7 @@ export default function ContactSection() {
               <Image
                 src="/images/pp3.png"
                 alt="Person 2"
-                layout="fill"
+                fill
                 className="object-cover"
                 priority
               />
@@ -84,7 +84,7 @@ export default function ContactSection() {
               <Image
                 src="/images/pp2.png"
                 alt="Person 3"
-                layout="fill"
+                fill
                 className="object-cover"
                 priority
               />
@@ -93,15 +93,13 @@ export default function ContactSection() {
               <Image
                 src="/images/ppl1.png"
                 alt="Person 4"
-                layout="fill"
+                fill
                 className="object-cover"
                 priority
               />
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   );

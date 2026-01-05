@@ -1003,18 +1003,18 @@ export default function CandidateProfile() {
               <Image
                 src={jobSeekerDetails.coverImage}
                 alt="Background"
-                layout="fill"
+                fill
                 priority
-                objectFit="cover"
+                style={{ objectFit: "cover" }}
                 quality={100}
               />
             ) : (
               <Image
                 src="/recruiterbg.png"
                 alt="Background"
-                layout="fill"
+                fill
                 priority
-                objectFit="cover"
+                style={{ objectFit: "cover" }}
                 quality={100}
               />
             )}
@@ -1031,8 +1031,8 @@ export default function CandidateProfile() {
                 id="cover-image-input"
                 src="/editiconwhite.png"
                 alt="Edit Icon"
-                layout="fill"
-                objectFit="contain"
+                fill
+                style={{ objectFit: "contain" }}
                 quality={100}
                 className="cursor-pointer"
               />
@@ -1056,9 +1056,9 @@ export default function CandidateProfile() {
                   <Image
                     src={jobSeekerDetails.profileImage}
                     alt="Profile"
-                    layout="fill"
+                    fill
                     priority
-                    objectFit="cover"
+                    style={{ objectFit: "cover" }}
                     quality={100}
                     className="fill"
                   />
@@ -1066,9 +1066,9 @@ export default function CandidateProfile() {
                   <Image
                     src="/default-avatar.jpg"
                     alt="Profile"
-                    layout="fill"
+                    fill
                     priority
-                    objectFit="cover"
+                    style={{ objectFit: "cover" }}
                     quality={100}
                     className="fill"
                   />
@@ -1090,7 +1090,6 @@ export default function CandidateProfile() {
                   alt="Edit Icon"
                   width={40}
                   height={40}
-                  objectFit="contain"
                   quality={100}
                 />
               </div>
@@ -1144,8 +1143,8 @@ export default function CandidateProfile() {
                     <Image
                       src="/editiconwhite.png"
                       alt="Edit Icon"
-                      layout="fill"
-                      objectFit="contain"
+                      fill
+                      style={{ objectFit: "contain" }}
                       quality={100}
                     />
                   </div>
@@ -1153,8 +1152,8 @@ export default function CandidateProfile() {
                 <Image
                   src="/editiconwhite.png"
                   alt="Edit Icon"
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  style={{ objectFit: "contain" }}
                   quality={100}
                   className="z-0"
                 />
@@ -1189,8 +1188,8 @@ export default function CandidateProfile() {
                   <Image
                     src="/editiconwhite.png"
                     alt="Edit Icon"
-                    layout="fill"
-                    objectFit="contain"
+                    fill
+                    style={{ objectFit: "contain" }}
                     quality={100}
                   />
                 </div>
@@ -1198,8 +1197,8 @@ export default function CandidateProfile() {
               <Image
                 src="/editiconwhite.png"
                 alt="Edit Icon"
-                layout="fill"
-                objectFit="contain"
+                fill
+                style={{ objectFit: "contain" }}
                 quality={100}
                 className="z-0"
               />

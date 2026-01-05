@@ -218,9 +218,8 @@ function JobsClient() {
           <Image
             src="/images/bg.jpg"
             alt="Background Image"
-            layout="fill"
-            objectFit="contain"
-            objectPosition="right top"
+            fill
+            style={{ objectFit: "contain", objectPosition: "right top" }}
             quality={100}
             priority
             className="w-full h-full opacity-5 "

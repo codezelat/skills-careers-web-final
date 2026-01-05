@@ -82,9 +82,8 @@ export default function RecruitersContent() {
         <Image
           src="/images/bg.jpg"
           alt="Background Image"
-          layout="fill"
-          objectFit="contain"
-          objectPosition="right top"
+          fill
+          style={{ objectFit: "contain", objectPosition: "right top" }}
           quality={100}
           priority
           className="w-full h-full opacity-5"
@@ -93,8 +92,7 @@ export default function RecruitersContent() {
       <div className="z-[2] min-h-screen w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-16">
         <div className="mb-8 sm:justify-center">
           <h1 className="text-4xl font-bold text-[#8A93BE] mt-28">
-            Find Your{" "}
-            <span className="font-bold text-[#001571]">Perfect </span>
+            Find Your <span className="font-bold text-[#001571]">Perfect </span>
             Recruiter.
           </h1>
         </div>

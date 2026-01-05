@@ -123,7 +123,7 @@ export default function Footer() {
             <FaInstagram size={35} />
           </div>
           <p className="text-base text-center md:text-left text-white font-semibold">
-            © 2025 Skills Careers. All rights reserved.
+            © 2026 Skills Careers. All rights reserved.
           </p>
           <div className="flex justify-center md:justify-end space-x-4 mt-4 md:mt-0">
             <img src="/visa.png" alt="Visa" className="w-auto" />

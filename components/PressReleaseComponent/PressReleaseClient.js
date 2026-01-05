@@ -10,14 +10,15 @@ function PressReleaseClient({ initialPressreleases = [] }) {
   const [pressreleases, setPressreleases] = useState(initialPressreleases);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filteredPressreleases, setFilteredPressreleases] = useState(initialPressreleases);
+  const [filteredPressreleases, setFilteredPressreleases] =
+    useState(initialPressreleases);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pressPerPage = 16;
 
   useEffect(() => {
     setFilteredPressreleases(
-      pressreleases.filter(pressrelease =>
+      pressreleases.filter((pressrelease) =>
         pressrelease.title.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
@@ -43,11 +44,15 @@ function PressReleaseClient({ initialPressreleases = [] }) {
     setSearchQuery(event.target.value);
   };
 
-
-  const totalPages = Math.ceil((filteredPressreleases?.length || 0) / pressPerPage);
+  const totalPages = Math.ceil(
+    (filteredPressreleases?.length || 0) / pressPerPage
+  );
   const indexOfLastpress = currentPage * pressPerPage;
   const indexOfFirstpress = indexOfLastpress - pressPerPage;
-  const currentpress = filteredPressreleases.slice(indexOfFirstpress, indexOfLastpress);
+  const currentpress = filteredPressreleases.slice(
+    indexOfFirstpress,
+    indexOfLastpress
+  );
 
   return (
     <>
@@ -56,9 +61,8 @@ function PressReleaseClient({ initialPressreleases = [] }) {
           <Image
             src="/images/bg.jpg"
             alt="Background Image"
-            layout="fill"
-            objectFit="contain"
-            objectPosition="right top"
+            fill
+            style={{ objectFit: "contain", objectPosition: "right top" }}
             quality={100}
             priority
             className="w-full h-full opacity-5"
@@ -67,26 +71,27 @@ function PressReleaseClient({ initialPressreleases = [] }) {
         <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 pb-8 pt-16 z-[2]">
           <div className="mb-8 sm:justify-center">
             <h1 className="text-4xl font-bold text-[#27282d] mt-28">
-              Latest <span className="font-bold text-[#001571]">Press Releases</span>
+              Latest{" "}
+              <span className="font-bold text-[#001571]">Press Releases</span>
             </h1>
           </div>
           <div className="flex-grow mt-16">
-          <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
-            <IoSearchSharp size={25} className="text-[#001571]" />
-            <input
-              type="text"
-              placeholder="Search Press Releases..."
-              className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
+            <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
+              <IoSearchSharp size={25} className="text-[#001571]" />
+              <input
+                type="text"
+                placeholder="Search Press Releases..."
+                className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+            </div>
           </div>
         </div>
-        </div>
-  
+
         <div className="grid w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[1]">
           {isLoading ? (
-            <JobLoading/>
+            <JobLoading />
           ) : error ? (
             <p className="text-lg font-bold text-red-500">{error}</p>
           ) : pressReleases.length > 0 ? (

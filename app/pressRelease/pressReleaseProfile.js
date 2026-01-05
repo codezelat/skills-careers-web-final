@@ -63,16 +63,16 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
             <Image
               src={pressreleaseDetails.image}
               alt="img"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="rounded-lg"
             />
           ) : (
             <Image
               src="/images/pressrelease-default.jpg"
               alt="img"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="rounded-lg"
             />
           )}

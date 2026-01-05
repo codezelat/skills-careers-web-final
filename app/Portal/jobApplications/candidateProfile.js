@@ -91,11 +91,13 @@ export default function CandidateProfile({ slug }) {
           const newExperienceData = await experienceResponse.json();
 
           // Sort experiences: Current (no endDate) first, then by startDate descending
-          const sortedExperiences = newExperienceData.experiences.sort((a, b) => {
-            if (!a.endDate && b.endDate) return -1; // a is current, b is not
-            if (a.endDate && !b.endDate) return 1;  // b is current, a is not
-            return new Date(b.startDate) - new Date(a.startDate); // both current or both past
-          });
+          const sortedExperiences = newExperienceData.experiences.sort(
+            (a, b) => {
+              if (!a.endDate && b.endDate) return -1; // a is current, b is not
+              if (a.endDate && !b.endDate) return 1; // b is current, a is not
+              return new Date(b.startDate) - new Date(a.startDate); // both current or both past
+            }
+          );
           setExperienceDetails(sortedExperiences);
 
           const educationResponse = await fetch(
@@ -121,9 +123,10 @@ export default function CandidateProfile({ slug }) {
           const certificationData = await certificationResponse.json();
 
           // Sort certifications by receivedDate descending (latest first)
-          const sortedCertifications = certificationData.licensesandcertifications.sort((a, b) =>
-            new Date(b.receivedDate) - new Date(a.receivedDate)
-          );
+          const sortedCertifications =
+            certificationData.licensesandcertifications.sort(
+              (a, b) => new Date(b.receivedDate) - new Date(a.receivedDate)
+            );
           setCertificationDetails(sortedCertifications);
           console.log("test", sortedCertifications);
         } catch (err) {
@@ -143,15 +146,18 @@ export default function CandidateProfile({ slug }) {
     try {
       const newFavouriteStatus = !isFavourited;
 
-      const response = await fetch(`/api/jobapplication/favourite?id=${applications._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          isFavourited: newFavouriteStatus,
-        }),
-      });
+      const response = await fetch(
+        `/api/jobapplication/favourite?id=${applications._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            isFavourited: newFavouriteStatus,
+          }),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to update favorite status");
 
@@ -168,7 +174,7 @@ export default function CandidateProfile({ slug }) {
   const handleApprove = async () => {
     try {
       setIsProcessing(true);
-      setPendingAction('approve');
+      setPendingAction("approve");
 
       const response = await fetch("/api/jobapplication/update", {
         method: "PUT",
@@ -200,7 +206,7 @@ export default function CandidateProfile({ slug }) {
   const handleDecline = async () => {
     try {
       setIsProcessing(true);
-      setPendingAction('decline');
+      setPendingAction("decline");
 
       const response = await fetch("/api/jobapplication/update", {
         method: "PUT",
@@ -272,8 +278,9 @@ export default function CandidateProfile({ slug }) {
               {/* favorite button */}
               <button
                 onClick={handleToggleFavorite}
-                className={`flex items-center w-[42px] h-[42px] justify-center p-2 rounded-xl transition-colors ${isFavourited ? "bg-red-100" : "bg-gray-200"
-                  }`}
+                className={`flex items-center w-[42px] h-[42px] justify-center p-2 rounded-xl transition-colors ${
+                  isFavourited ? "bg-red-100" : "bg-gray-200"
+                }`}
               >
                 {isFavourited ? (
                   <FaHeart color="#EC221F" size={20} />
@@ -286,28 +293,38 @@ export default function CandidateProfile({ slug }) {
               <button
                 onClick={handleApprove}
                 disabled={isProcessing || applicationStatus === "Approved"}
-                className={`flex flex-row items-center h-[42px] gap-2 py-2 px-6 border-0 rounded-xl text-base font-medium transition-colors ${applicationStatus === "Approved"
-                  ? "bg-[#001571] hover:bg-[#243584] text-white cursor-default"
-                  : applicationStatus === "Declined"
+                className={`flex flex-row items-center h-[42px] gap-2 py-2 px-6 border-0 rounded-xl text-base font-medium transition-colors ${
+                  applicationStatus === "Approved"
+                    ? "bg-[#001571] hover:bg-[#243584] text-white cursor-default"
+                    : applicationStatus === "Declined"
                     ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#001571]"
                     : "bg-[#001571] hover:bg-[#243584] text-white"
-                  } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
+                } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
               >
                 <IoIosCheckmarkCircleOutline size={20} />
-                {pendingAction === "approve" ? "Processing..." : (applicationStatus === "Approved" ? "Approved" : "Approve")}
+                {pendingAction === "approve"
+                  ? "Processing..."
+                  : applicationStatus === "Approved"
+                  ? "Approved"
+                  : "Approve"}
               </button>
               <button
                 onClick={handleDecline}
                 disabled={isProcessing || applicationStatus === "Declined"}
-                className={`flex flex-row items-center h-[42px] gap-2 py-2 px-6 border-0 rounded-xl text-base font-normal transition-colors ${applicationStatus === "Declined"
-                  ? "bg-[#EC221F] hover:bg-[#c63431] text-white cursor-default"
-                  : applicationStatus === "Approved"
+                className={`flex flex-row items-center h-[42px] gap-2 py-2 px-6 border-0 rounded-xl text-base font-normal transition-colors ${
+                  applicationStatus === "Declined"
+                    ? "bg-[#EC221F] hover:bg-[#c63431] text-white cursor-default"
+                    : applicationStatus === "Approved"
                     ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#EC221F]"
                     : "bg-[#EC221F] hover:bg-[#c63431] text-white"
-                  } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
+                } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
               >
                 <IoMdClose size={20} />
-                {pendingAction === "decline" ? "Processing..." : (applicationStatus === "Declined" ? "Declined" : "Decline")}
+                {pendingAction === "decline"
+                  ? "Processing..."
+                  : applicationStatus === "Declined"
+                  ? "Declined"
+                  : "Decline"}
               </button>
             </>
           </div>
@@ -319,18 +336,18 @@ export default function CandidateProfile({ slug }) {
               <Image
                 src={jobSeekerDetails.coverImage}
                 alt="Background"
-                layout="fill"
+                fill
                 priority
-                objectFit="cover"
+                style={{ objectFit: "cover" }}
                 quality={100}
               />
             ) : (
               <Image
                 src="/recruiterbg.png"
                 alt="Background"
-                layout="fill"
+                fill
                 priority
-                objectFit="cover"
+                style={{ objectFit: "cover" }}
                 quality={100}
               />
             )}
@@ -345,9 +362,9 @@ export default function CandidateProfile({ slug }) {
                   <Image
                     src={userDetails.profileImage}
                     alt="Profile"
-                    layout="fill"
+                    fill
                     priority
-                    objectFit="cover"
+                    style={{ objectFit: "cover" }}
                     quality={100}
                     className="fill"
                   />
@@ -355,9 +372,9 @@ export default function CandidateProfile({ slug }) {
                   <Image
                     src="/default-avatar.jpg"
                     alt="Profile"
-                    layout="fill"
+                    fill
                     priority
-                    objectFit="cover"
+                    style={{ objectFit: "cover" }}
                     quality={100}
                     className="fill"
                   />
@@ -543,10 +560,10 @@ export default function CandidateProfile({ slug }) {
                 {skills}
               </div>
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No soft skills data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No soft skills data available.
+              </p>
+            )}
           </div>
         </div>
 
@@ -567,10 +584,10 @@ export default function CandidateProfile({ slug }) {
                 {expertise}
               </div>
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No professional expertise data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No professional expertise data available.
+              </p>
+            )}
           </div>
         </div>
       </div>

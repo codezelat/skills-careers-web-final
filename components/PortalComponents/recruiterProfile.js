@@ -258,26 +258,26 @@ export default function RecruiterProfile({ slug }) {
       });
       if (response.ok) {
         Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Details updated successfully!',
+          icon: "success",
+          title: "Success",
+          text: "Details updated successfully!",
           timer: 2000,
           showConfirmButton: false,
         });
         setShowApplicationForm(false);
       } else {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to update details.',
+          icon: "error",
+          title: "Error",
+          text: "Failed to update details.",
         });
       }
     } catch (error) {
       console.error("Error updating recruiter details:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while updating details.',
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating details.",
       });
     } finally {
       setIsSubmitting(false);
@@ -299,18 +299,18 @@ export default function RecruiterProfile({ slug }) {
                 <Image
                   src={recruiterDetails.coverImage}
                   alt="Background"
-                  layout="fill"
+                  fill
                   priority
-                  objectFit="cover"
+                  style={{ objectFit: "cover" }}
                   quality={100}
                 />
               ) : (
                 <Image
                   src="/recruiterbg.png"
                   alt="Background"
-                  layout="fill"
+                  fill
                   priority
-                  objectFit="cover"
+                  style={{ objectFit: "cover" }}
                   quality={100}
                 />
               )}
@@ -327,8 +327,8 @@ export default function RecruiterProfile({ slug }) {
                   id="cover-image-input"
                   src="/editiconwhite.png"
                   alt="Edit Icon"
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  style={{ objectFit: "contain" }}
                   quality={100}
                   className="cursor-pointer"
                 />
@@ -344,9 +344,9 @@ export default function RecruiterProfile({ slug }) {
                     <Image
                       src={recruiterDetails.logo}
                       alt="Profile"
-                      layout="fill"
+                      fill
                       priority
-                      objectFit="cover"
+                      style={{ objectFit: "cover" }}
                       quality={100}
                       className="fill"
                     />
@@ -354,9 +354,9 @@ export default function RecruiterProfile({ slug }) {
                     <Image
                       src="/default-avatar.jpg"
                       alt="Profile"
-                      layout="fill"
+                      fill
                       priority
-                      objectFit="cover"
+                      style={{ objectFit: "cover" }}
                       quality={100}
                       className="fill"
                     />
@@ -378,7 +378,6 @@ export default function RecruiterProfile({ slug }) {
                     alt="Edit Icon"
                     width={40}
                     height={40}
-                    objectFit="contain"
                     quality={100}
                   />
                 </div>
@@ -462,8 +461,8 @@ export default function RecruiterProfile({ slug }) {
                       <Image
                         src="/editiconwhite.png"
                         alt="Edit Icon"
-                        layout="fill"
-                        objectFit="contain"
+                        fill
+                        style={{ objectFit: "contain" }}
                         quality={100}
                       />
                     </div>
@@ -471,8 +470,8 @@ export default function RecruiterProfile({ slug }) {
                   <Image
                     src="/editiconwhite.png"
                     alt="Edit Icon"
-                    layout="fill"
-                    objectFit="contain"
+                    fill
+                    style={{ objectFit: "contain" }}
                     quality={100}
                     className="z-0"
                   />

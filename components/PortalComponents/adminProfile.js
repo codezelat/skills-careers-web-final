@@ -73,17 +73,17 @@ export default function AdminProfile() {
 
       setShowCredentialsForm(false);
       Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'Profile updated successfully!',
+        icon: "success",
+        title: "Success",
+        text: "Profile updated successfully!",
         timer: 2000,
         showConfirmButton: false,
       });
     } catch (error) {
       console.error("Update failed:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
+        icon: "error",
+        title: "Error",
         text: error.message || "Update failed",
       });
     } finally {
@@ -211,8 +211,8 @@ export default function AdminProfile() {
                 <Image
                   src="/editiconwhite.png"
                   alt="Edit Icon"
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  style={{ objectFit: "contain" }}
                   quality={100}
                 />
               </div>
@@ -230,9 +230,9 @@ export default function AdminProfile() {
                 <Image
                   src={userDetails.profileImage}
                   alt="Profile"
-                  layout="fill"
+                  fill
                   priority
-                  objectFit="cover"
+                  style={{ objectFit: "cover" }}
                   quality={100}
                   className="fill"
                 />
@@ -240,9 +240,9 @@ export default function AdminProfile() {
                 <Image
                   src="/default-avatar.jpg"
                   alt="Profile"
-                  layout="fill"
+                  fill
                   priority
-                  objectFit="cover"
+                  style={{ objectFit: "cover" }}
                   quality={100}
                   className="fill"
                 />
@@ -264,7 +264,6 @@ export default function AdminProfile() {
                 alt="Edit Icon"
                 width={40}
                 height={40}
-                objectFit="contain"
                 quality={100}
               />
             </div>

@@ -10,7 +10,6 @@ import Loading from "../loading";
 import JobApplicationForm from "../jobs/[jobid]/apply/JobApplicationForm";
 
 function RecruiterProfile({ slug }) {
-
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const router = useRouter();
@@ -26,10 +25,14 @@ function RecruiterProfile({ slug }) {
       try {
         setIsLoading(true);
         // Fetch recruiter details
-        const recruiterResponse = await fetch(`/api/recruiterdetails/get?id=${slug}`);
+        const recruiterResponse = await fetch(
+          `/api/recruiterdetails/get?id=${slug}`
+        );
         const recruiterData = await recruiterResponse.json();
         if (!recruiterResponse.ok) {
-          throw new Error(recruiterData.message || "Failed to fetch recruiter details");
+          throw new Error(
+            recruiterData.message || "Failed to fetch recruiter details"
+          );
         }
         setRecruiterDetails(recruiterData);
 
@@ -78,14 +81,13 @@ function RecruiterProfile({ slug }) {
   return (
     <>
       <div className="w-full space-y-5 pb-8 pt-16 flex flex-col items-center justify-center">
-
         <div className="w-[1280px] pb-3 bg-white shadow-lg rounded-lg">
           <div className="h-56 relative">
             <Image
               src="/cover1.png"
               alt="cover"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="w-full h-full"
             />
           </div>
@@ -172,7 +174,6 @@ function RecruiterProfile({ slug }) {
             </div>
           </div>
 
-
           <div className="text-left space-y-4 pl-10 pr-10 mt-10">
             <h5 className="lg:text-xl md:text-xl sm:text-2xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
               Company Description
@@ -195,14 +196,15 @@ function RecruiterProfile({ slug }) {
               </button>
             </div>
           </div>
-
         </div>
 
         <div className="w-[1280px] pt-32 pb-20">
           <h1 className="text-2xl font-bold mb-12">Open Jobs</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {jobs.length > 0 ? (
-              jobs.map((job, index) => <JobCard key={index} job={job} onApply={handleApply} />)
+              jobs.map((job, index) => (
+                <JobCard key={index} job={job} onApply={handleApply} />
+              ))
             ) : (
               <p className="col-span-full text-center text-gray-500">
                 No open jobs available at this time.

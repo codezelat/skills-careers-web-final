@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["res.cloudinary.com", "lh3.googleusercontent.com", "flagcdn.com", "media.licdn.com", "licdn.com"], // Add Google and LinkedIn domains
+    domains: [
+      "res.cloudinary.com",
+      "lh3.googleusercontent.com",
+      "flagcdn.com",
+      "media.licdn.com",
+      "licdn.com",
+    ], // Add Google and LinkedIn domains
     remotePatterns: [
       {
         protocol: "https",
@@ -29,6 +35,7 @@ const nextConfig = {
         pathname: "**",
       },
     ],
+    qualities: [75, 100], // Add quality configuration for Next.js 16
   },
   // Configure external packages for server components
   serverExternalPackages: ["mongodb"],
