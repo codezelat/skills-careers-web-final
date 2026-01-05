@@ -49,38 +49,45 @@ function JobsClient() {
         if (!jobsResponse.ok) throw new Error("Job search failed");
         const jobsData = await jobsResponse.json();
 
-        // Fetch recruiter details for each job
-        const jobsWithRecruiters = await Promise.all(
-          jobsData.jobs.map(async (job) => {
-            try {
-              const recruiterResponse = await fetch(
-                `/api/recruiterdetails/get?id=${job.recruiterId}`
-              );
-              if (!recruiterResponse.ok) {
-                return {
-                  ...job,
-                  industry: "Unknown",
-                  recruiterName: "Unknown",
-                  logo: "/images/default-image.jpg",
-                };
+        // Get unique recruiter IDs
+        const recruiterIds = [
+          ...new Set(
+            jobsData.jobs.map((job) => job.recruiterId).filter(Boolean)
+          ),
+        ];
+
+        // Batch fetch all recruiter details in one request
+        const recruiterMap = {};
+        if (recruiterIds.length > 0) {
+          try {
+            const recruiterResponse = await fetch(
+              "/api/recruiterdetails/batch",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: recruiterIds }),
               }
-              const recruiterData = await recruiterResponse.json();
-              return {
-                ...job,
-                industry: recruiterData.industry || "Unknown",
-                recruiterName: recruiterData.recruiterName || "Unknown",
-                logo: recruiterData.logo || "/images/default-image.jpg",
-              };
-            } catch (error) {
-              return {
-                ...job,
-                industry: "Unknown",
-                recruiterName: "Unknown",
-                logo: "/images/default-image.jpg",
-              };
+            );
+
+            if (recruiterResponse.ok) {
+              const { recruiters } = await recruiterResponse.json();
+              Object.assign(recruiterMap, recruiters);
             }
-          })
-        );
+          } catch (err) {
+            console.error("Error fetching recruiters:", err);
+          }
+        }
+
+        // Map jobs with recruiter details
+        const jobsWithRecruiters = jobsData.jobs.map((job) => {
+          const recruiterData = recruiterMap[job.recruiterId] || {};
+          return {
+            ...job,
+            industry: recruiterData.industry || "Unknown",
+            recruiterName: recruiterData.recruiterName || "Unknown",
+            logo: recruiterData.logo || "/images/default-image.jpg",
+          };
+        });
 
         setSearchResults(jobsWithRecruiters);
       } catch (error) {
@@ -102,37 +109,43 @@ function JobsClient() {
         const jobsData = await jobsResponse.json();
         const jobs = jobsData.jobs;
 
-        const jobsWithRecruiterDetails = await Promise.all(
-          jobs.map(async (job) => {
-            try {
-              const recruiterResponse = await fetch(
-                `/api/recruiterdetails/get?id=${job.recruiterId}`
-              );
-              if (!recruiterResponse.ok) {
-                return {
-                  ...job,
-                  industry: "Unknown",
-                  recruiterName: "Unknown",
-                  logo: "/images/default-image.jpg",
-                };
+        // Get unique recruiter IDs
+        const recruiterIds = [
+          ...new Set(jobs.map((job) => job.recruiterId).filter(Boolean)),
+        ];
+
+        // Batch fetch all recruiter details in one request
+        const recruiterMap = {};
+        if (recruiterIds.length > 0) {
+          try {
+            const recruiterResponse = await fetch(
+              "/api/recruiterdetails/batch",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: recruiterIds }),
               }
-              const recruiterData = await recruiterResponse.json();
-              return {
-                ...job,
-                industry: recruiterData.industry || "Unknown",
-                recruiterName: recruiterData.recruiterName || "Unknown",
-                logo: recruiterData.logo || "/images/default-image.jpg",
-              };
-            } catch (error) {
-              return {
-                ...job,
-                industry: "Unknown",
-                recruiterName: "Unknown",
-                logo: "/images/default-image.jpg",
-              };
+            );
+
+            if (recruiterResponse.ok) {
+              const { recruiters } = await recruiterResponse.json();
+              Object.assign(recruiterMap, recruiters);
             }
-          })
-        );
+          } catch (err) {
+            console.error("Error fetching recruiters:", err);
+          }
+        }
+
+        // Map jobs with recruiter details
+        const jobsWithRecruiterDetails = jobs.map((job) => {
+          const recruiterData = recruiterMap[job.recruiterId] || {};
+          return {
+            ...job,
+            industry: recruiterData.industry || "Unknown",
+            recruiterName: recruiterData.recruiterName || "Unknown",
+            logo: recruiterData.logo || "/images/default-image.jpg",
+          };
+        });
 
         setJobs(jobsWithRecruiterDetails);
         setFilteredJobs(jobsWithRecruiterDetails);
