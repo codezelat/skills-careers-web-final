@@ -1,14 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import JobCard from "@/components/jobCard";
+import { useSearchParams } from "next/navigation";
 
 export default function JobSearch({ onSearchResults }) {
+  const searchParams = useSearchParams();
+  const urlSearchQuery = searchParams.get("search");
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [jobResults, setJobResults] = useState([]);
   const [jobLoading, setJobLoading] = useState(false);
+
+  // Initialize search query from URL parameter
+  useEffect(() => {
+    if (urlSearchQuery) {
+      setSearchQuery(urlSearchQuery);
+    }
+  }, [urlSearchQuery]);
 
   const fetchJobsWithRecruiters = async (searchTerm) => {
     if (searchTerm.length >= 2) {

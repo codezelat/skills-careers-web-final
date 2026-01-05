@@ -22,12 +22,68 @@ function JobsClient() {
 
   const searchParams = useSearchParams();
   const industryQueryParam = searchParams.get("industry");
+  const searchQueryParam = searchParams.get("search");
 
   useEffect(() => {
     if (industryQueryParam) {
       setSelectedIndustry(industryQueryParam);
     }
   }, [industryQueryParam]);
+
+  // Handle search query from URL parameter
+  useEffect(() => {
+    const performSearch = async (searchTerm) => {
+      try {
+        const jobsResponse = await fetch(
+          `/api/job/search?query=${encodeURIComponent(searchTerm)}`
+        );
+        if (!jobsResponse.ok) throw new Error("Job search failed");
+        const jobsData = await jobsResponse.json();
+
+        // Fetch recruiter details for each job
+        const jobsWithRecruiters = await Promise.all(
+          jobsData.jobs.map(async (job) => {
+            try {
+              const recruiterResponse = await fetch(
+                `/api/recruiterdetails/get?id=${job.recruiterId}`
+              );
+              if (!recruiterResponse.ok) {
+                return {
+                  ...job,
+                  industry: "Unknown",
+                  recruiterName: "Unknown",
+                  logo: "/images/default-image.jpg",
+                };
+              }
+              const recruiterData = await recruiterResponse.json();
+              return {
+                ...job,
+                industry: recruiterData.industry || "Unknown",
+                recruiterName: recruiterData.recruiterName || "Unknown",
+                logo: recruiterData.logo || "/images/default-image.jpg",
+              };
+            } catch (error) {
+              return {
+                ...job,
+                industry: "Unknown",
+                recruiterName: "Unknown",
+                logo: "/images/default-image.jpg",
+              };
+            }
+          })
+        );
+
+        setSearchResults(jobsWithRecruiters);
+      } catch (error) {
+        console.error("Error performing search:", error);
+        setSearchResults([]);
+      }
+    };
+
+    if (searchQueryParam && searchQueryParam.length >= 2) {
+      performSearch(searchQueryParam);
+    }
+  }, [searchQueryParam]);
 
   useEffect(() => {
     async function fetchJobsAndRecruiters() {
