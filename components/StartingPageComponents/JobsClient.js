@@ -172,16 +172,22 @@ function JobsClient() {
 
     if (selectedLocation) {
       filtered = filtered.filter(
-        (job) => job.location?.toLowerCase().trim() === selectedLocation.toLowerCase().trim()
+        (job) =>
+          job.location?.toLowerCase().trim() ===
+          selectedLocation.toLowerCase().trim()
       );
     }
 
     if (selectedIndustry) {
       filtered = filtered.filter((job) => {
-        const jobIndustry = job.industry?.toLowerCase().trim() || '';
+        const jobIndustry = job.industry?.toLowerCase().trim() || "";
         const selected = selectedIndustry.toLowerCase().trim();
         // Exact match or partial match for better compatibility
-        return jobIndustry === selected || jobIndustry.includes(selected) || selected.includes(jobIndustry);
+        return (
+          jobIndustry === selected ||
+          jobIndustry.includes(selected) ||
+          selected.includes(jobIndustry)
+        );
       });
     }
 
@@ -189,10 +195,15 @@ function JobsClient() {
       filtered = filtered.filter((job) => {
         if (Array.isArray(job.jobTypes)) {
           return job.jobTypes.some(
-            (type) => type?.toLowerCase().trim() === selectedJobType.toLowerCase().trim()
+            (type) =>
+              type?.toLowerCase().trim() ===
+              selectedJobType.toLowerCase().trim()
           );
         }
-        return job.jobTypes?.toLowerCase().trim() === selectedJobType.toLowerCase().trim();
+        return (
+          job.jobTypes?.toLowerCase().trim() ===
+          selectedJobType.toLowerCase().trim()
+        );
       });
     }
 
@@ -297,7 +308,9 @@ function JobsClient() {
           {/* Active Filters Display */}
           {(selectedLocation || selectedIndustry || selectedJobType) && (
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="text-sm font-semibold text-[#001571]">Active Filters:</span>
+              <span className="text-sm font-semibold text-[#001571]">
+                Active Filters:
+              </span>
               {selectedLocation && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#001571] text-white">
                   {selectedLocation}
@@ -359,14 +372,15 @@ function JobsClient() {
           {!isLoading && (
             <div className="mb-4">
               <p className="text-[#001571] font-semibold">
-                {filteredJobs.length} {filteredJobs.length === 1 ? 'Job' : 'Jobs'} Found
+                {filteredJobs.length}{" "}
+                {filteredJobs.length === 1 ? "Job" : "Jobs"} Found
                 {(selectedLocation || selectedIndustry || selectedJobType) && (
                   <span className="text-gray-600 font-normal"> (filtered)</span>
                 )}
               </p>
             </div>
           )}
-          
+
           {isLoading ? (
             <JobLoading />
           ) : filteredJobs.length > 0 ? (

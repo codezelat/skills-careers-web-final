@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { IoSearchSharp } from "react-icons/io5";
 
-export default function DropdownButton({ 
-  buttonName, 
-  dropdownItems, 
+export default function DropdownButton({
+  buttonName,
+  dropdownItems,
   onSelect,
-  selected 
+  selected,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,7 +82,7 @@ export default function DropdownButton({
               </div>
             </div>
           )}
-          
+
           {/* Scrollable List */}
           <ul className="text-gray-800 max-h-64 overflow-y-auto">
             {filteredItems.length > 0 ? (
@@ -90,7 +90,9 @@ export default function DropdownButton({
                 <li
                   key={index}
                   className={`px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors ${
-                    selected === item ? "bg-blue-100 font-semibold text-[#001571]" : ""
+                    selected === item
+                      ? "bg-blue-100 font-semibold text-[#001571]"
+                      : ""
                   }`}
                   onClick={() => handleSelect(item)}
                 >
@@ -107,4 +109,4 @@ export default function DropdownButton({
       )}
     </div>
   );
-};
+}
