@@ -47,16 +47,16 @@ export default function JobProfile({ slug }) {
           const jobResponse = await fetch(`/api/job/get?id=${slug}`);
           if (!jobResponse.ok) throw new Error("Failed to fetch job");
           const jobData = await jobResponse.json();
-          
-          const validDistricts = sriLankaDistricts.map(d => d.value);
+
+          const validDistricts = sriLankaDistricts.map((d) => d.value);
           const isValidDistrict = validDistricts.includes(jobData.location);
-          
+
           setJobDetails(jobData);
           setEditedJobDetails({
             ...jobData,
             location: isValidDistrict ? jobData.location : "Other",
           });
-          
+
           if (!isValidDistrict) {
             setCustomLocation(jobData.location);
           }
@@ -118,8 +118,11 @@ export default function JobProfile({ slug }) {
     });
 
     try {
-      const finalLocation = editedJobDetails.location === "Other" ? customLocation : editedJobDetails.location;
-      
+      const finalLocation =
+        editedJobDetails.location === "Other"
+          ? customLocation
+          : editedJobDetails.location;
+
       const response = await fetch("/api/job/update", {
         method: "PUT",
         headers: {

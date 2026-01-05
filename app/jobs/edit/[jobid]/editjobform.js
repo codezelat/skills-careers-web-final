@@ -43,15 +43,15 @@ function EditJobForm({ jobId }) {
           if (response.ok) {
             const data = await response.json();
             // Ensure jobTypes is always an array
-            const validDistricts = sriLankaDistricts.map(d => d.value);
+            const validDistricts = sriLankaDistricts.map((d) => d.value);
             const isValidDistrict = validDistricts.includes(data.location);
-            
+
             setJobDetails({
               ...data,
               jobTypes: Array.isArray(data.jobTypes) ? data.jobTypes : [],
               location: isValidDistrict ? data.location : "Other",
             });
-            
+
             if (!isValidDistrict) {
               setCustomLocation(data.location);
             }
@@ -112,8 +112,9 @@ function EditJobForm({ jobId }) {
     try {
       // Create a copy of jobDetails without modifying the recruiterId
       const { recruiterId, ...updateData } = jobDetails;
-      
-      const finalLocation = jobDetails.location === "Other" ? customLocation : jobDetails.location;
+
+      const finalLocation =
+        jobDetails.location === "Other" ? customLocation : jobDetails.location;
 
       const response = await fetch(`/api/job/update`, {
         method: "PUT",
@@ -154,8 +155,7 @@ function EditJobForm({ jobId }) {
 
   return (
     <div className="p-4">
-      <div className="grid justify-center">
-      </div>
+      <div className="grid justify-center"></div>
 
       <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">
         <button
@@ -164,7 +164,9 @@ function EditJobForm({ jobId }) {
         >
           close
         </button>
-        <h1 className="text-2xl font-bold mb-8">Edit Job Details of {jobDetails.jobTitle}</h1>
+        <h1 className="text-2xl font-bold mb-8">
+          Edit Job Details of {jobDetails.jobTitle}
+        </h1>
         {session ? (
           <p className="text-sm font-bold text-gray-400 mb-1">
             Edit your details now

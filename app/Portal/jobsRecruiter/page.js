@@ -141,7 +141,9 @@ export default function RecruiterPostedJobs(props) {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === "location" && value !== "Other" ? { customLocation: "" } : {}),
+      ...(name === "location" && value !== "Other"
+        ? { customLocation: "" }
+        : {}),
     }));
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -209,8 +211,11 @@ export default function RecruiterPostedJobs(props) {
     });
 
     try {
-      const finalLocation = formData.location === "Other" ? formData.customLocation : formData.location;
-      
+      const finalLocation =
+        formData.location === "Other"
+          ? formData.customLocation
+          : formData.location;
+
       const response = await fetch("/api/job/add", {
         method: "POST",
         headers: {
