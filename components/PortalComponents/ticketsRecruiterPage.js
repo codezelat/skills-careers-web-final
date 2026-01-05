@@ -59,14 +59,8 @@ export default function RecruitersTicketsPage(props) {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchTickets();
-    }
-  }, [session, fetchTickets]);
-
   // Fetch tickets
-  const fetchTickets = async () => {
+  const fetchTickets = useCallback(async () => {
     try {
       const recruiterResponse = await fetch(
         `/api/recruiterdetails/get?userId=${session.user.id}`
@@ -93,7 +87,13 @@ export default function RecruitersTicketsPage(props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchTickets();
+    }
+  }, [session, fetchTickets]);
 
   // Convert time to 12-hour format
   const convertTo12HourFormat = (time) => {

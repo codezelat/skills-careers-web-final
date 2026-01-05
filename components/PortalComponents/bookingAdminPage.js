@@ -55,7 +55,7 @@ export default function BookingAdminPage(props) {
     } finally {
       setLoading(false);
     }
-  }, [session]);
+  }, []);
 
   useEffect(() => {
     if (session?.user?.id) {

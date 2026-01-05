@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { GoArrowUp } from "react-icons/go";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
@@ -50,7 +50,7 @@ export default function DashboardStats() {
     fetchData();
   }, []);
 
-  const fetchRecruiterDetails = async () => {
+  const fetchRecruiterDetails = useCallback(async () => {
     console.log("Recruiter stats started fetching.......");
     try {
       const recruiterResponse = await fetch(
@@ -86,9 +86,9 @@ export default function DashboardStats() {
     } catch (error) {
       console.error("Error fetching recruiter stats:", error);
     }
-  };
+  }, [session?.user?.id]);
 
-  const fetchJobseekerDetails = async () => {
+  const fetchJobseekerDetails = useCallback(async () => {
     console.log("Jobseeker stats started fetching.......");
 
     try {
@@ -118,7 +118,7 @@ export default function DashboardStats() {
     } catch (error) {
       console.error("Error fetching jobseeker stats:", error);
     }
-  };
+  }, [session?.user?.id]);
 
   useEffect(() => {
     // Fetch Recruiter Details
