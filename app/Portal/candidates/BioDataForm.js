@@ -245,15 +245,25 @@ export default function BioDataForm({
                   <FiInfo size={18} />
                 </button>
               </div>
-              
+
               {showAddressFormat && (
                 <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
                   <div className="flex items-start">
-                    <FiInfo className="text-blue-600 mt-0.5 mr-2 flex-shrink-0" size={16} />
+                    <FiInfo
+                      className="text-blue-600 mt-0.5 mr-2 flex-shrink-0"
+                      size={16}
+                    />
                     <div>
-                      <p className="text-xs font-semibold text-blue-900 mb-1">Address Format:</p>
-                      <p className="text-xs text-blue-800">Home No., Lane/Road, City, Province, Country.</p>
-                      <p className="text-xs text-blue-700 mt-1 italic">Example: No. 123, Galle Road, Colombo, Western Province, Sri Lanka</p>
+                      <p className="text-xs font-semibold text-blue-900 mb-1">
+                        Address Format:
+                      </p>
+                      <p className="text-xs text-blue-800">
+                        Home No., Lane/Road, City, Province, Country.
+                      </p>
+                      <p className="text-xs text-blue-700 mt-1 italic">
+                        Example: No. 123, Galle Road, Colombo, Western Province,
+                        Sri Lanka
+                      </p>
                     </div>
                     <button
                       type="button"
@@ -265,7 +275,7 @@ export default function BioDataForm({
                   </div>
                 </div>
               )}
-              
+
               <input
                 type="text"
                 name="address"

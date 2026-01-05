@@ -1933,7 +1933,9 @@ export default function CandidateProfile() {
                       </label>
                       <button
                         type="button"
-                        onClick={() => setShowExpertiseInfoCreate(!showExpertiseInfoCreate)}
+                        onClick={() =>
+                          setShowExpertiseInfoCreate(!showExpertiseInfoCreate)
+                        }
                         className="text-blue-500 hover:text-blue-700"
                       >
                         <FiInfo size={18} />
@@ -1948,8 +1950,12 @@ export default function CandidateProfile() {
                         >
                           <FaTimes size={14} />
                         </button>
-                        <p className="font-semibold mb-1">Your job/technical skills</p>
-                        <p className="text-xs">Example: Java, SQL, Accounting, Project Management</p>
+                        <p className="font-semibold mb-1">
+                          Your job/technical skills
+                        </p>
+                        <p className="text-xs">
+                          Example: Java, SQL, Accounting, Project Management
+                        </p>
                       </div>
                     )}
                     <input

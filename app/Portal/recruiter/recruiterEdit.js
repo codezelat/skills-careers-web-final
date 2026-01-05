@@ -120,7 +120,9 @@ export default function RecruiterEdit({
                     <FaTimes size={14} />
                   </button>
                   <p className="font-semibold mb-1">Address format:</p>
-                  <p className="text-xs">Home No., Lane/Road, City, Province, Country.</p>
+                  <p className="text-xs">
+                    Home No., Lane/Road, City, Province, Country.
+                  </p>
                 </div>
               )}
               <input
