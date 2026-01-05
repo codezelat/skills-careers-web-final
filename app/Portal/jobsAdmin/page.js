@@ -67,9 +67,7 @@ export default function Jobs() {
 
   const handleJobTypeToggle = (type) => {
     setSelectedJobTypes((prev) =>
-      prev.includes(type)
-        ? prev.filter((t) => t !== type)
-        : [...prev, type]
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
   };
 
@@ -85,9 +83,10 @@ export default function Jobs() {
           job.jobTitle.toLowerCase().includes(searchQuery) ||
           job.location.toLowerCase().includes(searchQuery);
         const matchesTab = activeTab === "all" ? true : !job.isPublished;
-        const matchesJobType = selectedJobTypes.length === 0
-          ? true
-          : selectedJobTypes.some((type) => job.jobTypes?.includes(type));
+        const matchesJobType =
+          selectedJobTypes.length === 0
+            ? true
+            : selectedJobTypes.some((type) => job.jobTypes?.includes(type));
         return matchesSearch && matchesTab && matchesJobType;
       });
       setFilteredJobs(filtered);

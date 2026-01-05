@@ -67,9 +67,7 @@ export default function RecruiterPostedJobs(props) {
 
   const handleJobTypeToggle = (type) => {
     setSelectedJobTypes((prev) =>
-      prev.includes(type)
-        ? prev.filter((t) => t !== type)
-        : [...prev, type]
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
   };
 
@@ -85,9 +83,10 @@ export default function RecruiterPostedJobs(props) {
         job.location?.toLowerCase().includes(searchQuery) ||
         job.jobCategory?.toLowerCase().includes(searchQuery)
       : true;
-    const matchesJobType = selectedJobTypes.length === 0
-      ? true
-      : selectedJobTypes.some((type) => job.jobTypes?.includes(type));
+    const matchesJobType =
+      selectedJobTypes.length === 0
+        ? true
+        : selectedJobTypes.some((type) => job.jobTypes?.includes(type));
     return matchesTab && matchesSearch && matchesJobType;
   });
 
