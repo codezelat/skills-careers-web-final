@@ -32,36 +32,45 @@ export default function JobSearch({ onSearchResults }) {
         if (!jobsResponse.ok) throw new Error("Job search failed");
         const jobsData = await jobsResponse.json();
 
-        // Then fetch recruiter details for each job
-        const jobsWithRecruiters = await Promise.all(
-          jobsData.jobs.map(async (job) => {
-            try {
-              const recruiterResponse = await fetch(
-                `/api/recruiterdetails/get?id=${job.recruiterId}`
-              );
-              if (!recruiterResponse.ok)
-                throw new Error("Recruiter fetch failed");
-              const recruiterData = await recruiterResponse.json();
-              return {
-                ...job,
-                industry: recruiterData.industry || "Unknown",
-                recruiterName: recruiterData.recruiterName || "Unknown",
-                logo: recruiterData.logo || "/images/default-image.jpg",
-              };
-            } catch (error) {
-              console.error(
-                `Error fetching recruiter for job ${job.jobId}:`,
-                error
-              );
-              return {
-                ...job,
-                industry: "Unknown",
-                recruiterName: "Unknown",
-                logo: "/images/default-image.jpg",
-              };
+        // Get unique recruiter IDs
+        const recruiterIds = [
+          ...new Set(
+            jobsData.jobs.map((job) => job.recruiterId).filter(Boolean)
+          ),
+        ];
+
+        // Batch fetch all recruiter details in one request
+        const recruiterMap = {};
+        if (recruiterIds.length > 0) {
+          try {
+            const recruiterResponse = await fetch(
+              "/api/recruiterdetails/batch",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: recruiterIds }),
+              }
+            );
+
+            if (recruiterResponse.ok) {
+              const { recruiters } = await recruiterResponse.json();
+              Object.assign(recruiterMap, recruiters);
             }
-          })
-        );
+          } catch (err) {
+            console.error("Error fetching recruiters:", err);
+          }
+        }
+
+        // Map jobs with recruiter details
+        const jobsWithRecruiters = jobsData.jobs.map((job) => {
+          const recruiterData = recruiterMap[job.recruiterId] || {};
+          return {
+            ...job,
+            industry: recruiterData.industry || "Unknown",
+            recruiterName: recruiterData.recruiterName || "Unknown",
+            logo: recruiterData.logo || "/images/default-image.jpg",
+          };
+        });
 
         setJobResults(jobsWithRecruiters);
         // Pass the results up to the parent component

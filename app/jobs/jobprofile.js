@@ -59,23 +59,42 @@ function JobProfile({ slug }) {
         }
         const data = await response.json();
 
-        // Fetch recruiter details for each job
-        const jobsWithRecruiterDetails = await Promise.all(
-          data.jobs.map(async (job) => {
+        // Get unique recruiter IDs
+        const recruiterIds = [
+          ...new Set(data.jobs.map((job) => job.recruiterId).filter(Boolean)),
+        ];
+
+        // Batch fetch all recruiter details in one request
+        const recruiterMap = {};
+        if (recruiterIds.length > 0) {
+          try {
             const recruiterResponse = await fetch(
-              `/api/recruiterdetails/get?id=${job.recruiterId}`
+              "/api/recruiterdetails/batch",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: recruiterIds }),
+              }
             );
-            if (!recruiterResponse.ok) {
-              throw new Error("Failed to fetch recruiter details");
+
+            if (recruiterResponse.ok) {
+              const { recruiters } = await recruiterResponse.json();
+              Object.assign(recruiterMap, recruiters);
             }
-            const recruiterData = await recruiterResponse.json();
-            return {
-              ...job,
-              recruiterName: recruiterData.recruiterName,
-              logo: recruiterData.logo,
-            };
-          })
-        );
+          } catch (err) {
+            console.error("Error fetching recruiters:", err);
+          }
+        }
+
+        // Map jobs with recruiter details
+        const jobsWithRecruiterDetails = data.jobs.map((job) => {
+          const recruiterData = recruiterMap[job.recruiterId] || {};
+          return {
+            ...job,
+            recruiterName: recruiterData.recruiterName || "Unknown",
+            logo: recruiterData.logo || "/images/default-image.jpg",
+          };
+        });
 
         setJobs(jobsWithRecruiterDetails);
         setFeaturedJobs(jobsWithRecruiterDetails);

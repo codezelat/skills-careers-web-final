@@ -68,16 +68,36 @@ export default function HeaderSection() {
         );
       }
 
-      // Fetch recruiter details for each job
-      const jobsWithDetails = await Promise.all(
-        jobs.slice(0, 5).map(async (job) => {
-          try {
-            const recruiterResponse = await fetch(
-              `/api/recruiterdetails/get?id=${job.recruiterId}`
-            );
-            const recruiterData = await recruiterResponse.json();
-            return {
-              ...job,
+      // Get top 5 jobs
+      const topJobs = jobs.slice(0, 5);
+
+      // Get unique recruiter IDs
+      const recruiterIds = [...new Set(topJobs.map(job => job.recruiterId).filter(Boolean))];
+
+      // Batch fetch all recruiter details in one request
+      const recruiterMap = {};
+      if (recruiterIds.length > 0) {
+        try {
+          const recruiterResponse = await fetch('/api/recruiterdetails/batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: recruiterIds }),
+          });
+          
+          if (recruiterResponse.ok) {
+            const { recruiters } = await recruiterResponse.json();
+            Object.assign(recruiterMap, recruiters);
+          }
+        } catch (err) {
+          console.error('Error fetching recruiters:', err);
+        }
+      }
+
+      // Map jobs with recruiter details
+      const jobsWithDetails = topJobs.map(job => {
+        const recruiterData = recruiterMap[job.recruiterId] || {};
+        return {
+          ...job,
               recruiterName: recruiterData.recruiterName || "Unknown Company",
               logo: recruiterData.logo || "/images/default-image.jpg",
             };

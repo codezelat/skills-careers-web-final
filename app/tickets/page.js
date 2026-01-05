@@ -19,21 +19,39 @@ export default function TicketsPage() {
 
       if (!ticketsResponse.ok) throw new Error("Failed to fetch tickets");
 
-      // Fetch recruiter details for each ticket
-      const ticketsWithRecruiters = await Promise.all(
-        ticketsData.tickets.map(async (ticket) => {
-          try {
-            const recruiterResponse = await fetch(
-              `/api/recruiterdetails/get?id=${ticket.recruiterId}`
-            );
-            const recruiterData = await recruiterResponse.json();
-            return { ...ticket, recruiter: recruiterData };
-          } catch (error) {
-            //   console.error(`Error fetching recruiter for ticket ${ticket._id}:`, error);
-            return { ...ticket, recruiter: null };
+      // Get unique recruiter IDs
+      const recruiterIds = [
+        ...new Set(
+          ticketsData.tickets
+            .map((ticket) => ticket.recruiterId)
+            .filter(Boolean)
+        ),
+      ];
+
+      // Batch fetch all recruiter details in one request
+      const recruiterMap = {};
+      if (recruiterIds.length > 0) {
+        try {
+          const recruiterResponse = await fetch("/api/recruiterdetails/batch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: recruiterIds }),
+          });
+
+          if (recruiterResponse.ok) {
+            const { recruiters } = await recruiterResponse.json();
+            Object.assign(recruiterMap, recruiters);
           }
-        })
-      );
+        } catch (err) {
+          console.error("Error fetching recruiters:", err);
+        }
+      }
+
+      // Map tickets with recruiter details
+      const ticketsWithRecruiters = ticketsData.tickets.map((ticket) => {
+        const recruiterData = recruiterMap[ticket.recruiterId];
+        return { ...ticket, recruiter: recruiterData || null };
+      });
 
       setTickets(ticketsWithRecruiters);
     } catch (error) {
