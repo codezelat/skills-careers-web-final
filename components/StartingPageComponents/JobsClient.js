@@ -180,7 +180,13 @@ function JobsClient() {
     }
 
     setFilteredJobs(filtered);
-  }, [selectedLocation, selectedIndustry, selectedJobType, jobs, searchResults]);
+  }, [
+    selectedLocation,
+    selectedIndustry,
+    selectedJobType,
+    jobs,
+    searchResults,
+  ]);
 
   const industries = [...new Set(jobs.map((job) => job.industry))].filter(
     Boolean
@@ -188,7 +194,7 @@ function JobsClient() {
   const locations = [...new Set(jobs.map((job) => job.location))].filter(
     Boolean
   );
-  
+
   // Extract unique job types from all jobs
   const jobTypes = [
     ...new Set(
