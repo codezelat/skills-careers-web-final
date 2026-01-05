@@ -5,6 +5,8 @@ import Image from "next/image";
 import PhoneNumberInput from "@/components/PhoneInput";
 import { PiCheckCircle } from "react-icons/pi";
 import { FiInfo } from "react-icons/fi";
+import { countries } from "@/lib/countries";
+import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 const RECRUITER_CATEGORIES = [
   "IT & Software",
@@ -52,17 +54,48 @@ export default function RecruiterEdit({
   );
   const [showAddressInfo, setShowAddressInfo] = useState(false);
 
+  // Get country, default to Sri Lanka
+  const selectedCountry = recruiterDetails.country || "Sri Lanka";
+  const isSriLanka = selectedCountry === "Sri Lanka";
+
   const handleCategoryChange = (e) => {
     const val = e.target.value;
     if (val === "Other") {
       setIsOther(true);
-      // Don't update the parent category yet, or clear it, dependent on UX.
-      // Better to clear it so input starts empty, or keep previous if switching back?
-      // Let's clear it so they can type fresh.
       onInputChange({ target: { name: "category", value: "" } });
     } else {
       setIsOther(false);
       onInputChange(e);
+    }
+  };
+
+  const handleLocationChange = (e) => {
+    const district = e.target.value;
+    const selectedDistrict = sriLankaDistricts.find(
+      (d) => d.value === district
+    );
+
+    if (selectedDistrict) {
+      // Update location fields with district, province format
+      onInputChange({
+        target: { name: "district", value: selectedDistrict.district },
+      });
+      onInputChange({
+        target: { name: "province", value: selectedDistrict.province },
+      });
+      onInputChange({ target: { name: "location", value: district } });
+    }
+  };
+
+  const handleCountryChange = (e) => {
+    const country = e.target.value;
+    onInputChange({ target: { name: "country", value: country } });
+
+    // Reset location fields when changing country
+    if (country !== "Sri Lanka") {
+      onInputChange({ target: { name: "district", value: "" } });
+      onInputChange({ target: { name: "province", value: "" } });
+      onInputChange({ target: { name: "location", value: "" } });
     }
   };
   return (
@@ -97,43 +130,81 @@ export default function RecruiterEdit({
                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
               />
             </div>
-            <div className="relative">
-              <div className="flex items-center gap-2">
-                <label className="block text-sm font-semibold text-[#001571]">
-                  Address
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setShowAddressInfo(!showAddressInfo)}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  <FiInfo size={18} />
-                </button>
-              </div>
-              {showAddressInfo && (
-                <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900 relative">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddressInfo(false)}
-                    className="absolute top-2 right-2 text-blue-500 hover:text-blue-700"
-                  >
-                    <FaTimes size={14} />
-                  </button>
-                  <p className="font-semibold mb-1">Address format:</p>
-                  <p className="text-xs">
-                    Home No., Lane/Road, City, Province, Country.
-                  </p>
-                </div>
-              )}
-              <input
-                type="text"
-                name="location"
-                value={recruiterDetails.location || ""}
-                onChange={onInputChange}
-                onFocus={() => setShowAddressInfo(true)}
+
+            {/* Country Selection */}
+            <div>
+              <label className="block text-sm font-semibold text-[#001571]">
+                Country
+              </label>
+              <select
+                name="country"
+                value={selectedCountry}
+                onChange={handleCountryChange}
                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-              />
+              >
+                {countries.map((country) => (
+                  <option key={country.value} value={country.label}>
+                    {country.label}
+                  </option>
+                ))}
+              </select>
             </div>
+
+            {/* Location Fields - Conditional based on Country */}
+            {isSriLanka ? (
+              <div className="space-y-4">
+                {/* Address Line */}
+                <div>
+                  <label className="block text-sm font-semibold text-[#001571]">
+                    Address Line
+                  </label>
+                  <input
+                    type="text"
+                    name="addressLine"
+                    value={recruiterDetails.addressLine || ""}
+                    onChange={onInputChange}
+                    placeholder="Street address, building name, etc."
+                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  />
+                </div>
+
+                {/* District/Province Selection */}
+                <div>
+                  <label className="block text-sm font-semibold text-[#001571]">
+                    District & Province
+                  </label>
+                  <select
+                    name="location"
+                    value={recruiterDetails.location || ""}
+                    onChange={handleLocationChange}
+                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  >
+                    <option value="">Select District & Province</option>
+                    {sriLankaDistricts.map((district) => (
+                      <option key={district.value} value={district.value}>
+                        {district.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            ) : (
+              /* Non-Sri Lanka Address */
+              <div>
+                <label className="block text-sm font-semibold text-[#001571]">
+                  Full Address
+                </label>
+                <textarea
+                  name="addressLine"
+                  value={recruiterDetails.addressLine || ""}
+                  onChange={onInputChange}
+                  placeholder="Enter full address"
+                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  rows={3}
+                />
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-[#001571]">

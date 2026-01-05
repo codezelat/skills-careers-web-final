@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
         </h1>
 
         <p className="text-base text-justify mb-4">
-          Welcome to Skills Careers (http://www.skillscareers.com). Your privacy
+          Welcome to Skills Careers (http://www.skillscareers.lk). Your privacy
           is important to us. This Privacy Policy explains how we collect, use,
           and protect your personal information when you use our website. By
           accessing our website, you agree to the terms of this Privacy Policy.
@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
             Name, email address, and contact details when creating an account.
             Subscription and billing information if you purchase a subscription
             plan. Any information provided when contacting us via email at
-            info@skillscareers.com.
+            info@skillscareers.lk.
           </p>
 
           <p className="font-semibold">1.2 User-Generated Content</p>
@@ -126,7 +126,7 @@ export default function PrivacyPolicy() {
             You can update, edit, or delete your personal information from your
             account settings.
             <br /> If you wish to delete your account permanently, please
-            contact us at info@skillscareers.com.
+            contact us at info@skillscareers.lk.
           </p>
           <ul>
             <li>
@@ -232,7 +232,7 @@ export default function PrivacyPolicy() {
           <p className="text-lg font-semibold">12. Contact Us</p>
           <p className="mb-2">
             If you have any questions or concerns about this Privacy Policy,
-            please contact us at: 📧 Email: info@skillscareers.com
+            please contact us at: 📧 Email: info@skillscareers.lk
           </p>
         </div>
       </div>

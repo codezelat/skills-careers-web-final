@@ -9,6 +9,28 @@ import Footer from "@/components/Footer";
 import Loading from "../loading";
 import JobApplicationForm from "../jobs/[jobid]/apply/JobApplicationForm";
 
+// Helper function to format address
+const formatAddress = (recruiter) => {
+  const { addressLine, district, province, country, location } = recruiter;
+  const parts = [];
+
+  if (addressLine) parts.push(addressLine);
+
+  if (country === "Sri Lanka" || !country) {
+    // For Sri Lanka, show district, province, country
+    if (district) parts.push(district);
+    if (province && province !== district) parts.push(province);
+    parts.push("Sri Lanka");
+  } else {
+    // For other countries, show country
+    if (country) parts.push(country);
+  }
+
+  // Fallback to old location field if new fields don't exist
+  const formatted = parts.filter(Boolean).join(", ");
+  return formatted || location || "Location not specified";
+};
+
 function RecruiterProfile({ slug }) {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
@@ -171,8 +193,11 @@ function RecruiterProfile({ slug }) {
 
           <div className="pl-4 sm:pl-10 pt-8 sm:pt-14">
             <h1 className="text-center sm:text-left text-2xl sm:text-4xl md:text-3xl font-bold text-black mt-8 sm:mt-12">
-              {recruiterDetails.recruiterName} {recruiterDetails.location}
+              {recruiterDetails.recruiterName}
             </h1>
+            <p className="text-center sm:text-left text-base text-gray-600 mt-2">
+              {formatAddress(recruiterDetails)}
+            </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center justify-between pr-2 sm:pr-5 space-y-4 sm:space-y-0 mt-5 text-sm w-full">
               <div className="flex flex-wrap items-center justify-center sm:justify-start space-y-4 sm:space-y-0 space-x-0 sm:space-x-4">
