@@ -3,158 +3,183 @@ export default function Footer() {
   return (
     <>
       <footer className="bg-[#00092F] w-full flex flex-col items-center">
-        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] py-8 lg:space-y-8">
+        <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] py-10 lg:py-12">
           {/* Logo and Description */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-white mb-4 sm:mb-0">
-              <img
-                src="/logo2.png"
-                alt="Logo"
-                className="h-14 w-auto mx-auto sm:mx-0"
-              />
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 lg:gap-12 mb-10">
+            <div className="text-white flex flex-col items-center lg:items-start lg:w-1/3">
+              <img src="/logo2.png" alt="Logo" className="h-14 w-auto mb-4" />
+              <p className="text-sm text-gray-300 leading-relaxed text-center lg:text-left">
+                Skill Careers connects job seekers, recruiters, and assessors
+                through innovative digital solutions, offering a streamlined
+                platform for career growth and talent acquisition.
+              </p>
             </div>
 
-            <p className="text-white font-semibold text-center sm:text-right sm:ml-auto sm:w-2/3 md:w-1/2 lg:w-3/5 leading-relaxed">
-              Skill Careers connects job seekers, recruiters, and assessors
-              through innovative digital solutions, offering a streamlined
-              platform for career growth and talent acquisition.
-            </p>
+            {/* Navigation Links - 3 Column Grid on Desktop */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 lg:w-2/3">
+              {/* Main Menu */}
+              <div>
+                <p className="font-semibold text-white mb-4 text-base">
+                  Main Menu
+                </p>
+                <ul className="space-y-3 text-sm text-gray-300">
+                  <li>
+                    <a
+                      href="/"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Home
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/jobs"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Explore Jobs
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/recruiters"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Explore Recruiters
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/pressRelease"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Press Releases
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/about"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      About Us
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/contact"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Contact Us
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Quick Links */}
+              <div>
+                <p className="font-semibold text-white mb-4 text-base">
+                  Quick Links
+                </p>
+                <ul className="space-y-3 text-sm text-gray-300">
+                  <li>
+                    <a
+                      href="privacypolicy"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Privacy Policy
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="sustainabilitypolicy"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Sustainability Policy
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="termsofuse"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      Terms of Use
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/#landingPageFAQ"
+                      className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    >
+                      FAQ
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Connect With Us */}
+              <div>
+                <p className="font-semibold text-white mb-4 text-base">
+                  Connect With Us
+                </p>
+                <div className="flex space-x-4 mb-4">
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    <FaLinkedin size={20} />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    <FaFacebook size={20} />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    <FaTwitter size={20} />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    <FaInstagram size={20} />
+                  </a>
+                </div>
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  Stay updated with the latest job opportunities and career
+                  tips.
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Navigation and Newsletter */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 border-t border-white pt-5 lg:pt-8">
-            {/* Main Menu */}
-            <div>
-              <p className="font-medium text-white text-center sm:text-left">
-                Main Menu
-              </p>
-              <ul className="mt-6 space-y-4 text-sm text-white font-medium text-center sm:text-left">
-                <li>
-                  <a
-                    href="/"
-                    className="transition duration-300 transform hover:-translate-y-1 hover:border-b-2 border-blue-800"
-                  >
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/jobs" className="transition hover:opacity-75">
-                    Explore Jobs
-                  </a>
-                </li>
-                <li>
-                  <a href="/recruiters" className="transition hover:opacity-75">
-                    Explore Recruiters
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/pressRelease"
-                    className="transition hover:opacity-75"
-                  >
-                    Explore Press Releases
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="transition hover:opacity-75">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="/contact" className="transition hover:opacity-75">
-                    Contact Us
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <p className="font-medium text-white text-center sm:text-left">
-                Quick Links
-              </p>
-              <ul className="mt-6 space-y-4 text-sm text-white font-medium text-center sm:text-left">
-                <li>
-                  <a
-                    href="privacypolicy"
-                    className="transition hover:opacity-75"
-                  >
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="sustainabilitypolicy"
-                    className="transition hover:opacity-75"
-                  >
-                    Sustainability Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="termsofuse" className="transition hover:opacity-75">
-                    Terms of Use
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/#landingPageFAQ"
-                    className="transition hover:opacity-75"
-                  >
-                    FAQ
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Newsletter */}
-            <div>
-              <p className="font-medium text-white text-center sm:text-left">
-                Join Our Newsletter
-              </p>
-              <ul className="mt-6 space-y-4 text-sm text-white text-center sm:text-left">
-                <li>
-                  <p className="transition hover:opacity-75">
-                    Subscribe now for the latest updates on exclusive offers,
-                    new packages, and bulks!
-                  </p>
-                </li>
-                <li>
-                  <div className="bg-[#00092F]">
-                    <div className="flex flex-col justify-between p-1 sm:flex-row items-center bg-[#001571] border border-[#001571]">
-                      <input
-                        type="email"
-                        placeholder="Email Address"
-                        className="bg-[#001571] text-white placeholder-white px-4 py-2 focus:outline-none w-full sm:w-auto"
-                      />
-                      <button
-                        type="submit"
-                        className="bg-white w-full text-blue-800 font-semibold p-2 mt-2 sm:mt-0 sm:ml-2 border border-blue-800 hover:bg-blue-100 transition duration-300"
-                      >
-                        Submit Now
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Social Media and Footer Bottom */}
-          <div className="flex flex-col md:flex-row justify-between items-center border-t border-white pt-5">
-            <div className="flex justify-center md:justify-start space-x-4 text-white mb-4 md:mb-0">
-              <FaLinkedin size={24} />
-              <FaFacebook size={24} />
-              <FaTwitter size={24} />
-              <FaInstagram size={24} />
-            </div>
-            <p className="text-base text-center md:text-left text-white font-semibold">
+          {/* Footer Bottom */}
+          <div className="flex flex-col md:flex-row justify-between items-center border-t border-gray-700 pt-6 mt-8 gap-4">
+            <p className="text-sm text-gray-400 text-center md:text-left order-2 md:order-1">
               © 2026 Skills Careers. All rights reserved.
             </p>
-            <div className="flex justify-center md:justify-end space-x-4 mt-4 md:mt-0">
-              <img src="/visa.png" alt="Visa" className="w-auto" />
-              <img src="/dinersclub.png" alt="Diners Club" className="w-auto" />
-              <img src="/amex.png" alt="Amex" className="w-auto" />
-              <img src="/discover.png" alt="Discover" className="w-auto" />
+            <div className="flex justify-center space-x-4 order-1 md:order-2">
+              <img
+                src="/visa.png"
+                alt="Visa"
+                className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
+              />
+              <img
+                src="/dinersclub.png"
+                alt="Diners Club"
+                className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
+              />
+              <img
+                src="/amex.png"
+                alt="Amex"
+                className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
+              />
+              <img
+                src="/discover.png"
+                alt="Discover"
+                className="h-6 w-auto opacity-70 hover:opacity-100 transition-opacity"
+              />
             </div>
           </div>
         </div>
