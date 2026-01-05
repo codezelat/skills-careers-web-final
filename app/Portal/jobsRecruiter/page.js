@@ -40,6 +40,7 @@ export default function RecruiterPostedJobs(props) {
     });
     const [jobs, setJobs] = useState([]);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const handleJobStatusChanged = (jobId, newStatus) => {
         setJobs(prevJobs => prevJobs.map(job =>
@@ -51,10 +52,18 @@ export default function RecruiterPostedJobs(props) {
         setJobs(prevJobs => prevJobs.filter(job => job._id !== jobId));
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value.toLowerCase());
+    };
+
     const filteredJobs = jobs.filter(job => {
-        if (activeTab === "all") return job.isPublished;
-        if (activeTab === "restricted") return !job.isPublished;
-        return true;
+        const matchesTab = activeTab === "all" ? job.isPublished : !job.isPublished;
+        const matchesSearch = searchQuery 
+            ? job.jobTitle?.toLowerCase().includes(searchQuery) ||
+              job.location?.toLowerCase().includes(searchQuery) ||
+              job.jobCategory?.toLowerCase().includes(searchQuery)
+            : true;
+        return matchesTab && matchesSearch;
     });
 
     useEffect(() => {
@@ -318,6 +327,8 @@ export default function RecruiterPostedJobs(props) {
                             <input
                                 type="text"
                                 placeholder="Search Job Posts..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
                                 className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
                             />
                         </div>
@@ -382,6 +393,8 @@ export default function RecruiterPostedJobs(props) {
                             <input
                                 type="text"
                                 placeholder="Search Restricted Jobs..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
                                 className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
                             />
                         </div>
