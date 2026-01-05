@@ -55,37 +55,47 @@ export default function StoryComponent() {
               modules={[Pagination, Navigation]}
             >
               {storyData.map((story) => (
-                <SwiperSlide key={story.id} className="mb-3">
-                  <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
-                    <div className="flex justify-between items-center mb-4">
-                      <h1 className="w-full text-start text-[#001571] text-4xl sm:text-5xl font-bold">
+                <SwiperSlide key={story.id} className="mb-3 h-auto">
+                  <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg h-[380px] sm:h-[400px] flex flex-col">
+                    <div className="flex justify-between items-center mb-3">
+                      <h1 className="w-full text-start text-[#001571] text-4xl sm:text-5xl font-bold leading-none">
                         “
                       </h1>
                     </div>
-                    <p className="text-[#000000] text-sm text-justify sm:text-base mb-4 font-semibold">
-                      {story.description}
-                    </p>
-                    <hr className="my-4 border-t-2 border-[#001571]" />
-                    <div className="grid grid-cols-3 gap-2 sm:gap-4 items-center">
-                      <div className="col-span-1 flex justify-center sm:justify-start">
-                        <Image
-                          src={story.image}
-                          width={50}
-                          height={50}
-                          alt="User"
-                          className="rounded-full border-4 border-[#001571]"
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <p className="text-md sm:text-xl font-bold text-[#001571]">
-                          {story.name}
-                        </p>
-                        <p className="text-sm sm:text-md font-bold text-[#000000]">
-                          {story.title}
-                        </p>
-                        <p className="text-sm sm:text-md font-bold text-[#000000]">
-                          {story.company}
-                        </p>
+                    <div className="flex-1 overflow-y-auto mb-4 scrollbar-thin scrollbar-thumb-[#001571] scrollbar-track-gray-100">
+                      <p className="text-[#000000] text-sm sm:text-base leading-relaxed font-medium pr-2">
+                        {story.description}
+                      </p>
+                    </div>
+                    <div className="mt-auto">
+                      <hr className="my-3 border-t-2 border-[#001571]" />
+                      <div className="grid grid-cols-3 gap-3 sm:gap-4 items-center">
+                        <div className="col-span-1 flex justify-center sm:justify-start">
+                          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-4 border-[#001571] overflow-hidden flex-shrink-0">
+                            <Image
+                              src={story.image}
+                              width={64}
+                              height={64}
+                              alt={story.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-2 min-w-0">
+                          <p className="text-sm sm:text-base font-bold text-[#001571] leading-tight truncate">
+                            {story.name}
+                          </p>
+                          {story.title && story.title.trim() !== "" && (
+                            <p className="text-xs sm:text-sm font-semibold text-gray-700 mt-0.5 leading-tight">
+                              {story.title}
+                            </p>
+                          )}
+                          {story.company && story.company.trim() !== "" && (
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 leading-tight">
+                              {story.company}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
