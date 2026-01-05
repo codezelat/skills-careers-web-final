@@ -17,9 +17,6 @@ export default function HeaderSection() {
   const searchRef = useRef(null);
   const debounceTimerRef = useRef(null);
 
-  console.log("Session Data:", session);
-  console.log("Profile Image URL:", session?.user?.profileImage);
-
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const jobTypeOptions = [
