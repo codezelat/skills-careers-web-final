@@ -72,44 +72,38 @@ export default function HeaderSection() {
       const topJobs = jobs.slice(0, 5);
 
       // Get unique recruiter IDs
-      const recruiterIds = [...new Set(topJobs.map(job => job.recruiterId).filter(Boolean))];
+      const recruiterIds = [
+        ...new Set(topJobs.map((job) => job.recruiterId).filter(Boolean)),
+      ];
 
       // Batch fetch all recruiter details in one request
       const recruiterMap = {};
       if (recruiterIds.length > 0) {
         try {
-          const recruiterResponse = await fetch('/api/recruiterdetails/batch', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          const recruiterResponse = await fetch("/api/recruiterdetails/batch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ids: recruiterIds }),
           });
-          
+
           if (recruiterResponse.ok) {
             const { recruiters } = await recruiterResponse.json();
             Object.assign(recruiterMap, recruiters);
           }
         } catch (err) {
-          console.error('Error fetching recruiters:', err);
+          console.error("Error fetching recruiters:", err);
         }
       }
 
       // Map jobs with recruiter details
-      const jobsWithDetails = topJobs.map(job => {
+      const jobsWithDetails = topJobs.map((job) => {
         const recruiterData = recruiterMap[job.recruiterId] || {};
         return {
           ...job,
-              recruiterName: recruiterData.recruiterName || "Unknown Company",
-              logo: recruiterData.logo || "/images/default-image.jpg",
-            };
-          } catch {
-            return {
-              ...job,
-              recruiterName: "Unknown Company",
-              logo: "/images/default-image.jpg",
-            };
-          }
-        })
-      );
+          recruiterName: recruiterData.recruiterName || "Unknown Company",
+          logo: recruiterData.logo || "/images/default-image.jpg",
+        };
+      });
 
       setSuggestions(jobsWithDetails);
       setShowSuggestions(jobsWithDetails.length > 0);
