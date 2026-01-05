@@ -22,6 +22,7 @@ export default function Jobs() {
   const [recruiterDetails, setRecruiterDetails] = useState([]);
   const [selectedRecruiter, setSelectedRecruiter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedJobTypes, setSelectedJobTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -64,6 +65,19 @@ export default function Jobs() {
     fetchData();
   }, []);
 
+  const handleJobTypeToggle = (type) => {
+    setSelectedJobTypes((prev) =>
+      prev.includes(type)
+        ? prev.filter((t) => t !== type)
+        : [...prev, type]
+    );
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedJobTypes([]);
+  };
+
   useEffect(() => {
     const filterJobs = () => {
       const filtered = jobs.filter((job) => {
@@ -71,12 +85,15 @@ export default function Jobs() {
           job.jobTitle.toLowerCase().includes(searchQuery) ||
           job.location.toLowerCase().includes(searchQuery);
         const matchesTab = activeTab === "all" ? true : !job.isPublished;
-        return matchesSearch && matchesTab;
+        const matchesJobType = selectedJobTypes.length === 0
+          ? true
+          : selectedJobTypes.some((type) => job.jobTypes?.includes(type));
+        return matchesSearch && matchesTab && matchesJobType;
       });
       setFilteredJobs(filtered);
     };
     filterJobs();
-  }, [searchQuery, activeTab, jobs]);
+  }, [searchQuery, activeTab, jobs, selectedJobTypes]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -264,6 +281,38 @@ export default function Jobs() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
         />
+      </div>
+
+      {/* Job Type Filters */}
+      <div className="mb-5">
+        <div className="flex items-center justify-between mb-3">
+          <label className="block text-sm font-semibold text-[#001571]">
+            Filter by Job Type
+          </label>
+          {(selectedJobTypes.length > 0 || searchQuery) && (
+            <button
+              onClick={handleClearFilters}
+              className="text-sm text-[#EC221F] hover:text-red-700 font-semibold"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {JOB_TYPE_OPTIONS.map((type) => (
+            <button
+              key={type}
+              onClick={() => handleJobTypeToggle(type)}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                selectedJobTypes.includes(type)
+                  ? "bg-[#001571] text-white shadow-md"
+                  : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
+              }`}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="w-full overflow-x-auto">

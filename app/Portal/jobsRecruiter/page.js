@@ -47,6 +47,7 @@ export default function RecruiterPostedJobs(props) {
   const [jobs, setJobs] = useState([]);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedJobTypes, setSelectedJobTypes] = useState([]);
 
   const handleJobStatusChanged = (jobId, newStatus) => {
     setJobs((prevJobs) =>
@@ -64,6 +65,19 @@ export default function RecruiterPostedJobs(props) {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
+  const handleJobTypeToggle = (type) => {
+    setSelectedJobTypes((prev) =>
+      prev.includes(type)
+        ? prev.filter((t) => t !== type)
+        : [...prev, type]
+    );
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedJobTypes([]);
+  };
+
   const filteredJobs = jobs.filter((job) => {
     const matchesTab = activeTab === "all" ? job.isPublished : !job.isPublished;
     const matchesSearch = searchQuery
@@ -71,7 +85,10 @@ export default function RecruiterPostedJobs(props) {
         job.location?.toLowerCase().includes(searchQuery) ||
         job.jobCategory?.toLowerCase().includes(searchQuery)
       : true;
-    return matchesTab && matchesSearch;
+    const matchesJobType = selectedJobTypes.length === 0
+      ? true
+      : selectedJobTypes.some((type) => job.jobTypes?.includes(type));
+    return matchesTab && matchesSearch && matchesJobType;
   });
 
   useEffect(() => {
@@ -367,6 +384,38 @@ export default function RecruiterPostedJobs(props) {
               />
             </div>
           </div>
+
+          {/* Job Type Filters */}
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-semibold text-[#001571]">
+                Filter by Job Type
+              </label>
+              {(selectedJobTypes.length > 0 || searchQuery) && (
+                <button
+                  onClick={handleClearFilters}
+                  className="text-sm text-[#EC221F] hover:text-red-700 font-semibold"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {JOB_TYPE_OPTIONS.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => handleJobTypeToggle(type)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    selectedJobTypes.includes(type)
+                      ? "bg-[#001571] text-white shadow-md"
+                      : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
           {/* Action Buttons */}
           {/* <div className="flex gap-4 mb-4 items-center bg-green">
                         <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
@@ -430,6 +479,38 @@ export default function RecruiterPostedJobs(props) {
                 onChange={handleSearchChange}
                 className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
               />
+            </div>
+          </div>
+
+          {/* Job Type Filters */}
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-semibold text-[#001571]">
+                Filter by Job Type
+              </label>
+              {(selectedJobTypes.length > 0 || searchQuery) && (
+                <button
+                  onClick={handleClearFilters}
+                  className="text-sm text-[#EC221F] hover:text-red-700 font-semibold"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {JOB_TYPE_OPTIONS.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => handleJobTypeToggle(type)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    selectedJobTypes.includes(type)
+                      ? "bg-[#001571] text-white shadow-md"
+                      : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
             </div>
           </div>
 
