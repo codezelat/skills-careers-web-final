@@ -90,45 +90,45 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
             <p className="text-sm font-semibold text-[#001571] mb-8">{date}</p>
           </div>
           {session?.user?.role === "admin" && (
-          <div className="flex space-x-3">
-            <button
-              onClick={handleOpenForm(setSelectedPressreleaseUpdate)}
-              className="text-white rounded-md"
-            >
-              <MdOutlineModeEdit
-                size={25}
-                color="white"
-                className="bg-[#001571] rounded-full p-2 w-10 h-10"
-              />{" "}
-            </button>
-            {selectedPressreleaseUpdate && (
-              <UpdatePressrelease
-                pressreleaseDetails={pressreleaseDetails}
-                onClose={handleCloseForm(setSelectedPressreleaseUpdate)}
-                onSubmit={submitHandler}
-              />
-            )}
-
-            <button
-              onClick={handleOpenForm(setSelectedPressreleaseDelete)}
-              className=" text-white  rounded-md"
-            >
-              <div className="flex items-center gap-2">
-                <RiDeleteBin5Line
+            <div className="flex space-x-3">
+              <button
+                onClick={handleOpenForm(setSelectedPressreleaseUpdate)}
+                className="text-white rounded-md"
+              >
+                <MdOutlineModeEdit
                   size={25}
                   color="white"
                   className="bg-[#001571] rounded-full p-2 w-10 h-10"
+                />{" "}
+              </button>
+              {selectedPressreleaseUpdate && (
+                <UpdatePressrelease
+                  pressreleaseDetails={pressreleaseDetails}
+                  onClose={handleCloseForm(setSelectedPressreleaseUpdate)}
+                  onSubmit={submitHandler}
                 />
-              </div>
-            </button>
-            {selectedPressreleaseDelete && (
-              <DeleteConfirmation
-                onClose={handleCloseForm(setSelectedPressreleaseDelete)}
-                pressreleaseDetails={pressreleaseDetails}
-                slug={slug}
-              />
-            )}
-          </div>
+              )}
+
+              <button
+                onClick={handleOpenForm(setSelectedPressreleaseDelete)}
+                className=" text-white  rounded-md"
+              >
+                <div className="flex items-center gap-2">
+                  <RiDeleteBin5Line
+                    size={25}
+                    color="white"
+                    className="bg-[#001571] rounded-full p-2 w-10 h-10"
+                  />
+                </div>
+              </button>
+              {selectedPressreleaseDelete && (
+                <DeleteConfirmation
+                  onClose={handleCloseForm(setSelectedPressreleaseDelete)}
+                  pressreleaseDetails={pressreleaseDetails}
+                  slug={slug}
+                />
+              )}
+            </div>
           )}
         </div>
         <div className="relative w-full h-[400px] mb-4 z-0">

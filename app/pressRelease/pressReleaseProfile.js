@@ -45,7 +45,6 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
     }
   }, [session, slug]);
 
-
   return (
     <div className="flex flex-col p-6 bg-white rounded-xl min-h-screen">
       <div className="p-4">
