@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { formatDate, handleCloseForm, handleOpenForm } from "@/handlers";
+import { formatDate, handleCloseForm, handleOpenForm } from "@/lib/handlers";
 import { useEffect, useState } from "react";
 import PortalLoading from "../loading";
 import Image from "next/image";

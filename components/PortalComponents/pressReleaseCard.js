@@ -1,4 +1,4 @@
-import { formatDate } from "@/handlers";
+import { formatDate } from "@/lib/handlers";
 import Image from "next/image";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { RiDeleteBin5Line } from "react-icons/ri";

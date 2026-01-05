@@ -242,7 +242,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { handleOpenForm, handleCloseForm } from "@/handlers";
+import { handleOpenForm, handleCloseForm } from "@/lib/handlers";
 import CreateJobPost from "@/components/jobForm";
 import JobCard from "@/components/jobCard";
 import NavBar from "@/components/navBar";
