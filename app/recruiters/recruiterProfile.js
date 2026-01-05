@@ -101,24 +101,71 @@ function RecruiterProfile({ slug }) {
               />
             </div>
             <div className="flex flex-wrap space-x-3 sm:space-x-5 mt-2 md:mt-0 ml-auto items-center justify-center sm:justify-end pr-4 sm:pr-16">
-              <img
-                src="/linkedin-b.png"
-                alt="linkedin"
-                className="w-6 sm:w-auto"
-              />
-              <img src="/x-b.png" alt="xapp" className="w-6 sm:w-auto" />
-              <img
-                src="/instagram-b.png"
-                alt="instagram"
-                className="w-6 sm:w-auto"
-              />
-              <img
-                src="/facebook-b.png"
-                alt="facebook"
-                className="w-6 sm:w-auto"
-              />
-              <img src="/github-b.png" alt="github" className="w-6 sm:w-auto" />
-              <img src="/world-b.png" alt="world" className="w-6 sm:w-auto" />
+              {recruiterDetails.linkedin && (
+                <a
+                  href={recruiterDetails.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/linkedin-b.png"
+                    alt="linkedin"
+                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
+                  />
+                </a>
+              )}
+              {recruiterDetails.x && (
+                <a
+                  href={recruiterDetails.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/x-b.png"
+                    alt="xapp"
+                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
+                  />
+                </a>
+              )}
+              {recruiterDetails.instagram && (
+                <a
+                  href={recruiterDetails.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/instagram-b.png"
+                    alt="instagram"
+                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
+                  />
+                </a>
+              )}
+              {recruiterDetails.facebook && (
+                <a
+                  href={recruiterDetails.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/facebook-b.png"
+                    alt="facebook"
+                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
+                  />
+                </a>
+              )}
+              {recruiterDetails.website && (
+                <a
+                  href={recruiterDetails.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="/world-b.png"
+                    alt="website"
+                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
+                  />
+                </a>
+              )}
             </div>
           </div>
 
