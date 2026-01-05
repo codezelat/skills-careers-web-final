@@ -1,23 +1,123 @@
 [
-    "Information Technology & Software",
-    "Creative Design",
-    "Architecture & Construction",
-    "Sales & Business Development",
-    "Marketing & Advertising",
-    "Human Resources & Recruitment",
-    "Medical & Healthcare",
-    "Education & Training",
-    "Finance & Accounting",
-    "Engineering",
-    "Logistics & Supply Chain",
-    "Customer Service & Support",
-    "Media & Communications",
-    "Legal",
-    "Hospitality & Tourism",
-    "Manufacturing & Production",
-    "Government & Public Services",
-    "Agriculture & Environment",
-    "Freelance & Remote Work",
-    "Others"
-  ]
+  {
+    "name": "IT & Software",
+    "icon": "/catagory/svg/creative.svg"
+  },
+  {
+    "name": "Engineering & Technical",
+    "icon": "/catagory/svg/operation.svg"
+  },
+  {
+    "name": "Accounting & Finance",
+    "icon": "/catagory/svg/finance.svg"
+  },
+  {
+    "name": "Banking & Insurance",
+    "icon": "/catagory/svg/finance.svg"
+  },
+  {
+    "name": "Sales & Marketing",
+    "icon": "/catagory/svg/marketing.svg"
+  },
+  {
+    "name": "Human Resources",
+    "icon": "/catagory/svg/human.svg"
+  },
+  {
+    "name": "Admin & Office Support",
+    "icon": "/catagory/svg/operation.svg"
+  },
+  {
+    "name": "Customer Service",
+    "icon": "/catagory/svg/marketing.svg"
+  },
+  {
+    "name": "Management & Strategy",
+    "icon": "/catagory/svg/human.svg"
+  },
+  {
+    "name": "Logistics & Transport",
+    "icon": "/catagory/svg/operation.svg"
+  },
+  {
+    "name": "Construction & Property",
+    "icon": "/catagory/svg/health.svg"
+  },
+  {
+    "name": "Manufacturing & Operations",
+    "icon": "/catagory/svg/operation.svg"
+  },
+  {
+    "name": "Hospitality & Hotels",
+    "icon": "/catagory/svg/marketing.svg"
+  },
+  {
+    "name": "Travel & Tourism",
+    "icon": "/catagory/svg/education.svg"
+  },
+  {
+    "name": "Healthcare",
+    "icon": "/catagory/svg/health.svg"
+  },
+  {
+    "name": "Education & Training",
+    "icon": "/catagory/svg/education.svg"
+  },
+  {
+    "name": "Media & Design",
+    "icon": "/catagory/svg/creative.svg"
+  },
+  {
+    "name": "Legal",
+    "icon": "/catagory/svg/human.svg"
+  },
+  {
+    "name": "Government & Public Sector",
+    "icon": "/catagory/svg/human.svg"
+  },
+  {
+    "name": "Agriculture & Environment",
+    "icon": "/catagory/svg/health.svg"
+  },
+  {
+    "name": "Science & Research",
+    "icon": "/catagory/svg/creative.svg"
+  },
+  {
+    "name": "Apparel & Textile",
+    "icon": "/catagory/svg/marketing.svg"
+  },
+  {
+    "name": "Supermarkets, Showrooms & Retail",
+    "icon": "/catagory/svg/operation.svg"
+  },
+  {
+    "name": "Fashion, Beauty & Luxury",
+    "icon": "/catagory/svg/marketing.svg"
+  },
+  {
+    "name": "Security",
+    "icon": "/catagory/svg/human.svg"
+  },
+  {
+    "name": "BPO / Call Center",
+    "icon": "/catagory/svg/operation.svg"
+  },
+  {
+    "name": "Imports & Exports",
+    "icon": "/catagory/svg/operation.svg"
+  },
+  {
+    "name": "NGO / Non-Profit",
+    "icon": "/catagory/svg/human.svg"
+  },
+  {
+    "name": "Overseas Jobs",
+    "icon": "/catagory/svg/education.svg"
+  },
+  {
+    "name": "Part-time & Flexible Jobs",
+    "icon": "/catagory/svg/creative.svg"
+  }
+]
   

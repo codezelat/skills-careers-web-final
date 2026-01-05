@@ -8,6 +8,7 @@ import JobLoading from "./jobLoading";
 import { useSearchParams } from "next/navigation";
 import JobSearch from "@/components/jobSearch";
 import JobApplicationForm from "@/app/jobs/[jobid]/apply/JobApplicationForm";
+import jobCategories from "@/data/jobCategories.json";
 
 function JobsClient() {
   const [jobs, setJobs] = useState([]);
@@ -268,11 +269,7 @@ function JobsClient() {
               selected={selectedIndustry || "Industry"}
               dropdownItems={[
                 "All Industries",
-                "Creative & Design",
-                "Education & Training",
-                "Technology & Development",
-                "Operations & Logistics",
-                "Marketing & Sales",
+                ...jobCategories.map(cat => cat.name)
               ]}
               onSelect={(industry) => {
                 setSelectedIndustry(
