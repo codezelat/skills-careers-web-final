@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";  
+import { useEffect, useState } from "react";
 
 async function createJob(
   jobTitle,
@@ -42,7 +42,6 @@ function CreateJobPost({ onClose, recruiterId }) {
 
   const [recruiterDetails, setRecruiterDetails] = useState({
     recruiterName: "",
-    
   });
 
   useEffect(() => {
@@ -164,12 +163,12 @@ function CreateJobPost({ onClose, recruiterId }) {
         <div className="mb-4">
           <p className="text-base font-bold text-black mb-1">Job Type:</p>
           {[
-            "Onsite ",
-            "Hybrid ",
-            "Remote ",
-            "Full Time ",
-            "Part Time ",
-            "Freelance ",
+            "Onsite",
+            "Hybrid",
+            "Remote",
+            "Full Time",
+            "Part Time",
+            "Freelance",
           ].map((type) => (
             <label key={type} className="mr-4 text-base">
               <input

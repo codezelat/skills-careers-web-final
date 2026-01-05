@@ -18,7 +18,7 @@ function JobCard({ job, onApply }) {
     shortDescription,
     // New fields from enriched job data
     recruiterName,
-    logo
+    logo,
   } = job;
 
   const date = new Date(createdAt).getDate();
@@ -40,7 +40,6 @@ function JobCard({ job, onApply }) {
   let month = monthName[d.getMonth()];
   const year = new Date(createdAt).getFullYear();
   const postedDate = `${date} ${month} ${year}`;
-
 
   const handleViewJob = () => {
     router.push(`/jobs/${_id}`);
@@ -69,16 +68,15 @@ function JobCard({ job, onApply }) {
           jobTypes.map((type, index) => (
             <span
               key={index}
-              className={`px-2 py-1 rounded-[5px] text-xs font-semibold text-white ${index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
-                }`}
+              className={`px-2 py-1 rounded-[5px] text-xs font-semibold text-white ${
+                index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
+              }`}
             >
               {type}
             </span>
           ))
         ) : typeof jobTypes === "string" ? (
-          <span
-            className="px-2 py-1 rounded-[5px] text-xs font-semibold text-white bg-[#001571]"
-          >
+          <span className="px-2 py-1 rounded-[5px] text-xs font-semibold text-white bg-[#001571]">
             {jobTypes}
           </span>
         ) : null}
