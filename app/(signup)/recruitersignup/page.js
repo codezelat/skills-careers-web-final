@@ -3,6 +3,7 @@
 import NavBar from "@/components/navBar";
 import Link from "next/link";
 import Button from "../../../components/Button";
+import PhoneNumberInput from "../../../components/PhoneInput";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import Swal from "sweetalert2"; // Import SweetAlert2
@@ -52,6 +53,7 @@ function AuthForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isOtherCategory, setIsOtherCategory] = useState(false);
+  const [contactNumber, setContactNumber] = useState("");
 
   const recruiterNameInputRef = useRef();
   const categoryInputRef = useRef();
@@ -60,7 +62,6 @@ function AuthForm() {
   const lastNameInputRef = useRef();
   const employeeRangeInputRef = useRef();
   const emailInputRef = useRef();
-  const contactNumberInputRef = useRef();
   const passwordInputRef = useRef();
   const confirmPasswordInputRef = useRef();
 
@@ -70,7 +71,6 @@ function AuthForm() {
     const firstName = firstNameInputRef.current.value;
     const lastName = lastNameInputRef.current.value;
     const email = emailInputRef.current.value;
-    const contactNumber = contactNumberInputRef.current.value;
     const password = passwordInputRef.current.value;
     const confirmPassword = confirmPasswordInputRef.current.value;
 
@@ -94,8 +94,8 @@ function AuthForm() {
 
     if (!contactNumber) {
       newErrors.contactNumber = "The Contact Number field is required.";
-    } else if (!/^\d{10}$/.test(contactNumber)) {
-      newErrors.contactNumber = "Contact Number must be exactly 10 digits.";
+    } else if (contactNumber.length < 8) {
+      newErrors.contactNumber = "Please enter a valid phone number.";
     }
 
     // Password validation - must match backend validation
@@ -144,7 +144,6 @@ function AuthForm() {
     }
     const enteredEmployeeRangeName = employeeRangeInputRef.current.value;
     const enteredEmail = emailInputRef.current.value;
-    const enteredContactNumber = contactNumberInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     const enteredConfirmPassword = confirmPasswordInputRef.current.value;
 
@@ -156,7 +155,7 @@ function AuthForm() {
         enteredCategory,
         enteredEmployeeRangeName,
         enteredEmail,
-        enteredContactNumber,
+        contactNumber,
         enteredPassword,
         enteredConfirmPassword
       );
@@ -320,19 +319,13 @@ function AuthForm() {
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
       </label>
-      <label className="block">
-        <input
-          type="text"
-          id="contactnumber"
-          required
-          ref={contactNumberInputRef}
-          className="w-full p-3 border border-gray-300 rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium"
-          placeholder="Contact Number"
-        />
-        {errors.contactNumber && (
-          <p className="text-red-500 text-sm">{errors.contactNumber}</p>
-        )}
-      </label>
+      <PhoneNumberInput
+        value={contactNumber}
+        onChange={setContactNumber}
+        placeholder="Contact Number"
+        error={errors.contactNumber}
+        required
+      />
       <label className="block">
         <div className="relative">
           <input

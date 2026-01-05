@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Button from "../../../components/Button";
+import PhoneNumberInput from "../../../components/PhoneInput";
 import Swal from "sweetalert2";
 
 async function createJobSeeker(
@@ -74,8 +75,8 @@ function AuthForm() {
 
     if (!formData.contactNumber) {
       newErrors.contactNumber = "The Contact Number field is required.";
-    } else if (!/^\d{10}$/.test(formData.contactNumber)) {
-      newErrors.contactNumber = "Contact Number must be exactly 10 digits.";
+    } else if (formData.contactNumber.length < 8) {
+      newErrors.contactNumber = "Please enter a valid phone number.";
     }
 
     // Password validation - must match backend validation
@@ -200,25 +201,13 @@ function AuthForm() {
       </label>
 
       {/* Contact Number */}
-      <label className="block">
-        <input
-          type="text"
-          value={formData.contactNumber}
-          onChange={(e) => {
-            // Only allow numbers
-            const numericValue = e.target.value.replace(/\D/g, "");
-            setFormData({ ...formData, contactNumber: numericValue });
-          }}
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-            errors.contactNumber ? "border-red-500" : "border-gray-300"
-          }`}
-          placeholder="Contact Number"
-          maxLength={10} // Ensures user can't type more than 10 digits
-        />
-        {errors.contactNumber && (
-          <p className="text-red-500 text-sm">{errors.contactNumber}</p>
-        )}
-      </label>
+      <PhoneNumberInput
+        value={formData.contactNumber}
+        onChange={(phone) => setFormData({ ...formData, contactNumber: phone })}
+        placeholder="Contact Number"
+        error={errors.contactNumber}
+        required
+      />
 
       {/* Password */}
       <label className="block">

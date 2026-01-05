@@ -1,5 +1,6 @@
 "use client";
 import { FaTimes } from "react-icons/fa";
+import PhoneNumberInput from "@/components/PhoneInput";
 import { PiCheckCircle } from "react-icons/pi";
 
 export default function CredentialsForm({
@@ -66,18 +67,12 @@ export default function CredentialsForm({
                   className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#001571]">
-                  Phone
-                </label>
-                <input
-                  type="text"
-                  name="contactNumber"
-                  value={userDetails.contactNumber || ""}
-                  onChange={onInputChange}
-                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                />
-              </div>
+              <PhoneNumberInput
+                value={userDetails.contactNumber || ""}
+                onChange={(phone) => onInputChange({ target: { name: "contactNumber", value: phone } })}
+                label="Phone"
+                placeholder="Enter phone number"
+              />
             </div>
           </form>
         </div>

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
+import PhoneNumberInput from "@/components/PhoneInput";
 import { PiCheckCircle } from "react-icons/pi";
 
 const RECRUITER_CATEGORIES = [
@@ -168,18 +169,12 @@ export default function RecruiterEdit({
                   className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#001571]">
-                  Phone
-                </label>
-                <input
-                  type="text"
-                  name="telephoneNumber"
-                  value={recruiterDetails.telephoneNumber || ""}
-                  onChange={onInputChange}
-                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                />
-              </div>
+              <PhoneNumberInput
+                value={recruiterDetails.telephoneNumber || ""}
+                onChange={(phone) => onInputChange({ target: { name: "telephoneNumber", value: phone } })}
+                label="Phone"
+                placeholder="Enter phone number"
+              />
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#001571]">

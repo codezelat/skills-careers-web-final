@@ -1,6 +1,7 @@
 "use client";
 
 import NavBar from "@/components/navBar";
+import PhoneNumberInput from "@/components/PhoneInput";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
@@ -67,7 +68,9 @@ function EditProfileForm() {
   }, [fetchJobSeekerDetails]);
 
   const handleInputChange = (e) => {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
     const { name, value } = e.target;
     setJobSeekerDetails((prev) => ({ ...prev, [name]: value }));
   };
@@ -78,6 +81,8 @@ function EditProfileForm() {
       // We only update the main jobseeker details here.
       // Education, Experience, Certifications are handled in their own sections.
       const { educations, experiences, certifications, _id, ...updateData } = jobSeekerDetails;
+
+      console.log('Submitting data:', updateData); // Debug log
 
       const response = await fetch(`/api/jobseekerdetails/update`, {
         method: "PUT",
@@ -97,6 +102,8 @@ function EditProfileForm() {
           router.push(`/profile`);
         });
       } else {
+        const errorData = await response.json();
+        console.error('Update failed:', errorData); // Debug log
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -153,16 +160,12 @@ function EditProfileForm() {
               />
             </div>
 
-            <div>
-              <p className="text-base font-bold text-black mb-1">Contact Number</p>
-              <input
-                type="text"
-                name="contactNumber"
-                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
-                value={jobSeekerDetails.contactNumber || ""}
-                onChange={handleInputChange}
-              />
-            </div>
+            <PhoneNumberInput
+              value={jobSeekerDetails.contactNumber || ""}
+              onChange={(phone) => setJobSeekerDetails((prev) => ({ ...prev, contactNumber: phone }))}
+              label="Contact Number"
+              placeholder="Enter phone number"
+            />
 
             <div>
               <p className="text-base font-bold text-black mb-1">Position</p>

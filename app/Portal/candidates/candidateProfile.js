@@ -59,9 +59,98 @@ export default function CandidateProfile({ slug }) {
     const [newExpertise, setNewExpertise] = useState("");
 
     // Helper Functions (Placeholders)
-    const handleInputChange = () => { };
-    const handleUserInputChange = () => { };
-    const jobseekerUpdateSubmitHandler = () => { };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setJobseekerDetails((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    const handleUserInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserDetails((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    const jobseekerUpdateSubmitHandler = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            console.log('Admin updating - userDetails:', userDetails); // Debug log
+            console.log('Admin updating - jobSeekerDetails:', jobSeekerDetails); // Debug log
+
+            // Update user details (firstName, lastName) in users collection
+            const userResponse = await fetch('/api/users/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: jobSeekerDetails.email,
+                    firstName: userDetails.firstName,
+                    lastName: userDetails.lastName,
+                }),
+            });
+
+            if (!userResponse.ok) {
+                const userData = await userResponse.json();
+                throw new Error(userData.message || 'Failed to update user details');
+            }
+
+            // Update jobseeker details including contactNumber in jobseekers collection
+            const { educations, experiences, certifications, _id, userId, contactNumber: oldContact, ...jobseekerUpdateData } = jobSeekerDetails;
+            const updatePayload = { 
+                ...jobseekerUpdateData,
+                contactNumber: userDetails.contactNumber,
+                email: jobSeekerDetails.email 
+            };
+            
+            console.log('Sending to jobseekerdetails/update:', updatePayload); // Debug log
+
+            const jobseekerResponse = await fetch('/api/jobseekerdetails/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatePayload),
+            });
+
+            if (!jobseekerResponse.ok) {
+                const jobseekerData = await jobseekerResponse.json();
+                console.error('Jobseeker update failed:', jobseekerData); // Debug log
+                throw new Error(jobseekerData.message || 'Failed to update jobseeker details');
+            }
+
+            // Update local state to reflect changes
+            setJobseekerDetails(prev => ({
+                ...prev,
+                contactNumber: userDetails.contactNumber
+            }));
+
+            setProfileEditForm(false);
+            setBioDataForm(false);
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Profile updated successfully!",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        } catch (error) {
+            console.error('Update failed:', error);
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message || "Update failed.",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     const handleCreateExperience = () => { };
     const handleExperienceInputChange = () => { };
     const handleCreateEducation = () => { };
@@ -119,14 +208,44 @@ export default function CandidateProfile({ slug }) {
                         setEducationDetails(data.jobseeker.educations || []);
                         setCertificationDetails(data.jobseeker.certifications || []);
 
-                        // Attempt to set basic details. 
-                        // If the API doesn't return firstName/lastName, we might see "undefined undefined".
-                        // In that case, we might need to fetch the user record separately or rely on what's in jobseeker.
-                        setUserDetails({
-                            firstName: data.jobseeker.firstName || "",
-                            lastName: data.jobseeker.lastName || "",
-                            // If they are not in jobseeker, we might need a separate fetch.
-                        })
+                        // Fetch the user details separately to get firstName and lastName
+                        if (data.jobseeker.userId) {
+                            try {
+                                const userResponse = await fetch(`/api/users/get?id=${data.jobseeker.userId}`);
+                                if (userResponse.ok) {
+                                    const userData = await userResponse.json();
+                                    if (userData.user) {
+                                        setUserDetails({
+                                            firstName: userData.user.firstName || "",
+                                            lastName: userData.user.lastName || "",
+                                            contactNumber: data.jobseeker.contactNumber || "",
+                                        });
+                                    }
+                                } else {
+                                    // Fallback if user fetch fails
+                                    setUserDetails({
+                                        firstName: data.jobseeker.firstName || "",
+                                        lastName: data.jobseeker.lastName || "",
+                                        contactNumber: data.jobseeker.contactNumber || "",
+                                    });
+                                }
+                            } catch (userError) {
+                                console.error("Error fetching user details:", userError);
+                                // Fallback to jobseeker data if available
+                                setUserDetails({
+                                    firstName: data.jobseeker.firstName || "",
+                                    lastName: data.jobseeker.lastName || "",
+                                    contactNumber: data.jobseeker.contactNumber || "",
+                                });
+                            }
+                        } else {
+                            // If no userId, fallback to what's in jobseeker
+                            setUserDetails({
+                                firstName: data.jobseeker.firstName || "",
+                                lastName: data.jobseeker.lastName || "",
+                                contactNumber: data.jobseeker.contactNumber || "",
+                            });
+                        }
                     }
                 } else {
                     console.error("Failed to fetch jobseeker details");

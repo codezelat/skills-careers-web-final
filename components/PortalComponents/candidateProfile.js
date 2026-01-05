@@ -151,7 +151,11 @@ export default function CandidateProfile() {
           if (!userResponse.ok) throw new Error("Failed to fetch user");
           const userData = await userResponse.json();
 
-          setUserDetails(userData.user);
+          // Set userDetails with contactNumber from jobseeker data
+          setUserDetails({
+            ...userData.user,
+            contactNumber: jobSeekerData.jobseeker.contactNumber || "",
+          });
 
           const experienceResponse = await fetch(
             `/api/jobseekerdetails/experience/all?id=${jobSeekerData.jobseeker._id}`
@@ -367,26 +371,39 @@ export default function CandidateProfile() {
     setIsSubmitting(true);
 
     try {
-      // Update userDetails
+      // Update userDetails (firstName, lastName only - contactNumber goes to jobseeker)
       const userResponse = await fetch(`/api/users/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userDetails),
+        body: JSON.stringify({
+          email: userDetails.email || jobSeekerDetails.email,
+          firstName: userDetails.firstName,
+          lastName: userDetails.lastName,
+        }),
       });
 
-      // Update jobSeekerDetails
+      // Update jobSeekerDetails including contactNumber
       const jobSeekerResponse = await fetch(`/api/jobseekerdetails/update`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(jobSeekerDetails),
+        body: JSON.stringify({
+          ...jobSeekerDetails,
+          contactNumber: userDetails.contactNumber, // Get contactNumber from userDetails state
+        }),
       });
 
       // Check if both updates were successful
       if (userResponse.ok && jobSeekerResponse.ok) {
+        // Update local state to reflect the changes
+        setJobseekerDetails(prev => ({
+          ...prev,
+          contactNumber: userDetails.contactNumber
+        }));
+        
         Swal.fire({
           icon: 'success',
           title: 'Success',

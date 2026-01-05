@@ -6,6 +6,7 @@ import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import CandidateCard from "@/components/PortalComponents/portalCandidateCard";
+import PhoneNumberInput from "@/components/PhoneInput";
 import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
 
@@ -497,19 +498,13 @@ export default function Candidates() {
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
-                      Phone
-                    </label>
-                    <input
-                      type="tel"
-                      name="contactNumber"
-                      value={newJobseeker.contactNumber}
-                      onChange={handleInputChange}
-                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                      required
-                    />
-                  </div>
+                  <PhoneNumberInput
+                    value={newJobseeker.contactNumber}
+                    onChange={(phone) => setNewJobseeker({ ...newJobseeker, contactNumber: phone })}
+                    label="Phone"
+                    placeholder="Enter phone number"
+                    required
+                  />
                   <div>
                     <label className="block text-sm font-semibold text-[#001571]">
                       Password

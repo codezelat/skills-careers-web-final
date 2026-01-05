@@ -43,10 +43,10 @@ export async function POST(req) {
       );
     }
 
-    // Validate contact number (only 10 digits)
-    if (!/^\d{10}$/.test(contactNumber)) {
-      return NextResponse.json(
-        { message: "Contact number must be 10 digits." },
+    // Validate contact number (international format with country code)
+    if (!contactNumber || contactNumber.length < 8) {
+      return Response.json(
+        { message: "Please provide a valid phone number." },
         { status: 422 }
       );
     }

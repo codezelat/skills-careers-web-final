@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 export async function PUT(req) {
   try {
     const body = await req.json();
-    const { _id, jobseekerId, email, createdAt, userId, ...updatedDetails } = body;
+    const { _id, jobseekerId, email, createdAt, userId, ...updatedDetails } =
+      body;
 
     if (!email || !email.includes("@")) {
       return NextResponse.json(
@@ -18,7 +19,7 @@ export async function PUT(req) {
 
     // Ensure profileImage is preserved if it's not being updated
     let updateData = updatedDetails;
-    
+
     if (!updatedDetails.profileImage) {
       const existingUser = await db.collection("jobseekers").findOne({ email });
       if (existingUser?.profileImage) {
@@ -28,7 +29,9 @@ export async function PUT(req) {
 
     const result = await db
       .collection("jobseekers")
-      .updateOne({ email }, { $set: updatedDetails }, { upsert: false });
+      .updateOne({ email }, { $set: updateData }, { upsert: false });
+
+    console.log("Update result:", result, "Data sent to DB:", updateData); // Debug log
 
     if (result.modifiedCount > 0) {
       return NextResponse.json(
