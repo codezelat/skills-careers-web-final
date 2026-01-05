@@ -12,7 +12,12 @@ export async function GET(req) {
 
     return NextResponse.json(
       { recruiters, count },
-      { status: 200 }
+      { 
+        status: 200,
+        headers: {
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=30",
+        },
+      }
     );
   } catch (error) {
     return NextResponse.json(

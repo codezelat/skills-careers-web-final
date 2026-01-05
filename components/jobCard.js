@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { memo } from "react";
 import { Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -109,4 +109,8 @@ function JobCard({ job, onApply }) {
   );
 }
 
-export default JobCard;
+// Memoize to prevent unnecessary re-renders
+export default memo(JobCard, (prevProps, nextProps) => {
+  return prevProps.job._id === nextProps.job._id && 
+         prevProps.onApply === nextProps.onApply;
+});

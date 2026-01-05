@@ -33,7 +33,10 @@ export async function GET(req) {
     const jobs = await db.collection("jobs").find(filter).toArray();
     const count = jobs.length;
 
-    // Do NOT close the client:
+    // Add smart caching: public jobs can be cached, admin views shouldn't be
+    const cacheControl = showAll 
+      ? "no-store, no-cache, must-revalidate"
+      : "public, s-maxage=30, stale-while-revalidate=15";
 
     return NextResponse.json(
       { jobs, count },
@@ -41,13 +44,7 @@ export async function GET(req) {
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-          "CDN-Cache-Control": "no-store",
-          "Surrogate-Control": "no-store",
-          Pragma: "no-cache",
-          Expires: "0",
-          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+          "Cache-Control": cacheControl,
         },
       }
     );

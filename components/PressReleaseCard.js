@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { memo } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -70,4 +71,7 @@ function PressReleaseCard({ release }) {
   );
 }
 
-export default PressReleaseCard;
+// Memoize to prevent unnecessary re-renders
+export default memo(PressReleaseCard, (prevProps, nextProps) => {
+  return prevProps.release._id === nextProps.release._id;
+});
