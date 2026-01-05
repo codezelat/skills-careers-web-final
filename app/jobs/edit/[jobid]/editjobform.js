@@ -3,6 +3,7 @@ import NavBar from "@/components/navBar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 function EditJobForm({ jobId }) {
   const router = useRouter();
@@ -17,6 +18,8 @@ function EditJobForm({ jobId }) {
     jobDescription: "",
     keyResponsibilities: "",
   });
+
+  const [customLocation, setCustomLocation] = useState("");
 
   const [recruiterDetails, setRecruiterDetails] = useState({
     email: "",
@@ -40,10 +43,18 @@ function EditJobForm({ jobId }) {
           if (response.ok) {
             const data = await response.json();
             // Ensure jobTypes is always an array
+            const validDistricts = sriLankaDistricts.map(d => d.value);
+            const isValidDistrict = validDistricts.includes(data.location);
+            
             setJobDetails({
               ...data,
               jobTypes: Array.isArray(data.jobTypes) ? data.jobTypes : [],
+              location: isValidDistrict ? data.location : "Other",
             });
+            
+            if (!isValidDistrict) {
+              setCustomLocation(data.location);
+            }
           } else {
             console.error("Failed to fetch job details");
           }
@@ -101,6 +112,8 @@ function EditJobForm({ jobId }) {
     try {
       // Create a copy of jobDetails without modifying the recruiterId
       const { recruiterId, ...updateData } = jobDetails;
+      
+      const finalLocation = jobDetails.location === "Other" ? customLocation : jobDetails.location;
 
       const response = await fetch(`/api/job/update`, {
         method: "PUT",
@@ -109,6 +122,7 @@ function EditJobForm({ jobId }) {
         },
         body: JSON.stringify({
           ...updateData,
+          location: finalLocation,
           id: jobId, // Ensure we're sending the correct ID
         }),
       });
@@ -200,14 +214,36 @@ function EditJobForm({ jobId }) {
             >
               Location
             </p>
-            <input
-              type="text"
+            <select
               name="location"
               required
               value={jobDetails.location || ""}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                handleInputChange(e);
+                if (e.target.value !== "Other") {
+                  setCustomLocation("");
+                }
+              }}
               className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-            />
+            >
+              <option value="">Select a location</option>
+              {sriLankaDistricts.map((district) => (
+                <option key={district.value} value={district.value}>
+                  {district.label}
+                </option>
+              ))}
+            </select>
+            {jobDetails.location === "Other" && (
+              <input
+                type="text"
+                id="customLocation"
+                required
+                placeholder="Please specify location"
+                value={customLocation}
+                onChange={(e) => setCustomLocation(e.target.value)}
+                className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4 mt-2"
+              />
+            )}
           </div>
 
           <div className="mb-4">

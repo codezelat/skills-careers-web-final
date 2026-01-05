@@ -18,6 +18,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import { PiCheckCircle } from "react-icons/pi";
 import PortalLoading from "../loading";
 import Swal from "sweetalert2";
+import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 export default function JobProfile({ slug }) {
   const [activeTab, setActiveTab] = useState("Profile");
@@ -30,6 +31,7 @@ export default function JobProfile({ slug }) {
   const [jobDetails, setJobDetails] = useState([]);
   const [recruiterDetails, setRecruiterDetails] = useState([]);
   const [editedJobDetails, setEditedJobDetails] = useState({});
+  const [customLocation, setCustomLocation] = useState("");
 
   const [editProfileForm, setEditProfileForm] = useState();
   const [editDescriptionForm, setDescriptionForm] = useState();
@@ -45,8 +47,19 @@ export default function JobProfile({ slug }) {
           const jobResponse = await fetch(`/api/job/get?id=${slug}`);
           if (!jobResponse.ok) throw new Error("Failed to fetch job");
           const jobData = await jobResponse.json();
+          
+          const validDistricts = sriLankaDistricts.map(d => d.value);
+          const isValidDistrict = validDistricts.includes(jobData.location);
+          
           setJobDetails(jobData);
-          setEditedJobDetails(jobData);
+          setEditedJobDetails({
+            ...jobData,
+            location: isValidDistrict ? jobData.location : "Other",
+          });
+          
+          if (!isValidDistrict) {
+            setCustomLocation(jobData.location);
+          }
 
           const recruiterResponse = await fetch(
             `/api/recruiterdetails/get?id=${jobData.recruiterId}`
@@ -76,6 +89,9 @@ export default function JobProfile({ slug }) {
       ...prev,
       [name]: value,
     }));
+    if (name === "location" && value !== "Other") {
+      setCustomLocation("");
+    }
   };
   const handleShortDescriptionInputChange = (e) => {
     const { name, value } = e.target;
@@ -102,6 +118,8 @@ export default function JobProfile({ slug }) {
     });
 
     try {
+      const finalLocation = editedJobDetails.location === "Other" ? customLocation : editedJobDetails.location;
+      
       const response = await fetch("/api/job/update", {
         method: "PUT",
         headers: {
@@ -110,6 +128,7 @@ export default function JobProfile({ slug }) {
         body: JSON.stringify({
           id: slug,
           ...editedJobDetails,
+          location: finalLocation,
         }),
       });
 
@@ -400,13 +419,28 @@ export default function JobProfile({ slug }) {
                   <label className="block text-sm font-semibold text-[#001571]">
                     Location
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="location"
                     value={editedJobDetails.location || ""}
                     onChange={handleInputChange}
                     className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                  />
+                  >
+                    <option value="">Select a location</option>
+                    {sriLankaDistricts.map((district) => (
+                      <option key={district.value} value={district.value}>
+                        {district.label}
+                      </option>
+                    ))}
+                  </select>
+                  {editedJobDetails.location === "Other" && (
+                    <input
+                      type="text"
+                      placeholder="Please specify location"
+                      value={customLocation}
+                      onChange={(e) => setCustomLocation(e.target.value)}
+                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-[#001571]">

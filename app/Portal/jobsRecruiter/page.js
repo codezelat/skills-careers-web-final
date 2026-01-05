@@ -16,6 +16,7 @@ import JobCard from "@/components/PortalComponents/portalJobCard";
 import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
+import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 export default function RecruiterPostedJobs(props) {
   const router = useRouter();
@@ -127,6 +128,7 @@ export default function RecruiterPostedJobs(props) {
   const [formData, setFormData] = useState({
     jobTitle: "",
     location: "",
+    customLocation: "",
     jobTypes: [],
     jobDescription: "",
     keyResponsibilities: "",
@@ -139,6 +141,7 @@ export default function RecruiterPostedJobs(props) {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "location" && value !== "Other" ? { customLocation: "" } : {}),
     }));
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -167,6 +170,9 @@ export default function RecruiterPostedJobs(props) {
     const errors = {};
     if (!formData.jobTitle.trim()) errors.jobTitle = "Job title is required";
     if (!formData.location.trim()) errors.location = "Location is required";
+    if (formData.location === "Other" && !formData.customLocation.trim()) {
+      errors.customLocation = "Please specify the location";
+    }
     if (formData.jobTypes.length === 0)
       errors.jobTypes = "At least one job type is required";
     if (!formData.jobDescription.trim())
@@ -203,6 +209,8 @@ export default function RecruiterPostedJobs(props) {
     });
 
     try {
+      const finalLocation = formData.location === "Other" ? formData.customLocation : formData.location;
+      
       const response = await fetch("/api/job/add", {
         method: "POST",
         headers: {
@@ -210,6 +218,7 @@ export default function RecruiterPostedJobs(props) {
         },
         body: JSON.stringify({
           ...formData,
+          location: finalLocation,
           recruiterId: recruiterDetails.id,
         }),
       });
@@ -238,7 +247,7 @@ export default function RecruiterPostedJobs(props) {
       setFormData({
         jobTitle: "",
         location: "",
-        jobTypes: [],
+        customLocation: "",
         jobTypes: [],
         jobDescription: "",
         keyResponsibilities: "",
@@ -498,8 +507,7 @@ export default function RecruiterPostedJobs(props) {
                   <label className="block text-base font-semibold text-[#001571]">
                     Location
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
@@ -508,11 +516,39 @@ export default function RecruiterPostedJobs(props) {
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
                     } rounded-xl shadow-sm px-4 py-3`}
-                  />
+                  >
+                    <option value="">Select a location</option>
+                    {sriLankaDistricts.map((district) => (
+                      <option key={district.value} value={district.value}>
+                        {district.label}
+                      </option>
+                    ))}
+                  </select>
                   {formErrors.location && (
                     <p className="text-red-500 text-base mt-1">
                       {formErrors.location}
                     </p>
+                  )}
+                  {formData.location === "Other" && (
+                    <div className="mt-3">
+                      <input
+                        type="text"
+                        name="customLocation"
+                        placeholder="Please specify location"
+                        value={formData.customLocation}
+                        onChange={handleInputChange}
+                        className={`block w-full border ${
+                          formErrors.customLocation
+                            ? "border-red-500"
+                            : "border-[#B0B6D3]"
+                        } rounded-xl shadow-sm px-4 py-3`}
+                      />
+                      {formErrors.customLocation && (
+                        <p className="text-red-500 text-base mt-1">
+                          {formErrors.customLocation}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 

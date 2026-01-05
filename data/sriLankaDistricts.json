@@ -1,0 +1,158 @@
+[
+  {
+    "value": "Colombo, Western Province, Sri Lanka",
+    "label": "Colombo, Western Province, Sri Lanka",
+    "district": "Colombo",
+    "province": "Western Province"
+  },
+  {
+    "value": "Gampaha, Western Province, Sri Lanka",
+    "label": "Gampaha, Western Province, Sri Lanka",
+    "district": "Gampaha",
+    "province": "Western Province"
+  },
+  {
+    "value": "Kalutara, Western Province, Sri Lanka",
+    "label": "Kalutara, Western Province, Sri Lanka",
+    "district": "Kalutara",
+    "province": "Western Province"
+  },
+  {
+    "value": "Kandy, Central Province, Sri Lanka",
+    "label": "Kandy, Central Province, Sri Lanka",
+    "district": "Kandy",
+    "province": "Central Province"
+  },
+  {
+    "value": "Matale, Central Province, Sri Lanka",
+    "label": "Matale, Central Province, Sri Lanka",
+    "district": "Matale",
+    "province": "Central Province"
+  },
+  {
+    "value": "Nuwara Eliya, Central Province, Sri Lanka",
+    "label": "Nuwara Eliya, Central Province, Sri Lanka",
+    "district": "Nuwara Eliya",
+    "province": "Central Province"
+  },
+  {
+    "value": "Galle, Southern Province, Sri Lanka",
+    "label": "Galle, Southern Province, Sri Lanka",
+    "district": "Galle",
+    "province": "Southern Province"
+  },
+  {
+    "value": "Matara, Southern Province, Sri Lanka",
+    "label": "Matara, Southern Province, Sri Lanka",
+    "district": "Matara",
+    "province": "Southern Province"
+  },
+  {
+    "value": "Hambantota, Southern Province, Sri Lanka",
+    "label": "Hambantota, Southern Province, Sri Lanka",
+    "district": "Hambantota",
+    "province": "Southern Province"
+  },
+  {
+    "value": "Jaffna, Northern Province, Sri Lanka",
+    "label": "Jaffna, Northern Province, Sri Lanka",
+    "district": "Jaffna",
+    "province": "Northern Province"
+  },
+  {
+    "value": "Kilinochchi, Northern Province, Sri Lanka",
+    "label": "Kilinochchi, Northern Province, Sri Lanka",
+    "district": "Kilinochchi",
+    "province": "Northern Province"
+  },
+  {
+    "value": "Mannar, Northern Province, Sri Lanka",
+    "label": "Mannar, Northern Province, Sri Lanka",
+    "district": "Mannar",
+    "province": "Northern Province"
+  },
+  {
+    "value": "Mullaitivu, Northern Province, Sri Lanka",
+    "label": "Mullaitivu, Northern Province, Sri Lanka",
+    "district": "Mullaitivu",
+    "province": "Northern Province"
+  },
+  {
+    "value": "Vavuniya, Northern Province, Sri Lanka",
+    "label": "Vavuniya, Northern Province, Sri Lanka",
+    "district": "Vavuniya",
+    "province": "Northern Province"
+  },
+  {
+    "value": "Batticaloa, Eastern Province, Sri Lanka",
+    "label": "Batticaloa, Eastern Province, Sri Lanka",
+    "district": "Batticaloa",
+    "province": "Eastern Province"
+  },
+  {
+    "value": "Ampara, Eastern Province, Sri Lanka",
+    "label": "Ampara, Eastern Province, Sri Lanka",
+    "district": "Ampara",
+    "province": "Eastern Province"
+  },
+  {
+    "value": "Trincomalee, Eastern Province, Sri Lanka",
+    "label": "Trincomalee, Eastern Province, Sri Lanka",
+    "district": "Trincomalee",
+    "province": "Eastern Province"
+  },
+  {
+    "value": "Kurunegala, North Western Province, Sri Lanka",
+    "label": "Kurunegala, North Western Province, Sri Lanka",
+    "district": "Kurunegala",
+    "province": "North Western Province"
+  },
+  {
+    "value": "Puttalam, North Western Province, Sri Lanka",
+    "label": "Puttalam, North Western Province, Sri Lanka",
+    "district": "Puttalam",
+    "province": "North Western Province"
+  },
+  {
+    "value": "Anuradhapura, North Central Province, Sri Lanka",
+    "label": "Anuradhapura, North Central Province, Sri Lanka",
+    "district": "Anuradhapura",
+    "province": "North Central Province"
+  },
+  {
+    "value": "Polonnaruwa, North Central Province, Sri Lanka",
+    "label": "Polonnaruwa, North Central Province, Sri Lanka",
+    "district": "Polonnaruwa",
+    "province": "North Central Province"
+  },
+  {
+    "value": "Badulla, Uva Province, Sri Lanka",
+    "label": "Badulla, Uva Province, Sri Lanka",
+    "district": "Badulla",
+    "province": "Uva Province"
+  },
+  {
+    "value": "Monaragala, Uva Province, Sri Lanka",
+    "label": "Monaragala, Uva Province, Sri Lanka",
+    "district": "Monaragala",
+    "province": "Uva Province"
+  },
+  {
+    "value": "Ratnapura, Sabaragamuwa Province, Sri Lanka",
+    "label": "Ratnapura, Sabaragamuwa Province, Sri Lanka",
+    "district": "Ratnapura",
+    "province": "Sabaragamuwa Province"
+  },
+  {
+    "value": "Kegalle, Sabaragamuwa Province, Sri Lanka",
+    "label": "Kegalle, Sabaragamuwa Province, Sri Lanka",
+    "district": "Kegalle",
+    "province": "Sabaragamuwa Province"
+  },
+  {
+    "value": "Other",
+    "label": "Other",
+    "district": "Other",
+    "province": "Other"
+  }
+]

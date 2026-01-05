@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 async function createJob(
   jobTitle,
@@ -36,6 +37,7 @@ async function createJob(
 function CreateJobPost({ onClose, recruiterId }) {
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [keyResponsibilities, setKeyResponsibilities] = useState("");
   const [jobTypes, setJobTypes] = useState([]);
@@ -79,11 +81,13 @@ function CreateJobPost({ onClose, recruiterId }) {
   async function submitHandler(event) {
     event.preventDefault();
 
+    const finalLocation = location === "Other" ? customLocation : location;
+
     try {
       const result = await createJob(
         jobTitle,
         recruiterId,
-        location,
+        finalLocation,
         jobTypes,
         jobDescription,
         keyResponsibilities
@@ -93,6 +97,7 @@ function CreateJobPost({ onClose, recruiterId }) {
 
       setJobTitle("");
       setLocation("");
+      setCustomLocation("");
       setJobDescription("");
       setKeyResponsibilities("");
       setJobTypes([]);
@@ -150,14 +155,36 @@ function CreateJobPost({ onClose, recruiterId }) {
           <p htmlFor="location" className="text-base font-bold text-black mb-1">
             Location
           </p>
-          <input
-            type="text"
+          <select
             id="location"
             required
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => {
+              setLocation(e.target.value);
+              if (e.target.value !== "Other") {
+                setCustomLocation("");
+              }
+            }}
             className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4"
-          />
+          >
+            <option value="">Select a location</option>
+            {sriLankaDistricts.map((district) => (
+              <option key={district.value} value={district.value}>
+                {district.label}
+              </option>
+            ))}
+          </select>
+          {location === "Other" && (
+            <input
+              type="text"
+              id="customLocation"
+              required
+              placeholder="Please specify location"
+              value={customLocation}
+              onChange={(e) => setCustomLocation(e.target.value)}
+              className="px-2 py-1 w-96 border-solid border-2 border-gray-400 outline-none rounded mb-4 mt-2"
+            />
+          )}
         </div>
 
         <div className="mb-4">
