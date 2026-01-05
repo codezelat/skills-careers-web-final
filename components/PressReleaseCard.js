@@ -6,9 +6,8 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 function PressReleaseCard({ release }) {
-
   const router = useRouter();
-  
+
   if (!release || Object.keys(release).length === 0) {
     return <div>Loading...</div>;
   }
@@ -66,7 +65,6 @@ function PressReleaseCard({ release }) {
           Read More
         </button>
       </div>
-
     </div>
   );
 }

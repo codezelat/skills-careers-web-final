@@ -111,6 +111,8 @@ function JobCard({ job, onApply }) {
 
 // Memoize to prevent unnecessary re-renders
 export default memo(JobCard, (prevProps, nextProps) => {
-  return prevProps.job._id === nextProps.job._id && 
-         prevProps.onApply === nextProps.onApply;
+  return (
+    prevProps.job._id === nextProps.job._id &&
+    prevProps.onApply === nextProps.onApply
+  );
 });

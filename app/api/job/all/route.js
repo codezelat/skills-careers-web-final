@@ -34,7 +34,7 @@ export async function GET(req) {
     const count = jobs.length;
 
     // Add smart caching: public jobs can be cached, admin views shouldn't be
-    const cacheControl = showAll 
+    const cacheControl = showAll
       ? "no-store, no-cache, must-revalidate"
       : "public, s-maxage=30, stale-while-revalidate=15";
 
