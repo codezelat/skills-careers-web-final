@@ -2,7 +2,7 @@
 import NavBar from "@/components/navBar";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react"; 
+import { useEffect, useState } from "react";
 
 function EditDashboardForm() {
   const router = useRouter();
@@ -85,7 +85,6 @@ function EditDashboardForm() {
 
   return (
     <div className="p-4">
-
       <div className="grid justify-items-center bg-white shadow-lg rounded-lg p-4 m-2">
         <button
           onClick={handleCloseForm}
