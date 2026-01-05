@@ -269,7 +269,7 @@ function JobsClient() {
               selected={selectedIndustry || "Industry"}
               dropdownItems={[
                 "All Industries",
-                ...jobCategories.map(cat => cat.name)
+                ...jobCategories.map((cat) => cat.name),
               ]}
               onSelect={(industry) => {
                 setSelectedIndustry(
