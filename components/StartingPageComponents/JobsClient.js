@@ -84,7 +84,8 @@ function JobsClient() {
           const recruiterData = recruiterMap[job.recruiterId] || {};
           return {
             ...job,
-            industry: recruiterData.industry || "Unknown",
+            industry:
+              recruiterData.industry || recruiterData.category || "Unknown",
             recruiterName: recruiterData.recruiterName || "Unknown",
             logo: recruiterData.logo || "/images/default-image.jpg",
           };
@@ -142,7 +143,8 @@ function JobsClient() {
           const recruiterData = recruiterMap[job.recruiterId] || {};
           return {
             ...job,
-            industry: recruiterData.industry || "Unknown",
+            industry:
+              recruiterData.industry || recruiterData.category || "Unknown",
             recruiterName: recruiterData.recruiterName || "Unknown",
             logo: recruiterData.logo || "/images/default-image.jpg",
           };
@@ -180,14 +182,32 @@ function JobsClient() {
 
     if (selectedIndustry) {
       filtered = filtered.filter((job) => {
-        const jobIndustry = job.industry?.toLowerCase().trim() || "";
+        if (!job.industry || job.industry === "Unknown") return false;
+
+        const jobIndustry = job.industry.toLowerCase().trim();
         const selected = selectedIndustry.toLowerCase().trim();
-        // Exact match or partial match for better compatibility
-        return (
-          jobIndustry === selected ||
-          jobIndustry.includes(selected) ||
-          selected.includes(jobIndustry)
-        );
+
+        // Direct exact match (case-insensitive)
+        if (jobIndustry === selected) return true;
+
+        // Normalize & and 'and' for comparison
+        const normalizeText = (text) => {
+          return text
+            .replace(/\s*&\s*/g, " and ")
+            .replace(/\s+/g, " ")
+            .trim();
+        };
+
+        const normalizedJobIndustry = normalizeText(jobIndustry);
+        const normalizedSelected = normalizeText(selected);
+
+        if (normalizedJobIndustry === normalizedSelected) return true;
+
+        // Check if either contains the other (for partial matches)
+        if (normalizedJobIndustry.includes(normalizedSelected)) return true;
+        if (normalizedSelected.includes(normalizedJobIndustry)) return true;
+
+        return false;
       });
     }
 
@@ -222,6 +242,15 @@ function JobsClient() {
   const locations = [...new Set(jobs.map((job) => job.location))].filter(
     Boolean
   );
+
+  // Combine predefined categories with actual industries from jobs
+  // This ensures we show both standard categories and any custom ones
+  const allIndustries = [
+    ...new Set([
+      ...jobCategories.map((cat) => cat.name),
+      ...industries.filter((ind) => ind !== "Unknown"),
+    ]),
+  ].sort();
 
   // Extract unique job types from all jobs
   const jobTypes = [
@@ -281,10 +310,7 @@ function JobsClient() {
             <DropdownButton
               buttonName="Industry"
               selected={selectedIndustry || "Industry"}
-              dropdownItems={[
-                "All Industries",
-                ...jobCategories.map((cat) => cat.name),
-              ]}
+              dropdownItems={["All Industries", ...allIndustries]}
               onSelect={(industry) => {
                 setSelectedIndustry(
                   industry === "All Industries" ? null : industry

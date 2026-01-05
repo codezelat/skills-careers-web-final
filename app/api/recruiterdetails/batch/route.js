@@ -43,7 +43,8 @@ export async function POST(req) {
         _id: recruiter._id,
         recruiterName: recruiter.recruiterName,
         logo: recruiter.logo,
-        industry: recruiter.industry,
+        industry: recruiter.industry || recruiter.category, // Support both fields
+        category: recruiter.category || recruiter.industry, // Support both fields
         companyDescription: recruiter.companyDescription,
       };
     });

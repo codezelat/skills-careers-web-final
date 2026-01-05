@@ -8,6 +8,7 @@ import RecruiterSearch from "@/components/RecruiterSearch";
 import DropdownButton from "@/components/dropDownButton";
 import RecruiterCard from "../recruiterCard";
 import RecruiterLoading from "@/components/RecruiterLoading";
+import jobCategories from "@/data/jobCategories.json";
 
 export default function RecruitersContent() {
   const { data: session, status } = useSession();
@@ -48,33 +49,37 @@ export default function RecruitersContent() {
     let filtered = recruiters;
 
     if (selectedCategory) {
-      filtered = filtered.filter(
-        (recruiter) =>
-          (recruiter.category || recruiter.industry)?.toLowerCase() ===
-          selectedCategory.toLowerCase()
-      );
+      filtered = filtered.filter((recruiter) => {
+        const recruiterCategory =
+          (recruiter.category || recruiter.industry)?.toLowerCase().trim() ||
+          "";
+        const selected = selectedCategory.toLowerCase().trim();
+        // Exact match or partial match for better compatibility
+        return (
+          recruiterCategory === selected ||
+          recruiterCategory.includes(selected) ||
+          selected.includes(recruiterCategory)
+        );
+      });
     }
 
     if (selectedLocation) {
       filtered = filtered.filter((recruiter) => {
+        const selectedLower = selectedLocation.toLowerCase().trim();
+
         // Match by full location string (for backward compatibility)
-        if (
-          recruiter.location?.toLowerCase() === selectedLocation.toLowerCase()
-        ) {
+        if (recruiter.location?.toLowerCase().trim() === selectedLower) {
           return true;
         }
         // Match by district or province
         if (
-          recruiter.district?.toLowerCase() ===
-            selectedLocation.toLowerCase() ||
-          recruiter.province?.toLowerCase() === selectedLocation.toLowerCase()
+          recruiter.district?.toLowerCase().trim() === selectedLower ||
+          recruiter.province?.toLowerCase().trim() === selectedLower
         ) {
           return true;
         }
         // Match by country
-        if (
-          recruiter.country?.toLowerCase() === selectedLocation.toLowerCase()
-        ) {
+        if (recruiter.country?.toLowerCase().trim() === selectedLower) {
           return true;
         }
         return false;
@@ -96,9 +101,6 @@ export default function RecruitersContent() {
     return Array.from(locationSet).filter(Boolean).sort();
   };
 
-  const categories = [
-    ...new Set(recruiters.map((r) => r.category || r.industry)),
-  ].filter(Boolean);
   const locations = getUniqueLocations();
 
   const handleSearchResults = (results) => {
@@ -134,7 +136,10 @@ export default function RecruitersContent() {
           <DropdownButton
             buttonName="Category"
             selected={selectedCategory || "Category"}
-            dropdownItems={["All Categories", ...categories]}
+            dropdownItems={[
+              "All Categories",
+              ...jobCategories.map((cat) => cat.name),
+            ]}
             onSelect={(category) => {
               setSelectedCategory(
                 category === "All Categories" ? null : category
@@ -155,7 +160,68 @@ export default function RecruitersContent() {
           />
         </div>
 
-        <div className="w-full pt-20">
+        {/* Active Filters Display */}
+        {(selectedCategory || selectedLocation) && (
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <span className="text-sm font-semibold text-[#001571]">
+              Active Filters:
+            </span>
+            {selectedCategory && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#001571] text-white">
+                {selectedCategory}
+                <button
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    setSearchResults(null);
+                  }}
+                  className="ml-2 hover:text-red-300"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {selectedLocation && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#001571] text-white">
+                {selectedLocation}
+                <button
+                  onClick={() => {
+                    setSelectedLocation(null);
+                    setSearchResults(null);
+                  }}
+                  className="ml-2 hover:text-red-300"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            <button
+              onClick={() => {
+                setSelectedCategory(null);
+                setSelectedLocation(null);
+                setSearchResults(null);
+              }}
+              className="text-sm font-medium text-red-600 hover:text-red-800 underline"
+            >
+              Clear All
+            </button>
+          </div>
+        )}
+
+        <div className="w-full pt-8">
+          {/* Results Count */}
+          {!isLoading && (
+            <div className="mb-4">
+              <p className="text-[#001571] font-semibold">
+                {filteredRecruiters.length}{" "}
+                {filteredRecruiters.length === 1 ? "Recruiter" : "Recruiters"}{" "}
+                Found
+                {(selectedCategory || selectedLocation) && (
+                  <span className="text-gray-600 font-normal"> (filtered)</span>
+                )}
+              </p>
+            </div>
+          )}
+
           {isLoading ? (
             <RecruiterLoading />
           ) : filteredRecruiters.length > 0 ? (
