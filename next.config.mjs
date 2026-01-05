@@ -1,13 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "res.cloudinary.com",
-      "lh3.googleusercontent.com",
-      "flagcdn.com",
-      "media.licdn.com",
-      "licdn.com",
-    ], // Add Google and LinkedIn domains
     remotePatterns: [
       {
         protocol: "https",
