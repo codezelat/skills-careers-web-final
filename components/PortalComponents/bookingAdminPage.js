@@ -31,12 +31,6 @@ export default function BookingAdminPage(props) {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchTicketEnrollments();
-    }
-  }, [session, fetchTicketEnrollments]);
-
   // Fetch enrolled ticket details
   const fetchTicketEnrollments = useCallback(async () => {
     try {
