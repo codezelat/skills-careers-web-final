@@ -21,6 +21,7 @@ export default function RecruitersTicketsPage(props) {
     const [tickets, setTickets] = useState([]);
     const [error, setError] = useState(null);
     const [isEditFormVisible, setIsEditFormVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [formData, setFormData] = useState({
         name: "",
@@ -323,13 +324,24 @@ export default function RecruitersTicketsPage(props) {
         }
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value.toLowerCase());
+    };
+
+    const filteredTickets = tickets.filter(ticket => {
+        if (!searchQuery) return true;
+        return ticket.name?.toLowerCase().includes(searchQuery) ||
+               ticket.location?.toLowerCase().includes(searchQuery) ||
+               ticket.description?.toLowerCase().includes(searchQuery);
+    });
+
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const ticketsPerPage = 6;
-    const totalPages = Math.ceil(tickets.length / ticketsPerPage);
+    const totalPages = Math.ceil(filteredTickets.length / ticketsPerPage);
     const indexOfLastTicket = currentPage * ticketsPerPage;
     const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
-    const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
+    const currentTickets = filteredTickets.slice(indexOfFirstTicket, indexOfLastTicket);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
@@ -376,6 +388,8 @@ export default function RecruitersTicketsPage(props) {
                             <input
                                 type="text"
                                 placeholder="Search Events..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
                                 className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
                             />
                         </div>
