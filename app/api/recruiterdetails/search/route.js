@@ -22,19 +22,24 @@ export async function GET(req) {
     const searchRegex = new RegExp(query, "i");
 
     // Perform the search using MongoDB
-    // Note: recruiterId is usually _id in Mongo, but we are searching Name and Email as per original requirements
+    // Search by name, email, location, district, province, or country
     const recruiters = await db
       .collection("recruiters")
       .find({
         $or: [
           { recruiterName: { $regex: searchRegex } },
           { email: { $regex: searchRegex } },
+          { location: { $regex: searchRegex } },
+          { district: { $regex: searchRegex } },
+          { province: { $regex: searchRegex } },
+          { country: { $regex: searchRegex } },
+          { category: { $regex: searchRegex } },
         ],
       })
       .toArray();
 
-    // No specific transform was needed in original code other than _source spread, 
-    // but here we just return the docs directly. 
+    // No specific transform was needed in original code other than _source spread,
+    // but here we just return the docs directly.
     // If client needs specific fields we can map them, but Mongo returns full doc by default.
 
     // For debugging - log the results
@@ -56,4 +61,3 @@ export async function GET(req) {
     }
   }
 }
-

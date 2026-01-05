@@ -16,6 +16,28 @@ import { BiSolidCategory } from "react-icons/bi";
 import { TbUserHexagon } from "react-icons/tb";
 import { PiSealCheckFill } from "react-icons/pi";
 
+// Helper function to format address
+const formatAddress = (recruiter) => {
+  const { addressLine, district, province, country, location } = recruiter;
+  const parts = [];
+
+  if (addressLine) parts.push(addressLine);
+
+  if (country === "Sri Lanka" || !country) {
+    // For Sri Lanka, show district, province
+    if (district) parts.push(district);
+    if (province && province !== district) parts.push(province);
+    parts.push("Sri Lanka");
+  } else {
+    // For other countries, show country
+    if (country) parts.push(country);
+  }
+
+  return (
+    parts.filter(Boolean).join(", ") || location || "Location not specified"
+  );
+};
+
 function RecruiterCard(props) {
   const {
     _id,
@@ -92,23 +114,38 @@ function RecruiterCard(props) {
                 </h3>
                 <div className="flex space-x-3 mt-2 md:mt-0 text-[#001571]">
                   {linkedin && (
-                    <Link href={linkedin} target="_blank" rel="noopener noreferrer">
+                    <Link
+                      href={linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <LinkedIn fontSize="large" aria-label="LinkedIn" />
                     </Link>
                   )}
                   {instagram && (
-                    <Link href={instagram} target="_blank" rel="noopener noreferrer">
+                    <Link
+                      href={instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Instagram fontSize="large" aria-label="Instagram" />
                     </Link>
                   )}
                   {facebook && (
-                    <Link href={facebook} target="_blank" rel="noopener noreferrer">
+                    <Link
+                      href={facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Facebook fontSize="large" aria-label="Facebook" />
                     </Link>
                   )}
                   {x && (
                     <Link href={x} target="_blank" rel="noopener noreferrer">
-                      <XIcon fontSize="large" aria-label="X (formerly Twitter)" />
+                      <XIcon
+                        fontSize="large"
+                        aria-label="X (formerly Twitter)"
+                      />
                     </Link>
                   )}
                 </div>
@@ -118,7 +155,7 @@ function RecruiterCard(props) {
                 <div className="flex items-center gap-2">
                   <FaLocationDot size={20} className="text-[#001571]" />
                   <p className="text-black font-semibold">
-                    {location}
+                    {formatAddress(props.recruiter)}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -153,7 +190,10 @@ function RecruiterCard(props) {
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 mt-4 justify-end">
-            <button onClick={handleViewProfile} className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md">
+            <button
+              onClick={handleViewProfile}
+              className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md"
+            >
               <p className="flex text-lg font-bold justify-center">
                 View Profile
                 <span className="ml-3 mt-1 font-bold text-lg">

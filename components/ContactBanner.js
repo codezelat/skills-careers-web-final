@@ -21,7 +21,7 @@ export default function ContactBanner() {
               <FaMailBulk size={22} className="flex-shrink-0" />
               <div className="flex flex-col">
                 <div className="font-semibold text-sm">Email</div>
-                <div className="text-xs">recruiter@skillscareers.com</div>
+                <div className="text-xs">recruiter@skillscareers.lk</div>
               </div>
             </div>
 

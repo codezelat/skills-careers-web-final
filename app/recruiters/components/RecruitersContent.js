@@ -56,21 +56,50 @@ export default function RecruitersContent() {
     }
 
     if (selectedLocation) {
-      filtered = filtered.filter(
-        (recruiter) =>
+      filtered = filtered.filter((recruiter) => {
+        // Match by full location string (for backward compatibility)
+        if (
           recruiter.location?.toLowerCase() === selectedLocation.toLowerCase()
-      );
+        ) {
+          return true;
+        }
+        // Match by district or province
+        if (
+          recruiter.district?.toLowerCase() ===
+            selectedLocation.toLowerCase() ||
+          recruiter.province?.toLowerCase() === selectedLocation.toLowerCase()
+        ) {
+          return true;
+        }
+        // Match by country
+        if (
+          recruiter.country?.toLowerCase() === selectedLocation.toLowerCase()
+        ) {
+          return true;
+        }
+        return false;
+      });
     }
 
     setFilteredRecruiters(filtered);
   }, [selectedCategory, selectedLocation, recruiters, searchResults]);
 
+  // Extract unique locations - include districts, provinces, and countries
+  const getUniqueLocations = () => {
+    const locationSet = new Set();
+    recruiters.forEach((r) => {
+      if (r.district) locationSet.add(r.district);
+      if (r.province) locationSet.add(r.province);
+      if (r.country && r.country !== "Sri Lanka") locationSet.add(r.country);
+      if (r.location && !r.district && !r.province) locationSet.add(r.location);
+    });
+    return Array.from(locationSet).filter(Boolean).sort();
+  };
+
   const categories = [
     ...new Set(recruiters.map((r) => r.category || r.industry)),
   ].filter(Boolean);
-  const locations = [...new Set(recruiters.map((r) => r.location))].filter(
-    Boolean
-  );
+  const locations = getUniqueLocations();
 
   const handleSearchResults = (results) => {
     setSearchResults(results);

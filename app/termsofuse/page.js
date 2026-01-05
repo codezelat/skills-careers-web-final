@@ -9,7 +9,7 @@ export default function TermsofUse() {
         <p className="text-base text-justify mb-4">
           Welcome to Skills Careers! These Terms and Conditions outline the
           rules and regulations for using our website,
-          http://www.skillscareers.com. By accessing and using this website, you
+          http://www.skillscareers.lk. By accessing and using this website, you
           agree to be bound by these terms. If you do not agree with any part of
           these Terms, please do not use our website.
         </p>
@@ -23,7 +23,7 @@ export default function TermsofUse() {
             <br />
             Address: Skills Careers, SEGA Center, Soysapura, Moratuwa, Sri Lanka
             <br />
-            Contact Email: info@skillscareers.com <br />
+            Contact Email: info@skillscareers.lk <br />
             <br />
             Our services are accessible globally. While governed primarily by
             the laws of Sri Lanka, users are responsible for ensuring compliance
@@ -133,7 +133,7 @@ export default function TermsofUse() {
           <p className="mb-2">
             We respect intellectual property rights. If you believe any content
             on our website infringes upon your copyright, contact us at
-            info@skillscareers.com with detailed information.
+            info@skillscareers.lk with detailed information.
             <br />
             We will investigate and take necessary actions, including removing
             the infringing content if required.
@@ -205,7 +205,7 @@ export default function TermsofUse() {
           <p className="text-lg font-semibold">14. Contact Us</p>
           <p className="mb-2">
             If you have any questions regarding these Terms and Conditions,
-            please contact us at: 📧 Email: info@skillscareers.com
+            please contact us at: 📧 Email: info@skillscareers.lk
           </p>
         </div>
       </div>

@@ -1347,8 +1347,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Documentation**: [Wiki](https://github.com/yourusername/skills-careers/wiki)
 - **Issues**: [GitHub Issues](https://github.com/yourusername/skills-careers/issues)
-- **Email**: support@skillscareers.com
-- **Website**: [skillscareers.com](https://skillscareers.com)
+- **Email**: support@skillscareers.lk
+- **Website**: [skillscareers.lk](https://skillscareers.lk)
 
 ---
 
