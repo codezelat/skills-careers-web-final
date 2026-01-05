@@ -172,24 +172,27 @@ function JobsClient() {
 
     if (selectedLocation) {
       filtered = filtered.filter(
-        (job) => job.location.toLowerCase() === selectedLocation.toLowerCase()
+        (job) => job.location?.toLowerCase().trim() === selectedLocation.toLowerCase().trim()
       );
     }
 
     if (selectedIndustry) {
-      filtered = filtered.filter(
-        (job) => job.industry.toLowerCase() === selectedIndustry.toLowerCase()
-      );
+      filtered = filtered.filter((job) => {
+        const jobIndustry = job.industry?.toLowerCase().trim() || '';
+        const selected = selectedIndustry.toLowerCase().trim();
+        // Exact match or partial match for better compatibility
+        return jobIndustry === selected || jobIndustry.includes(selected) || selected.includes(jobIndustry);
+      });
     }
 
     if (selectedJobType) {
       filtered = filtered.filter((job) => {
         if (Array.isArray(job.jobTypes)) {
           return job.jobTypes.some(
-            (type) => type.toLowerCase() === selectedJobType.toLowerCase()
+            (type) => type?.toLowerCase().trim() === selectedJobType.toLowerCase().trim()
           );
         }
-        return job.jobTypes?.toLowerCase() === selectedJobType.toLowerCase();
+        return job.jobTypes?.toLowerCase().trim() === selectedJobType.toLowerCase().trim();
       });
     }
 
@@ -290,8 +293,80 @@ function JobsClient() {
               }}
             />
           </div>
+
+          {/* Active Filters Display */}
+          {(selectedLocation || selectedIndustry || selectedJobType) && (
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="text-sm font-semibold text-[#001571]">Active Filters:</span>
+              {selectedLocation && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#001571] text-white">
+                  {selectedLocation}
+                  <button
+                    onClick={() => {
+                      setSelectedLocation(null);
+                      setSearchResults(null);
+                    }}
+                    className="ml-2 hover:text-red-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              {selectedIndustry && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#001571] text-white">
+                  {selectedIndustry}
+                  <button
+                    onClick={() => {
+                      setSelectedIndustry(null);
+                      setSearchResults(null);
+                    }}
+                    className="ml-2 hover:text-red-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              {selectedJobType && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#001571] text-white">
+                  {selectedJobType}
+                  <button
+                    onClick={() => {
+                      setSelectedJobType(null);
+                      setSearchResults(null);
+                    }}
+                    className="ml-2 hover:text-red-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              <button
+                onClick={() => {
+                  setSelectedLocation(null);
+                  setSelectedIndustry(null);
+                  setSelectedJobType(null);
+                  setSearchResults(null);
+                }}
+                className="text-sm font-medium text-red-600 hover:text-red-800 underline"
+              >
+                Clear All
+              </button>
+            </div>
+          )}
         </div>
         <div className="grid w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] mt-20 z-[1]">
+          {/* Results Count */}
+          {!isLoading && (
+            <div className="mb-4">
+              <p className="text-[#001571] font-semibold">
+                {filteredJobs.length} {filteredJobs.length === 1 ? 'Job' : 'Jobs'} Found
+                {(selectedLocation || selectedIndustry || selectedJobType) && (
+                  <span className="text-gray-600 font-normal"> (filtered)</span>
+                )}
+              </p>
+            </div>
+          )}
+          
           {isLoading ? (
             <JobLoading />
           ) : filteredJobs.length > 0 ? (
