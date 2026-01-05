@@ -17,6 +17,7 @@ export default function Recruiters() {
   const [recruiters, setRecruiters] = useState([]);
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,8 +71,22 @@ export default function Recruiters() {
   };
 
   useEffect(() => {
-    filterRecruiters(recruiters, searchQuery, activeTab);
-  }, [searchQuery, activeTab, recruiters]);
+    // If we have search results from RecruiterSearch component, use those
+    if (searchResults !== null) {
+      const filtered = searchResults.filter((recruiter) => {
+        const matchesTab = activeTab === "all" ? true : recruiter.isRestricted;
+        return matchesTab;
+      });
+      setFilteredRecruiters(filtered);
+    } else {
+      // Otherwise, use normal filtering
+      filterRecruiters(recruiters, searchQuery, activeTab);
+    }
+  }, [searchQuery, activeTab, recruiters, searchResults]);
+
+  const handleSearchResults = (results) => {
+    setSearchResults(results);
+  };
 
   const handleRecruiterUpdate = (updatedRecruiter) => {
     setRecruiters((prev) =>
@@ -235,7 +250,7 @@ export default function Recruiters() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div> */}
-      <RecruiterSearch />
+      <RecruiterSearch onSearchResults={handleSearchResults} />
 
       <div className="w-full overflow-x-auto">
         <table className="w-full border-collapse">

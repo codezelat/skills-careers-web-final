@@ -18,7 +18,7 @@ export default function RecruiterSearch({ onSearchResults }) {
         );
         if (!recruitersResponse.ok) throw new Error("Recruiter search failed");
         const recruitersData = await recruitersResponse.json();
-        
+
         // Pass the results up to the parent component
         onSearchResults(recruitersData.recruiters);
       } catch (error) {
@@ -48,12 +48,12 @@ export default function RecruiterSearch({ onSearchResults }) {
         <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center gap-4 rounded-md py-1 md:py-2 px-1 md:px-4">
           <input
             type="text"
-            placeholder="Search by recruiter name, industry, or location."
+            placeholder="Search by recruiter name"
             value={searchQuery}
             onChange={handleRecruiterChange}
             className="bg-gray-200 w-full text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
           />
-          <button 
+          <button
             onClick={handleSearch}
             className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5 bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold"
           >
