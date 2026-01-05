@@ -22,7 +22,7 @@ import EducationCard from "@/components/PortalComponents/educationCard";
 import CertificationCard from "@/components/PortalComponents/certificationCard";
 import ProfileEditFormPopup from "@/app/Portal/candidates/ProfileEditForm";
 import BioEditFormPopup from "@/app/Portal/candidates/BioDataForm";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiInfo } from "react-icons/fi";
 import { GoPencil } from "react-icons/go";
 import ExperienceCardEdit from "./experienceCardEdit";
 import EducationCardEdit from "./educationCardEdit";
@@ -175,6 +175,7 @@ export default function CandidateProfile() {
     useState(false);
   const [openEditSoftskillsForm, setOpenEditSoftskillsForm] = useState(false);
   const [openCreateExpertiseForm, setOpenCreateExpertiseForm] = useState(false);
+  const [showExpertiseInfoCreate, setShowExpertiseInfoCreate] = useState(false);
   const [openEditExpertiseForm, setOpenEditExpertiseForm] = useState(false);
 
   const [jobSeekerDetails, setJobseekerDetails] = useState([]);
@@ -1925,15 +1926,38 @@ export default function CandidateProfile() {
               {/* Scrollable Form Content */}
               <div className="flex-1 overflow-y-auto px-6 py-4">
                 <form onSubmit={handleAddExpertise} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
-                      Professional Expertise
-                    </label>
+                  <div className="relative">
+                    <div className="flex items-center gap-2">
+                      <label className="block text-sm font-semibold text-[#001571]">
+                        Professional Expertise
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowExpertiseInfoCreate(!showExpertiseInfoCreate)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <FiInfo size={18} />
+                      </button>
+                    </div>
+                    {showExpertiseInfoCreate && (
+                      <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900 relative">
+                        <button
+                          type="button"
+                          onClick={() => setShowExpertiseInfoCreate(false)}
+                          className="absolute top-2 right-2 text-blue-500 hover:text-blue-700"
+                        >
+                          <FaTimes size={14} />
+                        </button>
+                        <p className="font-semibold mb-1">Your job/technical skills</p>
+                        <p className="text-xs">Example: Java, SQL, Accounting, Project Management</p>
+                      </div>
+                    )}
                     <input
                       type="text"
                       name="professionalExpertise"
                       value={newExpertise}
                       onChange={(e) => setNewExpertise(e.target.value)}
+                      onFocus={() => setShowExpertiseInfoCreate(true)}
                       className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                     />
                   </div>

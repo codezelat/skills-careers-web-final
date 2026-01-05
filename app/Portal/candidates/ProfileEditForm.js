@@ -1,7 +1,9 @@
 "use client";
+import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import PhoneNumberInput from "@/components/PhoneInput";
 import { PiCheckCircle } from "react-icons/pi";
+import { FiInfo } from "react-icons/fi";
 
 export default function NameEditForm({
   userDetails,
@@ -12,6 +14,8 @@ export default function NameEditForm({
   isSubmitting,
   onClose,
 }) {
+  const [showPositionInfo, setShowPositionInfo] = useState(false);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       {/* Popup Container */}
@@ -59,16 +63,49 @@ export default function NameEditForm({
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-[#001571]">
-                  Position
-                </label>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-semibold text-[#001571]">
+                    Position
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPositionInfo(!showPositionInfo)}
+                    className="text-[#001571] hover:text-blue-600 transition-colors p-1 rounded-full hover:bg-blue-50"
+                    title="Position guide"
+                  >
+                    <FiInfo size={18} />
+                  </button>
+                </div>
+                
+                {showPositionInfo && (
+                  <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                    <div className="flex items-start">
+                      <FiInfo className="text-blue-600 mt-0.5 mr-2 flex-shrink-0" size={16} />
+                      <div>
+                        <p className="text-xs font-semibold text-blue-900 mb-1">Position Guide:</p>
+                        <p className="text-xs text-blue-800">Your last or current job title</p>
+                        <p className="text-xs text-blue-700 mt-1 italic">Example: Sales Manager, Software Engineer, Marketing Coordinator</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowPositionInfo(false)}
+                        className="ml-auto text-blue-400 hover:text-blue-600"
+                      >
+                        <FaTimes size={14} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
                 <input
                   type="text"
                   name="position"
                   value={jobSeekerDetails.position || ""}
                   onChange={handleInputChange}
-                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  onFocus={() => setShowPositionInfo(true)}
+                  className="block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  placeholder="e.g., Sales Manager"
                 />
               </div>
               <PhoneNumberInput

@@ -4,6 +4,7 @@ import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import PhoneNumberInput from "@/components/PhoneInput";
 import { PiCheckCircle } from "react-icons/pi";
+import { FiInfo } from "react-icons/fi";
 
 const RECRUITER_CATEGORIES = [
   "IT & Software",
@@ -49,6 +50,7 @@ export default function RecruiterEdit({
     recruiterDetails.category &&
       !RECRUITER_CATEGORIES.includes(recruiterDetails.category)
   );
+  const [showAddressInfo, setShowAddressInfo] = useState(false);
 
   const handleCategoryChange = (e) => {
     const val = e.target.value;
@@ -95,15 +97,38 @@ export default function RecruiterEdit({
                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
               />
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-[#001571]">
-                Location
-              </label>
+            <div className="relative">
+              <div className="flex items-center gap-2">
+                <label className="block text-sm font-semibold text-[#001571]">
+                  Address
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowAddressInfo(!showAddressInfo)}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  <FiInfo size={18} />
+                </button>
+              </div>
+              {showAddressInfo && (
+                <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900 relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressInfo(false)}
+                    className="absolute top-2 right-2 text-blue-500 hover:text-blue-700"
+                  >
+                    <FaTimes size={14} />
+                  </button>
+                  <p className="font-semibold mb-1">Address format:</p>
+                  <p className="text-xs">Home No., Lane/Road, City, Province, Country.</p>
+                </div>
+              )}
               <input
                 type="text"
                 name="location"
                 value={recruiterDetails.location || ""}
                 onChange={onInputChange}
+                onFocus={() => setShowAddressInfo(true)}
                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
               />
             </div>
