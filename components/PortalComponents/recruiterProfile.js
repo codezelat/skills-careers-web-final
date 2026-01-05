@@ -386,16 +386,16 @@ export default function RecruiterProfile({ slug }) {
               {/* Social Links */}
               <div className="pr-8 sm:pr-6 flex justify-end mt-4 space-x-2 sm:space-x-4 text-blue-900 ">
                 <a href={recruiterDetails.linkedin}>
-                  <FaLinkedin size={30} className="cursor-pointer" />
+                  <FaLinkedin size={24} className="cursor-pointer" />
                 </a>
                 <a href={recruiterDetails.x}>
-                  <FaTwitter size={30} className="cursor-pointer" />
+                  <FaTwitter size={24} className="cursor-pointer" />
                 </a>
                 <a href={recruiterDetails.instagram}>
-                  <FaInstagram size={30} className="cursor-pointer" />
+                  <FaInstagram size={24} className="cursor-pointer" />
                 </a>
                 <a href={recruiterDetails.facebook}>
-                  <FaFacebook size={30} className="cursor-pointer" />
+                  <FaFacebook size={24} className="cursor-pointer" />
                 </a>
                 <a href={recruiterDetails.github}>
                   <FaGithub size={30} className="cursor-pointer" />
