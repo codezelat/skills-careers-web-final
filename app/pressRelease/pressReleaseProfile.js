@@ -26,24 +26,25 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
   const date = formatDate(pressreleaseDetails.createdAt);
 
   useEffect(() => {
-    if (session?.user?.email) {
-      const fetchPressreleases = async () => {
-        try {
-          const response = await fetch(`/api/pressrelease/get?id=${slug}`);
-          if (!response.ok) {
-            throw new Error("Failed to fetch Press.");
-          }
-          const data = await response.json();
-          setPressreleaseDetails(data.pressrelease);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
+    const fetchPressreleases = async () => {
+      try {
+        const response = await fetch(`/api/pressrelease/get?id=${slug}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch Press.");
         }
-      };
+        const data = await response.json();
+        setPressreleaseDetails(data.pressrelease);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) {
       fetchPressreleases();
     }
-  }, [session, slug]);
+  }, [slug]);
 
   return (
     <div className="flex flex-col p-6 bg-white rounded-xl min-h-screen">
