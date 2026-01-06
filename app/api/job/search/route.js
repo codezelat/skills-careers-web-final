@@ -35,6 +35,8 @@ export async function GET(req) {
       })
       .toArray();
 
+
+
     // Transform _id to string to match previous format if necessary, 
     // although client component might handle _id. 
     // The previous implementation mapped _id to jobId.

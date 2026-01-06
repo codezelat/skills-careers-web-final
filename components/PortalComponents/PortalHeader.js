@@ -61,11 +61,18 @@ export default function HeaderSection() {
 
       // Filter by job type if not "All"
       if (jobType !== "All") {
-        jobs = jobs.filter((job) =>
-          Array.isArray(job.jobTypes)
-            ? job.jobTypes.includes(jobType)
-            : job.jobTypes === jobType
-        );
+        const normalize = (str) =>
+          str ? str.toLowerCase().replace(/[^a-z0-9]/g, "") : "";
+        const normalizedSelected = normalize(jobType);
+
+        jobs = jobs.filter((job) => {
+          if (Array.isArray(job.jobTypes)) {
+            return job.jobTypes.some(
+              (t) => normalize(t) === normalizedSelected
+            );
+          }
+          return normalize(job.jobTypes) === normalizedSelected;
+        });
       }
 
       // Get top 5 jobs

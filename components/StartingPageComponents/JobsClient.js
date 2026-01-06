@@ -163,14 +163,8 @@ function JobsClient() {
   }, []);
 
   useEffect(() => {
-    // If we have search results, use those
-    if (searchResults !== null) {
-      setFilteredJobs(searchResults);
-      return;
-    }
-
-    // Otherwise, filter based on dropdowns
-    let filtered = jobs;
+    // Start with search results if available, otherwise use all jobs
+    let filtered = searchResults !== null ? searchResults : jobs;
 
     if (selectedLocation) {
       filtered = filtered.filter(
@@ -212,18 +206,17 @@ function JobsClient() {
     }
 
     if (selectedJobType) {
+      const normalize = (str) =>
+        str ? str.toLowerCase().replace(/[^a-z0-9]/g, "") : "";
+      const normalizedSelected = normalize(selectedJobType);
+
       filtered = filtered.filter((job) => {
         if (Array.isArray(job.jobTypes)) {
           return job.jobTypes.some(
-            (type) =>
-              type?.toLowerCase().trim() ===
-              selectedJobType.toLowerCase().trim()
+            (type) => normalize(type) === normalizedSelected
           );
         }
-        return (
-          job.jobTypes?.toLowerCase().trim() ===
-          selectedJobType.toLowerCase().trim()
-        );
+        return normalize(job.jobTypes) === normalizedSelected;
       });
     }
 
