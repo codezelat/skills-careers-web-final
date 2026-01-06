@@ -7,8 +7,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
 
-    // For debugging - log the search query
-    console.log("Search query:", query);
+
 
     if (!query || query.length < 2) {
       return NextResponse.json({ jobs: [] });
@@ -46,8 +45,7 @@ export async function GET(req) {
       _id: undefined, // Remove original _id to avoid confusion if jobId is used
     }));
 
-    // For debugging - log the results
-    console.log(`Found ${formattedJobs.length} jobs matching "${query}"`);
+
 
     return NextResponse.json({ jobs: formattedJobs });
   } catch (error) {
