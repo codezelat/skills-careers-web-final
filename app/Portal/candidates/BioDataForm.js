@@ -27,12 +27,11 @@ export default function BioDataForm({
   const [religionSuggestions, setReligionSuggestions] = useState([]);
   const [showReligionSuggestions, setShowReligionSuggestions] = useState(false);
 
-  const [languageSuggestions, setLanguageSuggestions] = useState([]);
-  const [showLanguageSuggestions, setShowLanguageSuggestions] = useState(false);
+
 
   const [showOtherNationality, setShowOtherNationality] = useState(
     jobSeekerDetails.nationality &&
-      jobSeekerDetails.nationality !== "Sri Lankan"
+    jobSeekerDetails.nationality !== "Sri Lankan"
   );
 
   const [showAddressFormat, setShowAddressFormat] = useState(false);
@@ -55,25 +54,41 @@ export default function BioDataForm({
     }
   };
 
-  const handleLocationChange = (e) => {
-    const district = e.target.value;
-    const selectedDistrict = sriLankaDistricts.find(
-      (d) => d.value === district
-    );
+  // Filters
+  const uniqueProvinces = [
+    ...new Set(sriLankaDistricts.map((item) => item.province)),
+  ];
 
-    if (selectedDistrict) {
-      handleInputChange({
-        target: { name: "district", value: selectedDistrict.district },
-      });
-      handleInputChange({
-        target: { name: "province", value: selectedDistrict.province },
-      });
-    } else {
-      // Handle case where district might be cleared
-      handleInputChange({
-        target: { name: "district", value: district },
-      });
-    }
+  const filteredDistricts = sriLankaDistricts.filter(
+    (item) => item.province === jobSeekerDetails.province
+  );
+
+  const handleProvinceChange = (e) => {
+    const province = e.target.value;
+    handleInputChange({ target: { name: "province", value: province } });
+    handleInputChange({ target: { name: "district", value: "" } }); // Clear district
+  };
+
+  const handleDistrictChange = (e) => {
+    const districtValue = e.target.value;
+    // Find key details if we need them, though storing simple string is fine
+    // const fullDistrictObj = sriLankaDistricts.find(d => d.value === districtValue);
+
+    // We store the district name (e.g. "Colombo") not the full value string if previously matching by value
+    // Checking previous logic: value was full string, but saved as district name.
+    // The select options below will use 'district' not 'value' for cleaner data if preferred, 
+    // or keep 'value' to match existing data. 
+    // Existing data used `d.value` equal to district? 
+    // Looking at JSON: value="Colombo...", district="Colombo"
+    // Previous code: value={district.value} -> stored selectedDistrict.district
+    // So if options return full string, we find and store simple name.
+
+    // Let's assume we want to store the simple district name now for cleaner UI too.
+    // But to match previous behavior of `handleLocationChange` which took `e.target.value` (likely full string from option value)
+    // and matched it to find district. 
+
+    // Let's simplify: value in options will be the District Name directly now.
+    handleInputChange({ target: { name: "district", value: districtValue } });
   };
 
   const handleReligionInputChange = (e) => {
@@ -104,44 +119,50 @@ export default function BioDataForm({
     setShowReligionSuggestions(false);
   };
 
-  const handleLanguageInputChange = (e) => {
-    const { name, value } = e.target;
-    handleInputChange(e);
+  const [showOtherLanguage, setShowOtherLanguage] = useState(false);
+  const [otherLanguage, setOtherLanguage] = useState("");
 
-    // Get the last value after comma
-    const lastValue = value.split(",").pop().trim();
+  const currentLanguages = jobSeekerDetails.languages
+    ? jobSeekerDetails.languages.split(",").map((lang) => lang.trim()).filter(Boolean)
+    : [];
 
-    if (lastValue) {
-      const filtered = LANGUAGES_LIST.filter((lang) =>
-        lang.toLowerCase().startsWith(lastValue.toLowerCase())
-      );
-      setLanguageSuggestions(filtered);
-      setShowLanguageSuggestions(true);
-    } else {
-      setLanguageSuggestions([]);
-      setShowLanguageSuggestions(false);
-    }
-  };
-
-  const selectLanguage = (lang) => {
-    const currentLanguages = jobSeekerDetails.languages
-      ? jobSeekerDetails.languages.split(",")
-      : [];
-    // Remove the last partial entry
-    currentLanguages.pop();
-    // Add the selected language
-    currentLanguages.push(lang);
-
-    const newValue = currentLanguages.join(", ") + ", ";
-
+  const updateLanguages = (newLanguages) => {
     const event = {
       target: {
         name: "languages",
-        value: newValue,
+        value: newLanguages.join(", "),
       },
     };
     handleInputChange(event);
-    setShowLanguageSuggestions(false);
+  };
+
+  const handleLanguageSelect = (e) => {
+    const selectedLang = e.target.value;
+    if (selectedLang === "Other") {
+      setShowOtherLanguage(true);
+    } else {
+      if (!currentLanguages.includes(selectedLang)) {
+        updateLanguages([...currentLanguages, selectedLang]);
+      }
+      e.target.value = ""; // Reset select
+    }
+  };
+
+  const handleAddOtherLanguage = () => {
+    if (otherLanguage.trim()) {
+      if (!currentLanguages.includes(otherLanguage.trim())) {
+        updateLanguages([...currentLanguages, otherLanguage.trim()]);
+      }
+      setOtherLanguage("");
+      setShowOtherLanguage(false);
+    }
+  };
+
+  const removeLanguage = (langToRemove) => {
+    const updatedLanguages = currentLanguages.filter(
+      (lang) => lang !== langToRemove
+    );
+    updateLanguages(updatedLanguages);
   };
 
   const handleNationalityChange = (e) => {
@@ -206,8 +227,8 @@ export default function BioDataForm({
                       ? "Sri Lankan"
                       : jobSeekerDetails.nationality === "" ||
                         !jobSeekerDetails.nationality
-                      ? ""
-                      : "Others"
+                        ? ""
+                        : "Others"
                   }
                   onChange={handleNationalityChange}
                   className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
@@ -250,29 +271,25 @@ export default function BioDataForm({
                 Languages
               </label>
 
-              <div className="flex flex-wrap gap-2 mb-2 p-2 border border-[#B0B6D3] rounded-xl min-h-[50px]">
-                {currentLanguages.map((lang, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
-                  >
-                    {lang}
-                    <button
-                      type="button"
-                      onClick={() => removeLanguage(lang)}
-                      className="ml-2 text-blue-600 hover:text-blue-800"
+              {currentLanguages.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2 p-2 border border-[#B0B6D3] rounded-xl min-h-[50px]">
+                  {currentLanguages.map((lang, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
                     >
-                      <FaTimes size={12} />
-                    </button>
-                  </span>
-                ))}
-
-                {currentLanguages.length === 0 && (
-                  <span className="text-gray-400 text-sm py-1 px-2">
-                    Select languages below
-                  </span>
-                )}
-              </div>
+                      {lang}
+                      <button
+                        type="button"
+                        onClick={() => removeLanguage(lang)}
+                        className="ml-2 text-blue-600 hover:text-blue-800"
+                      >
+                        <FaTimes size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {!showOtherLanguage ? (
                 <select
@@ -385,33 +402,40 @@ export default function BioDataForm({
                   <>
                     <div>
                       <label className="block text-sm font-semibold text-[#001571]">
-                        City (District)
+                        Province
                       </label>
                       <select
-                        name="district"
-                        value={jobSeekerDetails.district || ""}
-                        onChange={handleLocationChange}
+                        name="province"
+                        value={jobSeekerDetails.province || ""}
+                        onChange={handleProvinceChange}
                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                       >
-                        <option value="">Select City</option>
-                        {sriLankaDistricts.map((district) => (
-                          <option key={district.value} value={district.value}>
-                            {district.label}
+                        <option value="">Select Province</option>
+                        {uniqueProvinces.map((province, index) => (
+                          <option key={index} value={province}>
+                            {province}
                           </option>
                         ))}
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-[#001571]">
-                        Province
+                        City (District)
                       </label>
-                      <input
-                        type="text"
-                        name="province"
-                        value={jobSeekerDetails.province || ""}
-                        readOnly
-                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3 bg-gray-100"
-                      />
+                      <select
+                        name="district"
+                        value={jobSeekerDetails.district || ""}
+                        onChange={handleDistrictChange}
+                        disabled={!jobSeekerDetails.province}
+                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3 disabled:bg-gray-100 disabled:text-gray-400"
+                      >
+                        <option value="">Select City</option>
+                        {filteredDistricts.map((district) => (
+                          <option key={district.value} value={district.district}>
+                            {district.district}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </>
                 ) : (
@@ -523,11 +547,10 @@ export default function BioDataForm({
             type="submit"
             onClick={jobseekerUpdateSubmitHandler}
             disabled={isSubmitting}
-            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-              isSubmitting
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-blue-700"
-            }`}
+            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-blue-700"
+              }`}
           >
             {isSubmitting ? "Saving..." : "Save"}
             <span className="ml-2">
