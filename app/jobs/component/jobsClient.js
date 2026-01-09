@@ -25,7 +25,9 @@ function JobsClient({ initialJobs }) {
       filtered = filtered.filter(
         (job) =>
           job.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          job.location.toLowerCase().includes(searchQuery.toLowerCase())
+          job.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (job.recruiterName &&
+            job.recruiterName.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 

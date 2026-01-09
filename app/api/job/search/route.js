@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 export async function GET(req) {
   let client;
@@ -20,17 +21,36 @@ export async function GET(req) {
     // Create regex for case-insensitive partial match
     const searchRegex = new RegExp(query, "i");
 
+    // First search for matching recruiters
+    const matchingRecruiters = await db
+      .collection("recruiters")
+      .find({
+        recruiterName: { $regex: searchRegex },
+      })
+      .project({ _id: 1 })
+      .toArray();
+
+    // Keep as ObjectIds for querying the jobs collection if recruiterId is stored as ObjectId
+    const recruiterIds = matchingRecruiters.map((r) => r._id);
+
+    // Build the search query
+    const searchConditions = [
+      { jobTitle: { $regex: searchRegex } },
+      { location: { $regex: searchRegex } },
+      { jobCategory: { $regex: searchRegex } },
+      { jobExperience: { $regex: searchRegex } },
+    ];
+
+    if (recruiterIds.length > 0) {
+      searchConditions.push({ recruiterId: { $in: recruiterIds } });
+    }
+
     // Perform the search using MongoDB
     const jobs = await db
       .collection("jobs")
       .find({
         isPublished: true,
-        $or: [
-          { jobTitle: { $regex: searchRegex } },
-          { location: { $regex: searchRegex } },
-          { jobCategory: { $regex: searchRegex } },
-          { jobExperience: { $regex: searchRegex } },
-        ],
+        $or: searchConditions,
       })
       .toArray();
 
