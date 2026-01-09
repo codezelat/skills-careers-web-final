@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import PortalLoading from "@/app/Portal/loading";
 import {
-  FaDribbble,
   FaFacebook,
   FaGithub,
   FaInstagram,
   FaLinkedin,
   FaTimes,
   FaTwitter,
+  FaGlobe,
 } from "react-icons/fa";
 import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
@@ -446,13 +446,36 @@ export default function RecruiterProfile({ slug }) {
                     />
                   </a>
                 )}
-                {recruiterDetails.facebook && (
+                <a
+                  href={recruiterDetails.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaFacebook
+                    size={24}
+                    className="cursor-pointer hover:opacity-80"
+                  />
+                </a>
+                )}
+                {recruiterDetails.github && (
                   <a
-                    href={recruiterDetails.facebook}
+                    href={recruiterDetails.github}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <FaFacebook
+                    <FaGithub
+                      size={24}
+                      className="cursor-pointer hover:opacity-80"
+                    />
+                  </a>
+                )}
+                {recruiterDetails.website && (
+                  <a
+                    href={recruiterDetails.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaGlobe
                       size={24}
                       className="cursor-pointer hover:opacity-80"
                     />

@@ -183,6 +183,19 @@ function RecruiterProfile({ slug }) {
                     />
                   </a>
                 )}
+                {recruiterDetails.github && (
+                  <a
+                    href={recruiterDetails.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="/github-b.png"
+                      alt="github"
+                      className="w-6 hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                )}
                 {recruiterDetails.website && (
                   <a
                     href={recruiterDetails.website}

@@ -16,6 +16,7 @@ import {
   FaEnvelope,
   FaFacebook,
   FaLinkedin,
+  FaGlobe,
 } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { BiSolidCategory } from "react-icons/bi";
@@ -168,6 +169,15 @@ function RecruiterCard(props) {
                       className="p-2 rounded-full bg-gray-50 text-black hover:bg-gray-200 transition-colors"
                     >
                       <XIcon style={{ fontSize: 18 }} />
+                    </Link>
+                  )}
+                  {props.recruiter.website && (
+                    <Link
+                      href={props.recruiter.website}
+                      target="_blank"
+                      className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-200 transition-colors"
+                    >
+                      <FaGlobe size={18} />
                     </Link>
                   )}
                 </div>

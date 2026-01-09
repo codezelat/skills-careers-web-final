@@ -370,11 +370,23 @@ export default function RecruiterEdit({
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#001571]">
-                Dribbble
+                Github
               </label>
               <input
-                name="dribbble"
-                value={recruiterDetails.dribbble || ""}
+                name="github"
+                value={recruiterDetails.github || ""}
+                onChange={onInputChange}
+                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                rows={4}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#001571]">
+                Company Website
+              </label>
+              <input
+                name="website"
+                value={recruiterDetails.website || ""}
                 onChange={onInputChange}
                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                 rows={4}
