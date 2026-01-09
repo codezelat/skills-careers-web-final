@@ -446,16 +446,17 @@ export default function RecruiterProfile({ slug }) {
                     />
                   </a>
                 )}
-                <a
-                  href={recruiterDetails.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaFacebook
-                    size={24}
-                    className="cursor-pointer hover:opacity-80"
-                  />
-                </a>
+                {recruiterDetails.facebook && (
+                  <a
+                    href={recruiterDetails.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaFacebook
+                      size={24}
+                      className="cursor-pointer hover:opacity-80"
+                    />
+                  </a>
                 )}
                 {recruiterDetails.github && (
                   <a
