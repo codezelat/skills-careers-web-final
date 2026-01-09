@@ -8,6 +8,7 @@ import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import NavBar from "@/components/navBar";
 import Loading from "../loading";
+import Swal from "sweetalert2";
 
 function Login() {
   const router = useRouter();
@@ -64,6 +65,7 @@ function Login() {
   async function submitHandler(event) {
     event.preventDefault();
     setIsLoading(true);
+    setErrorMessage(""); // Clear previous errors
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
@@ -86,7 +88,8 @@ function Login() {
         router.push("/Portal/dashboard");
       }
     } else {
-      alert("Login failed. Please check your email and password.");
+      setIsLoading(false);
+      setErrorMessage("Login failed. Please check your email and password.");
     }
   }
 
@@ -141,12 +144,22 @@ function Login() {
       if (!response.ok)
         throw new Error(data.error || "Failed to send reset email");
 
-      alert("Password reset email sent. Please check your inbox.");
+      Swal.fire({
+        icon: "success",
+        title: "Email Sent",
+        text: "Password reset email sent. Please check your inbox.",
+        confirmButtonColor: "#001571",
+      });
       setShowForgotPasswordPopup(false);
       setForgotPasswordEmail("");
     } catch (error) {
       console.error("Forgot Password Error:", error);
-      alert(error.message || "Network error. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "Network error. Please try again.",
+        confirmButtonColor: "#001571",
+      });
     } finally {
       setForgotPasswordLoading(false);
     }
