@@ -15,6 +15,7 @@ import PortalLoading from "@/app/Portal/loading";
 import { FaTimes } from "react-icons/fa";
 import PortalTicketsCard from "@/components/PortalComponents/portalTicketsCard";
 import EnrollTicketsCard from "./ticketEnrollCard";
+import Swal from "sweetalert2";
 
 export default function BookingAdminPage(props) {
   const router = useRouter();
@@ -68,6 +69,40 @@ export default function BookingAdminPage(props) {
     setIsPopupVisible(false);
     setSelectedTicket(null);
   }, []);
+
+  // Handle "Delete" button click
+  const handleDeleteTicket = useCallback(async (enrollmentId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(
+            `/api/ticketenrollments/delete?id=${enrollmentId}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to delete booking.");
+          }
+
+          Swal.fire("Deleted!", "The booking has been deleted.", "success");
+          fetchTicketEnrollments(); // Refresh the list
+        } catch (err) {
+          console.error("Error deleting:", err);
+          Swal.fire("Error!", "Failed to delete booking.", "error");
+        }
+      }
+    });
+  }, [fetchTicketEnrollments]);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -130,6 +165,7 @@ export default function BookingAdminPage(props) {
               key={index}
               enrolledticket={enrolledticket}
               onView={handleViewTicket}
+              onDelete={handleDeleteTicket}
             />
           ))
         ) : (
@@ -214,11 +250,10 @@ export default function BookingAdminPage(props) {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === 1
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
+            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
+              }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -226,11 +261,10 @@ export default function BookingAdminPage(props) {
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-200 hover:bg-gray-400"
-              }`}
+              className={`px-4 py-2 rounded-lg ${currentPage === index + 1
+                ? "bg-blue-700 text-white"
+                : "bg-gray-200 hover:bg-gray-400"
+                }`}
             >
               {index + 1}
             </button>
@@ -238,11 +272,10 @@ export default function BookingAdminPage(props) {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === totalPages
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
+            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
+              }`}
           >
             <BsChevronRight size={15} />
           </button>

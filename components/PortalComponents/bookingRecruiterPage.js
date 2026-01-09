@@ -232,8 +232,8 @@ export default function BookingRecruiterPage(props) {
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
             className={`px-[10px] py-2 rounded-lg ${currentPage === 1
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
               }`}
           >
             <BsChevronLeft size={15} />
@@ -243,8 +243,8 @@ export default function BookingRecruiterPage(props) {
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
               className={`px-4 py-2 rounded-lg ${currentPage === index + 1
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-200 hover:bg-gray-400"
+                ? "bg-blue-700 text-white"
+                : "bg-gray-200 hover:bg-gray-400"
                 }`}
             >
               {index + 1}
@@ -254,8 +254,8 @@ export default function BookingRecruiterPage(props) {
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
             className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
               }`}
           >
             <BsChevronRight size={15} />

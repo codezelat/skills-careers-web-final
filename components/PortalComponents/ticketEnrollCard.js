@@ -4,13 +4,13 @@ import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { BsFillEyeFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
-function EnrollTicketsCard({ enrolledticket, onView }) {
+function EnrollTicketsCard({ enrolledticket, onView, onDelete }) {
     const { data: session } = useSession();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [isPublished, setIsPublished] = useState(enrolledticket.isPublished || false);
 
-    const { eventName,eventLocation, name, email } = enrolledticket;
+    const { eventName, eventLocation, name, email } = enrolledticket;
 
     return (
         <div className="gap-1 bg-white rounded-lg hover:shadow-md">
@@ -26,13 +26,21 @@ function EnrollTicketsCard({ enrolledticket, onView }) {
                     <div className="py-3 text-black font-semibold w-[27.333%]">
                         {name}
                     </div>
-                    <div className="py-3 text-black font-semibold w-[15%]">
+                    <div className="py-3 text-black font-semibold w-[15%] flex gap-2">
                         <button
-                            onClick={() => onView(enrolledticket)} 
-                            className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-800"
+                            onClick={() => onView(enrolledticket)}
+                            className="flex items-center justify-center w-1/2 bg-[#001571] text-white px-2 py-2 rounded-lg shadow hover:bg-blue-800"
                         >
                             View
                         </button>
+                        {onDelete && (
+                            <button
+                                onClick={() => onDelete(enrolledticket._id)}
+                                className="flex items-center justify-center bg-red-600 text-white px-2 py-2 rounded-lg shadow hover:bg-red-800"
+                            >
+                                <RiDeleteBinFill size={18} />
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
