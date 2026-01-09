@@ -509,7 +509,6 @@ skills-careers-web-final/
 ├── .gitignore                # Git ignore rules
 ├── jsconfig.json             # JavaScript configuration
 ├── next.config.mjs           # Next.js configuration
-├── netlify.toml              # Netlify deployment config
 ├── package.json              # Dependencies
 ├── postcss.config.mjs        # PostCSS configuration
 ├── tailwind.config.js        # Tailwind CSS configuration
@@ -1162,31 +1161,7 @@ db.jobapplications.createIndex({ recruiterId: 1, status: 1 });
 
 ## 🚢 Deployment
 
-### Netlify Deployment
-
-1. **Connect Repository**
-
-   - Go to [Netlify](https://netlify.com)
-   - Click "New site from Git"
-   - Connect your repository
-
-2. **Configure Build Settings**
-
-   ```
-   Build command: npm run build
-   Publish directory: .next
-   ```
-
-3. **Environment Variables**
-
-   - Go to Site settings → Environment variables
-   - Add all variables from `.env.local`
-
-4. **Deploy**
-   ```bash
-   # Manual deployment
-   netlify deploy --prod
-   ```
+Netlify configuration has been removed; use Vercel or Docker for current deployments.
 
 ### Vercel Deployment
 
