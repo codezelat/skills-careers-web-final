@@ -81,9 +81,11 @@ export default function RecruiterEdit({
         target: { name: "district", value: selectedDistrict.district },
       });
       onInputChange({
+        target: { name: "location", value: selectedDistrict.district }, // Map district to location for consistency
+      });
+      onInputChange({
         target: { name: "province", value: selectedDistrict.province },
       });
-      onInputChange({ target: { name: "location", value: district } });
     }
   };
 
@@ -151,59 +153,87 @@ export default function RecruiterEdit({
             </div>
 
             {/* Location Fields - Conditional based on Country */}
-            {isSriLanka ? (
-              <div className="space-y-4">
-                {/* Address Line */}
-                <div>
-                  <label className="block text-sm font-semibold text-[#001571]">
-                    Address Line
-                  </label>
-                  <input
-                    type="text"
-                    name="addressLine"
-                    value={recruiterDetails.addressLine || ""}
-                    onChange={onInputChange}
-                    placeholder="Street address, building name, etc."
-                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                  />
-                </div>
-
-                {/* District/Province Selection */}
-                <div>
-                  <label className="block text-sm font-semibold text-[#001571]">
-                    District & Province
-                  </label>
-                  <select
-                    name="location"
-                    value={recruiterDetails.location || ""}
-                    onChange={handleLocationChange}
-                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                  >
-                    <option value="">Select District & Province</option>
-                    {sriLankaDistricts.map((district) => (
-                      <option key={district.value} value={district.value}>
-                        {district.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            ) : (
-              /* Non-Sri Lanka Address */
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Address Line (Full Width) */}
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-semibold text-[#001571]">
-                  Full Address
+                  Address Line
                 </label>
-                <textarea
+                <input
+                  type="text"
                   name="addressLine"
                   value={recruiterDetails.addressLine || ""}
                   onChange={onInputChange}
-                  placeholder="Enter full address"
+                  placeholder="Street address, building name, etc."
                   className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                  rows={3}
                 />
               </div>
-            )}
+
+              {/* City & Province */}
+              {isSriLanka ? (
+                <>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#001571]">
+                      City (District)
+                    </label>
+                    <select
+                      name="district"
+                      value={recruiterDetails.district || ""}
+                      onChange={handleLocationChange}
+                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    >
+                      <option value="">Select City</option>
+                      {sriLankaDistricts.map((district) => (
+                        <option key={district.value} value={district.value}>
+                          {district.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#001571]">
+                      Province
+                    </label>
+                    <input
+                      type="text"
+                      name="province"
+                      value={recruiterDetails.province || ""}
+                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3 bg-gray-100"
+                      readOnly
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#001571]">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={recruiterDetails.location || ""}
+                      onChange={onInputChange}
+                      placeholder="Enter City"
+                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#001571]">
+                      Province/State
+                    </label>
+                    <input
+                      type="text"
+                      name="province"
+                      value={recruiterDetails.province || ""}
+                      onChange={onInputChange}
+                      placeholder="Enter Province or State"
+                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
