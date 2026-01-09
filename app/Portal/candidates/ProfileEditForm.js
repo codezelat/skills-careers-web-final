@@ -209,7 +209,7 @@ export default function NameEditForm({
               </div>
               <div>
                 <label className="block text-sm font-semibold text-[#001571]">
-                  Dribbble
+                  Portfolio / Website
                 </label>
                 <input
                   type="text"

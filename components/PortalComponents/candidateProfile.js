@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import PortalLoading from "@/app/Portal/loading";
 import {
-  FaDribbble,
   FaFacebook,
   FaGithub,
   FaInstagram,
@@ -11,6 +10,7 @@ import {
   FaMedal,
   FaTimes,
   FaTwitter,
+  FaGlobe,
 } from "react-icons/fa";
 import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
@@ -496,6 +496,7 @@ export default function CandidateProfile() {
           showConfirmButton: false,
         });
         setProfileEditForm(false); // Close the edit form if needed
+        setBioDataForm(false); // Close the bio data form if needed
       } else {
         Swal.fire({
           icon: "error",
@@ -1118,24 +1119,78 @@ export default function CandidateProfile() {
 
             {/* Social Links */}
             <div className="pr-8 sm:pr-6 flex justify-end mt-4 space-x-2 sm:space-x-4 text-blue-900 ">
-              <a href={jobSeekerDetails.linkedin}>
-                <FaLinkedin size={24} className="cursor-pointer" />
-              </a>
-              <a href={jobSeekerDetails.x}>
-                <FaTwitter size={24} className="cursor-pointer" />
-              </a>
-              <a href={jobSeekerDetails.instagram}>
-                <FaInstagram size={24} className="cursor-pointer" />
-              </a>
-              <a href={jobSeekerDetails.facebook}>
-                <FaFacebook size={24} className="cursor-pointer" />
-              </a>
-              <a href={jobSeekerDetails.github}>
-                <FaGithub size={30} className="cursor-pointer" />
-              </a>
-              <a href={jobSeekerDetails.dribbble}>
-                <FaDribbble size={30} className="cursor-pointer" />
-              </a>
+              {jobSeekerDetails.linkedin && (
+                <a
+                  href={jobSeekerDetails.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaLinkedin
+                    size={24}
+                    className="cursor-pointer hover:text-blue-700"
+                  />
+                </a>
+              )}
+              {jobSeekerDetails.x && (
+                <a
+                  href={jobSeekerDetails.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaTwitter
+                    size={24}
+                    className="cursor-pointer hover:text-blue-700"
+                  />
+                </a>
+              )}
+              {jobSeekerDetails.instagram && (
+                <a
+                  href={jobSeekerDetails.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaInstagram
+                    size={24}
+                    className="cursor-pointer hover:text-blue-700"
+                  />
+                </a>
+              )}
+              {jobSeekerDetails.facebook && (
+                <a
+                  href={jobSeekerDetails.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaFacebook
+                    size={24}
+                    className="cursor-pointer hover:text-blue-700"
+                  />
+                </a>
+              )}
+              {jobSeekerDetails.github && (
+                <a
+                  href={jobSeekerDetails.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGithub
+                    size={30}
+                    className="cursor-pointer hover:text-blue-700"
+                  />
+                </a>
+              )}
+              {jobSeekerDetails.dribbble && (
+                <a
+                  href={jobSeekerDetails.dribbble}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGlobe
+                    size={24}
+                    className="cursor-pointer hover:text-blue-700"
+                  />
+                </a>
+              )}
             </div>
           </div>
         </div>

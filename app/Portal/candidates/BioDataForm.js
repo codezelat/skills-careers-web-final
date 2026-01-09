@@ -27,11 +27,9 @@ export default function BioDataForm({
   const [religionSuggestions, setReligionSuggestions] = useState([]);
   const [showReligionSuggestions, setShowReligionSuggestions] = useState(false);
 
-
-
   const [showOtherNationality, setShowOtherNationality] = useState(
     jobSeekerDetails.nationality &&
-    jobSeekerDetails.nationality !== "Sri Lankan"
+      jobSeekerDetails.nationality !== "Sri Lankan"
   );
 
   const [showAddressFormat, setShowAddressFormat] = useState(false);
@@ -76,16 +74,16 @@ export default function BioDataForm({
 
     // We store the district name (e.g. "Colombo") not the full value string if previously matching by value
     // Checking previous logic: value was full string, but saved as district name.
-    // The select options below will use 'district' not 'value' for cleaner data if preferred, 
-    // or keep 'value' to match existing data. 
-    // Existing data used `d.value` equal to district? 
+    // The select options below will use 'district' not 'value' for cleaner data if preferred,
+    // or keep 'value' to match existing data.
+    // Existing data used `d.value` equal to district?
     // Looking at JSON: value="Colombo...", district="Colombo"
     // Previous code: value={district.value} -> stored selectedDistrict.district
     // So if options return full string, we find and store simple name.
 
     // Let's assume we want to store the simple district name now for cleaner UI too.
     // But to match previous behavior of `handleLocationChange` which took `e.target.value` (likely full string from option value)
-    // and matched it to find district. 
+    // and matched it to find district.
 
     // Let's simplify: value in options will be the District Name directly now.
     handleInputChange({ target: { name: "district", value: districtValue } });
@@ -123,7 +121,10 @@ export default function BioDataForm({
   const [otherLanguage, setOtherLanguage] = useState("");
 
   const currentLanguages = jobSeekerDetails.languages
-    ? jobSeekerDetails.languages.split(",").map((lang) => lang.trim()).filter(Boolean)
+    ? jobSeekerDetails.languages
+        .split(",")
+        .map((lang) => lang.trim())
+        .filter(Boolean)
     : [];
 
   const updateLanguages = (newLanguages) => {
@@ -219,50 +220,59 @@ export default function BioDataForm({
               <label className="block text-sm font-semibold text-[#001571]">
                 Nationality
               </label>
-              {!showOtherNationality ? (
-                <select
-                  name="nationality"
-                  value={
+              <div className="flex gap-4 mt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowOtherNationality(false);
+                    handleInputChange({
+                      target: { name: "nationality", value: "Sri Lankan" },
+                    });
+                  }}
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 ${
+                    !showOtherNationality &&
                     jobSeekerDetails.nationality === "Sri Lankan"
-                      ? "Sri Lankan"
-                      : jobSeekerDetails.nationality === "" ||
-                        !jobSeekerDetails.nationality
-                        ? ""
-                        : "Others"
-                  }
-                  onChange={handleNationalityChange}
-                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      ? "bg-[#001571] text-white border-[#001571]"
+                      : "bg-white text-gray-500 border-[#B0B6D3] hover:border-[#001571] hover:text-[#001571]"
+                  }`}
                 >
-                  <option value="">Select Nationality</option>
-                  <option value="Sri Lankan">Sri Lankan</option>
-                  <option value="Others">Others</option>
-                </select>
-              ) : (
-                <div className="space-y-2">
+                  Sri Lankan
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowOtherNationality(true);
+                    if (jobSeekerDetails.nationality === "Sri Lankan") {
+                      handleInputChange({
+                        target: { name: "nationality", value: "" },
+                      });
+                    }
+                  }}
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 ${
+                    showOtherNationality
+                      ? "bg-[#001571] text-white border-[#001571]"
+                      : "bg-white text-gray-500 border-[#B0B6D3] hover:border-[#001571] hover:text-[#001571]"
+                  }`}
+                >
+                  Other
+                </button>
+              </div>
+
+              {showOtherNationality && (
+                <div className="mt-3 animate-fadeIn">
                   <input
                     type="text"
                     name="nationality"
-                    value={jobSeekerDetails.nationality || ""}
+                    value={
+                      jobSeekerDetails.nationality === "Sri Lankan"
+                        ? ""
+                        : jobSeekerDetails.nationality || ""
+                    }
                     onChange={handleInputChange}
-                    placeholder="Enter your nationality"
-                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    placeholder="Please enter your nationality"
+                    className="block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    autoFocus
                   />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowOtherNationality(false);
-                      const event = {
-                        target: {
-                          name: "nationality",
-                          value: "",
-                        },
-                      };
-                      handleInputChange(event);
-                    }}
-                    className="text-xs text-blue-600 hover:text-blue-800 underline"
-                  >
-                    Back to selection
-                  </button>
                 </div>
               )}
             </div>
@@ -431,7 +441,10 @@ export default function BioDataForm({
                       >
                         <option value="">Select City</option>
                         {filteredDistricts.map((district) => (
-                          <option key={district.value} value={district.district}>
+                          <option
+                            key={district.value}
+                            value={district.district}
+                          >
                             {district.district}
                           </option>
                         ))}
@@ -547,10 +560,11 @@ export default function BioDataForm({
             type="submit"
             onClick={jobseekerUpdateSubmitHandler}
             disabled={isSubmitting}
-            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-blue-700"
-              }`}
+            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+              isSubmitting
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-700"
+            }`}
           >
             {isSubmitting ? "Saving..." : "Save"}
             <span className="ml-2">
