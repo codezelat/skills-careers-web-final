@@ -10,6 +10,11 @@ import ExperienceSection from "./ExperienceSection";
 import CertificationSection from "./CertificationSection";
 import SkillSection from "./SkillSection";
 import Swal from "sweetalert2";
+import { countries } from "@/lib/countries";
+import sriLankaDistricts from "@/data/sriLankaDistricts.json";
+import { FaTimes } from "react-icons/fa";
+
+const LANGUAGES_LIST = ["Sinhala", "Tamil", "English"];
 
 function EditProfileForm() {
   const router = useRouter();
@@ -66,6 +71,58 @@ function EditProfileForm() {
   useEffect(() => {
     fetchJobSeekerDetails();
   }, [fetchJobSeekerDetails]);
+
+  // Language Handling State & Logic
+  const [otherLanguage, setOtherLanguage] = useState("");
+  const [showOtherLanguage, setShowOtherLanguage] = useState(false);
+
+  const currentLanguages = jobSeekerDetails.languages
+    ? jobSeekerDetails.languages
+        .split(",")
+        .map((l) => l.trim())
+        .filter(Boolean)
+    : [];
+
+  const updateLanguages = (newLanguages) => {
+    const event = {
+      target: {
+        name: "languages",
+        value: newLanguages.join(", "),
+      },
+    };
+    handleInputChange(event);
+  };
+
+  const handleLanguageSelect = (e) => {
+    const value = e.target.value;
+    if (!value) return;
+
+    if (value === "Other") {
+      setShowOtherLanguage(true);
+      return;
+    }
+
+    if (!currentLanguages.includes(value)) {
+      updateLanguages([...currentLanguages, value]);
+    }
+    // Reset select
+    e.target.value = "";
+  };
+
+  const handleAddOtherLanguage = () => {
+    if (
+      otherLanguage.trim() &&
+      !currentLanguages.includes(otherLanguage.trim())
+    ) {
+      updateLanguages([...currentLanguages, otherLanguage.trim()]);
+      setOtherLanguage("");
+      setShowOtherLanguage(false);
+    }
+  };
+
+  const removeLanguage = (langToRemove) => {
+    updateLanguages(currentLanguages.filter((l) => l !== langToRemove));
+  };
 
   const handleInputChange = (e) => {
     if (e.preventDefault) {
@@ -234,13 +291,81 @@ function EditProfileForm() {
 
             <div>
               <p className="text-base font-bold text-black mb-1">Languages</p>
-              <input
-                type="text"
-                name="languages"
-                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
-                value={jobSeekerDetails.languages || ""}
-                onChange={handleInputChange}
-              />
+
+              <div className="flex flex-wrap gap-2 mb-2 p-2 border-2 border-gray-400 rounded min-h-[46px]">
+                {currentLanguages.map((lang, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                  >
+                    {lang}
+                    <button
+                      type="button"
+                      onClick={() => removeLanguage(lang)}
+                      className="ml-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <FaTimes size={12} />
+                    </button>
+                  </span>
+                ))}
+
+                {currentLanguages.length === 0 && (
+                  <span className="text-gray-400 text-sm py-1 px-2">
+                    Select languages below
+                  </span>
+                )}
+              </div>
+
+              {!showOtherLanguage ? (
+                <select
+                  onChange={handleLanguageSelect}
+                  className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Select Language to Add
+                  </option>
+                  {LANGUAGES_LIST.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {lang}
+                    </option>
+                  ))}
+                  <option value="Other">Other (Add Custom)</option>
+                </select>
+              ) : (
+                <div className="flex gap-2 mt-1">
+                  <input
+                    type="text"
+                    value={otherLanguage}
+                    onChange={(e) => setOtherLanguage(e.target.value)}
+                    placeholder="Type language..."
+                    className="flex-1 px-2 py-1 border-solid border-2 border-gray-400 outline-none rounded"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddOtherLanguage();
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddOtherLanguage}
+                    className="bg-blue-900 text-white px-3 py-1 rounded text-sm font-semibold hover:bg-blue-800"
+                  >
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtherLanguage("");
+                      setShowOtherLanguage(false);
+                    }}
+                    className="text-gray-500 hover:text-gray-700 px-2 text-sm"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
 
             <div>
@@ -254,15 +379,149 @@ function EditProfileForm() {
               />
             </div>
 
-            <div className="md:col-span-2">
-              <p className="text-base font-bold text-black mb-1">Address</p>
-              <input
-                type="text"
-                name="address"
-                className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
-                value={jobSeekerDetails.address || ""}
-                onChange={handleInputChange}
-              />
+            {/* Structured Address Fields */}
+            <div className="md:col-span-2 space-y-4">
+              {/* Country Selection */}
+              <div>
+                <p className="text-base font-bold text-black mb-1">Country</p>
+                <select
+                  name="country"
+                  value={jobSeekerDetails.country || "Sri Lanka"}
+                  onChange={(e) => {
+                    const country = e.target.value;
+                    handleInputChange({
+                      target: { name: "country", value: country },
+                    });
+                    if (country !== "Sri Lanka") {
+                      handleInputChange({
+                        target: { name: "district", value: "" },
+                      });
+                      handleInputChange({
+                        target: { name: "province", value: "" },
+                      });
+                      handleInputChange({
+                        target: { name: "location", value: "" },
+                      });
+                    } else {
+                      handleInputChange({
+                        target: { name: "location", value: "" },
+                      });
+                    }
+                  }}
+                  className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                >
+                  {countries.map((country) => (
+                    <option key={country.value} value={country.label}>
+                      {country.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Address Line */}
+              <div>
+                <p className="text-base font-bold text-black mb-1">
+                  Address Line
+                </p>
+                <input
+                  type="text"
+                  name="addressLine"
+                  className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                  value={jobSeekerDetails.addressLine || ""}
+                  onChange={handleInputChange}
+                  placeholder="Street address, building name, etc."
+                />
+              </div>
+
+              {/* District/City & Province */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(jobSeekerDetails.country || "Sri Lanka") === "Sri Lanka" ? (
+                  <>
+                    <div>
+                      <p className="text-base font-bold text-black mb-1">
+                        City (District)
+                      </p>
+                      <select
+                        name="district"
+                        value={jobSeekerDetails.district || ""}
+                        onChange={(e) => {
+                          const district = e.target.value;
+                          const selectedDistrict = sriLankaDistricts.find(
+                            (d) => d.value === district
+                          );
+                          if (selectedDistrict) {
+                            handleInputChange({
+                              target: {
+                                name: "district",
+                                value: selectedDistrict.district,
+                              },
+                            });
+                            handleInputChange({
+                              target: {
+                                name: "province",
+                                value: selectedDistrict.province,
+                              },
+                            });
+                          } else {
+                            handleInputChange({
+                              target: { name: "district", value: district },
+                            });
+                          }
+                        }}
+                        className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                      >
+                        <option value="">Select City</option>
+                        {sriLankaDistricts.map((district) => (
+                          <option key={district.value} value={district.value}>
+                            {district.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <p className="text-base font-bold text-black mb-1">
+                        Province
+                      </p>
+                      <input
+                        type="text"
+                        name="province"
+                        className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded bg-gray-100"
+                        value={jobSeekerDetails.province || ""}
+                        readOnly
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <p className="text-base font-bold text-black mb-1">
+                        City
+                      </p>
+                      <input
+                        type="text"
+                        name="location"
+                        className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                        value={jobSeekerDetails.location || ""}
+                        onChange={handleInputChange}
+                        placeholder="Enter City"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-base font-bold text-black mb-1">
+                        Province/State
+                      </p>
+                      <input
+                        type="text"
+                        name="province"
+                        className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                        value={jobSeekerDetails.province || ""}
+                        onChange={handleInputChange}
+                        placeholder="Enter Province or State"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
             <div>

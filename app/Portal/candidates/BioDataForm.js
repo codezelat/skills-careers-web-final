@@ -3,6 +3,8 @@ import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { PiCheckCircle } from "react-icons/pi";
 import { FiInfo } from "react-icons/fi";
+import { countries } from "@/lib/countries";
+import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 const RELIGION_LIST = [
   "Buddhism",
@@ -34,6 +36,45 @@ export default function BioDataForm({
   );
 
   const [showAddressFormat, setShowAddressFormat] = useState(false);
+
+  // Get country, default to Sri Lanka
+  const selectedCountry = jobSeekerDetails.country || "Sri Lanka";
+  const isSriLanka = selectedCountry === "Sri Lanka";
+
+  const handleCountryChange = (e) => {
+    const country = e.target.value;
+    handleInputChange({ target: { name: "country", value: country } });
+
+    // Reset location fields when changing country
+    if (country !== "Sri Lanka") {
+      handleInputChange({ target: { name: "district", value: "" } });
+      handleInputChange({ target: { name: "province", value: "" } });
+      handleInputChange({ target: { name: "location", value: "" } });
+    } else {
+      handleInputChange({ target: { name: "location", value: "" } });
+    }
+  };
+
+  const handleLocationChange = (e) => {
+    const district = e.target.value;
+    const selectedDistrict = sriLankaDistricts.find(
+      (d) => d.value === district
+    );
+
+    if (selectedDistrict) {
+      handleInputChange({
+        target: { name: "district", value: selectedDistrict.district },
+      });
+      handleInputChange({
+        target: { name: "province", value: selectedDistrict.province },
+      });
+    } else {
+      // Handle case where district might be cleared
+      handleInputChange({
+        target: { name: "district", value: district },
+      });
+    }
+  };
 
   const handleReligionInputChange = (e) => {
     const { name, value } = e.target;
@@ -208,83 +249,203 @@ export default function BioDataForm({
               <label className="block text-sm font-semibold text-[#001571]">
                 Languages
               </label>
-              <input
-                type="text"
-                name="languages"
-                value={jobSeekerDetails.languages || ""}
-                placeholder="example: English, French (Type to search, comma separated)"
-                onChange={handleLanguageInputChange}
-                className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                autoComplete="off"
-              />
-              {showLanguageSuggestions && languageSuggestions.length > 0 && (
-                <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
-                  {languageSuggestions.map((lang, index) => (
-                    <li
-                      key={index}
-                      onClick={() => selectLanguage(lang)}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
-                    >
-                      {lang}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <div className="relative">
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-semibold text-[#001571]">
-                  Address
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setShowAddressFormat(!showAddressFormat)}
-                  className="text-[#001571] hover:text-blue-600 transition-colors p-1 rounded-full hover:bg-blue-50"
-                  title="Address format guide"
-                >
-                  <FiInfo size={18} />
-                </button>
-              </div>
 
-              {showAddressFormat && (
-                <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
-                  <div className="flex items-start">
-                    <FiInfo
-                      className="text-blue-600 mt-0.5 mr-2 flex-shrink-0"
-                      size={16}
-                    />
-                    <div>
-                      <p className="text-xs font-semibold text-blue-900 mb-1">
-                        Address Format:
-                      </p>
-                      <p className="text-xs text-blue-800">
-                        Home No., Lane/Road, City, Province, Country.
-                      </p>
-                      <p className="text-xs text-blue-700 mt-1 italic">
-                        Example: No. 123, Galle Road, Colombo, Western Province,
-                        Sri Lanka
-                      </p>
-                    </div>
+              <div className="flex flex-wrap gap-2 mb-2 p-2 border border-[#B0B6D3] rounded-xl min-h-[50px]">
+                {currentLanguages.map((lang, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                  >
+                    {lang}
                     <button
                       type="button"
-                      onClick={() => setShowAddressFormat(false)}
-                      className="ml-auto text-blue-400 hover:text-blue-600"
+                      onClick={() => removeLanguage(lang)}
+                      className="ml-2 text-blue-600 hover:text-blue-800"
                     >
-                      <FaTimes size={14} />
+                      <FaTimes size={12} />
                     </button>
-                  </div>
+                  </span>
+                ))}
+
+                {currentLanguages.length === 0 && (
+                  <span className="text-gray-400 text-sm py-1 px-2">
+                    Select languages below
+                  </span>
+                )}
+              </div>
+
+              {!showOtherLanguage ? (
+                <select
+                  onChange={handleLanguageSelect}
+                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Select Language to Add
+                  </option>
+                  {LANGUAGES_LIST.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {lang}
+                    </option>
+                  ))}
+                  <option value="Other">Other (Add Custom)</option>
+                </select>
+              ) : (
+                <div className="flex gap-2 mt-2">
+                  <input
+                    type="text"
+                    value={otherLanguage}
+                    onChange={(e) => setOtherLanguage(e.target.value)}
+                    placeholder="Type language..."
+                    className="flex-1 border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleAddOtherLanguage();
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddOtherLanguage}
+                    className="bg-[#001571] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700"
+                  >
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtherLanguage("");
+                      setShowOtherLanguage(false);
+                    }}
+                    className="text-gray-500 hover:text-gray-700 px-2"
+                  >
+                    Cancel
+                  </button>
                 </div>
               )}
+            </div>
+            {/* Structured Address Fields */}
+            <div className="space-y-4">
+              {/* Country Selection */}
+              <div>
+                <label className="block text-sm font-semibold text-[#001571]">
+                  Country
+                </label>
+                <select
+                  name="country"
+                  value={selectedCountry}
+                  onChange={handleCountryChange}
+                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                >
+                  {countries.map((country) => (
+                    <option key={country.value} value={country.label}>
+                      {country.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              <input
-                type="text"
-                name="address"
-                value={jobSeekerDetails.address || ""}
-                onChange={handleInputChange}
-                onFocus={() => setShowAddressFormat(true)}
-                className="block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                placeholder="Enter your address"
-              />
+              {/* Address Line (Full Width) */}
+              <div>
+                <label className="block text-sm font-semibold text-[#001571]">
+                  Address Line
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="addressLine"
+                    value={jobSeekerDetails.addressLine || ""}
+                    onChange={handleInputChange}
+                    placeholder="Street address, building name, etc."
+                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressFormat(!showAddressFormat)}
+                    className="absolute right-3 top-1/2 mt-1 text-[#001571] hover:text-blue-600 transition-colors"
+                    title="Address Info"
+                  >
+                    <FiInfo size={18} />
+                  </button>
+                </div>
+
+                {showAddressFormat && (
+                  <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                    <p className="text-xs text-blue-800">
+                      Format: Home No., Lane/Road
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* City & Province */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {isSriLanka ? (
+                  <>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#001571]">
+                        City (District)
+                      </label>
+                      <select
+                        name="district"
+                        value={jobSeekerDetails.district || ""}
+                        onChange={handleLocationChange}
+                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      >
+                        <option value="">Select City</option>
+                        {sriLankaDistricts.map((district) => (
+                          <option key={district.value} value={district.value}>
+                            {district.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#001571]">
+                        Province
+                      </label>
+                      <input
+                        type="text"
+                        name="province"
+                        value={jobSeekerDetails.province || ""}
+                        readOnly
+                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3 bg-gray-100"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#001571]">
+                        City
+                      </label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={jobSeekerDetails.location || ""}
+                        onChange={handleInputChange}
+                        placeholder="Enter City"
+                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-[#001571]">
+                        Province/State
+                      </label>
+                      <input
+                        type="text"
+                        name="province"
+                        value={jobSeekerDetails.province || ""}
+                        onChange={handleInputChange}
+                        placeholder="Enter Province or State"
+                        className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+              {/* Hidden field for legacy address compatibility if needed, or we just ignore it */}
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#001571]">

@@ -150,6 +150,27 @@ const sortCertifications = (certifications) => {
   );
 };
 
+const formatAddress = (details) => {
+  const { addressLine, district, province, country, location, address } =
+    details;
+  const parts = [];
+
+  if (addressLine) parts.push(addressLine);
+
+  if (country === "Sri Lanka" || !country) {
+    if (district) parts.push(district);
+    if (province && province !== district) parts.push(province);
+    parts.push("Sri Lanka");
+  } else {
+    if (location) parts.push(location); // City for non-SL
+    if (country) parts.push(country);
+  }
+
+  // Fallback to old address field if new fields don't exist
+  const formatted = parts.filter(Boolean).join(", ");
+  return formatted || address || "Address not specified";
+};
+
 export default function CandidateProfile() {
   const [activeTab, setActiveTab] = useState("Profile");
   const [isProfileUploading, setIsProfileUploading] = useState(false);
@@ -959,7 +980,7 @@ export default function CandidateProfile() {
     maritalStatus: jobSeekerDetails.maritalStatus,
     languages: jobSeekerDetails.languages,
     religion: jobSeekerDetails.religion,
-    address: jobSeekerDetails.address,
+    address: formatAddress(jobSeekerDetails),
     ethnicity: jobSeekerDetails.ethnicity,
     linkedin: jobSeekerDetails.linkedin,
     x: jobSeekerDetails.x,
@@ -1210,7 +1231,7 @@ export default function CandidateProfile() {
               <div>Birthday - {jobSeekerDetails.dob}</div>
               <div>Nationality - {jobSeekerDetails.nationality}</div>
               <div>Languages - {jobSeekerDetails.languages}</div>
-              <div> Address - {jobSeekerDetails.address}</div>
+              <div>Address - {formatAddress(jobSeekerDetails)}</div>
             </div>
 
             {/* Second Column */}
