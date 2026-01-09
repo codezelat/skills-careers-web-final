@@ -209,18 +209,40 @@ export default function HeaderSection() {
   return (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 h-[60px] ">
-        {/* Left Section */}
+      <div className="flex flex-col lg:flex-row items-center justify-between mb-4 lg:h-[60px] gap-4">
+        {/* Left Section - Logo */}
         <Link
           href={baseUrl || "/"}
-          className="bg-[#001571] flex items-center justify-center text-white h-full px-8 rounded-2xl font-semibold text-[18px]"
+          className="bg-[#001571] hidden lg:flex items-center justify-center text-white h-full px-8 rounded-2xl font-semibold text-[18px]"
         >
           <h1>SKILLS CAREERS</h1>
         </Link>
+        <div className="lg:hidden w-full flex justify-between items-center bg-[#001571] text-white p-4 rounded-xl">
+          <h1 className="font-bold">SKILLS CAREERS</h1>
+          <div className="flex items-center gap-2">
+            <div className="text-right">
+              <p className="text-sm font-bold">{session?.user?.firstName}</p>
+            </div>
+            {session?.user?.profileImage ? (
+              <Image
+                src={session?.user?.profileImage}
+                alt="Profile"
+                width={32}
+                height={32}
+                className="rounded-full border border-white"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-white/20"></div>
+            )}
+          </div>
+        </div>
 
-        {/* Middle Section */}
-        <div className="flex-grow mx-8 h-full relative" ref={searchRef}>
-          <div className="bg-white flex items-center pl-8 pr-4 h-full rounded-2xl shadow-sm w-full gap-2">
+        {/* Middle Section - Search */}
+        <div
+          className="w-full lg:flex-grow lg:mx-8 h-12 lg:h-full relative"
+          ref={searchRef}
+        >
+          <div className="bg-white flex items-center pl-4 lg:pl-8 pr-4 h-full rounded-2xl shadow-sm w-full gap-2">
             <button
               onClick={handleSearch}
               disabled={isSearching || searchQuery.trim().length < 2}
@@ -238,14 +260,14 @@ export default function HeaderSection() {
               onKeyPress={handleKeyPress}
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
               disabled={isSearching}
-              className="ml-2 text-gray-500 outline-none flex-1 text-[16px] disabled:opacity-50"
+              className="ml-2 text-gray-500 outline-none flex-1 text-[16px] disabled:opacity-50 min-w-0"
             />
-            <div className="border-l border-gray-300 pl-4 pr-2">
+            <div className="border-l border-gray-300 pl-2 lg:pl-4 pr-0 lg:pr-2">
               <select
                 value={selectedJobType}
                 onChange={handleJobTypeChange}
                 disabled={isSearching}
-                className="text-gray-600 outline-none text-[14px] font-medium disabled:opacity-50 cursor-pointer bg-transparent"
+                className="text-gray-600 outline-none text-[14px] font-medium disabled:opacity-50 cursor-pointer bg-transparent max-w-[80px] lg:max-w-none"
               >
                 {jobTypeOptions.map((type) => (
                   <option key={type} value={type}>
@@ -301,8 +323,8 @@ export default function HeaderSection() {
           )}
         </div>
 
-        {/* Right Section */}
-        <div className="flex items-center bg-white px-8 h-full rounded-2xl shadow-sm gap-4">
+        {/* Right Section - User Profile (Desktop) */}
+        <div className="hidden lg:flex items-center bg-white px-8 h-full rounded-2xl shadow-sm gap-4">
           <div className="text-left">
             <p className="font-bold text-[#001571] text-[16px]">
               {session?.user?.firstName} {session?.user?.lastName}

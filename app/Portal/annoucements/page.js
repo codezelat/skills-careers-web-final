@@ -162,12 +162,12 @@ export default function Annoucements() {
     <>
       <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <h1 className="text-xl font-bold text-[#001571]">Annoucements</h1>
 
           {session?.user?.role === "admin" && (
             <button
-              className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
+              className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold w-full sm:w-auto justify-center"
               onClick={handleOpenForm(setIsFormVisible)}
             >
               <BsPlus size={25} className="mr-1" />
@@ -183,7 +183,7 @@ export default function Annoucements() {
           {session?.user?.role === "admin" && (
             <>
               {/* Action Buttons */}
-              <div className="flex gap-4 mb-4 items-center bg-green">
+              <div className="flex flex-col sm:flex-row gap-4 mb-4 items-stretch sm:items-center bg-green">
                 <button className="flex items-center justify-center bg-[#001571] text-white px-6 py-3 rounded-2xl shadow hover:bg-blue-800">
                   <span className="mr-2 flex items-center">
                     <input
@@ -202,7 +202,7 @@ export default function Annoucements() {
                 <button
                   onClick={handleBulkDelete}
                   disabled={selectedIds.length === 0}
-                  className={`flex text-white px-6 py-3 rounded-2xl shadow ${
+                  className={`flex items-center justify-center text-white px-6 py-3 rounded-2xl shadow transition-colors ${
                     selectedIds.length === 0
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-[#EC221F] hover:bg-red-600"

@@ -54,7 +54,7 @@ const Register = () => {
             </div>
           </div>
           {/* Right Side with Form */}
-          <div className="flex flex-col overflow-y-auto py-16 px-10 md:w-2/5">
+          <div className="flex flex-col overflow-y-auto py-8 sm:py-16 px-4 sm:px-10 w-full md:w-2/5">
             <div className="flex flex-col items-center">
               <a href="/">
                 <Image
@@ -73,10 +73,10 @@ const Register = () => {
 
             <div className="flex flex-col justify-center mt-12">
               {/* Job Seeker / Recruiter Selection */}
-              <div className="flex space-x-4">
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <button
                   onClick={() => setIsRecruiter(false)}
-                  className={` w-full border-2 border-gray-300 rounded-lg ${
+                  className={` w-full border-2 border-gray-300 rounded-lg py-4 px-2 ${
                     !isRecruiter
                       ? "bg-blue-900 text-white"
                       : "bg-gray-50 text-blue-900"

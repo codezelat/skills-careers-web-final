@@ -301,12 +301,12 @@ export default function Candidates() {
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-xl font-bold text-[#001571]">Candidates</h1>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           {session?.user?.role === "admin" && selectedIds.length > 0 && (
             <button
-              className="bg-red-600 text-white px-6 py-2 rounded-2xl shadow hover:bg-red-800 flex items-center text-sm font-semibold transition-all"
+              className="bg-red-600 text-white px-6 py-2 rounded-2xl shadow hover:bg-red-800 flex items-center text-sm font-semibold transition-all flex-grow sm:flex-grow-0 justify-center"
               onClick={handleBulkDelete}
             >
               <FaTimes size={18} className="mr-1" />
@@ -315,7 +315,7 @@ export default function Candidates() {
           )}
           {session?.user?.role === "admin" && (
             <button
-              className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
+              className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold flex-grow sm:flex-grow-0 justify-center"
               onClick={() => setNewJobseekerForm(true)}
             >
               <BsPlus size={25} className="mr-1" />
@@ -327,10 +327,10 @@ export default function Candidates() {
 
       {/* Tabs */}
       {session?.user?.role === "admin" && (
-        <div className="flex items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-max text-sm font-medium">
+        <div className="flex flex-col sm:flex-row items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-full sm:w-max text-sm font-medium mx-auto sm:mx-0">
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-6 py-3 flex rounded-2xl ${
+            className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${
               activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
             }`}
           >
@@ -339,7 +339,7 @@ export default function Candidates() {
           </button>
           <button
             onClick={() => setActiveTab("restricted")}
-            className={`px-6 py-3 flex rounded-2xl ${
+            className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${
               activeTab === "restricted"
                 ? "bg-[#001571] text-white"
                 : "text-[#B0B6D3]"
@@ -351,8 +351,8 @@ export default function Candidates() {
         </div>
       )}
       {/* Search */}
-      <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
-        <IoSearchSharp size={25} className="text-[#001571]" />
+      <div className="bg-[#E6E8F1] flex items-center pl-4 sm:pl-10 pr-4 sm:pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
+        <IoSearchSharp size={25} className="text-[#001571] min-w-[25px]" />
         <input
           type="text"
           placeholder="Search candidates..."

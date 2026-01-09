@@ -7,15 +7,17 @@ export default function AddRecruiterForm({
   newRecruiter,
   handleInputChange,
   handleSubmit,
-  isSubmitting
+  isSubmitting,
 }) {
   if (!showForm) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+      <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h4 className="text-2xl font-semibold text-[#001571]">Add New Recruiter</h4>
+          <h4 className="text-2xl font-semibold text-[#001571]">
+            Add New Recruiter
+          </h4>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-red-500 focus:outline-none"
@@ -27,7 +29,7 @@ export default function AddRecruiterForm({
         <div className="flex-1 overflow-y-auto px-6 py-4">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Admin Details */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-[#001571]">
                   Admin First Name
@@ -72,7 +74,7 @@ export default function AddRecruiterForm({
             <hr className="my-4" />
 
             {/* Recruiter Details */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-[#001571]">
                   Recruiter Name
@@ -164,7 +166,9 @@ export default function AddRecruiterForm({
                 type="submit"
                 disabled={isSubmitting}
                 className={`bg-[#001571] text-white px-6 py-3 rounded-xl text-sm font-semibold ${
-                  isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                  isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
                 }`}
               >
                 {isSubmitting ? "Adding..." : "Add Recruiter"}

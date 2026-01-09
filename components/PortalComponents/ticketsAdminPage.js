@@ -463,8 +463,8 @@ export default function AdminsTicketsPage(props) {
 
       {/* Add Ticket Form */}
       {isFormVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h4 className="text-2xl font-semibold text-[#001571]">
@@ -647,8 +647,8 @@ export default function AdminsTicketsPage(props) {
 
       {/* Edit Ticket Form */}
       {isEditFormVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h4 className="text-2xl font-semibold text-[#001571]">

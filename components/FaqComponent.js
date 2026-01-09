@@ -49,7 +49,8 @@ export default function FaqComponent() {
                 </button>
                 {activeIndex === index && (
                   <div className="text-black font-semibold text-base mb-4 px-4">
-                    {faq.answer || "Content for this question is not available."}
+                    {faq.answer ||
+                      "Content for this question is not available."}
                   </div>
                 )}
               </div>

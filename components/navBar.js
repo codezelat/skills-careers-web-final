@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Button from "./Button";
@@ -20,7 +20,6 @@ function NavBar() {
   // }
 
   return (
-
     <header className="bg-white border-b-2 border-[#001571] w-full">
       <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] py-4 flex items-center justify-between">
         {/* Logo */}
@@ -81,7 +80,9 @@ function NavBar() {
           {status === "unauthenticated" && (
             <div className="flex flex-row items-center justify-end">
               <Link href="/login">
-                <p className="py-2 px-6 text-lg font-semibold text-[#001571]">Login</p>
+                <p className="py-2 px-6 text-lg font-semibold text-[#001571]">
+                  Login
+                </p>
               </Link>
               <Link href="/register">
                 <Button>

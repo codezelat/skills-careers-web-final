@@ -37,7 +37,7 @@ export default function PressReleaseSection() {
 
   if (loading) {
     return (
-      <div className="w-full max-w-[1280px] mx-auto px-4 xl:px-0 py-12">
+      <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] py-12">
         <div className="flex justify-between items-center mb-8">
           <div className="h-8 w-64 bg-gray-200 animate-pulse rounded-lg"></div>
           <div className="h-8 w-32 bg-gray-200 animate-pulse rounded-lg"></div>
@@ -58,14 +58,19 @@ export default function PressReleaseSection() {
   const smallerPressReleases = pressreleases.slice(1, 3);
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-4 xl:px-0 py-12">
+    <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] py-12">
       <div className="flex justify-between items-end mb-8">
         <div className="flex flex-col gap-2">
-          <h2 className="text-[#33448D] font-bold text-3xl">Latest Press Releases</h2>
+          <h2 className="text-[#33448D] font-bold text-3xl">
+            Latest Press Releases
+          </h2>
           <div className="h-1 w-20 bg-[#33448D] rounded-full"></div>
         </div>
 
-        <Link href="/pressRelease" className="group flex items-center gap-2 text-[#001571] font-bold text-lg hover:text-[#33448D] transition-colors">
+        <Link
+          href="/pressRelease"
+          className="group flex items-center gap-2 text-[#001571] font-bold text-lg hover:text-[#33448D] transition-colors"
+        >
           View All
           <BsArrowUpRightCircleFill className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
         </Link>
@@ -74,7 +79,11 @@ export default function PressReleaseSection() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:h-[600px]">
         {/* Featured Press Release (Large Section) */}
         <Link
-          href={featuredPressRelease ? `/pressRelease/${featuredPressRelease._id}` : "#"}
+          href={
+            featuredPressRelease
+              ? `/pressRelease/${featuredPressRelease._id}`
+              : "#"
+          }
           className="lg:col-span-3 flex flex-col bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group h-full"
         >
           <div className="relative w-full h-64 lg:h-[60%] overflow-hidden">
@@ -92,12 +101,23 @@ export default function PressReleaseSection() {
                 {featuredPressRelease?.title || "No Featured Press Release"}
               </h3>
               <p className="text-gray-600 text-base lg:text-lg line-clamp-3 lg:line-clamp-4">
-                {featuredPressRelease?.description || "No description available."}
+                {featuredPressRelease?.description ||
+                  "No description available."}
               </p>
             </div>
             <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-gray-500 text-sm font-medium">
-              <span>{new Date(featuredPressRelease?.createdAt || Date.now()).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <span className="text-[#33448D] group-hover:translate-x-2 transition-transform">Read article &rarr;</span>
+              <span>
+                {new Date(
+                  featuredPressRelease?.createdAt || Date.now()
+                ).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+              <span className="text-[#33448D] group-hover:translate-x-2 transition-transform">
+                Read article &rarr;
+              </span>
             </div>
           </div>
         </Link>
@@ -128,7 +148,15 @@ export default function PressReleaseSection() {
                   </p>
                 </div>
                 <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs font-medium">
-                  <span>{new Date(pressrelease?.createdAt || Date.now()).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                  <span>
+                    {new Date(
+                      pressrelease?.createdAt || Date.now()
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
                 </div>
               </div>
             </Link>

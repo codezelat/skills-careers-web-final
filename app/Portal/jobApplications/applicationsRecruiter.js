@@ -24,31 +24,33 @@ export default function JobApplicationsRecruiter() {
       try {
         const recruiterUrl = `/api/recruiterdetails/get?userId=${session.user.id}`;
         const recruiterResponse = await fetch(recruiterUrl);
-        if (!recruiterResponse.ok) throw new Error('Failed to fetch recruiter');
+        if (!recruiterResponse.ok) throw new Error("Failed to fetch recruiter");
         const recruiterData = await recruiterResponse.json();
 
         const url = `/api/applications/get?recruiterId=${recruiterData.id}`;
         const response = await fetch(url);
 
-        if (!response.ok) throw new Error('Failed to fetch');
+        if (!response.ok) throw new Error("Failed to fetch");
         const data = await response.json();
 
         if (data.success) {
-          const formatted = data.applications.map(app => ({
+          const formatted = data.applications.map((app) => ({
             ...app,
             id: app._id.toString(),
-            date: new Date(app.createdAt).toLocaleDateString('en-US', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric'
-            }).toUpperCase()
+            date: new Date(app.createdAt)
+              .toLocaleDateString("en-US", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+              .toUpperCase(),
           }));
 
           setApplications(formatted);
           setFilteredApplications(formatted);
         }
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
       } finally {
         setIsLoading(false);
       }
@@ -61,18 +63,22 @@ export default function JobApplicationsRecruiter() {
 
   // Handle search filtering
   useEffect(() => {
-    const filtered = applications.filter(app => {
-      const matchesSearch = app.candidateName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const filtered = applications.filter((app) => {
+      const matchesSearch =
+        app.candidateName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         app.jobTitle?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesFavourite = showFavourite && app.isFavourited;
-      const matchesApproved = showApproved && app.status === 'Approved';
-      const matchesDeclined = showDeclined && app.status === 'Declined';
+      const matchesApproved = showApproved && app.status === "Approved";
+      const matchesDeclined = showDeclined && app.status === "Declined";
       const anyFilterActive = showFavourite || showApproved || showDeclined;
 
-      return matchesSearch && (anyFilterActive
-        ? (matchesFavourite || matchesApproved || matchesDeclined)
-        : true);
+      return (
+        matchesSearch &&
+        (anyFilterActive
+          ? matchesFavourite || matchesApproved || matchesDeclined
+          : true)
+      );
     });
 
     setFilteredApplications(filtered);
@@ -88,8 +94,9 @@ export default function JobApplicationsRecruiter() {
 
   // Pagination controls
   const handlePageClick = (page) => setCurrentPage(page);
-  const handleNext = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
-  const handlePrevious = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   const getVisiblePages = () => {
     const visiblePages = 5;
@@ -121,8 +128,8 @@ export default function JobApplicationsRecruiter() {
   }
 
   return (
-    <div className="flex flex-col p-6 bg-white rounded-xl">
-      <div className="flex flex-row items-center justify-between">
+    <div className="flex flex-col p-4 sm:p-6 bg-white rounded-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <h2 className="text-[#001571] text-xl font-bold">
           Received Applications
         </h2>
@@ -132,8 +139,8 @@ export default function JobApplicationsRecruiter() {
       </div>
 
       <div className="flex-grow mt-6">
-        <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
-          <IoSearchSharp size={25} className="text-[#001571]" />
+        <div className="bg-[#E6E8F1] flex items-center pl-4 sm:pl-10 pr-4 sm:pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
+          <IoSearchSharp size={25} className="text-[#001571] min-w-[25px]" />
           <input
             type="text"
             placeholder="Search By Name or Job Title..."
@@ -145,11 +152,13 @@ export default function JobApplicationsRecruiter() {
       </div>
 
       <div className=" bg-white rounded-xl mt-8">
-        <div className="flex flex-row items-center justify-between">
-          <h1 className="text-xl font-bold text-[#001571] mb-2">Applications</h1>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <h1 className="text-xl font-bold text-[#001571] mb-2">
+            Applications
+          </h1>
 
           {/* application filter checkboxes */}
-          <div className="flex flex-row items-center justify-end gap-4 text-sm font-medium">
+          <div className="flex flex-wrap items-center justify-start lg:justify-end gap-2 sm:gap-4 text-sm font-medium">
             <div className="inline-flex items-center">
               <label
                 className="relative flex cursor-pointer items-center rounded-full p-3"
@@ -244,7 +253,6 @@ export default function JobApplicationsRecruiter() {
               <label>Declined</label>
             </div>
           </div>
-          
         </div>
 
         <div className="overflow-x-auto">
@@ -289,8 +297,11 @@ export default function JobApplicationsRecruiter() {
             {getVisiblePages().map((page) => (
               <button
                 key={page}
-                className={`px-3 py-1 rounded-lg ${currentPage === page ? "text-[#001571] font-bold" : "text-gray-600"
-                  }`}
+                className={`px-3 py-1 rounded-lg ${
+                  currentPage === page
+                    ? "text-[#001571] font-bold"
+                    : "text-gray-600"
+                }`}
                 onClick={() => handlePageClick(page)}
               >
                 {page}

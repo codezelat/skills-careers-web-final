@@ -10,7 +10,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
-import { FaTwitter, FaPhoneAlt, FaEnvelope, FaFacebook } from "react-icons/fa";
+import {
+  FaTwitter,
+  FaPhoneAlt,
+  FaEnvelope,
+  FaFacebook,
+  FaLinkedin,
+} from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { BiSolidCategory } from "react-icons/bi";
 import { TbUserHexagon } from "react-icons/tb";
@@ -84,126 +90,120 @@ function RecruiterCard(props) {
   return (
     <>
       {/* Company Info */}
-      <div className="mb-4">
+      {/* Company Info */}
+      <div className="mb-4 h-full">
         <div
           key={_id}
-          className="border rounded-lg bg-white hover:bg-[#EDF0FF] p-6 shadow-md"
+          className="h-full border border-gray-100 rounded-2xl bg-white hover:shadow-xl transition-all duration-300 p-6 flex flex-col group relative overflow-hidden"
         >
-          <p className="text-black font-semibold text-right">
-            Member Since {year}
-          </p>
+          {/* Top accent bar */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#001571] to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
 
-          <div className="flex flex-col md:flex-row">
-            <div className="flex-shrink-0 mt-5 lg:mt-0 md:pt-0 mb-4 md:mb-0 md:mr-6 flex justify-center items-center mx-auto">
-              <Image
-                src={logo || "/images/default-image.jpg"}
-                alt={`${recruiterName} logo`}
-                width={200}
-                height={200}
-                className="object-contain"
-              />
+          <div className="flex flex-col md:flex-row gap-6 h-full">
+            {/* Logo Column */}
+            <div className="flex-shrink-0 flex justify-center md:justify-start">
+              <div className="relative w-32 h-32 rounded-xl border border-gray-100 p-2 bg-white flex items-center justify-center">
+                <Image
+                  src={logo || "/images/default-image.jpg"}
+                  alt={`${recruiterName} logo`}
+                  width={120}
+                  height={120}
+                  className="object-contain max-h-full"
+                />
+              </div>
             </div>
 
-            <div className="flex-grow">
-              <div className="flex flex-col lg:flex-row md:flex-row justify-between items-start lg:items-center md:items-center mt-4 md:mt-0">
-                <h3 className="flex items-center text-xl text-center font-bold text-[#001571]">
-                  {recruiterName}
-                  <span className="ml-2 mt-1">
-                    <PiSealCheckFill size={20} />
-                  </span>
-                </h3>
-                <div className="flex space-x-3 mt-2 md:mt-0 text-[#001571]">
+            {/* Content Column */}
+            <div className="flex-grow flex flex-col">
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                <div>
+                  <h3 className="flex items-center text-xl md:text-2xl font-bold text-[#001571] group-hover:text-blue-700 transition-colors">
+                    {recruiterName}
+                    <PiSealCheckFill className="ml-2 text-blue-500" size={20} />
+                  </h3>
+                  <div className="flex flex-wrap gap-y-2 gap-x-4 mt-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-1.5">
+                      <FaLocationDot className="text-gray-400" />
+                      <span>{formatAddress(props.recruiter)}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <BiSolidCategory className="text-gray-400" />
+                      <span>{category || industry}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
                   {linkedin && (
                     <Link
                       href={linkedin}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      className="p-2 rounded-full bg-gray-50 text-[#0077b5] hover:bg-blue-50 transition-colors"
                     >
-                      <LinkedIn fontSize="large" aria-label="LinkedIn" />
-                    </Link>
-                  )}
-                  {instagram && (
-                    <Link
-                      href={instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Instagram fontSize="large" aria-label="Instagram" />
+                      <FaLinkedin size={18} />
                     </Link>
                   )}
                   {facebook && (
                     <Link
                       href={facebook}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      className="p-2 rounded-full bg-gray-50 text-[#1877f2] hover:bg-blue-50 transition-colors"
                     >
-                      <Facebook fontSize="large" aria-label="Facebook" />
+                      <FaFacebook size={18} />
+                    </Link>
+                  )}
+                  {instagram && (
+                    <Link
+                      href={instagram}
+                      target="_blank"
+                      className="p-2 rounded-full bg-gray-50 text-[#e4405f] hover:bg-pink-50 transition-colors"
+                    >
+                      <Instagram style={{ fontSize: 18 }} />
                     </Link>
                   )}
                   {x && (
-                    <Link href={x} target="_blank" rel="noopener noreferrer">
-                      <XIcon
-                        fontSize="large"
-                        aria-label="X (formerly Twitter)"
-                      />
+                    <Link
+                      href={x}
+                      target="_blank"
+                      className="p-2 rounded-full bg-gray-50 text-black hover:bg-gray-200 transition-colors"
+                    >
+                      <XIcon style={{ fontSize: 18 }} />
                     </Link>
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-4 mt-4 md:mt-2">
-                <div className="flex items-center gap-2">
-                  <FaLocationDot size={20} className="text-[#001571]" />
-                  <p className="text-black font-semibold">
-                    {formatAddress(props.recruiter)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <BiSolidCategory size={20} className="text-[#001571]" />
-                  <p className="text-black font-semibold">
-                    {category || industry}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <TbUserHexagon size={20} className="text-[#001571]" />
-                  <p className="text-black font-semibold">
-                    {employeeRange} Employees
-                  </p>
-                </div>
+              <div className="flex items-center gap-4 mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-100">
+                  {employeeRange} Employees
+                </span>
+                <span className="bg-gray-50 text-gray-600 px-2 py-1 rounded-md border border-gray-100">
+                  Member Since {year}
+                </span>
               </div>
 
-              <p className="line-clamp-4 text-black mt-8 mb-6 text-justify">
+              <p className="line-clamp-2 text-gray-600 mb-6 flex-grow leading-relaxed">
                 {companyDescription}
               </p>
 
-              <div className="flex flex-wrap gap-4 mt-4">
-                <button className="flex items-center bg-[#001571] text-white px-4 py-2 rounded-md">
-                  <FaPhoneAlt className="mr-2" />
-                  {contactNumber || "Not Available"}
+              <div className="mt-auto flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
+                <button className="flex-1 flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-[#001571] px-4 py-2.5 rounded-xl font-semibold transition-colors text-sm">
+                  <FaPhoneAlt size={14} />
+                  {contactNumber || "N/A"}
                 </button>
-                <button className="flex items-center bg-[#001571] text-white px-4 py-2 rounded-md">
-                  <FaEnvelope className="mr-2" />
-                  {email}
+                <button className="flex-1 flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-[#001571] px-4 py-2.5 rounded-xl font-semibold transition-colors text-sm">
+                  <FaEnvelope size={14} />
+                  <span className="truncate max-w-[150px]">{email}</span>
+                </button>
+                <button
+                  onClick={handleViewProfile}
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#001571] text-white px-4 py-2.5 rounded-xl font-bold shadow-md hover:bg-blue-800 hover:shadow-lg transition-all text-sm group-hover:pl-3 group-hover:pr-5"
+                >
+                  View Profile
+                  <BsArrowUpRightCircleFill className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-4 mt-4 justify-end">
-            <button
-              onClick={handleViewProfile}
-              className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md"
-            >
-              <p className="flex text-lg font-bold justify-center">
-                View Profile
-                <span className="ml-3 mt-1 font-bold text-lg">
-                  <BsArrowUpRightCircleFill />
-                </span>
-              </p>
-            </button>
-            {/* <button className="bg-[#001571] font-semibold text-lg text-white px-6 py-2 rounded-md">
-              Open Jobs
-            </button> */}
           </div>
         </div>
       </div>

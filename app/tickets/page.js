@@ -15,16 +15,16 @@ export default function TicketsPage() {
     try {
       // Fetch tickets
       const ticketsResponse = await fetch("/api/ticket/all?published=true");
-      const ticketsData = await ticketsResponse.json();
 
       if (!ticketsResponse.ok) throw new Error("Failed to fetch tickets");
+
+      const ticketsData = await ticketsResponse.json();
+      const ticketsArray = ticketsData.tickets || [];
 
       // Get unique recruiter IDs
       const recruiterIds = [
         ...new Set(
-          ticketsData.tickets
-            .map((ticket) => ticket.recruiterId)
-            .filter(Boolean)
+          ticketsArray.map((ticket) => ticket.recruiterId).filter(Boolean)
         ),
       ];
 
@@ -48,7 +48,7 @@ export default function TicketsPage() {
       }
 
       // Map tickets with recruiter details
-      const ticketsWithRecruiters = ticketsData.tickets.map((ticket) => {
+      const ticketsWithRecruiters = ticketsArray.map((ticket) => {
         const recruiterData = recruiterMap[ticket.recruiterId];
         return { ...ticket, recruiter: recruiterData || null };
       });
@@ -56,6 +56,7 @@ export default function TicketsPage() {
       setTickets(ticketsWithRecruiters);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setTickets([]);
     } finally {
       setIsLoading(false);
     }

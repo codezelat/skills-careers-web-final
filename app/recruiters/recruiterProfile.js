@@ -103,8 +103,9 @@ function RecruiterProfile({ slug }) {
   return (
     <>
       <div className="w-full space-y-5 pb-8 pt-16 flex flex-col items-center justify-center">
-        <div className="w-[1280px] pb-3 bg-white shadow-lg rounded-lg">
-          <div className="h-56 relative">
+        {/* Recruiter Profile Header */}
+        <div className="w-full max-w-[1280px] bg-white shadow-lg rounded-lg overflow-hidden">
+          <div className="h-48 sm:h-56 relative w-full">
             <Image
               src="/cover1.png"
               alt="cover"
@@ -113,81 +114,89 @@ function RecruiterProfile({ slug }) {
               className="w-full h-full"
             />
           </div>
-          <div className="relative flex flex-col items-start space-y-6 pl-4 sm:pl-14">
-            <div className="absolute transform -mt-16 border-4 border-[#001571] p-1 bg-white rounded-full overflow-hidden w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] md:w-[180px] md:h-[180px] lg:w-[180px] lg:h-[180px] flex items-center justify-center">
-              <Image
-                src={recruiterDetails.logo || "/images/default-image.jpg"}
-                alt="Logo"
-                width={160}
-                height={160}
-              />
+
+          <div className="relative flex flex-col items-start px-6 sm:px-14">
+            {/* Logo */}
+            <div className="absolute -top-12 sm:-top-16 border-4 border-[#001571] bg-white rounded-full overflow-hidden w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 flex items-center justify-center z-10">
+              <div className="relative w-full h-full p-2">
+                <Image
+                  src={recruiterDetails.logo || "/images/default-image.jpg"}
+                  alt="Logo"
+                  fill
+                  style={{ objectFit: "contain" }}
+                />
+              </div>
             </div>
-            <div className="flex flex-wrap space-x-3 sm:space-x-5 mt-2 md:mt-0 ml-auto items-center justify-center sm:justify-end pr-4 sm:pr-16">
-              {recruiterDetails.linkedin && (
-                <a
-                  href={recruiterDetails.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="/linkedin-b.png"
-                    alt="linkedin"
-                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
-                  />
-                </a>
-              )}
-              {recruiterDetails.x && (
-                <a
-                  href={recruiterDetails.x}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="/x-b.png"
-                    alt="xapp"
-                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
-                  />
-                </a>
-              )}
-              {recruiterDetails.instagram && (
-                <a
-                  href={recruiterDetails.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="/instagram-b.png"
-                    alt="instagram"
-                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
-                  />
-                </a>
-              )}
-              {recruiterDetails.facebook && (
-                <a
-                  href={recruiterDetails.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="/facebook-b.png"
-                    alt="facebook"
-                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
-                  />
-                </a>
-              )}
-              {recruiterDetails.website && (
-                <a
-                  href={recruiterDetails.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src="/world-b.png"
-                    alt="website"
-                    className="w-6 sm:w-auto cursor-pointer hover:opacity-80"
-                  />
-                </a>
-              )}
+
+            {/* Social Links - Desktop */}
+            <div className="w-full flex justify-center sm:justify-end pt-4 min-h-[60px]">
+              <div className="flex flex-wrap space-x-4 items-center justify-center sm:justify-end">
+                {recruiterDetails.linkedin && (
+                  <a
+                    href={recruiterDetails.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="/linkedin-b.png"
+                      alt="linkedin"
+                      className="w-6 hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                )}
+                {recruiterDetails.x && (
+                  <a
+                    href={recruiterDetails.x}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="/x-b.png"
+                      alt="xapp"
+                      className="w-6 hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                )}
+                {recruiterDetails.instagram && (
+                  <a
+                    href={recruiterDetails.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="/instagram-b.png"
+                      alt="instagram"
+                      className="w-6 hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                )}
+                {recruiterDetails.facebook && (
+                  <a
+                    href={recruiterDetails.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="/facebook-b.png"
+                      alt="facebook"
+                      className="w-6 hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                )}
+                {recruiterDetails.website && (
+                  <a
+                    href={recruiterDetails.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="/world-b.png"
+                      alt="website"
+                      className="w-6 hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 
@@ -270,7 +279,7 @@ function RecruiterProfile({ slug }) {
           </div>
         </div>
 
-        <div className="w-[1280px] pt-32 pb-20">
+        <div className="w-full max-w-[1280px] px-4 sm:px-0 pt-32 pb-20">
           <h1 className="text-2xl font-bold mb-12">Open Jobs</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {jobs.length > 0 ? (

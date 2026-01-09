@@ -26,7 +26,7 @@ const StartingPage = () => {
           />
         </div>
 
-        <div className="pt-8 w-[1280px]">
+        <div className="pt-8 w-full max-w-[1280px]">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="md:col-span-2">
               <div className="mb-8">

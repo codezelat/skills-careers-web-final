@@ -147,8 +147,9 @@ export default function DashboardStats() {
   return (
     <>
       {/* If admin */}
+      {/* If admin */}
       {session?.user?.role === "admin" && (
-        <div className="grid grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
           {[
             {
               title: "Jobs",
@@ -171,9 +172,12 @@ export default function DashboardStats() {
               icon: "/portal-dashboard/people.png",
             },
           ].map((item, idx) => (
-            <div key={idx} className="bg-white p-6 rounded-3xl shadow-md">
+            <div
+              key={idx}
+              className="bg-white p-4 lg:p-6 rounded-3xl shadow-md"
+            >
               <div className="flex justify-between items-center">
-                <h2 className="text-base font-semibold text-[#8A93BE] flex items-center">
+                <h2 className="text-sm lg:text-base font-semibold text-[#8A93BE] flex items-center">
                   {item.title}
                   <span className="ml-2">
                     <IoIosArrowDroprightCircle />
@@ -181,7 +185,7 @@ export default function DashboardStats() {
                 </h2>
                 <Image src={item.icon} alt="Flag icon" width={35} height={35} />
               </div>
-              <div className="text-3xl font-bold text-[#001571] mt-1">
+              <div className="text-2xl lg:text-3xl font-bold text-[#001571] mt-1">
                 {item.count}
               </div>
             </div>
@@ -190,8 +194,9 @@ export default function DashboardStats() {
       )}
 
       {/* If candidate */}
+      {/* If candidate */}
       {session?.user?.role === "jobseeker" && (
-        <div className="grid grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6">
           {[
             {
               title: "Applied Jobs",
@@ -209,9 +214,12 @@ export default function DashboardStats() {
               icon: "/portal-dashboard/buliding.png",
             },
           ].map((item, idx) => (
-            <div key={idx} className="bg-white p-6 rounded-3xl shadow-md">
+            <div
+              key={idx}
+              className="bg-white p-4 lg:p-6 rounded-3xl shadow-md"
+            >
               <div className="flex justify-between items-center">
-                <h2 className="text-base font-semibold text-[#8A93BE] flex items-center">
+                <h2 className="text-sm lg:text-base font-semibold text-[#8A93BE] flex items-center">
                   {item.title}
                   <span className="ml-2">
                     <IoIosArrowDroprightCircle />
@@ -219,7 +227,7 @@ export default function DashboardStats() {
                 </h2>
                 <Image src={item.icon} alt="Flag icon" width={35} height={35} />
               </div>
-              <div className="text-3xl font-bold text-[#001571] mt-1">
+              <div className="text-2xl lg:text-3xl font-bold text-[#001571] mt-1">
                 {item.count}
               </div>
             </div>
@@ -229,7 +237,7 @@ export default function DashboardStats() {
 
       {/* If recruiter */}
       {session?.user?.role === "recruiter" && (
-        <div className="grid grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6">
           {[
             {
               title: "Applications",
@@ -247,9 +255,12 @@ export default function DashboardStats() {
               icon: "/portal-dashboard/flag.png",
             },
           ].map((item, idx) => (
-            <div key={idx} className="bg-white p-6 rounded-3xl shadow-md">
+            <div
+              key={idx}
+              className="bg-white p-4 lg:p-6 rounded-3xl shadow-md"
+            >
               <div className="flex justify-between items-center">
-                <h2 className="text-base font-semibold text-[#8A93BE] flex items-center">
+                <h2 className="text-sm lg:text-base font-semibold text-[#8A93BE] flex items-center">
                   {item.title}
                   <span className="ml-2">
                     <IoIosArrowDroprightCircle />
@@ -257,7 +268,7 @@ export default function DashboardStats() {
                 </h2>
                 <Image src={item.icon} alt="Flag icon" width={35} height={35} />
               </div>
-              <div className="text-3xl font-bold text-[#001571] mt-1">
+              <div className="text-2xl lg:text-3xl font-bold text-[#001571] mt-1">
                 {item.count}
               </div>
             </div>

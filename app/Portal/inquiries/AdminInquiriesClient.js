@@ -60,11 +60,12 @@ export default function AdminInquiriesClient() {
 
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-xl font-bold text-[#001571]">Help & Inquiries</h1>
-        {(session?.user?.role === "jobseeker" || session?.user?.role === "recruiter") && (
+        {(session?.user?.role === "jobseeker" ||
+          session?.user?.role === "recruiter") && (
           <button
-            className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
+            className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold w-full sm:w-auto justify-center"
             onClick={() => setAddInquiryForm(true)}
           >
             <BsPlus size={25} className="mr-1" />
@@ -77,7 +78,9 @@ export default function AdminInquiriesClient() {
       {session?.user?.role === "admin" && (
         <div className="flex justify-end mb-4">
           <div className="flex items-center gap-2">
-            <label className="text-[#001571] font-semibold text-sm">Filter by Status:</label>
+            <label className="text-[#001571] font-semibold text-sm">
+              Filter by Status:
+            </label>
             <select
               value={filterStatus}
               onChange={handleFilterChange}
@@ -121,7 +124,8 @@ export default function AdminInquiriesClient() {
         </div>
       )}
 
-      {(session?.user?.role === "jobseeker" || session?.user?.role === "recruiter") && (
+      {(session?.user?.role === "jobseeker" ||
+        session?.user?.role === "recruiter") && (
         <div className="grid gap-4 grid-cols-1">
           {filteredInquiries.length > 0 ? (
             filteredInquiries.map((inquiry, index) => (

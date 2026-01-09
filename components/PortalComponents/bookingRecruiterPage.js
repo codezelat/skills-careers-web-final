@@ -39,6 +39,8 @@ export default function BookingRecruiterPage(props) {
 
   // Fetch enrolled ticket details
   const fetchTicketEnrollments = useCallback(async () => {
+    if (!session?.user?.id) return;
+
     try {
       const recruiterResponse = await fetch(
         `/api/recruiterdetails/get?userId=${session.user.id}`
@@ -48,7 +50,7 @@ export default function BookingRecruiterPage(props) {
       }
       const recruiterData = await recruiterResponse.json();
       const recruiterId = recruiterData.id;
-      console.log("recruiter id : ", recruiterId);
+      // console.log("recruiter id : ", recruiterId);
 
       // Fetch ticket enrollments
       const enrollmentsResponse = await fetch(
@@ -58,11 +60,12 @@ export default function BookingRecruiterPage(props) {
         throw new Error("Failed to fetch ticket enrollments");
       }
       const enrollmentsData = await enrollmentsResponse.json();
-      console.log("Enrolled data : ", enrollmentsData);
-      setTicketEnrollments(enrollmentsData.data);
+      // console.log("Enrolled data : ", enrollmentsData);
+      setTicketEnrollments(enrollmentsData.data || []);
     } catch (err) {
       setError(err.message);
       console.error("Error fetching data:", err);
+      setTicketEnrollments([]);
     } finally {
       setLoading(false);
     }
@@ -89,10 +92,13 @@ export default function BookingRecruiterPage(props) {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 6;
-  const totalPages = Math.ceil(ticketEnrollments.length / ticketsPerPage);
+  const safeTicketEnrollments = Array.isArray(ticketEnrollments)
+    ? ticketEnrollments
+    : [];
+  const totalPages = Math.ceil(safeTicketEnrollments.length / ticketsPerPage);
   const indexOfLastTicket = currentPage * ticketsPerPage;
   const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
-  const currentEnrolledTickets = ticketEnrollments.slice(
+  const currentEnrolledTickets = safeTicketEnrollments.slice(
     indexOfFirstTicket,
     indexOfLastTicket
   );
@@ -110,7 +116,7 @@ export default function BookingRecruiterPage(props) {
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-xl font-bold text-[#001571]">Booking Record</h1>
       </div>
 
@@ -158,8 +164,8 @@ export default function BookingRecruiterPage(props) {
 
       {/* Popup for Ticket Details */}
       {isPopupVisible && selectedTicket && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-2/5 max-w-2xl">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-[#001571]">
                 {selectedTicket.name}'s Enrollment details

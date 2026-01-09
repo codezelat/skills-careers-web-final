@@ -28,7 +28,7 @@ const ChartWidget = ({ title, target, ChartComponent, label, session }) => {
             role: session.user.role,
             filter,
             target, // Fetch specific chart data
-            ...(filter === "custom" && { startDate, endDate })
+            ...(filter === "custom" && { startDate, endDate }),
           });
 
           const response = await fetch(`/api/analytics/weekly?${queryParams}`);
@@ -111,7 +111,7 @@ export default function DashboardCharts() {
   if (status === "loading") return <PortalLoading />;
 
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {session?.user?.role === "admin" && (
         <>
           <ChartWidget

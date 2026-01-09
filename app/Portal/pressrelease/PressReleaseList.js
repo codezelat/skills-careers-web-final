@@ -81,11 +81,11 @@ export default function PressReleaseList() {
 
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-xl font-bold text-[#001571]">Press Release</h1>
         {session?.user?.role === "admin" && (
           <button
-            className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold"
+            className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold w-full sm:w-auto justify-center"
             onClick={() => setShowApplicationForm(true)}
           >
             <BsPlus size={25} className="mr-1" />
@@ -102,9 +102,9 @@ export default function PressReleaseList() {
         </div>
       )}
 
-      <div className="flex-grow mt-16">
-        <div className="bg-[#E6E8F1] flex items-center pl-10 pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
-          <IoSearchSharp size={25} className="text-[#001571]" />
+      <div className="flex-grow mt-8 sm:mt-16">
+        <div className="bg-[#E6E8F1] flex items-center pl-4 sm:pl-10 pr-4 sm:pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
+          <IoSearchSharp size={25} className="text-[#001571] min-w-[25px]" />
           <input
             type="text"
             placeholder="Search Job Posts..."
@@ -115,7 +115,7 @@ export default function PressReleaseList() {
         </div>
       </div>
 
-      <div className="grid gap-6 grid-cols-4 mt-10">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-10">
         {currentpress.length > 0 ? (
           currentpress
             .map((pressrelease, index) => (

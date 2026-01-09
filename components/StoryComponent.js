@@ -51,7 +51,7 @@ export default function StoryComponent() {
                 el: ".custom-pagination",
               }}
               loop={true}
-              className="w-[1280px] swiper-container"
+              className="w-full max-w-[1280px] swiper-container"
               modules={[Pagination, Navigation]}
             >
               {storyData.map((story) => (

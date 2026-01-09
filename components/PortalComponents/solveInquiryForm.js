@@ -19,13 +19,16 @@ export default function SolveInquiryForm({ inquiry, onClose, onSuccess }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/inquiry/update?id=${inquiryDetails._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inquiryDetails),
-      });
+      const response = await fetch(
+        `/api/inquiry/update?id=${inquiryDetails._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(inquiryDetails),
+        }
+      );
 
       if (response.ok) {
         Swal.fire({
@@ -65,10 +68,12 @@ export default function SolveInquiryForm({ inquiry, onClose, onSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white w-full max-w-4xl min-h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide flex flex-col">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-md p-6 sm:p-8 scrollbar-hide flex flex-col">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-2xl font-semibold text-[#001571]">Solve Inquiry</h4>
+          <h4 className="text-2xl font-semibold text-[#001571]">
+            Solve Inquiry
+          </h4>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-red-500 focus:outline-none"

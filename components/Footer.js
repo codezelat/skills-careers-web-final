@@ -82,7 +82,7 @@ export default function Footer() {
                 <ul className="space-y-3 text-sm text-gray-300">
                   <li>
                     <a
-                      href="privacypolicy"
+                      href="/privacypolicy"
                       className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
                     >
                       Privacy Policy
@@ -90,7 +90,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <a
-                      href="sustainabilitypolicy"
+                      href="/sustainabilitypolicy"
                       className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
                     >
                       Sustainability Policy
@@ -98,7 +98,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <a
-                      href="termsofuse"
+                      href="/termsofuse"
                       className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
                     >
                       Terms of Use

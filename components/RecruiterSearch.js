@@ -45,7 +45,7 @@ export default function RecruiterSearch({ onSearchResults }) {
   return (
     <div className="flex flex-col relative">
       <div className="bg-gray-200 rounded-md">
-        <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center gap-4 rounded-md py-1 md:py-2 px-1 md:px-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 rounded-md py-4 sm:py-2 px-4">
           <input
             type="text"
             placeholder="Search by recruiter name"
@@ -55,7 +55,7 @@ export default function RecruiterSearch({ onSearchResults }) {
           />
           <button
             onClick={handleSearch}
-            className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5 bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold"
+            className="flex w-full sm:w-auto justify-center items-center lg:w-1/5 bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-3 rounded-md font-semibold"
           >
             <span className="mt-1 mr-2 md:mr-4">
               <IoSearchSharp size={20} />

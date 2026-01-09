@@ -47,7 +47,12 @@ function AddInquiry({ onClose, onInquiryAdded }) {
   };
 
   // Function to create an inquiry
-  const createInquiry = async (inquiryTitle, inquiryDescription, userName, userRole) => {
+  const createInquiry = async (
+    inquiryTitle,
+    inquiryDescription,
+    userName,
+    userRole
+  ) => {
     const response = await fetch("/api/inquiry/add", {
       method: "POST",
       body: JSON.stringify({
@@ -113,8 +118,8 @@ function AddInquiry({ onClose, onInquiryAdded }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white w-full max-w-4xl h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-md p-6 sm:p-8 scrollbar-hide">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-2xl font-semibold text-[#001571]">
             Create Inquiry

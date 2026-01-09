@@ -40,30 +40,39 @@ function PressReleaseCard({ release }) {
   };
 
   return (
-    <div className="bg-white hover:bg-[#CAD1F1] p-6 rounded-lg shadow-lg min-h-[65vh] flex flex-col">
-      <div className="flex justify-center mb-8">
-        {" "}
+    <div className="bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 p-6 rounded-2xl border border-gray-100 flex flex-col h-full group">
+      <div className="flex justify-center mb-6 relative w-full h-48 overflow-hidden rounded-xl bg-gray-50 border border-gray-100">
         <Image
           src={image || "/images/default-image.jpg"}
           alt="Press Release Image"
-          width={200}
-          height={180}
-          className="rounded-lg object-cover"
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
+        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[#001571] shadow-sm">
+          {postedDate}
+        </div>
       </div>
-      <h2 className="truncate text-xl font-bold text-[#001571] mb-1 text-left sm:text-left">
-        {title}
-      </h2>
-      <p className="line-clamp-4 text-[#110d0d] text-md mb-4 text-justify sm:text-left">
-        {description}
-      </p>
-      <div className="flex gap-4 flex-wrap justify-center mt-auto">
-        <button
-          onClick={handleViewPressRelease}
-          className="flex border-2 border-[#001571] text-[#001571] px-3 py-2 rounded-lg font-bold hover:bg-blue-800 hover:text-white transition"
+
+      <div className="flex flex-col flex-1">
+        <h2
+          className="text-xl font-bold text-[#001571] mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors"
+          title={title}
         >
-          Read More
-        </button>
+          {title}
+        </h2>
+
+        <p className="line-clamp-3 text-gray-600 text-sm mb-6 leading-relaxed">
+          {description}
+        </p>
+
+        <div className="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+          <button
+            onClick={handleViewPressRelease}
+            className="w-full flex items-center justify-center px-4 py-2.5 bg-[#001571] text-white text-sm font-bold rounded-xl shadow-md hover:bg-blue-800 hover:shadow-lg transition-all"
+          >
+            Read Full Story
+          </button>
+        </div>
       </div>
     </div>
   );

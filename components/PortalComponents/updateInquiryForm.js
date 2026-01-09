@@ -43,11 +43,13 @@ export default function UpdateInquiryForm({ inquiry, onClose, onUpdate }) {
   }, [inquiry]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-xl shadow-md flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-8">
-          <h4 className="text-2xl font-semibold text-[#001571]">View Inquiry</h4>
+        <div className="flex items-center justify-between p-6 sm:p-8">
+          <h4 className="text-2xl font-semibold text-[#001571]">
+            View Inquiry
+          </h4>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-red-500 focus:outline-none"

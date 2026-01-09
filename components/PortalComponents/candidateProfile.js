@@ -1204,7 +1204,7 @@ export default function CandidateProfile() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-base font-semibold">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-base font-semibold">
             {/* First Column */}
             <div className="space-y-3">
               <div>Birthday - {jobSeekerDetails.dob}</div>
@@ -1457,7 +1457,7 @@ export default function CandidateProfile() {
         {openCreateExperienceForm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             {/* Popup Container */}
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+            <div className="w-full max-w-3xl px-4 mx-4 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h4 className="text-2xl font-semibold text-[#001571]">

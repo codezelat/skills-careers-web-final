@@ -45,35 +45,35 @@ function AddAnnouncement({ onClose }) {
         announcementTitle,
         announcementDescription
       );
-      
-              // Success SweetAlert popup with 1-second timer
-              Swal.fire({
-                icon: "success",
-                title: "Annoucement created successfully!",
-                showConfirmButton: false,
-                timer: 2000, // 1-second timer
-              }).then(() => {
-                // Close the form automatically after the popup
-                clearForm();
-                onClose(); 
-            } )
+
+      // Success SweetAlert popup with 1-second timer
+      Swal.fire({
+        icon: "success",
+        title: "Annoucement created successfully!",
+        showConfirmButton: false,
+        timer: 2000, // 1-second timer
+      }).then(() => {
+        // Close the form automatically after the popup
+        clearForm();
+        onClose();
+      });
 
       window.location.reload();
     } catch (error) {
       Swal.fire({
-                icon: "error",
-                title: "Failed to create Annoucement.",
-                showConfirmButton: false,
-                timer: 2000, // 1-second timer
-              });
+        icon: "error",
+        title: "Failed to create Annoucement.",
+        showConfirmButton: false,
+        timer: 2000, // 1-second timer
+      });
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white w-full max-w-4xl h-[90vh] overflow-y-auto rounded-xl shadow-md p-8 scrollbar-hide">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-md p-6 sm:p-8 scrollbar-hide">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-2xl font-semibold text-[#001571]">
             Create Annoucement

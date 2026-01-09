@@ -127,7 +127,7 @@ const FetchingJobs = () => {
                 768: { slidesPerView: 2, spaceBetween: 10 },
                 1024: { slidesPerView: 4, spaceBetween: 15 },
               }}
-              className="swiper-container w-[1280px] mt-16 pb-16"
+              className="swiper-container w-full max-w-[1280px] mt-16 pb-16"
             >
               {filteredJobs.map((job, index) => (
                 <SwiperSlide key={index}>

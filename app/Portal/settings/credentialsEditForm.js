@@ -10,8 +10,8 @@ export default function CredentialsForm({
   onInputChange,
 }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+      <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h4 className="text-2xl font-semibold text-[#001571]">Credentials</h4>
@@ -89,7 +89,9 @@ export default function CredentialsForm({
             onClick={onSubmit}
             disabled={isSubmitting}
             className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-              isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+              isSubmitting
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-700"
             }`}
           >
             {isSubmitting ? "Saving..." : "Save"}

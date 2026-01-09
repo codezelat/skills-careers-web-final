@@ -61,6 +61,8 @@ export default function RecruitersTicketsPage(props) {
 
   // Fetch tickets
   const fetchTickets = useCallback(async () => {
+    if (!session?.user?.id) return;
+
     try {
       const recruiterResponse = await fetch(
         `/api/recruiterdetails/get?userId=${session.user.id}`
@@ -80,10 +82,11 @@ export default function RecruitersTicketsPage(props) {
       }
       const ticketsData = await ticketsResponse.json();
 
-      setTickets(ticketsData.tickets);
+      setTickets(ticketsData.tickets || []);
     } catch (err) {
       setError(err.message);
       console.error("Error fetching tickets:", err);
+      setTickets([]);
     } finally {
       setLoading(false);
     }
@@ -445,8 +448,8 @@ export default function RecruitersTicketsPage(props) {
 
       {/* Add Ticket Form */}
       {isFormVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h4 className="text-2xl font-semibold text-[#001571]">
@@ -618,8 +621,8 @@ export default function RecruitersTicketsPage(props) {
 
       {/* Edit Ticket Form */}
       {isEditFormVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+          <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h4 className="text-2xl font-semibold text-[#001571]">

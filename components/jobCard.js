@@ -47,62 +47,96 @@ function JobCard({ job, onApply }) {
   };
 
   return (
-    <div className="bg-white hover:bg-[#CAD1F1] p-6 rounded-lg shadow-lg min-h-[70vh] flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <p className="w-full text-right text-[#000000] text-sm font-bold">
+    <div className="bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 p-6 rounded-2xl border border-gray-100 flex flex-col h-full group">
+      <div className="flex justify-between items-start mb-4">
+        <div className="relative w-16 h-16 shrink-0 border border-gray-100 rounded-full overflow-hidden bg-white p-1">
+          <Image
+            src={logo || "/images/default-image.jpg"}
+            alt="Logo"
+            fill
+            className="object-contain rounded-full"
+          />
+        </div>
+        <span className="text-xs font-semibold text-gray-400 bg-gray-50 px-2 py-1 rounded-full">
           {postedDate}
-        </p>
+        </span>
       </div>
-      <Image
-        src={logo || "/images/default-image.jpg"}
-        alt="Logo"
-        width={100}
-        height={100}
-        className="rounded-full object-cover mb-8"
-      />
-      <h2 className="truncate text-xl font-bold text-[#001571] mb-1 text-left sm:text-left">
-        {jobTitle}
-      </h2>
-      <div className="flex items-center gap-2 mb-4 justify-start sm:justify-start">
+
+      <div className="mb-3">
+        <h2
+          className="text-lg font-bold text-[#001571] line-clamp-1 group-hover:text-blue-600 transition-colors"
+          title={jobTitle}
+        >
+          {jobTitle}
+        </h2>
+        <div className="flex flex-col gap-0.5 mt-1">
+          <p className="text-sm font-semibold text-gray-900 line-clamp-1">
+            {recruiterName}
+          </p>
+          <div className="flex items-center gap-1 text-xs text-gray-500">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span className="truncate">{location}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mb-4">
         {Array.isArray(jobTypes) ? (
-          jobTypes.map((type, index) => (
+          jobTypes.slice(0, 3).map((type, index) => (
             <span
               key={index}
-              className={`px-2 py-1 rounded-[5px] text-xs font-semibold text-white ${
-                index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
+              className={`px-2.5 py-1 rounded-lg text-[10px] uppercase tracking-wider font-bold ${
+                index % 2 === 0
+                  ? "bg-blue-50 text-blue-700 border border-blue-100"
+                  : "bg-teal-50 text-teal-700 border border-teal-100"
               }`}
             >
               {type}
             </span>
           ))
         ) : typeof jobTypes === "string" ? (
-          <span className="px-2 py-1 rounded-[5px] text-xs font-semibold text-white bg-[#001571]">
+          <span className="px-2.5 py-1 rounded-lg text-[10px] uppercase tracking-wider font-bold bg-blue-50 text-blue-700 border border-blue-100">
             {jobTypes}
           </span>
         ) : null}
       </div>
 
-      <p className="text-xl font-bold text-[#000000] text-left sm:text-left">
-        {recruiterName}
-      </p>
-      <p className="text-xl font-bold text-[#000000] mb-4 text-left sm:text-left">
-        {location}
-      </p>
-      <p className="line-clamp-4 text-[#000000] text-sm mb-4 text-justify sm:text-left">
+      <hr className="border-gray-100 mb-4" />
+
+      <p className="text-sm text-gray-600 line-clamp-3 mb-6 leading-relaxed flex-1">
         {shortDescription}
       </p>
-      <div className="flex gap-4 flex-wrap justify-between sm:justify-start mt-auto">
+
+      <div className="grid grid-cols-2 gap-3 mt-auto">
         <button
-          className="bg-[#001571] text-white px-3 py-2 rounded-lg font-semibold"
+          onClick={handleViewJob}
+          className="flex items-center justify-center px-4 py-2.5 border border-[#001571] text-[#001571] text-sm font-bold rounded-xl hover:bg-blue-50 transition-colors"
+        >
+          View Details
+        </button>
+        <button
+          className="flex items-center justify-center px-4 py-2.5 bg-[#001571] text-white text-sm font-bold rounded-xl shadow-md hover:bg-blue-800 hover:shadow-lg transition-all"
           onClick={() => onApply(_id)}
         >
           Apply Now
-        </button>
-        <button
-          onClick={handleViewJob}
-          className="border-2 border-[#001571] text-[#001571] px-3 py-2 rounded-lg font-bold hover:bg-blue-800 hover:text-white transition"
-        >
-          Quick View
         </button>
       </div>
     </div>

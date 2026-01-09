@@ -189,7 +189,7 @@ function Login() {
           </div>
 
           {/* Right Side with Form */}
-          <div className="flex flex-col justify-center md:w-2/5 p-8">
+          <div className="flex flex-col justify-center w-full md:w-2/5 p-4 sm:p-8 md:p-8 lg:p-12">
             <div className="flex flex-col items-center mb-4">
               <a href="/">
                 <Image
