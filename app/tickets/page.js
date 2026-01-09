@@ -6,10 +6,15 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 
+import { IoSearchSharp } from "react-icons/io5";
+
 export default function TicketsPage() {
   const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const [tickets, setTickets] = useState([]);
+  const [filteredTickets, setFilteredTickets] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
 
   const fetchTicketsWithRecruiters = useCallback(async () => {
     try {
@@ -54,9 +59,11 @@ export default function TicketsPage() {
       });
 
       setTickets(ticketsWithRecruiters);
+      setFilteredTickets(ticketsWithRecruiters);
     } catch (error) {
       console.error("Error fetching data:", error);
       setTickets([]);
+      setFilteredTickets([]);
     } finally {
       setIsLoading(false);
     }
@@ -65,6 +72,30 @@ export default function TicketsPage() {
   useEffect(() => {
     fetchTicketsWithRecruiters();
   }, [fetchTicketsWithRecruiters]);
+
+  useEffect(() => {
+    let result = tickets;
+
+    if (searchQuery) {
+      const lowerQuery = searchQuery.toLowerCase();
+      result = result.filter(
+        (ticket) =>
+          ticket.name?.toLowerCase().includes(lowerQuery) ||
+          ticket.location?.toLowerCase().includes(lowerQuery) ||
+          ticket.description?.toLowerCase().includes(lowerQuery)
+      );
+    }
+
+    if (selectedDate) {
+      result = result.filter((ticket) => ticket.date === selectedDate);
+    }
+
+    setFilteredTickets(result);
+  }, [searchQuery, selectedDate, tickets]);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   return (
     <>
@@ -89,11 +120,50 @@ export default function TicketsPage() {
             </h1>
           </div>
 
-          <div className="w-full pt-20">
+          <div className="bg-[#e6e8f1] p-2 rounded-xl shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 items-center">
+              {/* Search Icon & Input */}
+              <div className="flex items-center flex-grow w-full md:w-auto px-4">
+                <IoSearchSharp
+                  size={20}
+                  className="text-[#001571] min-w-[20px]"
+                />
+                <input
+                  type="text"
+                  placeholder="Search by event name, location..."
+                  className="bg-transparent text-[#001571] text-base font-semibold flex-grow pl-4 py-3 focus:outline-none placeholder-[#8A93BE] w-full"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+              </div>
+
+              {/* Divider (Hidden on Mobile) */}
+              <div className="hidden md:block w-[1px] h-8 bg-[#B0B6D3]"></div>
+
+              {/* Date Input */}
+              <div className="w-full md:w-auto px-4">
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="bg-transparent text-[#001571] font-semibold text-base focus:outline-none w-full md:w-auto cursor-pointer"
+                />
+              </div>
+
+              {/* Search Button */}
+              <button className="bg-[#001571] text-white px-8 py-3 rounded-lg font-bold text-sm hover:bg-[#001571]/90 transition-colors w-full md:w-auto shadow-md">
+                Search
+              </button>
+            </div>
+          </div>
+
+
+
+          <div className="w-full pt-10">
             {isLoading ? (
               <RecruiterLoading />
-            ) : tickets.length > 0 ? (
-              tickets.map((ticket) => (
+            ) : filteredTickets.length > 0 ? (
+              filteredTickets.map((ticket) => (
                 <TicketsCard
                   key={ticket._id}
                   ticket={ticket}
