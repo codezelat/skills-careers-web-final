@@ -31,12 +31,6 @@ export default function BookingRecruiterPage(props) {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchTicketEnrollments();
-    }
-  }, [session, fetchTicketEnrollments]);
-
   // Fetch enrolled ticket details
   const fetchTicketEnrollments = useCallback(async () => {
     if (!session?.user?.id) return;
@@ -237,11 +231,10 @@ export default function BookingRecruiterPage(props) {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === 1
+            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-            }`}
+              }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -249,11 +242,10 @@ export default function BookingRecruiterPage(props) {
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1
+              className={`px-4 py-2 rounded-lg ${currentPage === index + 1
                   ? "bg-blue-700 text-white"
                   : "bg-gray-200 hover:bg-gray-400"
-              }`}
+                }`}
             >
               {index + 1}
             </button>
@@ -261,11 +253,10 @@ export default function BookingRecruiterPage(props) {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === totalPages
+            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-            }`}
+              }`}
           >
             <BsChevronRight size={15} />
           </button>

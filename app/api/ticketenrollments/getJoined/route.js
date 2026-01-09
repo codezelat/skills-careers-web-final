@@ -36,8 +36,8 @@ export async function GET(req) {
 
         if (!tickets || tickets.length === 0) {
             return NextResponse.json(
-                { message: "No tickets found for the given recruiterId" },
-                { status: 404 }
+                { data: [] },
+                { status: 200 }
             );
         }
 

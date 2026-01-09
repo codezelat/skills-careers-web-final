@@ -117,7 +117,8 @@ export default function TicketsCard({ ticket, fetchTickets }) {
           <div className="flex-grow">
             <div className="flex flex-col lg:flex-row md:flex-row justify-between items-start lg:items-center md:items-center mt-4 md:mt-0">
               <h3 className="flex items-center text-xl text-center font-bold text-[#001571]">
-                {ticket.name} By {ticket.recruiter.recruiterName}
+                {ticket.name} By{" "}
+                {ticket.recruiter?.recruiterName || "Unknown Recruiter"}
               </h3>
               <div className="flex items-center gap-2 mt-2 md:mt-0 text-[#001571]">
                 <p className="text-black font-semibold">
