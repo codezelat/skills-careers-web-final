@@ -36,7 +36,7 @@ const nextConfig = {
   // Configure external packages for server components
   serverExternalPackages: ["mongodb"],
   // Configure build output
-  output: "standalone",
+  // output: "standalone",
   // Add timeout configuration
   staticPageGenerationTimeout: 180,
   // Enable modern optimizations
