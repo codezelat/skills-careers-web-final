@@ -213,15 +213,17 @@ export default function HeaderSection() {
         {/* Left Section - Logo */}
         <Link
           href={baseUrl || "/"}
-          className="bg-[#001571] hidden lg:flex items-center justify-center text-white h-full px-8 rounded-2xl font-semibold text-[18px]"
+          className="bg-[#001571] hidden lg:flex items-center justify-center text-white h-full px-6 lg:px-8 rounded-2xl font-semibold text-[16px] lg:text-[18px] flex-shrink-0"
         >
-          <h1>SKILLS CAREERS</h1>
+          <h1 className="whitespace-nowrap">SKILLS CAREERS</h1>
         </Link>
         <div className="lg:hidden w-full flex justify-between items-center bg-[#001571] text-white p-4 rounded-xl">
-          <h1 className="font-bold">SKILLS CAREERS</h1>
+          <h1 className="font-bold whitespace-nowrap text-sm sm:text-base">
+            SKILLS CAREERS
+          </h1>
           <div className="flex items-center gap-2">
             <div className="text-right">
-              <p className="text-sm font-bold">{session?.user?.firstName}</p>
+              <p className="text-sm font-bold truncate max-w-[150px]">{session?.user?.firstName}</p>
             </div>
             {session?.user?.profileImage ? (
               <Image
@@ -239,14 +241,14 @@ export default function HeaderSection() {
 
         {/* Middle Section - Search */}
         <div
-          className="w-full lg:flex-grow lg:mx-8 h-12 lg:h-full relative"
+          className="w-full lg:flex-grow lg:mx-4 xl:mx-8 h-12 lg:h-full relative"
           ref={searchRef}
         >
           <div className="bg-white flex items-center pl-4 lg:pl-8 pr-4 h-full rounded-2xl shadow-sm w-full gap-2">
             <button
               onClick={handleSearch}
               disabled={isSearching || searchQuery.trim().length < 2}
-              className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               aria-label="Search"
               type="button"
             >
@@ -262,7 +264,7 @@ export default function HeaderSection() {
               disabled={isSearching}
               className="ml-2 text-gray-500 outline-none flex-1 text-[16px] disabled:opacity-50 min-w-0"
             />
-            <div className="border-l border-gray-300 pl-2 lg:pl-4 pr-0 lg:pr-2">
+            <div className="border-l border-gray-300 pl-2 lg:pl-4 pr-0 lg:pr-2 flex-shrink-0">
               <select
                 value={selectedJobType}
                 onChange={handleJobTypeChange}
@@ -324,12 +326,12 @@ export default function HeaderSection() {
         </div>
 
         {/* Right Section - User Profile (Desktop) */}
-        <div className="hidden lg:flex items-center bg-white px-8 h-full rounded-2xl shadow-sm gap-4">
+        <div className="hidden lg:flex items-center bg-white px-8 h-full rounded-2xl shadow-sm gap-4 flex-shrink-0">
           <div className="text-left">
-            <p className="font-bold text-[#001571] text-[16px]">
+            <p className="font-bold text-[#001571] text-[16px] whitespace-nowrap">
               {session?.user?.firstName} {session?.user?.lastName}
             </p>
-            <p className="text-sm font-bold text-gray-400">
+            <p className="text-sm font-bold text-gray-400 whitespace-nowrap">
               {session?.user?.role}
             </p>
           </div>

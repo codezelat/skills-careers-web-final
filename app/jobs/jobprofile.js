@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import NavBar from "@/components/navBar";
 import SwiperComponent from "@/components/jobCard";
@@ -20,6 +20,7 @@ import Loading from "../loading";
 
 function JobProfile({ slug }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [jobDetails, setJobDetails] = useState({
     id: "",
     jobTitle: "",
@@ -45,6 +46,15 @@ function JobProfile({ slug }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const [showApplicationForm, setShowApplicationForm] = useState(false);
+
+  // Check for auto-open param
+  useEffect(() => {
+    if (searchParams.get("apply") === "true") {
+      setShowApplicationForm(true);
+      // Optional: remove params from URL to avoid re-opening on refresh
+      // router.replace(window.location.pathname, { scroll: false });
+    }
+  }, [searchParams]);
 
   const [jobs, setJobs] = useState([]);
   const [featuredJobs, setFeaturedJobs] = useState([]);
@@ -229,9 +239,8 @@ function JobProfile({ slug }) {
                   jobDetails.jobTypes.map((type, index) => (
                     <span
                       key={index}
-                      className={`px-2 py-1/2 rounded-lg mr-2 text-white ${
-                        index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
-                      }`}
+                      className={`px-2 py-1/2 rounded-lg mr-2 text-white ${index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
+                        }`}
                     >
                       {type}
                     </span>

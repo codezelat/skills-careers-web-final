@@ -163,7 +163,11 @@ export default function JobApplicationForm({ onClose, jobid }) {
 
   // Auto-fill form fields with job seeker profile details
   useEffect(() => {
-    if (jobSeekerDetails && Object.keys(jobSeekerDetails).length > 0) {
+    // Check if we have a saved draft for this job
+    const savedJobId = localStorage.getItem("savedApplication_jobId");
+
+    // Only auto-fill from profile if NO draft exists for this job
+    if (savedJobId !== jobid && jobSeekerDetails && Object.keys(jobSeekerDetails).length > 0) {
       setFirstName(
         jobSeekerDetails.firstName || session?.user?.firstName || ""
       );
@@ -171,7 +175,28 @@ export default function JobApplicationForm({ onClose, jobid }) {
       setEmail(jobSeekerDetails.email || session?.user?.email || "");
       setContactNumber(jobSeekerDetails.contactNumber || "");
     }
-  }, [jobSeekerDetails, session]);
+  }, [jobSeekerDetails, session, jobid]);
+
+  // Restore form data from localStorage if available
+  useEffect(() => {
+    const savedJobId = localStorage.getItem("savedApplication_jobId");
+    if (savedJobId === jobid) {
+      const savedFirstName = localStorage.getItem("savedApplication_firstName");
+      const savedLastName = localStorage.getItem("savedApplication_lastName");
+      const savedEmail = localStorage.getItem("savedApplication_email");
+      const savedContactNumber = localStorage.getItem("savedApplication_contactNumber");
+
+      if (savedFirstName) setFirstName(savedFirstName);
+      if (savedLastName) setLastName(savedLastName);
+      if (savedEmail) setEmail(savedEmail);
+      if (savedContactNumber) setContactNumber(savedContactNumber);
+
+      // optional: clear storage after restoring
+      // localStorage.removeItem("savedApplication_jobId");
+      // localStorage.removeItem("savedApplication_firstName");
+      // ...
+    }
+  }, [jobid]);
 
   // if (isLoading) {
   //   return <div className="text-center py-4">Loading Application Form ...</div>;
@@ -237,12 +262,11 @@ export default function JobApplicationForm({ onClose, jobid }) {
 
     const jobseekerId = jobSeekerDetails._id;
 
-    if (!selectedFile) {
-      setFileError("Please upload your CV");
-      return;
-    }
-
     if (status === "authenticated") {
+      if (!selectedFile) {
+        setFileError("Please upload your CV");
+        return;
+      }
       try {
         setIsSubmitting(true);
         const result = await applyJob(
@@ -263,6 +287,13 @@ export default function JobApplicationForm({ onClose, jobid }) {
           text: result.message,
           confirmButtonColor: "#001571",
         });
+
+        // Clear local storage if submission is successful
+        localStorage.removeItem("savedApplication_jobId");
+        localStorage.removeItem("savedApplication_firstName");
+        localStorage.removeItem("savedApplication_lastName");
+        localStorage.removeItem("savedApplication_email");
+        localStorage.removeItem("savedApplication_contactNumber");
 
         setFirstName("");
         setLastName("");
@@ -292,8 +323,30 @@ export default function JobApplicationForm({ onClose, jobid }) {
       Swal.fire({
         icon: "warning",
         title: "Authentication Required",
-        text: "Please Login to apply",
+        text: "Please login to apply for this job",
+        showCancelButton: true,
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel",
         confirmButtonColor: "#001571",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Save form data to localStorage
+          localStorage.setItem("savedApplication_jobId", jobid);
+          localStorage.setItem("savedApplication_firstName", firstName);
+          localStorage.setItem("savedApplication_lastName", lastName);
+          localStorage.setItem("savedApplication_email", email);
+          localStorage.setItem("savedApplication_contactNumber", contactNumber);
+
+          // Redirect to login with callbackUrl
+          const callbackUrl = encodeURIComponent(window.location.pathname);
+          // Note: window.location.pathname usually is /jobs/[id].
+          // If the form is a modal on that page, resizing back to it works.
+          // However, we need to ensure the modal opens automatically or the user has to click apply again.
+          // The request said "after login need to take them same job application with previously filled data automatically"
+          // If we redirect to /jobs/id, the modal is closed by default.
+          // We can append a query param ?apply=true to open it auto.
+          router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname + "?apply=true")}`);
+        }
       });
     }
   }
@@ -459,9 +512,8 @@ export default function JobApplicationForm({ onClose, jobid }) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700 flex items-center gap-2 ${
-                    isSubmitting ? "opacity-75 cursor-not-allowed" : ""
-                  }`}
+                  className={`bg-blue-900 text-white px-4 py-2 rounded-md border-2 font-medium hover:bg-indigo-700 flex items-center gap-2 ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""
+                    }`}
                 >
                   {isSubmitting ? (
                     <>

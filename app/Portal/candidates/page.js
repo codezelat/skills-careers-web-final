@@ -301,25 +301,25 @@ export default function Candidates() {
   return (
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-xl font-bold text-[#001571]">Candidates</h1>
-        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+        <h1 className="text-lg sm:text-xl font-bold text-[#001571] whitespace-nowrap">Candidates</h1>
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           {session?.user?.role === "admin" && selectedIds.length > 0 && (
             <button
-              className="bg-red-600 text-white px-6 py-2 rounded-2xl shadow hover:bg-red-800 flex items-center text-sm font-semibold transition-all flex-grow sm:flex-grow-0 justify-center"
+              className="bg-red-600 text-white px-4 sm:px-6 py-2 rounded-2xl shadow hover:bg-red-800 flex items-center text-xs sm:text-sm font-semibold transition-all justify-center"
               onClick={handleBulkDelete}
             >
-              <FaTimes size={18} className="mr-1" />
-              Delete Selected ({selectedIds.length})
+              <FaTimes size={16} className="mr-1 sm:mr-2" />
+              <span className="whitespace-nowrap">Delete Selected ({selectedIds.length})</span>
             </button>
           )}
           {session?.user?.role === "admin" && (
             <button
-              className="bg-[#001571] text-white px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-sm font-semibold flex-grow sm:flex-grow-0 justify-center"
+              className="bg-[#001571] text-white px-4 sm:px-6 py-2 rounded-2xl shadow hover:bg-blue-800 flex items-center text-xs sm:text-sm font-semibold justify-center"
               onClick={() => setNewJobseekerForm(true)}
             >
-              <BsPlus size={25} className="mr-1" />
-              Add New
+              <BsPlus size={20} className="mr-1" />
+              <span className="whitespace-nowrap">Add New</span>
             </button>
           )}
         </div>
@@ -327,47 +327,47 @@ export default function Candidates() {
 
       {/* Tabs */}
       {session?.user?.role === "admin" && (
-        <div className="flex flex-col sm:flex-row items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-full sm:w-max text-sm font-medium mx-auto sm:mx-0">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-full lg:w-max text-xs sm:text-sm font-medium gap-1 sm:gap-0">
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${
+            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${
               activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
             }`}
           >
-            All Candidates
-            <PiCheckCircle size={20} className="ml-2" />
+            <span>All Candidates</span>
+            <PiCheckCircle size={18} className="ml-2" />
           </button>
           <button
             onClick={() => setActiveTab("restricted")}
-            className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${
+            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${
               activeTab === "restricted"
                 ? "bg-[#001571] text-white"
                 : "text-[#B0B6D3]"
             }`}
           >
-            Restricted Candidates
-            <PiCheckCircle size={20} className="ml-2" />
+            <span>Restricted Candidates</span>
+            <PiCheckCircle size={18} className="ml-2" />
           </button>
         </div>
       )}
       {/* Search */}
-      <div className="bg-[#E6E8F1] flex items-center pl-4 sm:pl-10 pr-4 sm:pr-10 mb-5 py-4 rounded-2xl shadow-sm w-full">
-        <IoSearchSharp size={25} className="text-[#001571] min-w-[25px]" />
+      <div className="bg-[#E6E8F1] flex items-center px-4 sm:px-6 lg:px-10 mb-5 py-3 sm:py-4 rounded-2xl shadow-sm w-full">
+        <IoSearchSharp size={20} className="text-[#001571] min-w-[20px] sm:min-w-[25px] flex-shrink-0" />
         <input
           type="text"
           placeholder="Search candidates..."
-          className="ml-4 text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
+          className="ml-3 sm:ml-4 text-sm sm:text-base text-[#8A93BE] bg-[#E6E8F1] font-bold outline-none w-full"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
-      {/* Candidate List Header with Select All */}
-      <div className="w-full overflow-x-auto">
+      {/* Candidate List Header with Select All - Hidden on mobile */}
+      <div className="hidden lg:block w-full overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="text-[#8A93BE] text-base font-semibold text-left">
-              <th className="px-4 py-3 w-[3%]">
+            <tr className="text-[#8A93BE] text-sm lg:text-base font-semibold text-left">
+              <th className="px-2 lg:px-4 py-3 w-[3%]">
                 {session?.user?.role === "admin" && (
                   <input
                     type="checkbox"
@@ -380,10 +380,10 @@ export default function Candidates() {
                   />
                 )}
               </th>
-              <th className="px-4 py-3 w-[24.25%]">Candidate Name</th>
-              <th className="px-4 py-3 w-[24.25%]">Email</th>
-              <th className="px-4 py-3 w-[24.25%]">Phone</th>
-              <th className="px-4 py-3 w-[24.25%]">Actions</th>
+              <th className="px-2 lg:px-4 py-3 w-[24.25%]">Candidate Name</th>
+              <th className="px-2 lg:px-4 py-3 w-[24.25%]">Email</th>
+              <th className="px-2 lg:px-4 py-3 w-[24.25%]">Phone</th>
+              <th className="px-2 lg:px-4 py-3 w-[24.25%]">Actions</th>
             </tr>
           </thead>
         </table>
@@ -408,47 +408,49 @@ export default function Candidates() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-4">
-        <nav className="flex gap-2">
+      <div className="flex justify-center mt-6">
+        <nav className="flex gap-1 sm:gap-2 items-center">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${
+            className={`px-2 sm:px-3 py-2 rounded-lg ${
               currentPage === 1
-                ? "bg-gray-300"
+                ? "bg-gray-300 cursor-not-allowed"
                 : "bg-gray-200 hover:bg-gray-400"
             }`}
           >
             <BsChevronLeft size={15} />
           </button>
-          {Array.from(
-            {
-              length: Math.ceil(filteredJobseekers.length / candidatesPerPage),
-            },
-            (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={`px-4 py-2 rounded-lg ${
-                  currentPage === index + 1
-                    ? "bg-blue-700 text-white"
-                    : "bg-gray-200 hover:bg-gray-400"
-                }`}
-              >
-                {index + 1}
-              </button>
-            )
-          )}
+          <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-[200px] sm:max-w-none">
+            {Array.from(
+              {
+                length: Math.ceil(filteredJobseekers.length / candidatesPerPage),
+              },
+              (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => handlePageChange(index + 1)}
+                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
+                    currentPage === index + 1
+                      ? "bg-blue-700 text-white"
+                      : "bg-gray-200 hover:bg-gray-400"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              )
+            )}
+          </div>
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={
               currentPage ===
               Math.ceil(filteredJobseekers.length / candidatesPerPage)
             }
-            className={`px-[10px] py-2 rounded-lg ${
+            className={`px-2 sm:px-3 py-2 rounded-lg ${
               currentPage ===
               Math.ceil(filteredJobseekers.length / candidatesPerPage)
-                ? "bg-gray-300"
+                ? "bg-gray-300 cursor-not-allowed"
                 : "bg-gray-200 hover:bg-gray-400"
             }`}
           >
@@ -458,26 +460,26 @@ export default function Candidates() {
       </div>
 
       {newJobSeekerForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h4 className="text-2xl font-semibold text-[#001571]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+          <div className="w-full sm:w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+              <h4 className="text-lg sm:text-xl lg:text-2xl font-semibold text-[#001571]">
                 Add New Candidate
               </h4>
               <button
                 onClick={() => setNewJobseekerForm(false)}
-                className="text-gray-500 hover:text-red-500 focus:outline-none"
+                className="text-gray-500 hover:text-red-500 focus:outline-none flex-shrink-0"
               >
-                <FaTimes size={24} />
+                <FaTimes size={20} className="sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 py-4">
-              <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {/* Admin Details */}
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#001571]">
                       First Name
                     </label>
                     <input
@@ -485,12 +487,12 @@ export default function Candidates() {
                       name="firstName"
                       value={newJobseeker.firstName}
                       onChange={handleInputChange}
-                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      className="mt-1 sm:mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-3"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#001571]">
                       Last Name
                     </label>
                     <input
@@ -498,12 +500,12 @@ export default function Candidates() {
                       name="lastName"
                       value={newJobseeker.lastName}
                       onChange={handleInputChange}
-                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      className="mt-1 sm:mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-3"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#001571]">
                       Email
                     </label>
                     <input
@@ -511,7 +513,7 @@ export default function Candidates() {
                       name="email"
                       value={newJobseeker.email}
                       onChange={handleInputChange}
-                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      className="mt-1 sm:mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-3"
                       required
                     />
                   </div>
@@ -525,7 +527,7 @@ export default function Candidates() {
                     required
                   />
                   <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#001571]">
                       Password
                     </label>
                     <input
@@ -533,12 +535,12 @@ export default function Candidates() {
                       name="password"
                       value={newJobseeker.password}
                       onChange={handleInputChange}
-                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      className="mt-1 sm:mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-3"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
+                    <label className="block text-xs sm:text-sm font-semibold text-[#001571]">
                       Confirm Password
                     </label>
                     <input
@@ -546,7 +548,7 @@ export default function Candidates() {
                       name="confirmPassword"
                       value={newJobseeker.confirmPassword}
                       onChange={handleInputChange}
-                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                      className="mt-1 sm:mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-3"
                       required
                     />
                   </div>
@@ -558,7 +560,7 @@ export default function Candidates() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl text-sm font-semibold ${
+                    className={`bg-[#001571] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold w-full sm:w-auto ${
                       isSubmitting
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-blue-700"

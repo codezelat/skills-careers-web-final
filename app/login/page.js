@@ -52,6 +52,11 @@ function Login() {
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
       setIsLoading(true);
+      const callbackUrl = searchParams.get("callbackUrl");
+      if (callbackUrl) {
+        router.push(callbackUrl);
+        return;
+      }
       if (session.user.role === "jobseeker") {
         router.push("/Portal/profile");
       } else if (session.user.role === "recruiter") {
@@ -60,7 +65,7 @@ function Login() {
         router.push("/Portal/dashboard");
       }
     }
-  }, [session, status, router]);
+  }, [session, status, router, searchParams]);
 
   async function submitHandler(event) {
     event.preventDefault();
@@ -79,6 +84,12 @@ function Login() {
     if (result && result.ok) {
       const session = await getSession(); // Get session to access user role
       const userRole = session.user.role;
+
+      const callbackUrl = searchParams.get("callbackUrl");
+      if (callbackUrl) {
+        router.push(callbackUrl);
+        return;
+      }
 
       if (userRole === "jobseeker") {
         router.push("/Portal/profile");
@@ -111,10 +122,10 @@ function Login() {
     setShowRoleSelectionModal(false);
 
     try {
+      const callbackUrl = searchParams.get("callbackUrl");
       await signIn(selectedProvider, {
         redirect: false,
-        callbackUrl:
-          role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard",
+        callbackUrl: callbackUrl || (role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard"),
       });
     } catch (error) {
       setErrorMessage(
