@@ -8,6 +8,7 @@ import Image from "next/image";
 import DropdownButton from "@/components/dropDownButton";
 import Footer from "@/components/Footer";
 import JobApplicationForm from "../[jobid]/apply/JobApplicationForm";
+import { useSearchParams, useRouter } from "next/navigation";
 
 function JobsClient({ initialJobs }) {
   const [jobs, setJobs] = useState(initialJobs);
@@ -17,6 +18,20 @@ function JobsClient({ initialJobs }) {
   const [selectedIndustry, setSelectedIndustry] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Check for auto-open param
+  useEffect(() => {
+    const apply = searchParams.get("apply");
+    const jobId = searchParams.get("jobId");
+
+    if (apply === "true" && jobId) {
+      setSelectedJobId(jobId);
+      setShowApplicationForm(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let filtered = jobs;

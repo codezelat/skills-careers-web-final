@@ -53,7 +53,8 @@ function Login() {
     if (status === "authenticated" && session?.user) {
       setIsLoading(true);
       const callbackUrl = searchParams.get("callbackUrl");
-      if (callbackUrl) {
+      // Only redirect to callbackUrl (e.g., job apply) if the user is a Job Seeker
+      if (callbackUrl && session.user.role === "jobseeker") {
         router.push(callbackUrl);
         return;
       }
@@ -86,7 +87,8 @@ function Login() {
       const userRole = session.user.role;
 
       const callbackUrl = searchParams.get("callbackUrl");
-      if (callbackUrl) {
+      // Only redirect to callbackUrl if user is a Job Seeker
+      if (callbackUrl && userRole === "jobseeker") {
         router.push(callbackUrl);
         return;
       }
@@ -123,9 +125,14 @@ function Login() {
 
     try {
       const callbackUrl = searchParams.get("callbackUrl");
+      // Only use callbackUrl if the selected role is Job Seeker
+      const finalCallbackUrl = (role === "jobseeker" && callbackUrl)
+        ? callbackUrl
+        : (role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard");
+
       await signIn(selectedProvider, {
         redirect: false,
-        callbackUrl: callbackUrl || (role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard"),
+        callbackUrl: finalCallbackUrl,
       });
     } catch (error) {
       setErrorMessage(

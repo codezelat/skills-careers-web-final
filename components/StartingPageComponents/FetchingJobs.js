@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import JobApplicationForm from "@/app/jobs/[jobid]/apply/JobApplicationForm";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const FetchingJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -19,6 +20,20 @@ const FetchingJobs = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Check for auto-open param
+  useEffect(() => {
+    const apply = searchParams.get("apply");
+    const jobId = searchParams.get("jobId");
+
+    if (apply === "true" && jobId) {
+      setSelectedJobId(jobId);
+      setShowApplicationForm(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchJobs() {

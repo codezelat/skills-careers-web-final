@@ -337,22 +337,34 @@ export default function JobApplicationForm({ onClose, jobid }) {
           localStorage.setItem("savedApplication_email", email);
           localStorage.setItem("savedApplication_contactNumber", contactNumber);
 
-          // Redirect to login with callbackUrl
-          const callbackUrl = encodeURIComponent(window.location.pathname);
-          // Note: window.location.pathname usually is /jobs/[id].
-          // If the form is a modal on that page, resizing back to it works.
-          // However, we need to ensure the modal opens automatically or the user has to click apply again.
-          // The request said "after login need to take them same job application with previously filled data automatically"
-          // If we redirect to /jobs/id, the modal is closed by default.
-          // We can append a query param ?apply=true to open it auto.
-          router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname + "?apply=true")}`);
+          // Redirect to login with proper callbackUrl
+          const currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set("apply", "true");
+          currentUrl.searchParams.set("jobId", jobid);
+
+          const callbackUrl = encodeURIComponent(currentUrl.pathname + currentUrl.search);
+
+          router.push(`/login?callbackUrl=${callbackUrl}`);
         }
       });
     }
   }
 
   const handleCloseForm = () => {
-    router.push(`/jobs/${jobid}`);
+    // If we have query params tailored for auto-open, we might want to clean them up on close
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.get("apply")) {
+      currentUrl.searchParams.delete("apply");
+      currentUrl.searchParams.delete("jobId");
+      router.push(currentUrl.pathname + currentUrl.search);
+    }
+
+    // Default close behavior
+    if (onClose) {
+      onClose();
+    } else {
+      router.push(`/jobs/${jobid}`);
+    }
   };
 
   return (
