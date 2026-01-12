@@ -1531,9 +1531,9 @@ export default function CandidateProfile() {
 
         {/* Add Experience Form Popup */}
         {openCreateExperienceForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
             {/* Popup Container */}
-            <div className="w-full max-w-3xl px-4 mx-4 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+            <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h4 className="text-2xl font-semibold text-[#001571]">
@@ -1701,9 +1701,9 @@ export default function CandidateProfile() {
 
         {/* Add Education Form Popup */}
         {openCreateEducationForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
             {/* Popup Container */}
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h4 className="text-2xl font-semibold text-[#001571]">
@@ -1824,9 +1824,9 @@ export default function CandidateProfile() {
 
         {/* Add Certification Form Popup */}
         {openCreateCertificationForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
             {/* Popup Container */}
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h4 className="text-2xl font-semibold text-[#001571]">
@@ -1909,9 +1909,9 @@ export default function CandidateProfile() {
 
         {/* Add Soft Skills Form Popup */}
         {openCreateSoftskillsForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
             {/* Popup Container */}
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h4 className="text-2xl font-semibold text-[#001571]">
@@ -1926,7 +1926,7 @@ export default function CandidateProfile() {
               </div>
 
               {/* Scrollable Form Content */}
-              <div className="flex-1 overflow-y-auto px-6 py-4 pb-40">
+              <div className="flex-1 overflow-y-auto px-6 py-4">
                 <form onSubmit={handleAddSoftSkill} className="space-y-6">
                   <div className="relative">
                     <label className="block text-sm font-semibold text-[#001571]">
@@ -1982,9 +1982,9 @@ export default function CandidateProfile() {
 
         {/* Add Expertise Form Popup */}
         {openCreateExpertiseForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
             {/* Popup Container */}
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h4 className="text-2xl font-semibold text-[#001571]">
@@ -2069,8 +2069,8 @@ export default function CandidateProfile() {
 
         {/* Edit Experience Popup */}
         {openEditxperienceForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+            <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               <div className="flex items-center justify-between p-6 pb-0">
                 <h4 className="text-lg font-semibold text-[#001571]">
                   Edit Experience Details
@@ -2099,8 +2099,8 @@ export default function CandidateProfile() {
 
         {/* Edit Education Popup */}
         {openEditEducationForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               <div className="flex items-center justify-between p-6 pb-0">
                 <h4 className="text-lg font-semibold text-[#001571]">
                   Edit Education Details
@@ -2129,8 +2129,8 @@ export default function CandidateProfile() {
 
         {/* Edit Certification Popup */}
         {openEditCertificationForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               <div className="flex items-center justify-between p-6 pb-0">
                 <h4 className="text-lg font-semibold text-[#001571]">
                   Edit Certification Details
@@ -2162,8 +2162,8 @@ export default function CandidateProfile() {
 
         {/* Edit Softskills Popup */}
         {openEditSoftskillsForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               <div className="flex items-center justify-between p-6 pb-0">
                 <h4 className="text-lg font-semibold text-[#001571]">
                   Edit Soft Skills Details
@@ -2195,8 +2195,8 @@ export default function CandidateProfile() {
 
         {/* Edit Expertise Popup */}
         {openEditExpertiseForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
               <div className="flex items-center justify-between p-6 pb-0">
                 <h4 className="text-lg font-semibold text-[#001571]">
                   Edit Professional Expertise Details
