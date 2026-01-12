@@ -17,6 +17,7 @@ import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import sriLankaDistricts from "@/data/sriLankaDistricts.json";
+import jobCategories from "@/data/jobCategories.json";
 
 export default function RecruiterPostedJobs(props) {
   const router = useRouter();
@@ -143,6 +144,7 @@ export default function RecruiterPostedJobs(props) {
   ];
   const [formData, setFormData] = useState({
     jobTitle: "",
+    jobCategory: "",
     location: "",
     customLocation: "",
     jobTypes: [],
@@ -187,6 +189,7 @@ export default function RecruiterPostedJobs(props) {
   const validateForm = () => {
     const errors = {};
     if (!formData.jobTitle.trim()) errors.jobTitle = "Job title is required";
+    if (!formData.jobCategory.trim()) errors.jobCategory = "Job category is required";
     if (!formData.location.trim()) errors.location = "Location is required";
     if (formData.location === "Other" && !formData.customLocation.trim()) {
       errors.customLocation = "Please specify the location";
@@ -267,6 +270,7 @@ export default function RecruiterPostedJobs(props) {
       // Reset form
       setFormData({
         jobTitle: "",
+        jobCategory: "",
         location: "",
         customLocation: "",
         jobTypes: [],
@@ -581,6 +585,34 @@ export default function RecruiterPostedJobs(props) {
                   {formErrors.jobTitle && (
                     <p className="text-red-500 text-sm mt-1">
                       {formErrors.jobTitle}
+                    </p>
+                  )}
+                </div>
+
+                {/* Job Category */}
+                <div>
+                  <label className="block text-base font-semibold text-[#001571]">
+                    Job Category
+                  </label>
+                  <select
+                    name="jobCategory"
+                    value={formData.jobCategory}
+                    onChange={handleInputChange}
+                    className={`mt-2 block w-full border ${formErrors.jobCategory
+                        ? "border-red-500"
+                        : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
+                  >
+                    <option value="">Select a category</option>
+                    {jobCategories.map((category, index) => (
+                      <option key={index} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.jobCategory && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.jobCategory}
                     </p>
                   )}
                 </div>
