@@ -24,8 +24,11 @@ export default function PortalApplicationCard({ application }) {
       try {
         const recruiterUrl = `/api/recruiterdetails/get?id=${application.recruiterId}`;
         const recruiterResponse = await fetch(recruiterUrl);
-        if (!recruiterResponse.ok)
-          throw new Error("Failed to fetch recruiter details");
+        if (!recruiterResponse.ok) {
+          console.warn("Recruiter details not found for ID:", application.recruiterId);
+          setRecruiterdetails({}); // Set empty object to avoid undefined errors
+          return;
+        }
         const recruiterdata = await recruiterResponse.json();
         setRecruiterdetails(recruiterdata);
         console.log("recruiter : ", recruiterdata);

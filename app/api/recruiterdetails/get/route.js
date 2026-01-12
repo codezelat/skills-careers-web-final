@@ -15,6 +15,7 @@ export async function GET(req) {
     } else if (userId && ObjectId.isValid(userId)) {
       query.userId = new ObjectId(userId);
     } else {
+      console.log("Invalid ID format:", { _id, userId });
       return NextResponse.json(
         { message: "Invalid or missing ID format" },
         { status: 400 },
@@ -35,9 +36,20 @@ export async function GET(req) {
 
     const client = await clientPromise;
     const db = client.db();
-    const recruiter = await db.collection("recruiters").findOne(query);
+
+    console.log("Looking for recruiter with query:", JSON.stringify(query));
+    let recruiter = await db.collection("recruiters").findOne(query);
+    console.log("Primary lookup result:", recruiter ? "Found" : "Not Found");
+
+    // Fallback: If not found by _id, try looking up by userId if the id was passed
+    if (!recruiter && _id && ObjectId.isValid(_id)) {
+      console.log("Attempting fallback lookup by userId:", _id);
+      recruiter = await db.collection("recruiters").findOne({ userId: new ObjectId(_id) });
+      console.log("Fallback lookup result:", recruiter ? "Found" : "Not Found");
+    }
 
     if (!recruiter) {
+      console.log("Recruiter final status: Not Found");
       return NextResponse.json(
         { message: "Recruiter not found" },
         { status: 404 },
