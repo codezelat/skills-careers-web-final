@@ -1,6 +1,15 @@
 "use client";
 import { FaTimes } from "react-icons/fa";
 
+const EMPLOYEE_RANGES = [
+  "1-10",
+  "11-50",
+  "51-200",
+  "201-500",
+  "501-1000",
+  "1000+",
+];
+
 export default function AddRecruiterForm({
   showForm,
   onClose,
@@ -100,11 +109,11 @@ export default function AddRecruiterForm({
                   required
                 >
                   <option value="">Select Employee Range</option>
-                  <option value="1-10">1-10</option>
-                  <option value="11-50">11-50</option>
-                  <option value="51-200">51-200</option>
-                  <option value="201-500">201-500</option>
-                  <option value="500+">500+</option>
+                  {EMPLOYEE_RANGES.map((range) => (
+                    <option key={range} value={range}>
+                      {range}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -165,11 +174,10 @@ export default function AddRecruiterForm({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`bg-[#001571] text-white px-6 py-3 rounded-xl text-sm font-semibold ${
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                }`}
+                className={`bg-[#001571] text-white px-6 py-3 rounded-xl text-sm font-semibold ${isSubmitting
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-blue-700"
+                  }`}
               >
                 {isSubmitting ? "Adding..." : "Add Recruiter"}
               </button>

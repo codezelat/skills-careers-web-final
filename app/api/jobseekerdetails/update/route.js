@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 export async function PUT(req) {
   try {
@@ -20,6 +21,13 @@ export async function PUT(req) {
     // Ensure profileImage is preserved if it's not being updated
     let updateData = updatedDetails;
 
+    // If userId is provided, ensure it's stored as ObjectId
+    if (userId) {
+      if (ObjectId.isValid(userId)) {
+        updateData.userId = new ObjectId(userId);
+      }
+    }
+
     if (!updatedDetails.profileImage) {
       const existingUser = await db.collection("jobseekers").findOne({ email });
       if (existingUser?.profileImage) {
@@ -29,11 +37,11 @@ export async function PUT(req) {
 
     const result = await db
       .collection("jobseekers")
-      .updateOne({ email }, { $set: updateData }, { upsert: false });
+      .updateOne({ email }, { $set: updateData }, { upsert: true });
 
     console.log("Update result:", result, "Data sent to DB:", updateData); // Debug log
 
-    if (result.modifiedCount > 0) {
+    if (result.modifiedCount > 0 || result.upsertedCount > 0) {
       return NextResponse.json(
         { message: "Details updated successfully." },
         { status: 200 }

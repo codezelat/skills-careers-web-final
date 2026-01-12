@@ -41,6 +41,15 @@ const RECRUITER_CATEGORIES = [
   "Part-time & Flexible Jobs",
 ];
 
+const EMPLOYEE_RANGES = [
+  "1-10",
+  "11-50",
+  "51-200",
+  "201-500",
+  "501-1000",
+  "1000+",
+];
+
 export default function RecruiterEdit({
   recruiterDetails,
   onClose,
@@ -50,7 +59,7 @@ export default function RecruiterEdit({
 }) {
   const [isOther, setIsOther] = useState(
     recruiterDetails.category &&
-      !RECRUITER_CATEGORIES.includes(recruiterDetails.category)
+    !RECRUITER_CATEGORIES.includes(recruiterDetails.category)
   );
   const [showAddressInfo, setShowAddressInfo] = useState(false);
 
@@ -72,7 +81,7 @@ export default function RecruiterEdit({
   const handleLocationChange = (e) => {
     const district = e.target.value;
     const selectedDistrict = sriLankaDistricts.find(
-      (d) => d.value === district
+      (d) => d.district === district
     );
 
     if (selectedDistrict) {
@@ -159,14 +168,31 @@ export default function RecruiterEdit({
                 <label className="block text-sm font-semibold text-[#001571]">
                   Address Line
                 </label>
-                <input
-                  type="text"
-                  name="addressLine"
-                  value={recruiterDetails.addressLine || ""}
-                  onChange={onInputChange}
-                  placeholder="Street address, building name, etc."
-                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="addressLine"
+                    value={recruiterDetails.addressLine || ""}
+                    onChange={onInputChange}
+                    placeholder="Street address, building name, etc."
+                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressInfo(!showAddressInfo)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#001571] hover:text-blue-600 transition-colors"
+                    title="Address Info"
+                  >
+                    <FiInfo size={18} />
+                  </button>
+                </div>
+                {showAddressInfo && (
+                  <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                    <p className="text-xs text-blue-800">
+                      Format: Home No., Lane/Road
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* City & Province */}
@@ -184,7 +210,7 @@ export default function RecruiterEdit({
                     >
                       <option value="">Select City</option>
                       {sriLankaDistricts.map((district) => (
-                        <option key={district.value} value={district.value}>
+                        <option key={district.value} value={district.district}>
                           {district.label}
                         </option>
                       ))}
@@ -246,8 +272,8 @@ export default function RecruiterEdit({
                     isOther
                       ? "Other"
                       : RECRUITER_CATEGORIES.includes(recruiterDetails.category)
-                      ? recruiterDetails.category
-                      : ""
+                        ? recruiterDetails.category
+                        : ""
                   }
                   onChange={handleCategoryChange}
                   className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
@@ -275,13 +301,19 @@ export default function RecruiterEdit({
                 <label className="block text-sm font-semibold text-[#001571]">
                   Employee Range
                 </label>
-                <input
-                  type="text"
+                <select
                   name="employeeRange"
                   value={recruiterDetails.employeeRange || ""}
                   onChange={onInputChange}
                   className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                />
+                >
+                  <option value="">Select Employee Range</option>
+                  {EMPLOYEE_RANGES.map((range) => (
+                    <option key={range} value={range}>
+                      {range}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -413,11 +445,10 @@ export default function RecruiterEdit({
             type="submit"
             onClick={onSubmit}
             disabled={isSubmitting}
-            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-              isSubmitting
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-blue-700"
-            }`}
+            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-blue-700"
+              }`}
           >
             {isSubmitting ? "Saving..." : "Save"}
             <span className="ml-2">

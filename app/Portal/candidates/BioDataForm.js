@@ -29,7 +29,7 @@ export default function BioDataForm({
 
   const [showOtherNationality, setShowOtherNationality] = useState(
     jobSeekerDetails.nationality &&
-      jobSeekerDetails.nationality !== "Sri Lankan"
+    jobSeekerDetails.nationality !== "Sri Lankan"
   );
 
   const [showAddressFormat, setShowAddressFormat] = useState(false);
@@ -122,9 +122,9 @@ export default function BioDataForm({
 
   const currentLanguages = jobSeekerDetails.languages
     ? jobSeekerDetails.languages
-        .split(",")
-        .map((lang) => lang.trim())
-        .filter(Boolean)
+      .split(",")
+      .map((lang) => lang.trim())
+      .filter(Boolean)
     : [];
 
   const updateLanguages = (newLanguages) => {
@@ -229,12 +229,11 @@ export default function BioDataForm({
                       target: { name: "nationality", value: "Sri Lankan" },
                     });
                   }}
-                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 ${
-                    !showOtherNationality &&
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 ${!showOtherNationality &&
                     jobSeekerDetails.nationality === "Sri Lankan"
-                      ? "bg-[#001571] text-white border-[#001571]"
-                      : "bg-white text-gray-500 border-[#B0B6D3] hover:border-[#001571] hover:text-[#001571]"
-                  }`}
+                    ? "bg-[#001571] text-white border-[#001571]"
+                    : "bg-white text-gray-500 border-[#B0B6D3] hover:border-[#001571] hover:text-[#001571]"
+                    }`}
                 >
                   Sri Lankan
                 </button>
@@ -248,11 +247,10 @@ export default function BioDataForm({
                       });
                     }
                   }}
-                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 ${
-                    showOtherNationality
-                      ? "bg-[#001571] text-white border-[#001571]"
-                      : "bg-white text-gray-500 border-[#B0B6D3] hover:border-[#001571] hover:text-[#001571]"
-                  }`}
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold border transition-all duration-200 ${showOtherNationality
+                    ? "bg-[#001571] text-white border-[#001571]"
+                    : "bg-white text-gray-500 border-[#B0B6D3] hover:border-[#001571] hover:text-[#001571]"
+                    }`}
                 >
                   Other
                 </button>
@@ -390,7 +388,7 @@ export default function BioDataForm({
                   <button
                     type="button"
                     onClick={() => setShowAddressFormat(!showAddressFormat)}
-                    className="absolute right-3 top-1/2 mt-1 text-[#001571] hover:text-blue-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#001571] hover:text-blue-600 transition-colors"
                     title="Address Info"
                   >
                     <FiInfo size={18} />
@@ -560,11 +558,10 @@ export default function BioDataForm({
             type="submit"
             onClick={jobseekerUpdateSubmitHandler}
             disabled={isSubmitting}
-            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-              isSubmitting
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-blue-700"
-            }`}
+            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-blue-700"
+              }`}
           >
             {isSubmitting ? "Saving..." : "Save"}
             <span className="ml-2">

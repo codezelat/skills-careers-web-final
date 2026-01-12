@@ -45,6 +45,7 @@ async function applyJob(
 
 export default function JobApplicationForm({ onClose, jobid }) {
   const [selectedJob, setSelectedJob] = useState("");
+  const [profileMissing, setProfileMissing] = useState(false);
   const [resume, setResume] = useState(null);
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -147,6 +148,12 @@ export default function JobApplicationForm({ onClose, jobid }) {
           const data = await response.json();
 
           if (!response.ok) {
+            if (response.status === 404) {
+              if (session?.user?.role !== "admin") {
+                setProfileMissing(true);
+              }
+              return;
+            }
             throw new Error(data.message || "Failed to fetch job details");
           }
 
@@ -201,6 +208,54 @@ export default function JobApplicationForm({ onClose, jobid }) {
   // if (isLoading) {
   //   return <div className="text-center py-4">Loading Application Form ...</div>;
   // }
+
+  if (profileMissing) {
+    return (
+      <div className="fixed w-full inset-0 flex items-end justify-center bg-gray-800 bg-opacity-50 z-50">
+        <div className="relative w-full max-h-[85vh] bg-white rounded-t-lg shadow-lg overflow-y-auto p-8 text-center flex flex-col items-center justify-center min-h-[300px]">
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+          >
+            <FaTimes size={24} />
+          </button>
+          <div className="mb-4 text-yellow-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 mx-auto"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-semibold mb-2 text-blue-900">
+            Profile Incomplete
+          </h2>
+          <p className="mb-6 text-gray-600 max-w-md">
+            You need to complete your job seeker profile before you can apply for
+            jobs. This helps recruiters know more about you.
+          </p>
+          <button
+            onClick={() => {
+              // Close the modal first? Or just redirect?
+              // Redirecting is better
+              router.push("/profile/edit");
+            }}
+            className="bg-blue-900 text-white px-8 py-3 rounded-md font-medium hover:bg-blue-800 transition-colors shadow-md"
+          >
+            Create My Profile
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (

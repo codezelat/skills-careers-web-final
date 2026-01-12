@@ -8,10 +8,11 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     const userId = searchParams.get("userId");
+    const email = searchParams.get("email");
 
-    if (!id && !userId) {
+    if (!id && !userId && !email) {
       return NextResponse.json(
-        { message: "Either id or userId must be provided." },
+        { message: "Either id, userId, or email must be provided." },
         { status: 400 }
       );
     }
@@ -29,7 +30,7 @@ export async function GET(req) {
         );
       }
       query._id = new ObjectId(id);
-    } else {
+    } else if (userId) {
       if (!ObjectId.isValid(userId)) {
         return NextResponse.json(
           { message: "Invalid user ID format" },
@@ -37,6 +38,8 @@ export async function GET(req) {
         );
       }
       query.userId = new ObjectId(userId);
+    } else if (email) {
+      query.email = email;
     }
 
     const jobseeker = await jobseekersCollection.findOne(query);

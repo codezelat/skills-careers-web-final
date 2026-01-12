@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 import { countries } from "@/lib/countries";
 import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 import { FaTimes } from "react-icons/fa";
+import { FiInfo } from "react-icons/fi";
 
 const LANGUAGES_LIST = ["Sinhala", "Tamil", "English"];
 
@@ -75,12 +76,13 @@ function EditProfileForm() {
   // Language Handling State & Logic
   const [otherLanguage, setOtherLanguage] = useState("");
   const [showOtherLanguage, setShowOtherLanguage] = useState(false);
+  const [showAddressInfo, setShowAddressInfo] = useState(false);
 
   const currentLanguages = jobSeekerDetails.languages
     ? jobSeekerDetails.languages
-        .split(",")
-        .map((l) => l.trim())
-        .filter(Boolean)
+      .split(",")
+      .map((l) => l.trim())
+      .filter(Boolean)
     : [];
 
   const updateLanguages = (newLanguages) => {
@@ -147,7 +149,11 @@ function EditProfileForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...updateData, email: session.user.email }),
+        body: JSON.stringify({
+          ...updateData,
+          email: session.user.email,
+          userId: session.user.id,
+        }),
       });
       if (response.ok) {
         Swal.fire({
@@ -423,14 +429,31 @@ function EditProfileForm() {
                 <p className="text-base font-bold text-black mb-1">
                   Address Line
                 </p>
-                <input
-                  type="text"
-                  name="addressLine"
-                  className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
-                  value={jobSeekerDetails.addressLine || ""}
-                  onChange={handleInputChange}
-                  placeholder="Street address, building name, etc."
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="addressLine"
+                    className="px-2 py-1 w-full border-solid border-2 border-gray-400 outline-none rounded"
+                    value={jobSeekerDetails.addressLine || ""}
+                    onChange={handleInputChange}
+                    placeholder="Street address, building name, etc."
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressInfo(!showAddressInfo)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-900 hover:text-blue-700"
+                    title="Address Info"
+                  >
+                    <FiInfo size={18} />
+                  </button>
+                </div>
+                {showAddressInfo && (
+                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded shadow-sm">
+                    <p className="text-xs text-blue-800">
+                      Format: Home No., Lane/Road
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* District/City & Province */}
