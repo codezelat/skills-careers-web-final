@@ -18,6 +18,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import { PiCheckCircle } from "react-icons/pi";
 import PortalLoading from "../loading";
 import Swal from "sweetalert2";
+import jobCategories from "@/data/jobCategories.json";
 import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 export default function JobProfile({ slug }) {
@@ -32,6 +33,7 @@ export default function JobProfile({ slug }) {
   const [recruiterDetails, setRecruiterDetails] = useState([]);
   const [editedJobDetails, setEditedJobDetails] = useState({});
   const [customLocation, setCustomLocation] = useState("");
+  const [customCategory, setCustomCategory] = useState("");
 
   const [editProfileForm, setEditProfileForm] = useState();
   const [editDescriptionForm, setDescriptionForm] = useState();
@@ -51,14 +53,21 @@ export default function JobProfile({ slug }) {
           const validDistricts = sriLankaDistricts.map((d) => d.value);
           const isValidDistrict = validDistricts.includes(jobData.location);
 
+          const validCategories = jobCategories.map((c) => c.name);
+          const isValidCategory = validCategories.includes(jobData.jobCategory);
+
           setJobDetails(jobData);
           setEditedJobDetails({
             ...jobData,
             location: isValidDistrict ? jobData.location : "Other",
+            jobCategory: isValidCategory ? jobData.jobCategory : "Other",
           });
 
           if (!isValidDistrict) {
             setCustomLocation(jobData.location);
+          }
+          if (!isValidCategory) {
+            setCustomCategory(jobData.jobCategory);
           }
           console.log("hi", jobData);
 
@@ -93,6 +102,9 @@ export default function JobProfile({ slug }) {
     if (name === "location" && value !== "Other") {
       setCustomLocation("");
     }
+    if (name === "jobCategory" && value !== "Other") {
+      setCustomCategory("");
+    }
   };
   const handleShortDescriptionInputChange = (e) => {
     const { name, value } = e.target;
@@ -124,6 +136,11 @@ export default function JobProfile({ slug }) {
           ? customLocation
           : editedJobDetails.location;
 
+      const finalCategory =
+        editedJobDetails.jobCategory === "Other"
+          ? customCategory
+          : editedJobDetails.jobCategory;
+
       const response = await fetch("/api/job/update", {
         method: "PUT",
         headers: {
@@ -133,6 +150,7 @@ export default function JobProfile({ slug }) {
           id: slug,
           ...editedJobDetails,
           location: finalLocation,
+          jobCategory: finalCategory,
           isPublished: false,
         }),
       });
@@ -248,9 +266,8 @@ export default function JobProfile({ slug }) {
                   editedJobDetails.jobTypes.map((type, index) => (
                     <span
                       key={index}
-                      className={`px-4 py-[6px] rounded-lg mr-2 text-white ${
-                        index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
-                      }`}
+                      className={`px-4 py-[6px] rounded-lg mr-2 text-white ${index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
+                        }`}
                     >
                       {type}
                     </span>
@@ -258,7 +275,8 @@ export default function JobProfile({ slug }) {
               </div>
             </div>
             <div className="text-base font-bold text-black">
-              {recruiterDetails.recruiterName} | {editedJobDetails.location}
+              {recruiterDetails.recruiterName} | {editedJobDetails.location} |{" "}
+              <span className="text-[#001571]">{editedJobDetails.jobCategory}</span>
             </div>
           </div>
           <button
@@ -422,6 +440,34 @@ export default function JobProfile({ slug }) {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-[#001571]">
+                    Job Category
+                  </label>
+                  <select
+                    name="jobCategory"
+                    value={editedJobDetails.jobCategory || ""}
+                    onChange={handleInputChange}
+                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                  >
+                    <option value="">Select a category</option>
+                    {jobCategories.map((category, index) => (
+                      <option key={index} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
+                    <option value="Other">Other</option>
+                  </select>
+                  {editedJobDetails.jobCategory === "Other" && (
+                    <input
+                      type="text"
+                      placeholder="Please specify category"
+                      value={customCategory}
+                      onChange={(e) => setCustomCategory(e.target.value)}
+                      className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
+                    />
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#001571]">
                     Location
                   </label>
                   <select
@@ -478,11 +524,10 @@ export default function JobProfile({ slug }) {
                         <label
                           key={index}
                           className={`flex items-center px-4 py-2 rounded-lg cursor-pointer transition-all
-                                                        ${
-                                                          isChecked
-                                                            ? "bg-[#001571] text-white" // Checked state
-                                                            : "bg-white text-black border border-gray-400 hover:bg-gray-100"
-                                                        } // Unchecked state`}
+                                                        ${isChecked
+                              ? "bg-[#001571] text-white" // Checked state
+                              : "bg-white text-black border border-gray-400 hover:bg-gray-100"
+                            } // Unchecked state`}
                         >
                           <input
                             type="checkbox"
@@ -515,11 +560,10 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                }`}
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-blue-700"
+                  }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -573,11 +617,10 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                }`}
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-blue-700"
+                  }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -632,11 +675,10 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                }`}
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-blue-700"
+                  }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -690,11 +732,10 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                }`}
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-blue-700"
+                  }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -748,11 +789,10 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                }`}
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-blue-700"
+                  }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -806,11 +846,10 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
-                }`}
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-blue-700"
+                  }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">

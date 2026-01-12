@@ -85,7 +85,10 @@ function JobsClient() {
           return {
             ...job,
             industry:
-              recruiterData.industry || recruiterData.category || "Unknown",
+              job.jobCategory ||
+              recruiterData.industry ||
+              recruiterData.category ||
+              "Unknown",
             recruiterName: recruiterData.recruiterName || "Unknown",
             logo: recruiterData.logo || "/images/default-image.jpg",
           };
@@ -144,7 +147,10 @@ function JobsClient() {
           return {
             ...job,
             industry:
-              recruiterData.industry || recruiterData.category || "Unknown",
+              job.jobCategory ||
+              recruiterData.industry ||
+              recruiterData.category ||
+              "Unknown",
             recruiterName: recruiterData.recruiterName || "Unknown",
             logo: recruiterData.logo || "/images/default-image.jpg",
           };

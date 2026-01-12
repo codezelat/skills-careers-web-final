@@ -81,8 +81,8 @@ export default function RecruiterPostedJobs(props) {
     const matchesTab = activeTab === "all" ? job.isPublished : !job.isPublished;
     const matchesSearch = searchQuery
       ? job.jobTitle?.toLowerCase().includes(searchQuery) ||
-        job.location?.toLowerCase().includes(searchQuery) ||
-        job.jobCategory?.toLowerCase().includes(searchQuery)
+      job.location?.toLowerCase().includes(searchQuery) ||
+      job.jobCategory?.toLowerCase().includes(searchQuery)
       : true;
     const matchesJobType =
       selectedJobTypes.length === 0
@@ -108,6 +108,20 @@ export default function RecruiterPostedJobs(props) {
             throw new Error("Failed to fetch recruiter");
           const recruiterData = await recruiterResponse.json();
           setRecruiterDetails(recruiterData);
+
+          // Set default job category from recruiter industry
+          if (recruiterData?.industry) {
+            const validCategories = jobCategories.map((c) => c.name);
+            const isValidCategory = validCategories.includes(
+              recruiterData.industry
+            );
+
+            setFormData((prev) => ({
+              ...prev,
+              jobCategory: isValidCategory ? recruiterData.industry : "Other",
+              customCategory: isValidCategory ? "" : recruiterData.industry,
+            }));
+          }
 
           if (recruiterData?.id) {
             const response = await fetch(
@@ -145,6 +159,7 @@ export default function RecruiterPostedJobs(props) {
   const [formData, setFormData] = useState({
     jobTitle: "",
     jobCategory: "",
+    customCategory: "",
     location: "",
     customLocation: "",
     jobTypes: [],
@@ -161,6 +176,9 @@ export default function RecruiterPostedJobs(props) {
       [name]: value,
       ...(name === "location" && value !== "Other"
         ? { customLocation: "" }
+        : {}),
+      ...(name === "jobCategory" && value !== "Other"
+        ? { customCategory: "" }
         : {}),
     }));
     setFormErrors((prev) => ({ ...prev, [name]: "" }));
@@ -191,6 +209,9 @@ export default function RecruiterPostedJobs(props) {
     if (!formData.jobTitle.trim()) errors.jobTitle = "Job title is required";
     if (!formData.jobCategory.trim())
       errors.jobCategory = "Job category is required";
+    if (formData.jobCategory === "Other" && !formData.customCategory.trim()) {
+      errors.customCategory = "Please specify the category";
+    }
     if (!formData.location.trim()) errors.location = "Location is required";
     if (formData.location === "Other" && !formData.customLocation.trim()) {
       errors.customLocation = "Please specify the location";
@@ -236,6 +257,11 @@ export default function RecruiterPostedJobs(props) {
           ? formData.customLocation
           : formData.location;
 
+      const finalCategory =
+        formData.jobCategory === "Other"
+          ? formData.customCategory
+          : formData.jobCategory;
+
       const response = await fetch("/api/job/add", {
         method: "POST",
         headers: {
@@ -244,6 +270,7 @@ export default function RecruiterPostedJobs(props) {
         body: JSON.stringify({
           ...formData,
           location: finalLocation,
+          jobCategory: finalCategory,
           recruiterId: recruiterDetails.id,
         }),
       });
@@ -272,6 +299,7 @@ export default function RecruiterPostedJobs(props) {
       setFormData({
         jobTitle: "",
         jobCategory: "",
+        customCategory: "",
         location: "",
         customLocation: "",
         jobTypes: [],
@@ -346,11 +374,10 @@ export default function RecruiterPostedJobs(props) {
         {/* All Recruiters Button */}
         <button
           onClick={() => setActiveTab("all")}
-          className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${
-            activeTab === "all"
-              ? "bg-[#001571] text-white"
-              : "text-[#B0B6D3] bg-[#E6E8F1]"
-          }`}
+          className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${activeTab === "all"
+            ? "bg-[#001571] text-white"
+            : "text-[#B0B6D3] bg-[#E6E8F1]"
+            }`}
         >
           All Job Posts
           <span className="ml-2">
@@ -361,11 +388,10 @@ export default function RecruiterPostedJobs(props) {
         {/* Restricted Recruiters Button */}
         <button
           onClick={() => setActiveTab("restricted")}
-          className={`px-6 py-3 flex rounded-2xl text-sm font-semibold w-full sm:w-auto justify-center ${
-            activeTab === "restricted"
-              ? "bg-[#001571] text-white"
-              : "text-[#B0B6D3] bg-[#E6E8F1]"
-          }`}
+          className={`px-6 py-3 flex rounded-2xl text-sm font-semibold w-full sm:w-auto justify-center ${activeTab === "restricted"
+            ? "bg-[#001571] text-white"
+            : "text-[#B0B6D3] bg-[#E6E8F1]"
+            }`}
         >
           Restricted Job Posts
           <span className="ml-2">
@@ -412,11 +438,10 @@ export default function RecruiterPostedJobs(props) {
                 <button
                   key={type}
                   onClick={() => handleJobTypeToggle(type)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    selectedJobTypes.includes(type)
-                      ? "bg-[#001571] text-white shadow-md"
-                      : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${selectedJobTypes.includes(type)
+                    ? "bg-[#001571] text-white shadow-md"
+                    : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
+                    }`}
                 >
                   {type}
                 </button>
@@ -509,11 +534,10 @@ export default function RecruiterPostedJobs(props) {
                 <button
                   key={type}
                   onClick={() => handleJobTypeToggle(type)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    selectedJobTypes.includes(type)
-                      ? "bg-[#001571] text-white shadow-md"
-                      : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${selectedJobTypes.includes(type)
+                    ? "bg-[#001571] text-white shadow-md"
+                    : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
+                    }`}
                 >
                   {type}
                 </button>
@@ -582,11 +606,10 @@ export default function RecruiterPostedJobs(props) {
                     name="jobTitle"
                     value={formData.jobTitle}
                     onChange={handleInputChange}
-                    className={`mt-2 block w-full border ${
-                      formErrors.jobTitle
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.jobTitle
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.jobTitle && (
                     <p className="text-red-500 text-sm mt-1">
@@ -604,11 +627,10 @@ export default function RecruiterPostedJobs(props) {
                     name="jobCategory"
                     value={formData.jobCategory}
                     onChange={handleInputChange}
-                    className={`mt-2 block w-full border ${
-                      formErrors.jobCategory
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.jobCategory
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   >
                     <option value="">Select a category</option>
                     {jobCategories.map((category, index) => (
@@ -616,11 +638,32 @@ export default function RecruiterPostedJobs(props) {
                         {category.name}
                       </option>
                     ))}
+                    <option value="Other">Other</option>
                   </select>
                   {formErrors.jobCategory && (
                     <p className="text-red-500 text-sm mt-1">
                       {formErrors.jobCategory}
                     </p>
+                  )}
+                  {formData.jobCategory === "Other" && (
+                    <div className="mt-3">
+                      <input
+                        type="text"
+                        name="customCategory"
+                        placeholder="Please specify category"
+                        value={formData.customCategory}
+                        onChange={handleInputChange}
+                        className={`block w-full border ${formErrors.customCategory
+                          ? "border-red-500"
+                          : "border-[#B0B6D3]"
+                          } rounded-xl shadow-sm px-4 py-3`}
+                      />
+                      {formErrors.customCategory && (
+                        <p className="text-red-500 text-base mt-1">
+                          {formErrors.customCategory}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 
@@ -633,11 +676,10 @@ export default function RecruiterPostedJobs(props) {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    className={`mt-2 block w-full border ${
-                      formErrors.location
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.location
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   >
                     <option value="">Select a location</option>
                     {sriLankaDistricts.map((district) => (
@@ -659,11 +701,10 @@ export default function RecruiterPostedJobs(props) {
                         placeholder="Please specify location"
                         value={formData.customLocation}
                         onChange={handleInputChange}
-                        className={`block w-full border ${
-                          formErrors.customLocation
-                            ? "border-red-500"
-                            : "border-[#B0B6D3]"
-                        } rounded-xl shadow-sm px-4 py-3`}
+                        className={`block w-full border ${formErrors.customLocation
+                          ? "border-red-500"
+                          : "border-[#B0B6D3]"
+                          } rounded-xl shadow-sm px-4 py-3`}
                       />
                       {formErrors.customLocation && (
                         <p className="text-red-500 text-base mt-1">
@@ -684,11 +725,10 @@ export default function RecruiterPostedJobs(props) {
                       <label
                         key={type}
                         className={`flex items-center py-3 px-5 rounded-lg border-2 transition-all duration-300 ease-in-out
-                    ${
-                      formData.jobTypes.includes(type)
-                        ? "bg-[#001571] text-white border-[#001571]"
-                        : "bg-white text-black border-gray-300"
-                    }
+                    ${formData.jobTypes.includes(type)
+                            ? "bg-[#001571] text-white border-[#001571]"
+                            : "bg-white text-black border-gray-300"
+                          }
                   `}
                       >
                         <input
@@ -719,11 +759,10 @@ export default function RecruiterPostedJobs(props) {
                     value={formData.jobDescription}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${
-                      formErrors.jobDescription
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.jobDescription
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.jobDescription && (
                     <p className="text-red-500 text-sm mt-1">
@@ -742,11 +781,10 @@ export default function RecruiterPostedJobs(props) {
                     value={formData.keyResponsibilities}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${
-                      formErrors.keyResponsibilities
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.keyResponsibilities
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.keyResponsibilities && (
                     <p className="text-red-500 text-sm mt-1">
@@ -765,11 +803,10 @@ export default function RecruiterPostedJobs(props) {
                     value={formData.shortDescription}
                     onChange={handleShortDescriptionChange}
                     rows="2"
-                    className={`mt-2 block w-full border ${
-                      formErrors.shortDescription
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.shortDescription
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.shortDescription && (
                     <p className="text-red-500 text-sm mt-1">
@@ -788,11 +825,10 @@ export default function RecruiterPostedJobs(props) {
                     value={formData.requiredQualifications}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${
-                      formErrors.requiredQualifications
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.requiredQualifications
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.requiredQualifications && (
                     <p className="text-red-500 text-sm mt-1">
@@ -811,11 +847,10 @@ export default function RecruiterPostedJobs(props) {
                     value={formData.perksAndBenefits}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${
-                      formErrors.perksAndBenefits
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
-                    } rounded-xl shadow-sm px-4 py-3`}
+                    className={`mt-2 block w-full border ${formErrors.perksAndBenefits
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
+                      } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.perksAndBenefits && (
                     <p className="text-red-500 text-sm mt-1">
@@ -829,11 +864,10 @@ export default function RecruiterPostedJobs(props) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${
-                      isSubmitting
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-blue-700"
-                    }`}
+                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-blue-700"
+                      }`}
                   >
                     {isSubmitting ? "Creating..." : "Create Job Post"}
                     <PiCheckCircle className="ml-2" size={20} />
@@ -851,11 +885,10 @@ export default function RecruiterPostedJobs(props) {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === 1
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
+            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
+              }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -863,11 +896,10 @@ export default function RecruiterPostedJobs(props) {
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-200 hover:bg-gray-400"
-              }`}
+              className={`px-4 py-2 rounded-lg ${currentPage === index + 1
+                ? "bg-blue-700 text-white"
+                : "bg-gray-200 hover:bg-gray-400"
+                }`}
             >
               {index + 1}
             </button>
@@ -875,11 +907,10 @@ export default function RecruiterPostedJobs(props) {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === totalPages
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
+            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
+              }`}
           >
             <BsChevronRight size={15} />
           </button>

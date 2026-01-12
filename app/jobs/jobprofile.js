@@ -268,7 +268,8 @@ function JobProfile({ slug }) {
             </div>
           </div>
           <h2 className="text-lg font-bold text-black mb-20">
-            {recruiterDetails.recruiterName} | {jobDetails.location}
+            {recruiterDetails.recruiterName} | {jobDetails.location} |{" "}
+            <span className="text-[#001571]">{jobDetails.jobCategory}</span>
           </h2>
 
           <hr className="border-b-2 border-[#B0B6D3] mb-5" />
