@@ -16,11 +16,11 @@ const Register = () => {
   const [showRoleSelectionModal, setShowRoleSelectionModal] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -75,15 +75,14 @@ const Register = () => {
 
     try {
       // Store the selected role in sessionStorage so auth callback can use it
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('oauth_signup_role', role);
-        sessionStorage.setItem('oauth_signup_provider', selectedProvider);
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("oauth_signup_role", role);
+        sessionStorage.setItem("oauth_signup_provider", selectedProvider);
       }
 
       // Redirect based on selected role after sign up
-      const callbackUrl = role === "jobseeker" 
-        ? "/Portal/profile" 
-        : "/Portal/dashboard";
+      const callbackUrl =
+        role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard";
 
       // Initiate OAuth flow
       await signIn(selectedProvider, {
@@ -93,9 +92,7 @@ const Register = () => {
     } catch (error) {
       console.error(`Failed to sign up with ${selectedProvider}:`, error);
       setIsLoading(false);
-      setErrorMessage(
-        `An error occurred during sign up. Please try again.`
-      );
+      setErrorMessage(`An error occurred during sign up. Please try again.`);
     }
   };
 
@@ -203,29 +200,29 @@ const Register = () => {
               <h2 className="text-medium text-center text-blue-900 font-bold my-10">
                 Join Skill Careers and Unlock New Opportunities!{" "}
               </h2>
-              
+
               {/* Display Error Message */}
               {errorMessage && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
                   {errorMessage}
                 </div>
               )}
-              
+
               {/* Conditional Form Rendering */}
               {isRecruiter ? <RecruiterRegister /> : <JobSeekerRegister />}
-              
+
               {/* Divider */}
               <div className="flex items-center justify-between mt-6">
                 <span className="border-t border-gray-500 w-full"></span>
               </div>
-              
+
               {/* Social Sign-up Options */}
               <div className="justify-items-center">
                 <p className="mt-3 mb-3 text-black text-md font-medium">
                   Or continue with Google or LinkedIn.
                 </p>
               </div>
-              
+
               <div className="space-y-2 mt-1">
                 <div className="mb-4">
                   <Button

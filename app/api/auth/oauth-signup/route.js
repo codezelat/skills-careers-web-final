@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const { email, firstName, lastName, role, profileImage, provider } = await req.json();
+    const { email, firstName, lastName, role, profileImage, provider } =
+      await req.json();
 
     if (!email || !role) {
       return NextResponse.json(
@@ -24,7 +25,7 @@ export async function POST(req) {
 
     // Check if user already exists
     const existingUser = await db.collection("users").findOne({ email });
-    
+
     if (existingUser) {
       // User exists, just return their role
       return NextResponse.json({
@@ -37,8 +38,8 @@ export async function POST(req) {
 
     // Create new user with specified role
     const newUser = {
-      firstName: firstName || email.split('@')[0],
-      lastName: lastName || '',
+      firstName: firstName || email.split("@")[0],
+      lastName: lastName || "",
       email,
       role,
       profileImage: profileImage || null,

@@ -29,13 +29,13 @@ export default function PortalCandidateCard({
       try {
         // Ensure userId is properly formatted
         const userIdString = userId?._id || userId?.toString() || userId;
-        
+
         if (!userIdString) {
           console.warn("No valid userId provided");
           setUserDetails({});
           return;
         }
-        
+
         const response = await fetch(`/api/users/get?id=${userIdString}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

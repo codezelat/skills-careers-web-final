@@ -10,7 +10,7 @@ export async function GET(req) {
     const jobseekers = await db.collection("jobseekers").find().toArray();
 
     // Ensure userId is properly serialized as string
-    const serializedJobseekers = jobseekers.map(jobseeker => ({
+    const serializedJobseekers = jobseekers.map((jobseeker) => ({
       ...jobseeker,
       _id: jobseeker._id.toString(),
       userId: jobseeker.userId?.toString() || jobseeker.userId,

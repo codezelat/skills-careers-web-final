@@ -11,7 +11,7 @@ export async function GET(req) {
     const jobseekers = await db.collection("jobseekers").find().toArray();
 
     // Ensure proper serialization
-    const serializedJobseekers = jobseekers.map(jobseeker => ({
+    const serializedJobseekers = jobseekers.map((jobseeker) => ({
       ...jobseeker,
       _id: jobseeker._id.toString(),
       userId: jobseeker.userId?.toString() || jobseeker.userId,
@@ -33,7 +33,8 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { userId, email, firstName, lastName, profileImage } = await req.json();
+    const { userId, email, firstName, lastName, profileImage } =
+      await req.json();
 
     if (!userId || !email) {
       return NextResponse.json(
@@ -47,7 +48,7 @@ export async function POST(req) {
 
     // Check if jobseeker profile already exists
     const existing = await db.collection("jobseekers").findOne({
-      userId: new ObjectId(userId)
+      userId: new ObjectId(userId),
     });
 
     if (existing) {
@@ -85,12 +86,14 @@ export async function POST(req) {
       updatedAt: new Date(),
     };
 
-    const result = await db.collection("jobseekers").insertOne(jobseekerProfile);
+    const result = await db
+      .collection("jobseekers")
+      .insertOne(jobseekerProfile);
 
     return NextResponse.json(
-      { 
+      {
         message: "Jobseeker profile created successfully",
-        jobseeker: { ...jobseekerProfile, _id: result.insertedId }
+        jobseeker: { ...jobseekerProfile, _id: result.insertedId },
       },
       { status: 201 }
     );
@@ -102,4 +105,3 @@ export async function POST(req) {
     );
   }
 }
-

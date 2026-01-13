@@ -215,13 +215,13 @@ export default function CandidateProfile() {
         try {
           setIsLoading(true);
           console.log(session.user.id);
-          
+
           let jobSeekerData = null;
-          
+
           const jobSeekerResponse = await fetch(
             `/api/jobseekerdetails/get?userId=${session.user.id}`
           );
-          
+
           if (!jobSeekerResponse.ok) {
             // If jobseeker profile doesn't exist, create one
             if (jobSeekerResponse.status === 404) {
@@ -237,7 +237,7 @@ export default function CandidateProfile() {
                   profileImage: session.user.profileImage,
                 }),
               });
-              
+
               if (createResponse.ok) {
                 // Retry fetching after creation
                 const retryResponse = await fetch(
