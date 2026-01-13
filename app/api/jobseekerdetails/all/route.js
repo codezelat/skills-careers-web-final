@@ -9,10 +9,17 @@ export async function GET(req) {
     // Fetch all jobseekers
     const jobseekers = await db.collection("jobseekers").find().toArray();
 
-    const count = jobseekers.length;
+    // Ensure userId is properly serialized as string
+    const serializedJobseekers = jobseekers.map(jobseeker => ({
+      ...jobseeker,
+      _id: jobseeker._id.toString(),
+      userId: jobseeker.userId?.toString() || jobseeker.userId,
+    }));
+
+    const count = serializedJobseekers.length;
 
     return NextResponse.json(
-      { jobseekers, count },
+      { jobseekers: serializedJobseekers, count },
       {
         status: 200,
         headers: {

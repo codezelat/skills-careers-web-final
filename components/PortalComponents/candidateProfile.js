@@ -215,15 +215,51 @@ export default function CandidateProfile() {
         try {
           setIsLoading(true);
           console.log(session.user.id);
+          
+          let jobSeekerData = null;
+          
           const jobSeekerResponse = await fetch(
             `/api/jobseekerdetails/get?userId=${session.user.id}`
           );
-          if (!jobSeekerResponse.ok)
-            throw new Error("Failed to fetch job seeker");
-          const jobSeekerData = await jobSeekerResponse.json();
-          console.log("test", jobSeekerData.jobseeker);
-
-          setJobseekerDetails(jobSeekerData.jobseeker);
+          
+          if (!jobSeekerResponse.ok) {
+            // If jobseeker profile doesn't exist, create one
+            if (jobSeekerResponse.status === 404) {
+              console.log("Creating jobseeker profile for OAuth user...");
+              const createResponse = await fetch("/api/jobseekerdetails", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  userId: session.user.id,
+                  email: session.user.email,
+                  firstName: session.user.firstName,
+                  lastName: session.user.lastName,
+                  profileImage: session.user.profileImage,
+                }),
+              });
+              
+              if (createResponse.ok) {
+                // Retry fetching after creation
+                const retryResponse = await fetch(
+                  `/api/jobseekerdetails/get?userId=${session.user.id}`
+                );
+                if (retryResponse.ok) {
+                  jobSeekerData = await retryResponse.json();
+                  setJobseekerDetails(jobSeekerData.jobseeker);
+                } else {
+                  throw new Error("Failed to fetch job seeker after creation");
+                }
+              } else {
+                throw new Error("Failed to create job seeker profile");
+              }
+            } else {
+              throw new Error("Failed to fetch job seeker");
+            }
+          } else {
+            jobSeekerData = await jobSeekerResponse.json();
+            console.log("test", jobSeekerData.jobseeker);
+            setJobseekerDetails(jobSeekerData.jobseeker);
+          }
 
           const userResponse = await fetch(
             `/api/users/get?id=${session.user.id}`
@@ -234,7 +270,7 @@ export default function CandidateProfile() {
           // Set userDetails with contactNumber from jobseeker data
           setUserDetails({
             ...userData.user,
-            contactNumber: jobSeekerData.jobseeker.contactNumber || "",
+            contactNumber: jobSeekerData?.jobseeker?.contactNumber || "",
           });
 
           const experienceResponse = await fetch(
