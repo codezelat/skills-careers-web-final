@@ -319,7 +319,13 @@ export default function CandidateProfile() {
 
       if (session?.user?.id) fetchData();
     }
-  }, [session?.user?.id, session?.user?.email, session?.user?.firstName, session?.user?.lastName, session?.user?.profileImage]);
+  }, [
+    session?.user?.id,
+    session?.user?.email,
+    session?.user?.firstName,
+    session?.user?.lastName,
+    session?.user?.profileImage,
+  ]);
 
   // image updae functions
   const handleImageChange = async (e) => {
