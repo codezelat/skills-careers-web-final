@@ -339,10 +339,11 @@ export default function Jobs() {
         <table className="w-full border-collapse">
           <thead className="hidden md:table-header-group">
             <tr className="text-[#8A93BE] text-base font-semibold text-left">
-              <th className="px-4 py-3 w-[24.25%]">Job Title</th>
-              <th className="px-4 py-3 w-[24.25%]">Organization</th>
-              <th className="px-4 py-3 w-[24.25%]">Posted Date</th>
-              <th className="px-4 py-3 w-[24.25%]">Actions</th>
+              <th className="w-[3%]"></th>
+              <th className="py-3 w-[24.25%]">Job Title</th>
+              <th className="py-3 w-[24.25%]">Organization</th>
+              <th className="py-3 w-[24.25%]">Posted Date</th>
+              <th className="py-3 w-[24.25%]">Actions</th>
             </tr>
           </thead>
         </table>
