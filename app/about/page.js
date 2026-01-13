@@ -75,9 +75,9 @@ function aboutPage() {
               are committed to offering a platform that is both easy to use and
               highly effective. Whether you're a job seeker looking to advance
               your career or a recruiter seeking top talent, Skill Careers is
-              here to support you every step of the way. Developed with the
-              support of a grant and the generous contributions of Australian
-              alumni of Australia Awards Sri Lanka.
+              here to support you every step of the way. This project is
+              supported by Australia Awards - Sri Lanka and Maldives as a part
+              of a small grant scheme.
             </p>
           </div>
           <div className="flex justify-center flex-wrap gap-4 sm:gap-6">
