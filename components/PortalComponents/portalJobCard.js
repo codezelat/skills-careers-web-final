@@ -130,18 +130,25 @@ function JobCard(props) {
             <div className="w-full items-center">
                 <div className="text-gray-700 hover:bg-gray-50 border-b text-sm flex items-center">
                     {session?.user?.role === "admin" && (
-                        <>
-                            <div className="py-3 text-black font-semibold w-[3%]"></div>
-                            <div className="py-3 text-black font-semibold w-[24.25%]">
+                        <div className="flex flex-col md:flex-row w-full md:items-center p-4 md:p-0">
+                            <div className="hidden md:block py-3 text-black font-semibold w-[3%]"></div>
+
+                            <div className="py-2 md:py-3 text-black font-semibold w-full md:w-[24.25%]">
+                                <span className="md:hidden text-gray-500 text-xs uppercase tracking-wider mr-2">Job Title:</span>
                                 {jobTitle}
                             </div>
-                            <div className="py-3 text-black font-semibold w-[24.25%]">
+
+                            <div className="py-2 md:py-3 text-black font-semibold w-full md:w-[24.25%]">
+                                <span className="md:hidden text-gray-500 text-xs uppercase tracking-wider mr-2">Organization:</span>
                                 {recruiterDetails.recruiterName}
                             </div>
-                            <div className="py-3 text-black font-semibold w-[24.25%]">
+
+                            <div className="py-2 md:py-3 text-black font-semibold w-full md:w-[24.25%]">
+                                <span className="md:hidden text-gray-500 text-xs uppercase tracking-wider mr-2">Posted Date:</span>
                                 {formatDate(createdAt)}
                             </div>
-                            <div className="py-3 flex gap-2 ml-auto justify-end w-[24.25%]">
+
+                            <div className="py-3 flex gap-2 w-full md:w-[24.25%] justify-start md:justify-end mt-2 md:mt-0">
                                 <button
                                     onClick={handleViewJob}
                                     title="Edit Job"
@@ -172,7 +179,7 @@ function JobCard(props) {
                                     {isPublished ? "Unpublish" : "Publish"}
                                 </button>
                             </div>
-                        </>
+                        </div>
                     )}
 
                     {session?.user?.role === "recruiter" && (

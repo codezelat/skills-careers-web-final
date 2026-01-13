@@ -335,9 +335,9 @@ export default function Jobs() {
         </div>
       </div>
 
-      <div className="w-full overflow-x-auto">
+      <div className="w-full">
         <table className="w-full border-collapse">
-          <thead>
+          <thead className="hidden md:table-header-group">
             <tr className="text-[#8A93BE] text-base font-semibold text-left">
               <th className="px-4 py-3 w-[24.25%]">Job Title</th>
               <th className="px-4 py-3 w-[24.25%]">Organization</th>
@@ -416,8 +416,8 @@ export default function Jobs() {
 
       {/* Create job form */}
       {isFormVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
-          <div className="w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999] px-4">
+          <div className="w-full md:w-2/3 bg-white rounded-lg shadow-lg flex flex-col max-h-[90vh]">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h4 className="text-2xl font-semibold text-[#001571]">
@@ -622,8 +622,8 @@ export default function Jobs() {
                     onChange={handleShortDescriptionChange}
                     rows="2"
                     className={`mt-2 block w-full border ${formErrors.shortDescription
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
                       } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.shortDescription && (
@@ -644,8 +644,8 @@ export default function Jobs() {
                     onChange={handleInputChange}
                     rows="4"
                     className={`mt-2 block w-full border ${formErrors.requiredQualifications
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
                       } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.requiredQualifications && (
@@ -666,8 +666,8 @@ export default function Jobs() {
                     onChange={handleInputChange}
                     rows="4"
                     className={`mt-2 block w-full border ${formErrors.perksAndBenefits
-                        ? "border-red-500"
-                        : "border-[#B0B6D3]"
+                      ? "border-red-500"
+                      : "border-[#B0B6D3]"
                       } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.perksAndBenefits && (
