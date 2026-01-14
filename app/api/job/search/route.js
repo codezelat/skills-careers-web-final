@@ -8,8 +8,6 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
 
-
-
     if (!query || query.length < 2) {
       return NextResponse.json({ jobs: [] });
     }
@@ -54,18 +52,14 @@ export async function GET(req) {
       })
       .toArray();
 
-
-
-    // Transform _id to string to match previous format if necessary, 
-    // although client component might handle _id. 
+    // Transform _id to string to match previous format if necessary,
+    // although client component might handle _id.
     // The previous implementation mapped _id to jobId.
     const formattedJobs = jobs.map((job) => ({
       ...job,
       _id: job._id.toString(), // Keep _id as string
       jobId: job._id.toString(),
     }));
-
-
 
     return NextResponse.json({ jobs: formattedJobs });
   } catch (error) {
@@ -83,4 +77,3 @@ export async function GET(req) {
     }
   }
 }
-
