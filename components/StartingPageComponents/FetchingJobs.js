@@ -145,7 +145,7 @@ const FetchingJobs = () => {
               className="swiper-container w-full max-w-[1280px] mt-16 pb-16"
             >
               {filteredJobs.map((job, index) => (
-                <SwiperSlide key={index}>
+                <SwiperSlide key={index} className="!h-auto flex">
                   <JobCard job={job} onApply={handleApply} />
                 </SwiperSlide>
               ))}

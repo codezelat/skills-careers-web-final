@@ -47,7 +47,7 @@ function JobCard({ job, onApply }) {
   };
 
   return (
-    <div className="bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 p-6 rounded-2xl border border-gray-100 flex flex-col h-full group">
+    <div className="bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 p-6 rounded-2xl border border-gray-100 flex flex-col h-full min-h-[420px] group">
       <div className="flex justify-between items-start mb-4">
         <div className="relative w-16 h-16 shrink-0 border border-gray-100 rounded-full overflow-hidden bg-white p-1">
           <Image
@@ -103,11 +103,10 @@ function JobCard({ job, onApply }) {
           jobTypes.slice(0, 3).map((type, index) => (
             <span
               key={index}
-              className={`px-2.5 py-1 rounded-lg text-[10px] uppercase tracking-wider font-bold ${
-                index % 2 === 0
+              className={`px-2.5 py-1 rounded-lg text-[10px] uppercase tracking-wider font-bold ${index % 2 === 0
                   ? "bg-blue-50 text-blue-700 border border-blue-100"
                   : "bg-teal-50 text-teal-700 border border-teal-100"
-              }`}
+                }`}
             >
               {type}
             </span>
