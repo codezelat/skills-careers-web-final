@@ -33,7 +33,7 @@ export async function PATCH(req, { params }) {
     );
 
     // Close the database connection
-    client.close();
+    // client.close();
 
     if (result.matchedCount === 0) {
       return NextResponse.json(
