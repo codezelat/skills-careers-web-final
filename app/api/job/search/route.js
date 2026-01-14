@@ -61,8 +61,8 @@ export async function GET(req) {
     // The previous implementation mapped _id to jobId.
     const formattedJobs = jobs.map((job) => ({
       ...job,
+      _id: job._id.toString(), // Keep _id as string
       jobId: job._id.toString(),
-      _id: undefined, // Remove original _id to avoid confusion if jobId is used
     }));
 
 
