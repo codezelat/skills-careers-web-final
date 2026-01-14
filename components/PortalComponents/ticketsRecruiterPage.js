@@ -117,6 +117,12 @@ export default function RecruitersTicketsPage(props) {
   // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Validate capacity
+    if (name === "capacity") {
+      if (value < 1 && value !== "") return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -238,6 +244,12 @@ export default function RecruitersTicketsPage(props) {
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Validate capacity
+    if (name === "capacity") {
+      if (value < 1 && value !== "") return;
+    }
+
     setEditFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -547,6 +559,7 @@ export default function RecruitersTicketsPage(props) {
                     onChange={handleInputChange}
                     className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                     required
+                    min="1"
                   />
                 </div>
 
@@ -603,11 +616,10 @@ export default function RecruitersTicketsPage(props) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${
-                      isSubmitting
+                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${isSubmitting
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-blue-700"
-                    }`}
+                      }`}
                   >
                     {isSubmitting ? "Creating..." : "Create Event"}
                     <PiCheckCircle className="ml-2" size={20} />
@@ -720,6 +732,7 @@ export default function RecruitersTicketsPage(props) {
                     onChange={handleEditInputChange}
                     className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                     required
+                    min="1"
                   />
                 </div>
 
@@ -776,11 +789,10 @@ export default function RecruitersTicketsPage(props) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${
-                      isSubmitting
+                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${isSubmitting
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-blue-700"
-                    }`}
+                      }`}
                   >
                     {isSubmitting ? "Updating..." : "Update Event"}
                     <PiCheckCircle className="ml-2" size={20} />
@@ -798,11 +810,10 @@ export default function RecruitersTicketsPage(props) {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === 1
+            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-            }`}
+              }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -810,11 +821,10 @@ export default function RecruitersTicketsPage(props) {
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1
+              className={`px-4 py-2 rounded-lg ${currentPage === index + 1
                   ? "bg-blue-700 text-white"
                   : "bg-gray-200 hover:bg-gray-400"
-              }`}
+                }`}
             >
               {index + 1}
             </button>
@@ -822,11 +832,10 @@ export default function RecruitersTicketsPage(props) {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === totalPages
+            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-            }`}
+              }`}
           >
             <BsChevronRight size={15} />
           </button>
