@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 import JobSearch from "@/components/jobSearch";
 import JobApplicationForm from "@/app/jobs/[jobid]/apply/JobApplicationForm";
 import jobCategories from "@/data/jobCategories.json";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 function JobsClient() {
   const [jobs, setJobs] = useState([]);
@@ -21,6 +22,10 @@ function JobsClient() {
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 12;
 
   const searchParams = useSearchParams();
   const industryQueryParam = searchParams.get("industry");
@@ -94,6 +99,9 @@ function JobsClient() {
           };
         });
 
+        // Sort by createdAt descending
+        jobsWithRecruiters.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
         setSearchResults(jobsWithRecruiters);
       } catch (error) {
         console.error("Error performing search:", error);
@@ -155,6 +163,9 @@ function JobsClient() {
             logo: recruiterData.logo || "/images/default-image.jpg",
           };
         });
+
+        // Sort by createdAt descending
+        jobsWithRecruiterDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         setJobs(jobsWithRecruiterDetails);
         setFilteredJobs(jobsWithRecruiterDetails);
@@ -226,7 +237,11 @@ function JobsClient() {
       });
     }
 
+    // Always re-sort filtered jobs by date just in case
+    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     setFilteredJobs(filtered);
+    setCurrentPage(1); // Reset to page 1 on filter change
   }, [
     selectedLocation,
     selectedIndustry,
@@ -264,7 +279,23 @@ function JobsClient() {
   ].filter(Boolean);
 
   const handleSearchResults = (results) => {
+    // Sort search results by date
+    if (Array.isArray(results)) {
+      results.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
     setSearchResults(results);
+  };
+
+  // Pagination Logic
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top of results
+    window.scrollTo({ top: 300, behavior: 'smooth' });
   };
 
   return (
@@ -529,19 +560,87 @@ function JobsClient() {
 
           {isLoading ? (
             <JobLoading />
-          ) : filteredJobs.length > 0 ? (
-            <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
-              {filteredJobs.map((job, index) => (
-                <JobCard
-                  key={index}
-                  onApply={(jobId) => {
-                    setSelectedJobId(jobId);
-                    setShowApplicationForm(true);
-                  }}
-                  job={job}
-                />
-              ))}
-            </div>
+          ) : currentJobs.length > 0 ? (
+            <>
+              <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
+                {currentJobs.map((job, index) => (
+                  <JobCard
+                    key={index}
+                    onApply={(jobId) => {
+                      setSelectedJobId(jobId);
+                      setShowApplicationForm(true);
+                    }}
+                    job={job}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-12">
+                  <div className="flex gap-2 items-center">
+                    <button
+                      type="button"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`p-3 rounded-lg transition-all duration-200 ${currentPage === 1
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-[#001571] hover:bg-[#001571] hover:text-white shadow-md border border-gray-100"
+                        }`}
+                    >
+                      <BsChevronLeft size={20} />
+                    </button>
+
+                    <div className="flex gap-2 overflow-x-auto px-2 no-scrollbar">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => {
+                        // Logic to show limited page numbers with ellipsis if needed
+                        // For simplicity, showing all or a range could be implemented.
+                        // For now showing all as per original snippet style
+                        // If distinct from candidates page style, can be adjusted.
+                        // Let's keep it simple and responsive
+                        if (
+                          totalPages > 7 &&
+                          number !== 1 &&
+                          number !== totalPages &&
+                          (number < currentPage - 1 || number > currentPage + 1)
+                        ) {
+                          if (number === currentPage - 2 || number === currentPage + 2) {
+                            return <span key={number} className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0">...</span>
+                          }
+                          return null;
+                        }
+
+                        return (
+                          <button
+                            key={number}
+                            type="button"
+                            onClick={() => handlePageChange(number)}
+                            className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 shrink-0 ${currentPage === number
+                                ? "bg-[#001571] text-white shadow-md transform scale-105"
+                                : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
+                              }`}
+                          >
+                            {number}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`p-3 rounded-lg transition-all duration-200 ${currentPage === totalPages
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-[#001571] hover:bg-[#001571] hover:text-white shadow-md border border-gray-100"
+                        }`}
+                    >
+                      <BsChevronRight size={20} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <div className="w-full text-center py-20">
               <p className="text-lg font-bold">No jobs found.</p>
