@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
-function DeleteConfirmation({ slug, pressreleaseDetails, onClose }) {
+function DeleteConfirmation({ slug, pressreleaseDetails, onClose, onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -31,8 +31,13 @@ function DeleteConfirmation({ slug, pressreleaseDetails, onClose }) {
           timer: 2000, // 2 seconds
           showConfirmButton: false, // Hide the OK button
           willClose: () => {
-            // Redirect after successful deletion
-            router.push("/Portal/pressrelease/");
+            if (onSuccess) {
+              onSuccess();
+            } else {
+              // Redirect after successful deletion
+              router.push("/Portal/pressrelease/");
+              window.location.reload();
+            }
           },
         });
       }

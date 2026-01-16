@@ -19,7 +19,7 @@ async function createPressrelease(formData) {
   return data;
 }
 
-function AddPressrelease({ onClose }) {
+function AddPressrelease({ onClose, onSuccess }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -50,26 +50,28 @@ function AddPressrelease({ onClose }) {
 
       const result = await createPressrelease(formData);
       console.log(result);
+
       Swal.fire({
         title: "Success!",
         text: result.message || "Press release created successfully!",
         icon: "success",
-        timer: 2000, // 2 seconds
-        showConfirmButton: false, // Hides the OK button
-        willClose: () => {
-          clearForm();
-          onClose(); // Close the form after success
-          window.location.reload(); // Optionally reload the page
-        },
+        timer: 1500, // Reduced timer
+        showConfirmButton: false,
+      }).then(() => {
+        clearForm();
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          onClose(); // Fallback if no onSuccess provided
+        }
       });
+
     } catch (error) {
       console.log(error.message);
       Swal.fire({
         title: "Error!",
         text: error.message || "Something went wrong!",
         icon: "error",
-        timer: 2000, // 2 seconds
-        showConfirmButton: false, // Hides the OK button
       });
     } finally {
       setIsSubmitting(false);
@@ -172,7 +174,9 @@ function AddPressrelease({ onClose }) {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm"
+              disabled={isSubmitting}
+              className={`bg-[#001571] text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                }`}
             >
               <div className="flex items-center space-x-3 ">
                 {isSubmitting ? "Creating..." : "Create Press Release"}

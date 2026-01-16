@@ -9,10 +9,16 @@ import PortalLoading from "../loading";
 import AddPressrelease from "./AddPressrelease";
 import PressReleaseCard from "@/components/PortalComponents/pressReleaseCard";
 
+import UpdatePressrelease from "./UpdatePressrelease";
+import DeleteConfirmation from "./DeleteConfirmation";
+
 export default function PressReleaseList() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   const [pressreleases, setPressreleases] = useState([]);
   const [filteredPressreleases, setFilteredPressreleases] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,23 +33,24 @@ export default function PressReleaseList() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    async function fetchPressReleases() {
-      try {
-        const response = await fetch("/api/pressrelease/all");
-        if (!response.ok) throw new Error("Failed to fetch press releases");
-        const data = await response.json();
-        setPressreleases(data.pressreleases || []);
-        setFilteredPressreleases(data.pressreleases || []);
-      } catch (error) {
-        console.error("Error fetching press releases:", error);
-        setPressreleases([]);
-        setFilteredPressreleases([]);
-      } finally {
-        setLoading(false);
-      }
+  const fetchPressReleases = async () => {
+    try {
+      // Don't set loading to true here to avoid flickering if mostly silent update
+      const response = await fetch("/api/pressrelease/all", { cache: "no-store" });
+      if (!response.ok) throw new Error("Failed to fetch press releases");
+      const data = await response.json();
+      setPressreleases(data.pressreleases || []);
+      setFilteredPressreleases(data.pressreleases || []);
+    } catch (error) {
+      console.error("Error fetching press releases:", error);
+      setPressreleases([]);
+      setFilteredPressreleases([]);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchPressReleases();
   }, []);
 
@@ -56,7 +63,39 @@ export default function PressReleaseList() {
   }, [searchQuery, pressreleases]);
 
   const handlePressreleaseSelect = (pressrelease) => {
+    router.push(`/Portal/pressrelease/${pressrelease._id}`);
+  };
+
+  const handleEditClick = (pressrelease) => {
     setSelectedPressrelease(pressrelease);
+    setShowUpdateForm(true);
+  };
+
+  const handleDeleteClick = (pressrelease) => {
+    setSelectedPressrelease(pressrelease);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleUpdateSubmit = async (updatedDetails, imageFile) => {
+    const formData = new FormData();
+    formData.append("_id", selectedPressrelease._id);
+    formData.append("title", updatedDetails.title);
+    formData.append("description", updatedDetails.description);
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    const response = await fetch("/api/pressrelease/update", {
+      method: "PUT", // or POST, verifying... usually update is PUT or POST
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to update");
+    }
+
+    return await response.json();
   };
 
   const handleSearchChange = (event) => {
@@ -97,9 +136,39 @@ export default function PressReleaseList() {
       {showApplicationForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="relative bg-white shadow-lg rounded-lg px-4 sm:px-6 w-full max-w-4xl">
-            <AddPressrelease onClose={() => setShowApplicationForm(false)} />
+            <AddPressrelease
+              onClose={() => setShowApplicationForm(false)}
+              onSuccess={() => {
+                setShowApplicationForm(false);
+                fetchPressReleases();
+              }}
+            />
           </div>
         </div>
+      )}
+
+      {showUpdateForm && selectedPressrelease && (
+        <UpdatePressrelease
+          pressreleaseDetails={selectedPressrelease}
+          onClose={() => setShowUpdateForm(false)}
+          onSubmit={async (updatedDetails, image) => {
+            await handleUpdateSubmit(updatedDetails, image);
+            setShowUpdateForm(false);
+            fetchPressReleases();
+          }}
+        />
+      )}
+
+      {showDeleteConfirm && selectedPressrelease && (
+        <DeleteConfirmation
+          slug={selectedPressrelease._id}
+          pressreleaseDetails={selectedPressrelease}
+          onClose={() => setShowDeleteConfirm(false)}
+          onSuccess={() => {
+            setShowDeleteConfirm(false);
+            fetchPressReleases();
+          }}
+        />
       )}
 
       <div className="flex-grow mt-8 sm:mt-16">
@@ -125,6 +194,8 @@ export default function PressReleaseList() {
                 onViewPressrelease={() =>
                   handlePressreleaseSelect(pressrelease)
                 }
+                onEdit={handleEditClick}
+                onDelete={handleDeleteClick}
               />
             ))
             .reverse()
@@ -140,11 +211,10 @@ export default function PressReleaseList() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === 1
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
+            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
+              }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -152,11 +222,10 @@ export default function PressReleaseList() {
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1
-                  ? "bg-blue-700 text-white"
-                  : "bg-gray-200 hover:bg-gray-400"
-              }`}
+              className={`px-4 py-2 rounded-lg ${currentPage === index + 1
+                ? "bg-blue-700 text-white"
+                : "bg-gray-200 hover:bg-gray-400"
+                }`}
             >
               {index + 1}
             </button>
@@ -164,11 +233,10 @@ export default function PressReleaseList() {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === totalPages
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
+            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
+              ? "bg-gray-300"
+              : "bg-gray-200 hover:bg-gray-400"
+              }`}
           >
             <BsChevronRight size={15} />
           </button>

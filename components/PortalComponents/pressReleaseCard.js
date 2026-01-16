@@ -5,11 +5,11 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function PressReleaseCard(props, onViewPressrelease) {
+export default function PressReleaseCard({ pressrelease, onEdit, onDelete, onViewPressrelease }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const { _id, title, image, createdAt } = props.pressrelease;
+  const { _id, title, image, createdAt } = pressrelease;
 
   const date = new Date(createdAt).getDate();
   const monthName = [
@@ -32,12 +32,16 @@ export default function PressReleaseCard(props, onViewPressrelease) {
   const postedDate = `${date} ${month} ${year}`;
 
   const handleViewPressrelease = () => {
-    router.push(`/Portal/pressrelease/${_id}`);
+    if (onViewPressrelease) {
+      onViewPressrelease();
+    } else {
+      router.push(`/Portal/pressrelease/${_id}`);
+    }
   };
 
   return (
     <div
-      className="relative bg-white rounded-3xl shadow-md overflow-hidden"
+      className="relative bg-white rounded-3xl shadow-md overflow-hidden cursor-pointer"
       onClick={handleViewPressrelease}
     >
       {/* Main Image */}
@@ -63,12 +67,21 @@ export default function PressReleaseCard(props, onViewPressrelease) {
         {session?.user?.role === "admin" && (
           <div className="absolute top-2 right-2 flex space-x-2">
             <button
-              className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white"
-              onClick={handleViewPressrelease}
+              className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white hover:bg-gray-100 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onEdit) onEdit(pressrelease);
+              }}
             >
               <MdOutlineModeEdit size={25} color="#001571" />
             </button>
-            <button className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white">
+            <button
+              className="flex justify-center items-center rounded-full shadow-md w-[45px] h-[45px] bg-white hover:bg-gray-100 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onDelete) onDelete(pressrelease);
+              }}
+            >
               <RiDeleteBin5Line size={25} color="#001571" />
             </button>
           </div>
