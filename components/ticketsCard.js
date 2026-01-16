@@ -121,9 +121,31 @@ export default function TicketsCard({ ticket, fetchTickets }) {
                 {ticket.recruiter?.recruiterName || "Unknown Recruiter"}
               </h3>
               <div className="flex items-center gap-2 mt-2 md:mt-0 text-[#001571]">
-                <p className="text-black font-semibold">
-                  {ticket.enrolledCount}/{ticket.capacity} Available
-                </p>
+                {(() => {
+                  const availableSeats = ticket.capacity - (ticket.enrolledCount || 0);
+
+                  if (availableSeats <= 0) {
+                    return (
+                      <p className="text-red-600 font-bold bg-red-100 px-3 py-1 rounded-full text-sm">
+                        Fully Booked
+                      </p>
+                    );
+                  }
+
+                  if (availableSeats <= 10) {
+                    return (
+                      <p className="text-red-600 font-bold">
+                        {availableSeats} {availableSeats === 1 ? 'seat' : 'seats'} left
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <p className="text-black font-semibold">
+                      {availableSeats} {availableSeats === 1 ? 'seat' : 'seats'} available
+                    </p>
+                  );
+                })()}
               </div>
             </div>
 
@@ -151,17 +173,28 @@ export default function TicketsCard({ ticket, fetchTickets }) {
               {ticket.description}
             </p>
             <div className="flex flex-col md:flex-row gap-4 mt-4 justify-end">
-              <button
-                onClick={() => setShowBookingForm(true)}
-                className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md"
-              >
-                <p className="flex text-lg font-bold justify-center">
-                  Book Now
-                  <span className="ml-3 mt-1 font-bold text-lg">
-                    <BsArrowUpRightCircleFill />
-                  </span>
-                </p>
-              </button>
+              {ticket.capacity - (ticket.enrolledCount || 0) > 0 ? (
+                <button
+                  onClick={() => setShowBookingForm(true)}
+                  className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md hover:bg-[#001571] hover:text-white transition-all duration-300"
+                >
+                  <p className="flex text-lg font-bold justify-center items-center gap-3">
+                    Book Now
+                    <span className="text-xl">
+                      <BsArrowUpRightCircleFill />
+                    </span>
+                  </p>
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className="text-gray-400 border-gray-300 border-2 px-6 py-2 rounded-md cursor-not-allowed bg-gray-50"
+                >
+                  <p className="flex text-lg font-bold justify-center items-center">
+                    Sold Out
+                  </p>
+                </button>
+              )}
             </div>
           </div>
         </div>
