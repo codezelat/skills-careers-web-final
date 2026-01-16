@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { IoSearchSharp } from "react-icons/io5";
+import { IoSearchSharp, IoClose } from "react-icons/io5";
 
 export default function JobSearchDropdown() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -75,6 +75,11 @@ export default function JobSearchDropdown() {
     fetchJobsWithRecruiters(value);
   };
 
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setJobSuggestions([]);
+  };
+
   const handleSelectedJob = (job) => {
     window.open(`/jobs/${job.jobId}`, "_blank");
     setSearchQuery("");
@@ -84,20 +89,23 @@ export default function JobSearchDropdown() {
   return (
     <div className="flex flex-col relative mt-10">
       <div className="bg-gray-200 rounded-md">
-        <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center gap-4 rounded-md py-1 md:py-2 px-1 md:px-4">
+        <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center gap-4 rounded-md py-1 md:py-2 px-1 md:px-4 relative">
           <input
             type="text"
             placeholder="Search by job title, keywords, or company."
             value={searchQuery}
             onChange={handleJobChange}
-            className="bg-gray-200 w-full text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
+            className="bg-gray-200 w-full text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 pr-10 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
           />
-          {/* <button className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5  bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold">
-                        <span className="mt-1 mr-2 md:mr-4 ">
-                            <IoSearchSharp size={20} />
-                        </span>
-                        Search
-                    </button> */}
+          {searchQuery && (
+            <button
+              onClick={handleClearSearch}
+              className="absolute right-4 text-gray-500 hover:text-[#001571] transition-colors p-2"
+              aria-label="Clear search"
+            >
+              <IoClose size={24} />
+            </button>
+          )}
         </div>
       </div>
 
