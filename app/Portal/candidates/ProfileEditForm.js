@@ -142,6 +142,55 @@ export default function NameEditForm({
                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
               />
             </div>
+
+            {/* Preferred Job Types */}
+            <div>
+              <label className="block text-sm font-semibold text-[#001571] mb-2">
+                Preferred Job Types
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "On Site",
+                  "Hybrid",
+                  "Remote",
+                  "Full-Time",
+                  "Part-Time",
+                  "Freelance",
+                ].map((type) => (
+                  <label
+                    key={type}
+                    className={`flex items-center py-2 px-4 rounded-lg border transition-all duration-200 cursor-pointer text-sm
+                      ${(jobSeekerDetails.preferredJobTypes || []).includes(type)
+                        ? "bg-[#001571] text-white border-[#001571]"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-[#001571]"
+                      }
+                    `}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={(jobSeekerDetails.preferredJobTypes || []).includes(type)}
+                      onChange={(e) => {
+                        const currentTypes = jobSeekerDetails.preferredJobTypes || [];
+                        let newTypes;
+                        if (e.target.checked) {
+                          newTypes = [...currentTypes, type];
+                        } else {
+                          newTypes = currentTypes.filter((t) => t !== type);
+                        }
+                        handleInputChange({
+                          target: {
+                            name: "preferredJobTypes",
+                            value: newTypes,
+                          },
+                        });
+                      }}
+                      className="hidden"
+                    />
+                    <span>{type}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-[#001571]">
@@ -229,11 +278,10 @@ export default function NameEditForm({
             type="submit"
             onClick={jobseekerUpdateSubmitHandler}
             disabled={isSubmitting}
-            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-              isSubmitting
+            className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-blue-700"
-            }`}
+              }`}
           >
             {isSubmitting ? "Saving..." : "Save"}
             <span className="ml-2">

@@ -22,9 +22,19 @@ export default function Candidates() {
   const [loading, setLoading] = useState(true);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedJobTypes, setSelectedJobTypes] = useState([]);
+
+  const JOB_TYPE_OPTIONS = [
+    "On Site",
+    "Hybrid",
+    "Remote",
+    "Full-Time",
+    "Part-Time",
+    "Freelance",
+  ];
   const candidatesPerPage = 6;
   const [newJobSeekerForm, setNewJobseekerForm] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [newJobseeker, setNewJobseeker] = useState({
     firstName: "",
@@ -90,20 +100,38 @@ export default function Candidates() {
     if (session?.user?.email) fetchJobseekers();
   }, [session, searchQuery, activeTab]);
 
-  const filterJobseekers = (jobseekers, query, tab) => {
+  const filterJobseekers = (jobseekers, query, tab, jobTypes = selectedJobTypes) => {
     const filtered = (jobseekers || []).filter((jobseeker) => {
       const matchesSearch = (jobseeker.email || "")
         .toLowerCase()
         .includes(query.toLowerCase());
       const matchesTab = tab === "all" ? true : jobseeker.isRestricted;
-      return matchesSearch && matchesTab;
+      const matchesJobType =
+        jobTypes.length === 0
+          ? true
+          : jobTypes.some((type) =>
+            (jobseeker.preferredJobTypes || []).includes(type)
+          );
+
+      return matchesSearch && matchesTab && matchesJobType;
     });
     setFilteredJobseekers(filtered);
   };
 
   useEffect(() => {
-    filterJobseekers(jobseekers, searchQuery, activeTab);
-  }, [searchQuery, activeTab, jobseekers]);
+    filterJobseekers(jobseekers, searchQuery, activeTab, selectedJobTypes);
+  }, [searchQuery, activeTab, jobseekers, selectedJobTypes]);
+
+  const handleJobTypeToggle = (type) => {
+    setSelectedJobTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    );
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedJobTypes([]);
+  };
 
   const handleJobseekerUpdate = (updatedJobseeker) => {
     setJobseekers((prev) =>
@@ -330,20 +358,18 @@ export default function Candidates() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-full lg:w-max text-xs sm:text-sm font-medium gap-1 sm:gap-0">
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${
-              activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
-            }`}
+            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+              }`}
           >
             <span>All Candidates</span>
             <PiCheckCircle size={18} className="ml-2" />
           </button>
           <button
             onClick={() => setActiveTab("restricted")}
-            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${
-              activeTab === "restricted"
+            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${activeTab === "restricted"
                 ? "bg-[#001571] text-white"
                 : "text-[#B0B6D3]"
-            }`}
+              }`}
           >
             <span>Restricted Candidates</span>
             <PiCheckCircle size={18} className="ml-2" />
@@ -360,6 +386,37 @@ export default function Candidates() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+      </div>
+
+      {/* Job Type Filters */}
+      <div className="mb-5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
+          <label className="block text-sm font-semibold text-[#001571]">
+            Filter by Job Type
+          </label>
+          {(selectedJobTypes.length > 0 || searchQuery) && (
+            <button
+              onClick={handleClearFilters}
+              className="text-sm text-[#EC221F] hover:text-red-700 font-semibold"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {JOB_TYPE_OPTIONS.map((type) => (
+            <button
+              key={type}
+              onClick={() => handleJobTypeToggle(type)}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${selectedJobTypes.includes(type)
+                  ? "bg-[#001571] text-white shadow-md"
+                  : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
+                }`}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Candidate List Header with Select All - Hidden on mobile */}
@@ -413,11 +470,10 @@ export default function Candidates() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-2 sm:px-3 py-2 rounded-lg ${
-              currentPage === 1
+            className={`px-2 sm:px-3 py-2 rounded-lg ${currentPage === 1
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-gray-200 hover:bg-gray-400"
-            }`}
+              }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -430,11 +486,10 @@ export default function Candidates() {
                 <button
                   key={index + 1}
                   onClick={() => handlePageChange(index + 1)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
-                    currentPage === index + 1
+                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm whitespace-nowrap ${currentPage === index + 1
                       ? "bg-blue-700 text-white"
                       : "bg-gray-200 hover:bg-gray-400"
-                  }`}
+                    }`}
                 >
                   {index + 1}
                 </button>
@@ -447,12 +502,11 @@ export default function Candidates() {
               currentPage ===
               Math.ceil(filteredJobseekers.length / candidatesPerPage)
             }
-            className={`px-2 sm:px-3 py-2 rounded-lg ${
-              currentPage ===
-              Math.ceil(filteredJobseekers.length / candidatesPerPage)
+            className={`px-2 sm:px-3 py-2 rounded-lg ${currentPage ===
+                Math.ceil(filteredJobseekers.length / candidatesPerPage)
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-gray-200 hover:bg-gray-400"
-            }`}
+              }`}
           >
             <BsChevronRight size={15} />
           </button>
@@ -560,11 +614,10 @@ export default function Candidates() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold w-full sm:w-auto ${
-                      isSubmitting
+                    className={`bg-[#001571] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold w-full sm:w-auto ${isSubmitting
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-blue-700"
-                    }`}
+                      }`}
                   >
                     {isSubmitting ? "Adding..." : "Add Recruiter"}
                   </button>

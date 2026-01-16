@@ -1291,6 +1291,26 @@ export default function CandidateProfile() {
           </p>
         </div>
 
+        {/* Preferred Job Types */}
+        {jobSeekerDetails.preferredJobTypes &&
+          jobSeekerDetails.preferredJobTypes.length > 0 && (
+            <div className="text-left space-y-4 mt-8">
+              <h5 className="text-xl lg:text-left md:text-left sm:text-center font-bold text-[#001571] ">
+                Preferred Job Types
+              </h5>
+              <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                {jobSeekerDetails.preferredJobTypes.map((type, index) => (
+                  <span
+                    key={index}
+                    className="bg-[#001571] text-white px-4 py-2 rounded-lg text-sm font-semibold"
+                  >
+                    {type}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
         {/* bio data */}
         <div className="text-left space-y-4 mt-12">
           <div className="flex flex-row items-center justify-between">
@@ -1500,10 +1520,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.softSkills?.map((skills, index) => (
               <SoftSkillsCard key={index} skills={skills} />
             )) ?? (
-              <p className="text-gray-500 text-sm">
-                No soft skills data available.
-              </p>
-            )}
+                <p className="text-gray-500 text-sm">
+                  No soft skills data available.
+                </p>
+              )}
           </div>
         </div>
 
@@ -1540,10 +1560,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
               <ExpertiseCard key={index} expertise={expertise} />
             )) ?? (
-              <p className="text-gray-500 text-sm">
-                No professional expertise data available.
-              </p>
-            )}
+                <p className="text-gray-500 text-sm">
+                  No professional expertise data available.
+                </p>
+              )}
           </div>
         </div>
 
@@ -1725,11 +1745,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateExperience}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                  }`}
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1772,10 +1791,10 @@ export default function CandidateProfile() {
                         isOtherEducation
                           ? "Other"
                           : EDUCATION_QUALIFICATIONS.includes(
-                              newEducationData.educationName
-                            )
-                          ? newEducationData.educationName
-                          : ""
+                            newEducationData.educationName
+                          )
+                            ? newEducationData.educationName
+                            : ""
                       }
                       onChange={handleEducationInputChange}
                       className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
@@ -1848,11 +1867,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateEducation}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                  }`}
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1933,11 +1951,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateCertification}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                  }`}
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -2006,11 +2023,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddSoftSkill}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                  }`}
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -2093,11 +2109,10 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddExpertise}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
-                    isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                  }`}
+                    }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -2226,10 +2241,10 @@ export default function CandidateProfile() {
                     onUpdate={handleUpdateSoftSkill}
                   />
                 )) ?? (
-                  <p className="text-gray-500 text-sm">
-                    No soft skills data available.
-                  </p>
-                )}
+                    <p className="text-gray-500 text-sm">
+                      No soft skills data available.
+                    </p>
+                  )}
               </div>
             </div>
           </div>
@@ -2261,10 +2276,10 @@ export default function CandidateProfile() {
                     />
                   )
                 ) ?? (
-                  <p className="text-gray-500 text-sm">
-                    No professional expertise data available.
-                  </p>
-                )}
+                    <p className="text-gray-500 text-sm">
+                      No professional expertise data available.
+                    </p>
+                  )}
               </div>
             </div>
           </div>
