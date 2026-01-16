@@ -111,9 +111,9 @@ export default function TicketsPage() {
             className="w-full h-full opacity-5"
           />
         </div>
-        <div className="z-[2] min-h-screen w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-16">
+        <div className="z-[2] min-h-screen w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] space-y-5 py-10 md:py-16">
           <div className="mb-8 sm:justify-center">
-            <h1 className="text-4xl font-bold text-[#8A93BE] mt-28">
+            <h1 className="text-3xl md:text-5xl font-bold text-[#8A93BE] mt-20 md:mt-28 text-center md:text-left leading-tight">
               Book Your{" "}
               <span className="font-bold text-[#001571]">Perfect </span>
               Experience.

@@ -102,100 +102,116 @@ export default function TicketsCard({ ticket, fetchTickets }) {
   };
 
   return (
-    <div className="mb-4">
-      <div className="flex flex-row w-full border rounded-lg bg-white hover:bg-[#EDF0FF] p-6 shadow-md">
-        <div className="flex-shrink-0 mt-5 lg:mt-0 md:pt-0 mb-4 md:mb-0 md:mr-6 flex justify-center items-center">
+
+    <div className="mb-6 group">
+      <div className="flex flex-col md:flex-row w-full border border-gray-100 rounded-2xl bg-white hover:bg-[#F8F9FC] p-5 md:p-6 shadow-sm hover:shadow-lg transition-all duration-300">
+
+        {/* Image Container */}
+        <div className="flex-shrink-0 w-full md:w-auto mb-6 md:mb-0 md:mr-8 flex justify-center items-center bg-gray-50 rounded-xl p-4 md:p-2">
           <Image
             src={ticket.eventProfile || "/images/image-placeholder.jpg"}
             alt={`${ticket.recruiter?.recruiterName || "Company"} logo`}
-            width={200}
-            height={200}
-            className="object-contain"
+            width={180}
+            height={180}
+            className="object-contain w-48 h-48 md:w-40 md:h-40 mix-blend-multiply"
           />
         </div>
-        <div className="flex flex-col md:flex-row w-full">
-          <div className="flex-grow">
-            <div className="flex flex-col lg:flex-row md:flex-row justify-between items-start lg:items-center md:items-center mt-4 md:mt-0">
-              <h3 className="flex items-center text-xl text-center font-bold text-[#001571]">
-                {ticket.name} By{" "}
-                {ticket.recruiter?.recruiterName || "Unknown Recruiter"}
-              </h3>
-              <div className="flex items-center gap-2 mt-2 md:mt-0 text-[#001571]">
+
+        {/* Content Container */}
+        <div className="flex flex-col w-full justify-between">
+          <div>
+            {/* Header: Title and Availability */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="w-full md:w-auto">
+                <h3 className="text-xl md:text-2xl font-bold text-[#001571] text-center md:text-left leading-tight">
+                  {ticket.name}
+                </h3>
+                <p className="text-sm text-gray-500 font-medium mt-1 text-center md:text-left">
+                  by {ticket.recruiter?.recruiterName || "Unknown Recruiter"}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center md:justify-end w-full md:w-auto bg-gray-50 md:bg-transparent py-2 md:py-0 rounded-lg md:rounded-none">
                 {(() => {
                   const availableSeats = ticket.capacity - (ticket.enrolledCount || 0);
 
                   if (availableSeats <= 0) {
                     return (
-                      <p className="text-red-600 font-bold bg-red-100 px-3 py-1 rounded-full text-sm">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                         Fully Booked
-                      </p>
+                      </span>
                     );
                   }
 
                   if (availableSeats <= 10) {
                     return (
-                      <p className="text-red-600 font-bold">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
                         {availableSeats} {availableSeats === 1 ? 'seat' : 'seats'} left
-                      </p>
+                      </span>
                     );
                   }
 
                   return (
-                    <p className="text-black font-semibold">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#001571]/5 text-[#001571] border border-[#001571]/10">
                       {availableSeats} {availableSeats === 1 ? 'seat' : 'seats'} available
-                    </p>
+                    </span>
                   );
                 })()}
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-8 mt-4 md:mt-4">
-              <div className="flex items-center gap-1">
-                <FaLocationDot size={20} className="text-[#001571]" />
-                <p className="text-black font-semibold">{ticket.location}</p>
+            {/* Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-6 mt-6">
+              <div className="flex items-center gap-3 text-gray-700">
+                <div className="p-2 bg-[#001571]/5 rounded-lg text-[#001571]">
+                  <FaLocationDot size={16} />
+                </div>
+                <p className="font-medium text-sm sm:text-base truncate">{ticket.location}</p>
               </div>
-              <div className="flex items-center gap-2">
-                <MdDateRange size={20} className="text-[#001571]" />
-                <p className="text-black font-semibold">{eventDate}</p>
+              <div className="flex items-center gap-3 text-gray-700">
+                <div className="p-2 bg-[#001571]/5 rounded-lg text-[#001571]">
+                  <MdDateRange size={16} />
+                </div>
+                <p className="font-medium text-sm sm:text-base">{eventDate}</p>
               </div>
-              <div className="flex items-center gap-2">
-                <GiDuration size={20} className="text-[#001571]" />
-                <p className="text-black font-semibold">
+              <div className="flex items-center gap-3 text-gray-700">
+                <div className="p-2 bg-[#001571]/5 rounded-lg text-[#001571]">
+                  <GiDuration size={16} />
+                </div>
+                <p className="font-medium text-sm sm:text-base">
                   {ticket.startTime} - {ticket.endTime}
                 </p>
               </div>
             </div>
-            <p className="text-black font-semibold mt-2">
-              Closing Date : {ticket.closingDate}
-            </p>
 
-            <p className="line-clamp-4 text-black mt-8 mb-6 text-justify">
+            <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-500">
+              <span className="font-semibold text-[#001571]">Closing Date:</span>
+              <span>{ticket.closingDate}</span>
+            </div>
+
+            <p className="text-gray-600 mt-5 leading-relaxed text-sm md:text-base line-clamp-3 text-justify md:text-left opacity-90">
               {ticket.description}
             </p>
-            <div className="flex flex-col md:flex-row gap-4 mt-4 justify-end">
-              {ticket.capacity - (ticket.enrolledCount || 0) > 0 ? (
-                <button
-                  onClick={() => setShowBookingForm(true)}
-                  className="text-[#001571] border-[#001571] border-2 px-4 py-2 rounded-md hover:bg-[#001571] hover:text-white transition-all duration-300"
-                >
-                  <p className="flex text-lg font-bold justify-center items-center gap-3">
-                    Book Now
-                    <span className="text-xl">
-                      <BsArrowUpRightCircleFill />
-                    </span>
-                  </p>
-                </button>
-              ) : (
-                <button
-                  disabled
-                  className="text-gray-400 border-gray-300 border-2 px-6 py-2 rounded-md cursor-not-allowed bg-gray-50"
-                >
-                  <p className="flex text-lg font-bold justify-center items-center">
-                    Sold Out
-                  </p>
-                </button>
-              )}
-            </div>
+          </div>
+
+          {/* Action Button */}
+          <div className="flex justify-center md:justify-end mt-6 pt-4 border-t border-gray-100 md:border-0 md:pt-0">
+            {ticket.capacity - (ticket.enrolledCount || 0) > 0 ? (
+              <button
+                onClick={() => setShowBookingForm(true)}
+                className="w-full md:w-auto group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-bold text-white transition-all duration-300 bg-[#001571] rounded-xl hover:bg-[#001c96] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#001571] focus:ring-offset-2"
+              >
+                <span className="mr-2">Book Now</span>
+                <BsArrowUpRightCircleFill className="text-lg transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+              </button>
+            ) : (
+              <button
+                disabled
+                className="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 font-bold text-gray-400 bg-gray-100 rounded-xl cursor-not-allowed border border-gray-200"
+              >
+                Sold Out
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -162,58 +162,75 @@ function NavBar() {
           <nav className="space-y-4 text-[#001571] font-semibold text-center">
             <Link
               href="/"
+              onClick={() => setIsMenuOpen(false)}
               className="block transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
             >
               HOME
             </Link>
             <Link
-              href="/recruiters"
-              className="block transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
-            >
-              EXPLORE RECRUITERS
-            </Link>
-            <Link
               href="/jobs"
+              onClick={() => setIsMenuOpen(false)}
               className="block transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
             >
               EXPLORE JOBS
             </Link>
             <Link
+              href="/recruiters"
+              onClick={() => setIsMenuOpen(false)}
+              className="block transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            >
+              EXPLORE RECRUITERS
+            </Link>
+            <Link
+              href="/tickets"
+              onClick={() => setIsMenuOpen(false)}
+              className="block transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
+            >
+              EVENTS
+            </Link>
+            <Link
               href="/about"
+              onClick={() => setIsMenuOpen(false)}
               className="block transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
             >
               ABOUT US
             </Link>
             <Link
               href="/contact"
+              onClick={() => setIsMenuOpen(false)}
               className="block transition duration-1000 transform hover:-translate-y-1 hover:border-b-2 border-[#001571]"
             >
               CONTACT US
             </Link>
-            <div className="">
+            <div className="flex flex-col items-center gap-4 mt-6">
               {status === "unauthenticated" && (
-                <Link href="/register">
-                  <Button>
-                    <p className="py-2 px-6">JOIN AS RECRUITER</p>
-                  </Button>
-                </Link>
+                <>
+                  <Link href="/login" onClick={() => setIsMenuOpen(false)} className="text-[#001571] font-semibold">
+                    Login
+                  </Link>
+                  <Link href="/register" onClick={() => setIsMenuOpen(false)}>
+                    <Button>
+                      <p className="py-2 px-6">SIGN UP</p>
+                    </Button>
+                  </Link>
+                </>
               )}
               {session?.user?.role === "recruiter" && (
-                <Link href="/Portal/dashboard">
+                <Link href="/Portal/dashboard" onClick={() => setIsMenuOpen(false)}>
                   <Button>
                     <p className="py-2 px-6">My Dashboard</p>
                   </Button>
                 </Link>
               )}
               {session?.user?.role === "jobseeker" && (
-                <Link href="/Portal/profile">
+                <Link href="/Portal/profile" onClick={() => setIsMenuOpen(false)}>
                   <Button>
                     <p className="py-2 px-6">My Profile</p>
                   </Button>
                 </Link>
               )}
               {session?.user?.role === "admin" && (
-                <Link href="/Portal/dashboard">
+                <Link href="/Portal/dashboard" onClick={() => setIsMenuOpen(false)}>
                   <Button>
                     <p className="py-2 px-6">My Dashboard</p>
                   </Button>
