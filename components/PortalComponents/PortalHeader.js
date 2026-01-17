@@ -206,6 +206,20 @@ export default function HeaderSection() {
     }
   };
 
+  // Don't render header until session is loaded
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center h-[60px] mb-4">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#001571]"></div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (status === "unauthenticated" || !session?.user) {
+    return null;
+  }
+
   return (
     <>
       {/* Header */}
