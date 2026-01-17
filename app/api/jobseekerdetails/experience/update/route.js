@@ -20,18 +20,21 @@ export async function PUT(req) {
       .findOne({ _id: new ObjectId(_id) });
 
     if (!existingExperience) {
-      return NextResponse.json({ message: "Experience not found." }, { status: 404 });
+      return NextResponse.json(
+        { message: "Experience not found." },
+        { status: 404 },
+      );
     }
 
     // Validate dates
     if (updateFields.startDate && updateFields.endDate) {
       const start = new Date(updateFields.startDate);
       const end = new Date(updateFields.endDate);
-      
+
       if (end < start) {
         return NextResponse.json(
           { message: "End date cannot be before start date." },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -50,19 +53,19 @@ export async function PUT(req) {
     if (result.modifiedCount > 0) {
       return NextResponse.json(
         { message: "Details updated successfully." },
-        { status: 200 }
+        { status: 200 },
       );
     } else {
       return NextResponse.json(
         { message: "No changes were made." },
-        { status: 200 }
+        { status: 200 },
       );
     }
   } catch (error) {
     console.error("Update error:", error);
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -66,12 +66,12 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    
+
     // Validate dates
     if (formData.startDate && formData.endDate) {
       const startDate = new Date(formData.startDate);
       const endDate = new Date(formData.endDate);
-      
+
       if (endDate < startDate) {
         Swal.fire({
           icon: "error",
@@ -81,7 +81,7 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
         return;
       }
     }
-    
+
     setIsSubmitting(true);
     try {
       const response = await fetch(`/api/jobseekerdetails/experience/update`, {
@@ -115,12 +115,17 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
     const { name, value } = e.target;
     setFormData((prev) => {
       const updated = { ...prev, [name]: value };
-      
+
       // If start date changes, ensure end date is not before start date
-      if (name === 'startDate' && value && updated.endDate && new Date(value) > new Date(updated.endDate)) {
-        updated.endDate = ''; // Clear end date if it's before start date
+      if (
+        name === "startDate" &&
+        value &&
+        updated.endDate &&
+        new Date(value) > new Date(updated.endDate)
+      ) {
+        updated.endDate = ""; // Clear end date if it's before start date
       }
-      
+
       return updated;
     });
   };

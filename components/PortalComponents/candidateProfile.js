@@ -591,12 +591,12 @@ export default function CandidateProfile() {
   });
   const handleCreateExperience = async (e) => {
     e.preventDefault();
-    
+
     // Validate dates
     if (newExperienceData.startDate && newExperienceData.endDate) {
       const startDate = new Date(newExperienceData.startDate);
       const endDate = new Date(newExperienceData.endDate);
-      
+
       if (endDate < startDate) {
         Swal.fire({
           icon: "error",
@@ -606,7 +606,7 @@ export default function CandidateProfile() {
         return;
       }
     }
-    
+
     setIsSubmitting(true);
 
     try {
@@ -654,12 +654,17 @@ export default function CandidateProfile() {
     const { name, value } = e.target;
     setNewExperienceData((prev) => {
       const updated = { ...prev, [name]: value };
-      
+
       // If start date changes, ensure end date is not before start date
-      if (name === 'startDate' && value && updated.endDate && new Date(value) > new Date(updated.endDate)) {
-        updated.endDate = ''; // Clear end date if it's before start date
+      if (
+        name === "startDate" &&
+        value &&
+        updated.endDate &&
+        new Date(value) > new Date(updated.endDate)
+      ) {
+        updated.endDate = ""; // Clear end date if it's before start date
       }
-      
+
       return updated;
     });
   };
@@ -675,12 +680,12 @@ export default function CandidateProfile() {
 
   const handleCreateEducation = async (e) => {
     e.preventDefault();
-    
+
     // Validate dates
     if (newEducationData.startDate && newEducationData.endDate) {
       const startDate = new Date(newEducationData.startDate);
       const endDate = new Date(newEducationData.endDate);
-      
+
       if (endDate < startDate) {
         Swal.fire({
           icon: "error",
@@ -690,7 +695,7 @@ export default function CandidateProfile() {
         return;
       }
     }
-    
+
     setIsSubmitting(true);
 
     try {
@@ -751,12 +756,17 @@ export default function CandidateProfile() {
     } else {
       setNewEducationData((prev) => {
         const updated = { ...prev, [name]: value };
-        
+
         // If start date changes, ensure end date is not before start date
-        if (name === 'startDate' && value && updated.endDate && new Date(value) > new Date(updated.endDate)) {
-          updated.endDate = ''; // Clear end date if it's before start date
+        if (
+          name === "startDate" &&
+          value &&
+          updated.endDate &&
+          new Date(value) > new Date(updated.endDate)
+        ) {
+          updated.endDate = ""; // Clear end date if it's before start date
         }
-        
+
         return updated;
       });
     }

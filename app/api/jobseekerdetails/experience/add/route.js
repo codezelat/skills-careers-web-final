@@ -24,11 +24,11 @@ export async function POST(req) {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
-      
+
       if (end < start) {
         return NextResponse.json(
           { message: "End date cannot be before start date." },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -52,7 +52,7 @@ export async function POST(req) {
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
