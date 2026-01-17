@@ -15,7 +15,7 @@ import {
 import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Swal from "sweetalert2";
 import ExperienceCard from "@/components/PortalComponents/experienceCard";
 import EducationCard from "@/components/PortalComponents/educationCard";
@@ -264,7 +264,28 @@ export default function CandidateProfile() {
           const userResponse = await fetch(
             `/api/users/get?id=${session.user.id}`,
           );
-          if (!userResponse.ok) throw new Error("Failed to fetch user");
+          
+          // Handle deleted user account
+          if (!userResponse.ok) {
+            if (userResponse.status === 404) {
+              // User account has been deleted
+              setIsLoading(false);
+              await Swal.fire({
+                icon: "error",
+                title: "Account Not Found",
+                text: "Your account has been removed from the system. Please contact support if you believe this is an error.",
+                confirmButtonText: "OK",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+              });
+              // Sign out and redirect to login
+              await signOut({ callbackUrl: "/login" });
+              return;
+            } else {
+              throw new Error("Failed to fetch user account. Please try again later.");
+            }
+          }
+          
           const userData = await userResponse.json();
 
           // Set userDetails with contactNumber from jobseeker data
@@ -276,42 +297,56 @@ export default function CandidateProfile() {
           const experienceResponse = await fetch(
             `/api/jobseekerdetails/experience/all?id=${jobSeekerData.jobseeker._id}`,
           );
-          if (!experienceResponse.ok)
-            throw new Error("Failed to fetch experience details");
-          const newExperienceData = await experienceResponse.json();
-
-          // Sort experiences: Current (no endDate) first, then by startDate descending
-          const sortedExperiences = sortExperiences(
-            newExperienceData.experiences,
-          );
-          setExperienceDetails(sortedExperiences);
+          if (!experienceResponse.ok) {
+            // Non-critical data, just log and continue
+            console.warn("Could not fetch experience details");
+            setExperienceDetails([]);
+          } else {
+            const newExperienceData = await experienceResponse.json();
+            const sortedExperiences = sortExperiences(
+              newExperienceData.experiences,
+            );
+            setExperienceDetails(sortedExperiences);
+          }
 
           const educationResponse = await fetch(
             `/api/jobseekerdetails/education/all?id=${jobSeekerData.jobseeker._id}`,
           );
-          if (!educationResponse.ok)
-            throw new Error("Failed to fetch experience details");
-          const educationeData = await educationResponse.json();
-
-          // Sort education: Current (no endDate) first, then by startDate descending
-          const sortedEducation = sortEducations(educationeData.educations);
-          setEducationDetails(sortedEducation);
+          if (!educationResponse.ok) {
+            console.warn("Could not fetch education details");
+            setEducationDetails([]);
+          } else {
+            const educationeData = await educationResponse.json();
+            const sortedEducation = sortEducations(educationeData.educations);
+            setEducationDetails(sortedEducation);
+          }
 
           const certificationResponse = await fetch(
             `/api/jobseekerdetails/certification/all?id=${jobSeekerData.jobseeker._id}`,
           );
-          if (!certificationResponse.ok)
-            throw new Error("Failed to fetch experience details");
-          const certificationData = await certificationResponse.json();
-
-          // Sort certifications by receivedDate descending (latest first)
-          const sortedCertifications = sortCertifications(
-            certificationData.licensesandcertifications,
-          );
-          setCertificationDetails(sortedCertifications);
+          if (!certificationResponse.ok) {
+            console.warn("Could not fetch certification details");
+            setCertificationDetails([]);
+          } else {
+            const certificationData = await certificationResponse.json();
+            const sortedCertifications = sortCertifications(
+              certificationData.licensesandcertifications,
+            );
+            setCertificationDetails(sortedCertifications);
+          }
         } catch (err) {
-          setError(err.message);
+          // Handle critical errors
+          const errorMessage = err.message || "An unexpected error occurred";
+          setError(errorMessage);
           console.error("Fetch error:", err);
+          
+          // Show user-friendly error
+          Swal.fire({
+            icon: "error",
+            title: "Error Loading Profile",
+            text: errorMessage,
+            confirmButtonText: "OK",
+          });
         } finally {
           setIsLoading(false);
         }
@@ -1127,7 +1162,49 @@ export default function CandidateProfile() {
 
   // loading
   if (isLoading) return <PortalLoading />;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#F7F7F7]">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+          <div className="text-center">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+              <svg
+                className="h-6 w-6 text-red-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Unable to Load Profile
+            </h3>
+            <p className="text-sm text-gray-500 mb-6">{error}</p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-[#001571] text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Retry
+              </button>
+              <button
+                onClick={() => router.push("/Portal/dashboard")}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Go to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // CV Details
   const cvData = {
