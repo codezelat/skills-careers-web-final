@@ -264,7 +264,7 @@ export default function CandidateProfile() {
           const userResponse = await fetch(
             `/api/users/get?id=${session.user.id}`,
           );
-          
+
           // Handle deleted user account
           if (!userResponse.ok) {
             if (userResponse.status === 404) {
@@ -282,10 +282,12 @@ export default function CandidateProfile() {
               await signOut({ callbackUrl: "/login" });
               return;
             } else {
-              throw new Error("Failed to fetch user account. Please try again later.");
+              throw new Error(
+                "Failed to fetch user account. Please try again later.",
+              );
             }
           }
-          
+
           const userData = await userResponse.json();
 
           // Set userDetails with contactNumber from jobseeker data
@@ -339,7 +341,7 @@ export default function CandidateProfile() {
           const errorMessage = err.message || "An unexpected error occurred";
           setError(errorMessage);
           console.error("Fetch error:", err);
-          
+
           // Show user-friendly error
           Swal.fire({
             icon: "error",

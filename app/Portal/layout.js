@@ -18,12 +18,12 @@ export default function PortalLayout({ children }) {
       if (status === "authenticated" && session?.user?.id) {
         try {
           const response = await fetch(`/api/users/get?id=${session.user.id}`);
-          
+
           if (response.status === 404) {
             // Account has been deleted
             setIsValidatingAccount(false);
             setAccountValid(false);
-            
+
             await Swal.fire({
               icon: "error",
               title: "Account Deleted",
@@ -32,16 +32,16 @@ export default function PortalLayout({ children }) {
               allowOutsideClick: false,
               allowEscapeKey: false,
             });
-            
+
             // Force logout
             await signOut({ callbackUrl: "/login", redirect: true });
             return;
           }
-          
+
           if (!response.ok) {
             throw new Error("Failed to validate account");
           }
-          
+
           // Account is valid
           setAccountValid(true);
           setIsValidatingAccount(false);
@@ -49,14 +49,14 @@ export default function PortalLayout({ children }) {
           console.error("Account validation error:", error);
           setIsValidatingAccount(false);
           setAccountValid(false);
-          
+
           await Swal.fire({
             icon: "error",
             title: "Validation Error",
             text: "Unable to verify your account. Please login again.",
             confirmButtonText: "OK",
           });
-          
+
           await signOut({ callbackUrl: "/login", redirect: true });
         }
       }
@@ -68,12 +68,17 @@ export default function PortalLayout({ children }) {
   }, [status, session?.user?.id]);
 
   // Show loading state while checking authentication or validating account
-  if (status === "loading" || (status === "authenticated" && isValidatingAccount)) {
+  if (
+    status === "loading" ||
+    (status === "authenticated" && isValidatingAccount)
+  ) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#F7F7F7]">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#001571]"></div>
-          <p className="mt-4 text-[#001571] font-semibold">Verifying account...</p>
+          <p className="mt-4 text-[#001571] font-semibold">
+            Verifying account...
+          </p>
         </div>
       </div>
     );
