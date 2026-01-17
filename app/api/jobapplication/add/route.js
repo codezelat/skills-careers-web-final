@@ -51,6 +51,21 @@ export async function POST(req) {
 
     const db = client.db();
 
+    // Check if jobseeker is restricted
+    const jobseeker = await db.collection("jobseekers").findOne({
+      _id: new ObjectId(jobseekerId),
+    });
+
+    if (jobseeker && jobseeker.isRestricted === true) {
+      return NextResponse.json(
+        {
+          message:
+            "Your account has been restricted. You cannot apply for jobs at this time. Please contact support.",
+        },
+        { status: 403 }
+      );
+    }
+
     // Check for existing application
     const existingApplicant = await db.collection("jobapplication").findOne({
       jobseekerId: new ObjectId(jobseekerId),

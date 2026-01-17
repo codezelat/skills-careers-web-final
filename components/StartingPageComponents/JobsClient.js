@@ -84,23 +84,28 @@ function JobsClient() {
           }
         }
 
-        // Map jobs with recruiter details
-        const jobsWithRecruiters = jobsData.jobs.map((job) => {
-          const recruiterData = recruiterMap[job.recruiterId] || {};
-          return {
-            ...job,
-            industry:
-              job.jobCategory ||
-              recruiterData.industry ||
-              recruiterData.category ||
-              "Unknown",
-            recruiterName: recruiterData.recruiterName || "Unknown",
-            logo: recruiterData.logo || "/images/default-image.jpg",
-          };
-        });
+        // Map jobs with recruiter details and filter out restricted recruiters
+        const jobsWithRecruiters = jobsData.jobs
+          .map((job) => {
+            const recruiterData = recruiterMap[job.recruiterId] || {};
+            return {
+              ...job,
+              industry:
+                job.jobCategory ||
+                recruiterData.industry ||
+                recruiterData.category ||
+                "Unknown",
+              recruiterName: recruiterData.recruiterName || "Unknown",
+              logo: recruiterData.logo || "/images/default-image.jpg",
+              isRestricted: recruiterData.isRestricted || false,
+            };
+          })
+          .filter((job) => !job.isRestricted); // Filter out jobs from restricted recruiters
 
         // Sort by createdAt descending
-        jobsWithRecruiters.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        jobsWithRecruiters.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
 
         setSearchResults(jobsWithRecruiters);
       } catch (error) {
@@ -149,23 +154,28 @@ function JobsClient() {
           }
         }
 
-        // Map jobs with recruiter details
-        const jobsWithRecruiterDetails = jobs.map((job) => {
-          const recruiterData = recruiterMap[job.recruiterId] || {};
-          return {
-            ...job,
-            industry:
-              job.jobCategory ||
-              recruiterData.industry ||
-              recruiterData.category ||
-              "Unknown",
-            recruiterName: recruiterData.recruiterName || "Unknown",
-            logo: recruiterData.logo || "/images/default-image.jpg",
-          };
-        });
+        // Map jobs with recruiter details and filter out restricted recruiters
+        const jobsWithRecruiterDetails = jobs
+          .map((job) => {
+            const recruiterData = recruiterMap[job.recruiterId] || {};
+            return {
+              ...job,
+              industry:
+                job.jobCategory ||
+                recruiterData.industry ||
+                recruiterData.category ||
+                "Unknown",
+              recruiterName: recruiterData.recruiterName || "Unknown",
+              logo: recruiterData.logo || "/images/default-image.jpg",
+              isRestricted: recruiterData.isRestricted || false,
+            };
+          })
+          .filter((job) => !job.isRestricted); // Filter out jobs from restricted recruiters
 
         // Sort by createdAt descending
-        jobsWithRecruiterDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        jobsWithRecruiterDetails.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
 
         setJobs(jobsWithRecruiterDetails);
         setFilteredJobs(jobsWithRecruiterDetails);
@@ -295,7 +305,7 @@ function JobsClient() {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     // Scroll to top of results
-    window.scrollTo({ top: 300, behavior: 'smooth' });
+    window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
   return (
@@ -583,57 +593,73 @@ function JobsClient() {
                       type="button"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className={`p-3 rounded-lg transition-all duration-200 ${currentPage === 1
+                      className={`p-3 rounded-lg transition-all duration-200 ${
+                        currentPage === 1
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-white text-[#001571] hover:bg-[#001571] hover:text-white shadow-md border border-gray-100"
-                        }`}
+                      }`}
                     >
                       <BsChevronLeft size={20} />
                     </button>
 
                     <div className="flex gap-2 overflow-x-auto px-2 no-scrollbar">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => {
-                        // Logic to show limited page numbers with ellipsis if needed
-                        // For simplicity, showing all or a range could be implemented.
-                        // For now showing all as per original snippet style
-                        // If distinct from candidates page style, can be adjusted.
-                        // Let's keep it simple and responsive
-                        if (
-                          totalPages > 7 &&
-                          number !== 1 &&
-                          number !== totalPages &&
-                          (number < currentPage - 1 || number > currentPage + 1)
-                        ) {
-                          if (number === currentPage - 2 || number === currentPage + 2) {
-                            return <span key={number} className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0">...</span>
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (number) => {
+                          // Logic to show limited page numbers with ellipsis if needed
+                          // For simplicity, showing all or a range could be implemented.
+                          // For now showing all as per original snippet style
+                          // If distinct from candidates page style, can be adjusted.
+                          // Let's keep it simple and responsive
+                          if (
+                            totalPages > 7 &&
+                            number !== 1 &&
+                            number !== totalPages &&
+                            (number < currentPage - 1 ||
+                              number > currentPage + 1)
+                          ) {
+                            if (
+                              number === currentPage - 2 ||
+                              number === currentPage + 2
+                            ) {
+                              return (
+                                <span
+                                  key={number}
+                                  className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0"
+                                >
+                                  ...
+                                </span>
+                              );
+                            }
+                            return null;
                           }
-                          return null;
-                        }
 
-                        return (
-                          <button
-                            key={number}
-                            type="button"
-                            onClick={() => handlePageChange(number)}
-                            className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 shrink-0 ${currentPage === number
-                                ? "bg-[#001571] text-white shadow-md transform scale-105"
-                                : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
+                          return (
+                            <button
+                              key={number}
+                              type="button"
+                              onClick={() => handlePageChange(number)}
+                              className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 shrink-0 ${
+                                currentPage === number
+                                  ? "bg-[#001571] text-white shadow-md transform scale-105"
+                                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
                               }`}
-                          >
-                            {number}
-                          </button>
-                        );
-                      })}
+                            >
+                              {number}
+                            </button>
+                          );
+                        }
+                      )}
                     </div>
 
                     <button
                       type="button"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className={`p-3 rounded-lg transition-all duration-200 ${currentPage === totalPages
+                      className={`p-3 rounded-lg transition-all duration-200 ${
+                        currentPage === totalPages
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-white text-[#001571] hover:bg-[#001571] hover:text-white shadow-md border border-gray-100"
-                        }`}
+                      }`}
                     >
                       <BsChevronRight size={20} />
                     </button>

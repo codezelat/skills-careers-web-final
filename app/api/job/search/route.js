@@ -19,11 +19,12 @@ export async function GET(req) {
     // Create regex for case-insensitive partial match
     const searchRegex = new RegExp(query, "i");
 
-    // First search for matching recruiters
+    // First search for matching recruiters (exclude restricted recruiters)
     const matchingRecruiters = await db
       .collection("recruiters")
       .find({
         recruiterName: { $regex: searchRegex },
+        isRestricted: { $ne: true }, // Exclude restricted recruiters
       })
       .project({ _id: 1 })
       .toArray();
@@ -43,13 +44,38 @@ export async function GET(req) {
       searchConditions.push({ recruiterId: { $in: recruiterIds } });
     }
 
-    // Perform the search using MongoDB
+    // Perform the search using MongoDB with aggregation to filter out restricted recruiters
     const jobs = await db
       .collection("jobs")
-      .find({
-        isPublished: true,
-        $or: searchConditions,
-      })
+      .aggregate([
+        {
+          $match: {
+            isPublished: true,
+            $or: searchConditions,
+          },
+        },
+        {
+          $lookup: {
+            from: "recruiters",
+            localField: "recruiterId",
+            foreignField: "_id",
+            as: "recruiterInfo",
+          },
+        },
+        {
+          $match: {
+            $or: [
+              { "recruiterInfo.isRestricted": { $ne: true } },
+              { recruiterInfo: { $size: 0 } },
+            ],
+          },
+        },
+        {
+          $project: {
+            recruiterInfo: 0,
+          },
+        },
+      ])
       .toArray();
 
     // Transform _id to string to match previous format if necessary,

@@ -30,7 +30,33 @@ export async function GET(req) {
       filter.isPublished = true;
     }
 
-    const jobs = await db.collection("jobs").find(filter).toArray();
+    // Use aggregation to join with recruiters and filter out restricted ones
+    const pipeline = [
+      { $match: filter },
+      {
+        $lookup: {
+          from: "recruiters",
+          localField: "recruiterId",
+          foreignField: "_id",
+          as: "recruiterInfo",
+        },
+      },
+      {
+        $match: {
+          $or: [
+            { "recruiterInfo.isRestricted": { $ne: true } },
+            { recruiterInfo: { $size: 0 } }, // Include jobs without recruiter match (edge case)
+          ],
+        },
+      },
+      {
+        $project: {
+          recruiterInfo: 0, // Remove recruiter info from response
+        },
+      },
+    ];
+
+    const jobs = await db.collection("jobs").aggregate(pipeline).toArray();
     const count = jobs.length;
 
     // Add smart caching: public jobs can be cached, admin views shouldn't be

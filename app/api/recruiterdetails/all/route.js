@@ -6,8 +6,13 @@ export async function GET(req) {
     const client = await connectToDatabase();
     const db = client.db();
 
-    // Fetch all recruiters
-    const recruiters = await db.collection("recruiters").find().toArray();
+    // Fetch all recruiters excluding restricted ones
+    const recruiters = await db
+      .collection("recruiters")
+      .find({
+        isRestricted: { $ne: true },
+      })
+      .toArray();
     const count = recruiters.length;
 
     return NextResponse.json(

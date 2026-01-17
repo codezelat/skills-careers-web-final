@@ -17,23 +17,23 @@ export async function POST(req) {
 
     // Validate required fields
     const requiredFields = [
-      'jobTitle',
-      'recruiterId',
-      'location',
-      'jobTypes',
-      'jobDescription',
-      'keyResponsibilities',
-      'shortDescription',
-      'requiredQualifications',
-      'perksAndBenefits',
+      "jobTitle",
+      "recruiterId",
+      "location",
+      "jobTypes",
+      "jobDescription",
+      "keyResponsibilities",
+      "shortDescription",
+      "requiredQualifications",
+      "perksAndBenefits",
     ];
 
-    const missingFields = requiredFields.filter(field => !data[field]);
+    const missingFields = requiredFields.filter((field) => !data[field]);
     if (missingFields.length > 0) {
       return NextResponse.json(
         {
           message: "Missing required fields",
-          missing: missingFields
+          missing: missingFields,
         },
         { status: 422 }
       );
@@ -50,9 +50,9 @@ export async function POST(req) {
     client = await connectToDatabase();
     const db = client.db();
 
-    // Verify recruiter exists
+    // Verify recruiter exists and is not restricted
     const recruiter = await db.collection("recruiters").findOne({
-      _id: new ObjectId(data.recruiterId)
+      _id: new ObjectId(data.recruiterId),
     });
 
     if (!recruiter) {
@@ -62,29 +62,38 @@ export async function POST(req) {
       );
     }
 
+    if (recruiter.isRestricted === true) {
+      return NextResponse.json(
+        {
+          message:
+            "Your account has been restricted. You cannot post jobs at this time. Please contact support.",
+        },
+        { status: 403 }
+      );
+    }
+
     // Insert job with proper data formatting
     const result = await db.collection("jobs").insertOne({
       ...data,
       recruiterId: new ObjectId(data.recruiterId),
       createdAt: new Date(),
       postedDate: new Date(),
-      isPublished: false
+      isPublished: false,
     });
 
     return NextResponse.json(
       {
         message: "Job created successfully",
-        jobId: result.insertedId
+        jobId: result.insertedId,
       },
       { status: 201 }
     );
-
   } catch (error) {
     console.error("Server error:", error);
     return NextResponse.json(
       {
         message: "Internal server error",
-        error: error.message
+        error: error.message,
       },
       { status: 500 }
     );

@@ -35,7 +35,13 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
         try {
           const response = await fetch(`/api/pressrelease/get?id=${slug}`);
           if (!response.ok) {
-            throw new Error("Failed to fetch Press.");
+            if (response.status === 404) {
+              setError("Press release not found. It may have been deleted.");
+            } else {
+              throw new Error("Failed to fetch Press Release.");
+            }
+            setLoading(false);
+            return;
           }
           const data = await response.json();
           setPressreleaseDetails(data.pressrelease);
@@ -77,7 +83,33 @@ export default function PressreleaseProfile({ slug, onClose = () => {} }) {
       console.error("Error updating press release details:", err);
     }
   };
+
   if (loading) return <PortalLoading />;
+  if (error) {
+    return (
+      <div className="bg-white rounded-xl py-10 px-7 text-center">
+        <div className="text-red-500 mb-4">
+          <svg
+            className="inline-block w-16 h-16"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+        </div>
+        <h2 className="text-xl font-bold text-[#001571] mb-2">
+          Press Release Not Available
+        </h2>
+        <p className="text-gray-600">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col p-6 bg-white rounded-xl min-h-screen">

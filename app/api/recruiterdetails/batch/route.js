@@ -29,10 +29,12 @@ export async function POST(req) {
     const db = client.db();
 
     // Fetch all recruiters in a single query
+    // Filter out restricted recruiters from public API responses
     const recruiters = await db
       .collection("recruiters")
       .find({
         _id: { $in: validIds },
+        isRestricted: { $ne: true }, // Exclude restricted recruiters
       })
       .toArray();
 
@@ -46,6 +48,7 @@ export async function POST(req) {
         industry: recruiter.industry || recruiter.category, // Support both fields
         category: recruiter.category || recruiter.industry, // Support both fields
         companyDescription: recruiter.companyDescription,
+        isRestricted: recruiter.isRestricted || false, // Include restriction status
       };
     });
 

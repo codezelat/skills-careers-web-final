@@ -3,14 +3,15 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {
+  let client;
   try {
     const { id: candidateId } = await params;
     const data = await req.json();
-    const { isRestricted } = data;
+    const { isRestricted, reason } = data;
 
     if (!ObjectId.isValid(candidateId)) {
       return NextResponse.json(
-        { message: "Invalid recruiter ID" },
+        { message: "Invalid candidate ID" },
         { status: 400 }
       );
     }
@@ -22,17 +23,29 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    const client = await connectToDatabase();
+    client = await connectToDatabase();
     const db = client.db();
 
-    // Update the recruiter
-    const updateResult = await db.collection("jobseekers").updateOne(
-      { _id: new ObjectId(candidateId) },
-      { $set: { isRestricted: isRestricted } }
-    );
+    // Prepare update object with timestamp
+    const updateData = {
+      isRestricted: isRestricted,
+      restrictionUpdatedAt: new Date(),
+    };
+
+    // Add reason if provided and restricting
+    if (isRestricted && reason) {
+      updateData.restrictionReason = reason;
+    } else if (!isRestricted) {
+      // Remove reason when unrestricting
+      updateData.restrictionReason = null;
+    }
+
+    // Update the candidate
+    const updateResult = await db
+      .collection("jobseekers")
+      .updateOne({ _id: new ObjectId(candidateId) }, { $set: updateData });
 
     if (updateResult.matchedCount === 0) {
-      client.close();
       return NextResponse.json(
         { message: "Candidate not found" },
         { status: 404 }
@@ -41,22 +54,26 @@ export async function PATCH(req, { params }) {
 
     // Fetch the updated document
     const updateCandidate = await db.collection("jobseekers").findOne({
-      _id: new ObjectId(candidateId)
+      _id: new ObjectId(candidateId),
     });
-
-    client.close();
 
     return NextResponse.json(
       {
-        message: `Recruiter ${isRestricted ? "restricted" : "unrestricted"} successfully`,
-        updateCandidate
+        message: `Candidate ${isRestricted ? "restricted" : "unrestricted"} successfully`,
+        updateCandidate,
+        isRestricted: updateCandidate.isRestricted,
       },
       { status: 200 }
     );
   } catch (error) {
+    console.error("Candidate restriction error:", error);
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
       { status: 500 }
     );
+  } finally {
+    if (client) {
+      // Connection is managed by pool
+    }
   }
 }

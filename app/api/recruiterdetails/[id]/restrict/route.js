@@ -3,10 +3,11 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {
+  let client;
   try {
     const { id: recruiterId } = await params;
     const data = await req.json();
-    const { isRestricted } = data;
+    const { isRestricted, reason } = data;
 
     if (!ObjectId.isValid(recruiterId)) {
       return NextResponse.json(
@@ -22,17 +23,29 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    const client = await connectToDatabase();
+    client = await connectToDatabase();
     const db = client.db();
 
+    // Prepare update object with timestamp
+    const updateData = {
+      isRestricted: isRestricted,
+      restrictionUpdatedAt: new Date(),
+    };
+
+    // Add reason if provided and restricting
+    if (isRestricted && reason) {
+      updateData.restrictionReason = reason;
+    } else if (!isRestricted) {
+      // Remove reason when unrestricting
+      updateData.restrictionReason = null;
+    }
+
     // Update the recruiter
-    const updateResult = await db.collection("recruiters").updateOne(
-      { _id: new ObjectId(recruiterId) },
-      { $set: { isRestricted: isRestricted } }
-    );
+    const updateResult = await db
+      .collection("recruiters")
+      .updateOne({ _id: new ObjectId(recruiterId) }, { $set: updateData });
 
     if (updateResult.matchedCount === 0) {
-      client.close();
       return NextResponse.json(
         { message: "Recruiter not found" },
         { status: 404 }
@@ -41,22 +54,25 @@ export async function PATCH(req, { params }) {
 
     // Fetch the updated document
     const updatedRecruiter = await db.collection("recruiters").findOne({
-      _id: new ObjectId(recruiterId)
+      _id: new ObjectId(recruiterId),
     });
-
-    client.close();
 
     return NextResponse.json(
       {
         message: `Recruiter ${isRestricted ? "restricted" : "unrestricted"} successfully`,
-        updatedRecruiter
+        updatedRecruiter,
       },
       { status: 200 }
     );
   } catch (error) {
+    console.error("Recruiter restriction error:", error);
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
       { status: 500 }
     );
+  } finally {
+    if (client) {
+      // Connection is managed by pool
+    }
   }
 }

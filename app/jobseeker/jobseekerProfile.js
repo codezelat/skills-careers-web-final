@@ -38,11 +38,19 @@ function JobseekerProfile({ slug }) {
           if (response.ok) {
             const data = await response.json();
             setJobSeekerDetails(data);
+          } else if (response.status === 404) {
+            const errorData = await response.json();
+            if (errorData.isDeleted) {
+              setError("This account has been deleted.");
+            } else {
+              setError("Job seeker not found.");
+            }
           } else {
+            setError("Failed to fetch job seeker details");
             console.error("Failed to fetch job seeker details");
           }
         } catch (error) {
-          setError(err.message);
+          setError(error.message || "An error occurred");
           console.error("Error fetching job seeker details:", error);
         } finally {
           setIsLoading(false);
@@ -75,8 +83,7 @@ function JobseekerProfile({ slug }) {
 
   return (
     <div className="p-4">
-      <div className="grid justify-center">
-      </div>
+      <div className="grid justify-center"></div>
 
       <div className="bg-white p-6 rounded-lg shadow-md my-4">
         <h1 className="text-xl font-bold mb-4">Job Seeker Profile</h1>

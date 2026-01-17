@@ -27,7 +27,10 @@ export async function PUT(req) {
     const isPublished = formData.get("isPublished");
 
     if (!_id) {
-      return NextResponse.json({ message: "Ticket ID is required." }, { status: 422 });
+      return NextResponse.json(
+        { message: "Ticket ID is required." },
+        { status: 422 }
+      );
     }
 
     const client = await connectToDatabase();
@@ -38,7 +41,25 @@ export async function PUT(req) {
       .findOne({ _id: new ObjectId(_id) });
 
     if (!existingTicket) {
-      return NextResponse.json({ message: "Ticket not found." }, { status: 404 });
+      return NextResponse.json(
+        { message: "Ticket not found." },
+        { status: 404 }
+      );
+    }
+
+    // Check if recruiter is restricted
+    const recruiter = await db.collection("recruiters").findOne({
+      _id: existingTicket.recruiterId,
+    });
+
+    if (recruiter && recruiter.isRestricted === true) {
+      return NextResponse.json(
+        {
+          message:
+            "Your account has been restricted. You cannot edit events at this time. Please contact support.",
+        },
+        { status: 403 }
+      );
     }
 
     const updateFields = {};
@@ -54,7 +75,7 @@ export async function PUT(req) {
     }
     if (closingDate) updateFields.closingDate = closingDate;
     if (isPublished !== null && isPublished !== undefined) {
-      updateFields.isPublished = isPublished === 'true';
+      updateFields.isPublished = isPublished === "true";
     } else {
       // If isPublished is NOT in the payload, assume it's a Recruiter edit and reset to false
       // This is a safety measure. Admin UI should always send isPublished status.
@@ -67,7 +88,11 @@ export async function PUT(req) {
       // Let's modify the Recruiter's Edit Form to send `isPublished: false`.
     }
 
-    if (eventProfile && typeof eventProfile === 'object' && eventProfile.size > 0) {
+    if (
+      eventProfile &&
+      typeof eventProfile === "object" &&
+      eventProfile.size > 0
+    ) {
       const buffer = await eventProfile.arrayBuffer();
       const base64Image = Buffer.from(buffer).toString("base64");
 

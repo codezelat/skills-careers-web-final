@@ -46,7 +46,10 @@ export async function GET(req) {
 
     if (!jobseeker) {
       return NextResponse.json(
-        { message: "Jobseeker not found" },
+        {
+          message: "Jobseeker not found",
+          isDeleted: true,
+        },
         { status: 404 }
       );
     }
@@ -91,7 +94,6 @@ export async function GET(req) {
         },
       }
     );
-
   } catch (error) {
     console.error("Jobseeker fetch error:", error);
     return NextResponse.json(

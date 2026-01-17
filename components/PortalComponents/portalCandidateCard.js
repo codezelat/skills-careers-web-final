@@ -100,10 +100,17 @@ export default function PortalCandidateCard({
             height={40}
             className="rounded-full shadow-lg flex-shrink-0"
           />
-          <span className="ml-3 truncate">
-            {userDetails.firstName || "Unknown"}{" "}
-            {userDetails.lastName || "User"}
-          </span>
+          <div className="ml-3 flex flex-col">
+            <span className="truncate">
+              {userDetails.firstName || "Unknown"}{" "}
+              {userDetails.lastName || "User"}
+            </span>
+            {localRestricted && (
+              <span className="text-xs text-red-500 font-semibold italic mt-1">
+                ⚠ Restricted
+              </span>
+            )}
+          </div>
         </div>
         <div className="px-2 lg:px-4 py-3 w-[24.25%] truncate">{email}</div>
         <div className="px-2 lg:px-4 py-3 w-[24.25%]">

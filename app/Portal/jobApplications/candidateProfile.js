@@ -66,11 +66,29 @@ export default function CandidateProfile({ slug }) {
           setIsFavourited(applicationData.application.isFavourited || false);
           console.log("single application - ", applicationData.application);
 
+          // Check if candidate account is deleted
+          if (applicationData.application.candidateDeleted) {
+            setError(
+              "This candidate account has been deleted. Limited information is available."
+            );
+            setIsLoading(false);
+            return;
+          }
+
           const jobSeekerResponse = await fetch(
             `/api/jobseekerdetails/get?id=${applicationData.application.jobseekerId}`
           );
-          if (!jobSeekerResponse.ok)
+          if (!jobSeekerResponse.ok) {
+            const errorData = await jobSeekerResponse.json();
+            if (errorData.isDeleted) {
+              setError(
+                "This candidate account has been deleted. Limited information is available."
+              );
+              setIsLoading(false);
+              return;
+            }
             throw new Error("Failed to fetch job seeker");
+          }
           const jobSeekerData = await jobSeekerResponse.json();
 
           setJobseekerDetails(jobSeekerData.jobseeker);
@@ -266,7 +284,52 @@ export default function CandidateProfile({ slug }) {
 
   // loading
   if (isLoading) return <PortalLoading />;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+
+  // Handle error - including deleted account scenario
+  if (error) {
+    return (
+      <div className="bg-white rounded-3xl py-7 px-7">
+        <div className="text-center py-20">
+          <div className="mb-4 text-red-500">
+            <FaTimes size={48} className="inline-block" />
+          </div>
+          <h2 className="text-xl font-bold text-[#001571] mb-2">
+            Account Not Available
+          </h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          {applications?.candidateDeleted && (
+            <div className="bg-gray-50 rounded-lg p-4 max-w-md mx-auto">
+              <p className="text-sm text-gray-700 mb-2">
+                <strong>Application Details:</strong>
+              </p>
+              <div className="text-left text-sm space-y-1">
+                <p>
+                  <strong>Job:</strong> {applications.jobTitle}
+                </p>
+                <p>
+                  <strong>Applicant:</strong> {applications.firstName}{" "}
+                  {applications.lastName}
+                </p>
+                <p>
+                  <strong>Status:</strong> {applications.status}
+                </p>
+                <p>
+                  <strong>Applied:</strong>{" "}
+                  {new Date(applications.appliedAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          )}
+          <button
+            onClick={() => router.push("/Portal/jobApplications")}
+            className="mt-6 px-6 py-2 bg-[#001571] text-white rounded-lg hover:bg-[#162255]"
+          >
+            Back to Applications
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-3xl py-7 px-7">
@@ -297,16 +360,16 @@ export default function CandidateProfile({ slug }) {
                   applicationStatus === "Approved"
                     ? "bg-[#001571] hover:bg-[#243584] text-white cursor-default"
                     : applicationStatus === "Declined"
-                    ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#001571]"
-                    : "bg-[#001571] hover:bg-[#243584] text-white"
+                      ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#001571]"
+                      : "bg-[#001571] hover:bg-[#243584] text-white"
                 } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
               >
                 <IoIosCheckmarkCircleOutline size={20} />
                 {pendingAction === "approve"
                   ? "Processing..."
                   : applicationStatus === "Approved"
-                  ? "Approved"
-                  : "Approve"}
+                    ? "Approved"
+                    : "Approve"}
               </button>
               <button
                 onClick={handleDecline}
@@ -315,16 +378,16 @@ export default function CandidateProfile({ slug }) {
                   applicationStatus === "Declined"
                     ? "bg-[#EC221F] hover:bg-[#c63431] text-white cursor-default"
                     : applicationStatus === "Approved"
-                    ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#EC221F]"
-                    : "bg-[#EC221F] hover:bg-[#c63431] text-white"
+                      ? "bg-gray-200 text-gray-500 hover:text-white hover:bg-[#EC221F]"
+                      : "bg-[#EC221F] hover:bg-[#c63431] text-white"
                 } ${isProcessing ? "opacity-75 cursor-not-allowed" : ""}`}
               >
                 <IoMdClose size={20} />
                 {pendingAction === "decline"
                   ? "Processing..."
                   : applicationStatus === "Declined"
-                  ? "Declined"
-                  : "Decline"}
+                    ? "Declined"
+                    : "Decline"}
               </button>
             </>
           </div>

@@ -7,7 +7,8 @@ import Swal from "sweetalert2";
 
 export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
   const router = useRouter();
-  const { _id, recruiterName, email, contactNumber, logo, isRestricted } = recruiter;
+  const { _id, recruiterName, email, contactNumber, logo, isRestricted } =
+    recruiter;
   const [localRestricted, setLocalRestricted] = useState(isRestricted);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isRestricting, setIsRestricting] = useState(false);
@@ -23,7 +24,7 @@ export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
       const response = await fetch(`/api/recruiterdetails/${_id}/restrict`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isRestricted: !localRestricted })
+        body: JSON.stringify({ isRestricted: !localRestricted }),
       });
 
       if (response.ok) {
@@ -40,13 +41,13 @@ export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
 
   const handleDelete = async () => {
     const result = await Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You want to delete this recruiter?",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
     });
 
     if (result.isConfirmed) {
@@ -57,19 +58,11 @@ export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
         });
         if (response.ok) {
           onDelete(_id);
-          Swal.fire(
-            'Deleted!',
-            'Recruiter has been deleted.',
-            'success'
-          );
+          Swal.fire("Deleted!", "Recruiter has been deleted.", "success");
         }
       } catch (error) {
         console.error("Error deleting recruiter:", error);
-        Swal.fire(
-          'Error!',
-          'Failed to delete recruiter.',
-          'error'
-        );
+        Swal.fire("Error!", "Failed to delete recruiter.", "error");
       } finally {
         setIsDeleting(false);
       }
@@ -92,7 +85,14 @@ export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
           height={40}
           className="rounded-full shadow-lg"
         />
-        <div>{recruiterName}</div>
+        <div className="flex flex-col">
+          <div>{recruiterName}</div>
+          {localRestricted && (
+            <span className="text-xs text-red-500 font-semibold italic mt-1">
+              ⚠ Restricted
+            </span>
+          )}
+        </div>
       </div>
       <div className="px-4 py-3 w-[24.25%]">{email}</div>
       <div className="px-4 py-3 w-[24.25%]">{contactNumber}</div>
@@ -105,8 +105,11 @@ export default function PortalRecruiterCard({ recruiter, onUpdate, onDelete }) {
           Edit
         </button>
         <button
-          className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${localRestricted ? "bg-[#EC221F] hover:bg-red-700" : "bg-[#001571] hover:bg-blue-700"
-            }`}
+          className={`flex items-center justify-center w-1/2 text-white px-4 py-2 rounded-lg shadow ${
+            localRestricted
+              ? "bg-[#EC221F] hover:bg-red-700"
+              : "bg-[#001571] hover:bg-blue-700"
+          }`}
           onClick={handleRestrictToggle}
           disabled={isRestricting}
         >

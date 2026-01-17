@@ -22,14 +22,39 @@ export async function GET(req) {
       filter.isPublished = true;
     }
 
-    // Create the base query
-    let query = db.collection("tickets").find(filter);
-
-    // Sort by createdAt in descending order (newest first)
-    query = query.sort({ createdAt: -1 });
+    // Use aggregation to join with recruiters and filter out restricted ones
+    const pipeline = [
+      { $match: filter },
+      {
+        $lookup: {
+          from: "recruiters",
+          localField: "recruiterId",
+          foreignField: "_id",
+          as: "recruiterInfo",
+        },
+      },
+      {
+        $match: {
+          $or: [
+            { "recruiterInfo.isRestricted": { $ne: true } },
+            { recruiterInfo: { $size: 0 } }, // Include tickets without recruiter match (edge case)
+          ],
+        },
+      },
+      {
+        $project: {
+          recruiterInfo: 0, // Remove recruiter info from response
+        },
+      },
+      // Sort by createdAt in descending order (newest first)
+      { $sort: { createdAt: -1 } },
+    ];
 
     // Execute the query
-    const tickets = await query.toArray();
+    const tickets = await db
+      .collection("tickets")
+      .aggregate(pipeline)
+      .toArray();
     const count = tickets.length;
     return NextResponse.json(
       { tickets, count },
