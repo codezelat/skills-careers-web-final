@@ -15,6 +15,20 @@ export async function PUT(req) {
       );
     }
 
+    // Validate date of birth - cannot be in the future
+    if (updatedDetails.dob) {
+      const dob = new Date(updatedDetails.dob);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+      
+      if (dob > today) {
+        return NextResponse.json(
+          { message: "Date of birth cannot be in the future." },
+          { status: 400 }
+        );
+      }
+    }
+
     const client = await connectToDatabase();
     const db = client.db();
 

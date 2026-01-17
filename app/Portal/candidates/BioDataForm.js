@@ -213,6 +213,7 @@ export default function BioDataForm({
                 name="dob"
                 value={jobSeekerDetails.dob || ""}
                 onChange={handleInputChange}
+                max={new Date().toISOString().split('T')[0]}
                 className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
               />
             </div>
