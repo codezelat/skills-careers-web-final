@@ -23,6 +23,19 @@ export async function PUT(req) {
       return NextResponse.json({ message: "Experience not found." }, { status: 404 });
     }
 
+    // Validate dates
+    if (updateFields.startDate && updateFields.endDate) {
+      const start = new Date(updateFields.startDate);
+      const end = new Date(updateFields.endDate);
+      
+      if (end < start) {
+        return NextResponse.json(
+          { message: "End date cannot be before start date." },
+          { status: 400 }
+        );
+      }
+    }
+
     // Keep the existing recruiterId and add new fields
     const updateData = {
       ...updateFields,

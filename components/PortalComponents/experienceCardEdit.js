@@ -66,6 +66,22 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    
+    // Validate dates
+    if (formData.startDate && formData.endDate) {
+      const startDate = new Date(formData.startDate);
+      const endDate = new Date(formData.endDate);
+      
+      if (endDate < startDate) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Dates",
+          text: "End date cannot be before start date.",
+        });
+        return;
+      }
+    }
+    
     setIsSubmitting(true);
     try {
       const response = await fetch(`/api/jobseekerdetails/experience/update`, {
@@ -97,7 +113,16 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      
+      // If start date changes, ensure end date is not before start date
+      if (name === 'startDate' && value && updated.endDate && new Date(value) > new Date(updated.endDate)) {
+        updated.endDate = ''; // Clear end date if it's before start date
+      }
+      
+      return updated;
+    });
   };
 
   const monthName = [
@@ -212,6 +237,7 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
               name="endDate"
               value={formData.endDate}
               onChange={handleInputChange}
+              min={formData.startDate || undefined}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             />
           </div>

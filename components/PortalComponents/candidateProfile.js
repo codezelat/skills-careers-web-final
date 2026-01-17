@@ -591,6 +591,22 @@ export default function CandidateProfile() {
   });
   const handleCreateExperience = async (e) => {
     e.preventDefault();
+    
+    // Validate dates
+    if (newExperienceData.startDate && newExperienceData.endDate) {
+      const startDate = new Date(newExperienceData.startDate);
+      const endDate = new Date(newExperienceData.endDate);
+      
+      if (endDate < startDate) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Dates",
+          text: "End date cannot be before start date.",
+        });
+        return;
+      }
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -636,7 +652,16 @@ export default function CandidateProfile() {
   };
   const handleExperienceInputChange = (e) => {
     const { name, value } = e.target;
-    setNewExperienceData((prev) => ({ ...prev, [name]: value }));
+    setNewExperienceData((prev) => {
+      const updated = { ...prev, [name]: value };
+      
+      // If start date changes, ensure end date is not before start date
+      if (name === 'startDate' && value && updated.endDate && new Date(value) > new Date(updated.endDate)) {
+        updated.endDate = ''; // Clear end date if it's before start date
+      }
+      
+      return updated;
+    });
   };
 
   // Create new education
@@ -650,6 +675,22 @@ export default function CandidateProfile() {
 
   const handleCreateEducation = async (e) => {
     e.preventDefault();
+    
+    // Validate dates
+    if (newEducationData.startDate && newEducationData.endDate) {
+      const startDate = new Date(newEducationData.startDate);
+      const endDate = new Date(newEducationData.endDate);
+      
+      if (endDate < startDate) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Dates",
+          text: "End date cannot be before start date.",
+        });
+        return;
+      }
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -696,13 +737,28 @@ export default function CandidateProfile() {
     if (name === "educationQualificationSelect") {
       if (value === "Other") {
         setIsOtherEducation(true);
-        setNewEducationData((prev) => ({ ...prev, educationName: "" }));
+        setNewEducationData((prev) => {
+          const updated = { ...prev, educationName: "" };
+          return updated;
+        });
       } else {
         setIsOtherEducation(false);
-        setNewEducationData((prev) => ({ ...prev, educationName: value }));
+        setNewEducationData((prev) => {
+          const updated = { ...prev, educationName: value };
+          return updated;
+        });
       }
     } else {
-      setNewEducationData((prev) => ({ ...prev, [name]: value }));
+      setNewEducationData((prev) => {
+        const updated = { ...prev, [name]: value };
+        
+        // If start date changes, ensure end date is not before start date
+        if (name === 'startDate' && value && updated.endDate && new Date(value) > new Date(updated.endDate)) {
+          updated.endDate = ''; // Clear end date if it's before start date
+        }
+        
+        return updated;
+      });
     }
   };
 
@@ -1786,6 +1842,7 @@ export default function CandidateProfile() {
                         name="endDate"
                         value={newExperienceData.endDate}
                         onChange={handleExperienceInputChange}
+                        min={newExperienceData.startDate || undefined}
                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                       />
                     </div>
@@ -1909,6 +1966,7 @@ export default function CandidateProfile() {
                         name="endDate"
                         value={newEducationData.endDate}
                         onChange={handleEducationInputChange}
+                        min={newEducationData.startDate || undefined}
                         className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                       />
                     </div>

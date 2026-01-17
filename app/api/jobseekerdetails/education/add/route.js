@@ -11,6 +11,19 @@ export async function POST(req) {
       return NextResponse.json({ message: "Invalid input." }, { status: 422 });
     }
 
+    // Validate dates
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      
+      if (end < start) {
+        return NextResponse.json(
+          { message: "End date cannot be before start date." },
+          { status: 400 }
+        );
+      }
+    }
+
     const client = await connectToDatabase();
     const db = client.db();
 
