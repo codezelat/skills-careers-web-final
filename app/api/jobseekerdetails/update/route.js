@@ -11,7 +11,7 @@ export async function PUT(req) {
     if (!email || !email.includes("@")) {
       return NextResponse.json(
         { message: "Invalid email provided." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -20,11 +20,11 @@ export async function PUT(req) {
       const dob = new Date(updatedDetails.dob);
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
-      
+
       if (dob > today) {
         return NextResponse.json(
           { message: "Date of birth cannot be in the future." },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -58,18 +58,18 @@ export async function PUT(req) {
     if (result.modifiedCount > 0 || result.upsertedCount > 0) {
       return NextResponse.json(
         { message: "Details updated successfully." },
-        { status: 200 }
+        { status: 200 },
       );
     } else {
       return NextResponse.json(
         { message: "No changes were made." },
-        { status: 200 }
+        { status: 200 },
       );
     }
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
