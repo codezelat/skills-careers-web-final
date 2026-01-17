@@ -37,7 +37,7 @@ export default function EducationCardEdit({ education, onDelete, onUpdate }) {
         `/api/jobseekerdetails/education/delete?id=${education._id}`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (!response.ok) {
@@ -56,7 +56,7 @@ export default function EducationCardEdit({ education, onDelete, onUpdate }) {
       Swal.fire(
         "Error!",
         error.message || "Failed to delete education",
-        "error"
+        "error",
       );
     }
   };

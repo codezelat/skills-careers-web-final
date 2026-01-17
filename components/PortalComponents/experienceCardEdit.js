@@ -40,7 +40,7 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
         `/api/jobseekerdetails/experience/delete?id=${experience._id}`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (!response.ok) {
@@ -59,7 +59,7 @@ export default function ExperienceCardEdit({ experience, onDelete, onUpdate }) {
       Swal.fire(
         "Error!",
         error.message || "Failed to delete experience",
-        "error"
+        "error",
       );
     }
   };

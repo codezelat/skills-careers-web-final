@@ -146,7 +146,7 @@ const SRI_LANKA_DISTRICTS = [
 
 const sortCertifications = (certifications) => {
   return certifications.sort(
-    (a, b) => new Date(b.receivedDate) - new Date(a.receivedDate)
+    (a, b) => new Date(b.receivedDate) - new Date(a.receivedDate),
   );
 };
 
@@ -219,7 +219,7 @@ export default function CandidateProfile() {
           let jobSeekerData = null;
 
           const jobSeekerResponse = await fetch(
-            `/api/jobseekerdetails/get?userId=${session.user.id}`
+            `/api/jobseekerdetails/get?userId=${session.user.id}`,
           );
 
           if (!jobSeekerResponse.ok) {
@@ -241,7 +241,7 @@ export default function CandidateProfile() {
               if (createResponse.ok) {
                 // Retry fetching after creation
                 const retryResponse = await fetch(
-                  `/api/jobseekerdetails/get?userId=${session.user.id}`
+                  `/api/jobseekerdetails/get?userId=${session.user.id}`,
                 );
                 if (retryResponse.ok) {
                   jobSeekerData = await retryResponse.json();
@@ -262,7 +262,7 @@ export default function CandidateProfile() {
           }
 
           const userResponse = await fetch(
-            `/api/users/get?id=${session.user.id}`
+            `/api/users/get?id=${session.user.id}`,
           );
           if (!userResponse.ok) throw new Error("Failed to fetch user");
           const userData = await userResponse.json();
@@ -274,7 +274,7 @@ export default function CandidateProfile() {
           });
 
           const experienceResponse = await fetch(
-            `/api/jobseekerdetails/experience/all?id=${jobSeekerData.jobseeker._id}`
+            `/api/jobseekerdetails/experience/all?id=${jobSeekerData.jobseeker._id}`,
           );
           if (!experienceResponse.ok)
             throw new Error("Failed to fetch experience details");
@@ -282,12 +282,12 @@ export default function CandidateProfile() {
 
           // Sort experiences: Current (no endDate) first, then by startDate descending
           const sortedExperiences = sortExperiences(
-            newExperienceData.experiences
+            newExperienceData.experiences,
           );
           setExperienceDetails(sortedExperiences);
 
           const educationResponse = await fetch(
-            `/api/jobseekerdetails/education/all?id=${jobSeekerData.jobseeker._id}`
+            `/api/jobseekerdetails/education/all?id=${jobSeekerData.jobseeker._id}`,
           );
           if (!educationResponse.ok)
             throw new Error("Failed to fetch experience details");
@@ -298,7 +298,7 @@ export default function CandidateProfile() {
           setEducationDetails(sortedEducation);
 
           const certificationResponse = await fetch(
-            `/api/jobseekerdetails/certification/all?id=${jobSeekerData.jobseeker._id}`
+            `/api/jobseekerdetails/certification/all?id=${jobSeekerData.jobseeker._id}`,
           );
           if (!certificationResponse.ok)
             throw new Error("Failed to fetch experience details");
@@ -306,7 +306,7 @@ export default function CandidateProfile() {
 
           // Sort certifications by receivedDate descending (latest first)
           const sortedCertifications = sortCertifications(
-            certificationData.licensesandcertifications
+            certificationData.licensesandcertifications,
           );
           setCertificationDetails(sortedCertifications);
         } catch (err) {
@@ -608,7 +608,7 @@ export default function CandidateProfile() {
       if (!response.ok) throw new Error("Failed to add experience");
 
       const experienceResponse = await fetch(
-        `/api/jobseekerdetails/experience/all?id=${jobSeekerDetails._id}`
+        `/api/jobseekerdetails/experience/all?id=${jobSeekerDetails._id}`,
       );
       const updatedExperienceData = await experienceResponse.json();
       setExperienceDetails(sortExperiences(updatedExperienceData.experiences));
@@ -667,7 +667,7 @@ export default function CandidateProfile() {
       if (!response.ok) throw new Error("Failed to add education");
 
       const educationResponse = await fetch(
-        `/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`
+        `/api/jobseekerdetails/education/all?id=${jobSeekerDetails._id}`,
       );
       const updatedEducationData = await educationResponse.json();
       setEducationDetails(sortEducations(updatedEducationData.educations));
@@ -731,11 +731,11 @@ export default function CandidateProfile() {
       if (!response.ok) throw new Error("Failed to add education");
 
       const certificationResponse = await fetch(
-        `/api/jobseekerdetails/certification/all?id=${jobSeekerDetails._id}`
+        `/api/jobseekerdetails/certification/all?id=${jobSeekerDetails._id}`,
       );
       const updatedCertificationData = await certificationResponse.json();
       setCertificationDetails(
-        sortCertifications(updatedCertificationData.licensesandcertifications)
+        sortCertifications(updatedCertificationData.licensesandcertifications),
       );
 
       setOpenCreateCertificationForm(false);
@@ -774,7 +774,7 @@ export default function CandidateProfile() {
       const filtered = SOFT_SKILLS_LIST.filter(
         (skill) =>
           skill.toLowerCase().includes(value.toLowerCase()) &&
-          !jobSeekerDetails.softSkills?.includes(skill)
+          !jobSeekerDetails.softSkills?.includes(skill),
       );
       setSoftSkillSuggestions(filtered);
       setShowSoftSkillSuggestions(true);
@@ -845,7 +845,7 @@ export default function CandidateProfile() {
   const handleDeleteSoftSkill = async (skillToRemove) => {
     try {
       const updatedSoftSkills = jobSeekerDetails.softSkills.filter(
-        (skill) => skill !== skillToRemove
+        (skill) => skill !== skillToRemove,
       );
 
       const updatedJobSeekerDetails = {
@@ -924,7 +924,7 @@ export default function CandidateProfile() {
   const handleDeleteExpertise = async (expertiseToRemove) => {
     try {
       const updatedExpertise = jobSeekerDetails.professionalExpertise.filter(
-        (expertise) => expertise !== expertiseToRemove
+        (expertise) => expertise !== expertiseToRemove,
       );
 
       const updatedJobSeekerDetails = {
@@ -949,7 +949,7 @@ export default function CandidateProfile() {
   const handleUpdateSoftSkill = async (oldSkill, newSkill) => {
     try {
       const updatedSoftSkills = jobSeekerDetails.softSkills.map((skill) =>
-        skill === oldSkill ? newSkill : skill
+        skill === oldSkill ? newSkill : skill,
       );
 
       const updatedJobSeekerDetails = {
@@ -979,7 +979,7 @@ export default function CandidateProfile() {
   const handleUpdateExpertise = async (oldExpertise, newExpertise) => {
     try {
       const updatedExpertise = jobSeekerDetails.professionalExpertise.map(
-        (exp) => (exp === oldExpertise ? newExpertise : exp)
+        (exp) => (exp === oldExpertise ? newExpertise : exp),
       );
 
       const updatedJobSeekerDetails = {
@@ -1010,16 +1010,16 @@ export default function CandidateProfile() {
     setExperienceDetails((prev) =>
       sortExperiences(
         prev.map((exp) =>
-          exp._id === updatedExperience._id ? updatedExperience : exp
-        )
-      )
+          exp._id === updatedExperience._id ? updatedExperience : exp,
+        ),
+      ),
     );
   };
 
   // delete experience
   const handleDeleteExperience = (experienceId) => {
     setExperienceDetails((prev) =>
-      sortExperiences(prev.filter((exp) => exp._id !== experienceId))
+      sortExperiences(prev.filter((exp) => exp._id !== experienceId)),
     );
   };
 
@@ -1028,16 +1028,16 @@ export default function CandidateProfile() {
     setEducationDetails((prev) =>
       sortEducations(
         prev.map((edu) =>
-          edu._id === updatedEducation._id ? updatedEducation : edu
-        )
-      )
+          edu._id === updatedEducation._id ? updatedEducation : edu,
+        ),
+      ),
     );
   };
 
   // delete education
   const handleDeleteEducation = (educationId) => {
     setEducationDetails((prev) =>
-      sortEducations(prev.filter((edu) => edu._id !== educationId))
+      sortEducations(prev.filter((edu) => edu._id !== educationId)),
     );
   };
 
@@ -1046,16 +1046,16 @@ export default function CandidateProfile() {
     setCertificationDetails((prev) =>
       sortCertifications(
         prev.map((cert) =>
-          cert._id === updatedCertification._id ? updatedCertification : cert
-        )
-      )
+          cert._id === updatedCertification._id ? updatedCertification : cert,
+        ),
+      ),
     );
   };
 
   // delete certification
   const handleDeleteCertification = (certificationId) => {
     setCertificationDetails((prev) =>
-      sortCertifications(prev.filter((cert) => cert._id !== certificationId))
+      sortCertifications(prev.filter((cert) => cert._id !== certificationId)),
     );
   };
 
@@ -1574,10 +1574,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.softSkills?.map((skills, index) => (
               <SoftSkillsCard key={index} skills={skills} />
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No soft skills data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No soft skills data available.
+              </p>
+            )}
           </div>
         </div>
 
@@ -1614,10 +1614,10 @@ export default function CandidateProfile() {
             {jobSeekerDetails.professionalExpertise?.map((expertise, index) => (
               <ExpertiseCard key={index} expertise={expertise} />
             )) ?? (
-                <p className="text-gray-500 text-sm">
-                  No professional expertise data available.
-                </p>
-              )}
+              <p className="text-gray-500 text-sm">
+                No professional expertise data available.
+              </p>
+            )}
           </div>
         </div>
 
@@ -1799,10 +1799,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateExperience}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -1845,8 +1846,8 @@ export default function CandidateProfile() {
                         isOtherEducation
                           ? "Other"
                           : EDUCATION_QUALIFICATIONS.includes(
-                            newEducationData.educationName
-                          )
+                                newEducationData.educationName,
+                              )
                             ? newEducationData.educationName
                             : ""
                       }
@@ -1921,10 +1922,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateEducation}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -2005,10 +2007,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleCreateCertification}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -2077,10 +2080,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddSoftSkill}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -2163,10 +2167,11 @@ export default function CandidateProfile() {
                   type="submit"
                   onClick={handleAddExpertise}
                   disabled={isSubmitting}
-                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                  className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                    isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-blue-700"
-                    }`}
+                  }`}
                 >
                   {isSubmitting ? "Saving..." : "Save"}
                   <span className="ml-2">
@@ -2307,10 +2312,10 @@ export default function CandidateProfile() {
                     onUpdate={handleUpdateSoftSkill}
                   />
                 )) ?? (
-                    <p className="text-gray-500 text-sm">
-                      No soft skills data available.
-                    </p>
-                  )}
+                  <p className="text-gray-500 text-sm">
+                    No soft skills data available.
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -2340,12 +2345,12 @@ export default function CandidateProfile() {
                       onDelete={() => handleDeleteExpertise(expertise)}
                       onUpdate={handleUpdateExpertise}
                     />
-                  )
+                  ),
                 ) ?? (
-                    <p className="text-gray-500 text-sm">
-                      No professional expertise data available.
-                    </p>
-                  )}
+                  <p className="text-gray-500 text-sm">
+                    No professional expertise data available.
+                  </p>
+                )}
               </div>
             </div>
           </div>
