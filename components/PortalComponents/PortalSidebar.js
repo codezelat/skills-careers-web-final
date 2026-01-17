@@ -25,9 +25,8 @@ export default function SideMenuSection() {
   useEffect(() => {
     if (pathname.includes("/dashboard")) setActiveButton("Dashboard");
     else if (pathname.includes("/jobApplications"))
-      setActiveButton(
-        "Applications"
-      ); // Check before 'jobs' to avoid conflict if 'jobs' check was loose (though current 'jobs' check is specific enough)
+      setActiveButton("Applications");
+    // Check before 'jobs' to avoid conflict if 'jobs' check was loose (though current 'jobs' check is specific enough)
     else if (pathname.includes("/jobs") || pathname === "/jobs")
       setActiveButton("Job Posts");
     else if (pathname.includes("/recruiter") || pathname === "/recruiters")
@@ -146,8 +145,8 @@ export default function SideMenuSection() {
                   session?.user?.role === "admin"
                     ? "/Portal/recruiter"
                     : session?.user?.role === "jobseeker"
-                    ? "/recruiters"
-                    : "#"
+                      ? "/recruiters"
+                      : "#"
                 }
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -208,10 +207,10 @@ export default function SideMenuSection() {
                 session?.user?.role === "admin"
                   ? "/Portal/jobsAdmin"
                   : session?.user?.role === "recruiter"
-                  ? "/Portal/jobsRecruiter"
-                  : session?.user?.role === "jobseeker"
-                  ? "/jobs"
-                  : "#"
+                    ? "/Portal/jobsRecruiter"
+                    : session?.user?.role === "jobseeker"
+                      ? "/jobs"
+                      : "#"
               }
               onClick={() => setIsMobileMenuOpen(false)}
             >

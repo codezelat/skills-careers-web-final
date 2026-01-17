@@ -52,7 +52,7 @@ export default function HeaderSection() {
     setIsLoadingSuggestions(true);
     try {
       const response = await fetch(
-        `/api/job/search?query=${encodeURIComponent(query)}`
+        `/api/job/search?query=${encodeURIComponent(query)}`,
       );
       if (!response.ok) throw new Error("Search failed");
 
@@ -68,7 +68,7 @@ export default function HeaderSection() {
         jobs = jobs.filter((job) => {
           if (Array.isArray(job.jobTypes)) {
             return job.jobTypes.some(
-              (t) => normalize(t) === normalizedSelected
+              (t) => normalize(t) === normalizedSelected,
             );
           }
           return normalize(job.jobTypes) === normalizedSelected;
@@ -237,7 +237,9 @@ export default function HeaderSection() {
           </h1>
           <div className="flex items-center gap-2">
             <div className="text-right">
-              <p className="text-sm font-bold truncate max-w-[150px]">{session?.user?.firstName}</p>
+              <p className="text-sm font-bold truncate max-w-[150px]">
+                {session?.user?.firstName}
+              </p>
             </div>
             {session?.user?.profileImage ? (
               <Image
