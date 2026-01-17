@@ -1005,6 +1005,60 @@ export default function CandidateProfile() {
     }
   };
 
+  // update experience
+  const handleUpdateExperience = (updatedExperience) => {
+    setExperienceDetails((prev) =>
+      sortExperiences(
+        prev.map((exp) =>
+          exp._id === updatedExperience._id ? updatedExperience : exp
+        )
+      )
+    );
+  };
+
+  // delete experience
+  const handleDeleteExperience = (experienceId) => {
+    setExperienceDetails((prev) =>
+      sortExperiences(prev.filter((exp) => exp._id !== experienceId))
+    );
+  };
+
+  // update education
+  const handleUpdateEducation = (updatedEducation) => {
+    setEducationDetails((prev) =>
+      sortEducations(
+        prev.map((edu) =>
+          edu._id === updatedEducation._id ? updatedEducation : edu
+        )
+      )
+    );
+  };
+
+  // delete education
+  const handleDeleteEducation = (educationId) => {
+    setEducationDetails((prev) =>
+      sortEducations(prev.filter((edu) => edu._id !== educationId))
+    );
+  };
+
+  // update certification
+  const handleUpdateCertification = (updatedCertification) => {
+    setCertificationDetails((prev) =>
+      sortCertifications(
+        prev.map((cert) =>
+          cert._id === updatedCertification._id ? updatedCertification : cert
+        )
+      )
+    );
+  };
+
+  // delete certification
+  const handleDeleteCertification = (certificationId) => {
+    setCertificationDetails((prev) =>
+      sortCertifications(prev.filter((cert) => cert._id !== certificationId))
+    );
+  };
+
   // loading
   if (isLoading) return <PortalLoading />;
   if (error) return <div className="text-red-500">Error: {error}</div>;
@@ -2142,7 +2196,12 @@ export default function CandidateProfile() {
               <div className="p-6 overflow-y-auto">
                 {experienceDetails.length > 0 ? (
                   experienceDetails.map((experience, index) => (
-                    <ExperienceCardEdit key={index} experience={experience} />
+                    <ExperienceCardEdit
+                      key={index}
+                      experience={experience}
+                      onDelete={handleDeleteExperience}
+                      onUpdate={handleUpdateExperience}
+                    />
                   ))
                 ) : (
                   <p className="text-gray-500 text-sm">
@@ -2172,7 +2231,12 @@ export default function CandidateProfile() {
               <div className="p-6 overflow-y-auto">
                 {educationDetails.length > 0 ? (
                   educationDetails.map((education, index) => (
-                    <EducationCardEdit key={index} education={education} />
+                    <EducationCardEdit
+                      key={index}
+                      education={education}
+                      onDelete={handleDeleteEducation}
+                      onUpdate={handleUpdateEducation}
+                    />
                   ))
                 ) : (
                   <p className="text-gray-500 text-sm">
@@ -2205,6 +2269,8 @@ export default function CandidateProfile() {
                     <CertificationCardEdit
                       key={index}
                       certification={certification}
+                      onDelete={handleDeleteCertification}
+                      onUpdate={handleUpdateCertification}
                     />
                   ))
                 ) : (

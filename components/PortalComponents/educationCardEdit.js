@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { RiDeleteBinFill, RiEdit2Fill } from "react-icons/ri";
 import { PiCheckCircle } from "react-icons/pi";
 import { FaTimes } from "react-icons/fa";
+import { FiLoader } from "react-icons/fi";
 import Swal from "sweetalert2";
 
-export default function EducationCardEdit({ education, onDelete }) {
+export default function EducationCardEdit({ education, onDelete, onUpdate }) {
   const [isHoveredDelete, setIsHoveredDelete] = useState(false);
   const [isHoveredEdit, setIsHoveredEdit] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -72,8 +73,13 @@ export default function EducationCardEdit({ education, onDelete }) {
 
       if (!response.ok) throw new Error("Failed to update education");
 
+      if (onUpdate) {
+        onUpdate({ ...education, ...formData });
+      } else {
+        window.location.reload(); // Fallback
+      }
+
       setIsEditing(false);
-      window.location.reload(); // Refresh to show changes
     } catch (error) {
       console.error("Update error:", error);
       Swal.fire({
@@ -182,7 +188,15 @@ export default function EducationCardEdit({ education, onDelete }) {
             disabled={isSubmitting}
             className="bg-[#001571] text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-800"
           >
-            {isSubmitting ? "Saving..." : "Save"} <PiCheckCircle />
+            {isSubmitting ? (
+              <>
+                <FiLoader className="animate-spin" /> Saving...
+              </>
+            ) : (
+              <>
+                Save <PiCheckCircle />
+              </>
+            )}
           </button>
         </div>
       </form>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FaMedal, FaTimes } from "react-icons/fa";
 import { RiEdit2Fill } from "react-icons/ri";
 import { PiCheckCircle } from "react-icons/pi";
+import { FiLoader } from "react-icons/fi";
 
 export default function SoftSkillsCardEdit({ skill, onDelete, onUpdate }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -41,7 +42,7 @@ export default function SoftSkillsCardEdit({ skill, onDelete, onUpdate }) {
                     disabled={isSubmitting}
                     className="text-green-600 hover:text-green-800"
                 >
-                    <PiCheckCircle size={20} />
+                    {isSubmitting ? <FiLoader className="animate-spin" size={20} /> : <PiCheckCircle size={20} />}
                 </button>
                 <button
                     onClick={() => {
