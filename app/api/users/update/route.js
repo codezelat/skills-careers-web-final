@@ -18,7 +18,7 @@ export async function PUT(req) {
     const db = client.db();
 
     // Ensure profileImage is preserved if it's not being updated
-    let updateData = updatedDetails;
+    const updateData = { ...updatedDetails };
 
     if (!updatedDetails.profileImage) {
       const existingUser = await db.collection("users").findOne({ email });
@@ -29,7 +29,7 @@ export async function PUT(req) {
 
     const result = await db
       .collection("users")
-      .updateOne({ email }, { $set: updatedDetails }, { upsert: false });
+      .updateOne({ email }, { $set: updateData }, { upsert: false });
 
     if (result.modifiedCount > 0) {
 
