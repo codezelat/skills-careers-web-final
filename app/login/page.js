@@ -126,14 +126,23 @@ function Login() {
     try {
       const callbackUrl = searchParams.get("callbackUrl");
       // Only use callbackUrl if the selected role is Job Seeker
-      const finalCallbackUrl = (role === "jobseeker" && callbackUrl)
-        ? callbackUrl
-        : (role === "jobseeker" ? "/Portal/profile" : "/Portal/dashboard");
+      const finalCallbackUrl =
+        role === "jobseeker" && callbackUrl
+          ? callbackUrl
+          : role === "jobseeker"
+          ? "/Portal/profile"
+          : "/Portal/dashboard";
 
-      await signIn(selectedProvider, {
+      const result = await signIn(selectedProvider, {
         redirect: false,
         callbackUrl: finalCallbackUrl,
       });
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+      if (result?.url) {
+        window.location.href = result.url;
+      }
     } catch (error) {
       setErrorMessage(
         `Failed to sign in with ${selectedProvider}. Please try again.`
