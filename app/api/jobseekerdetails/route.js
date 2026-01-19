@@ -69,7 +69,7 @@ export async function POST(req) {
       bio: "",
       city: "",
       country: "",
-      dateOfBirth: null,
+      dob: null,
       gender: "",
       skills: [],
       softSkills: [],
