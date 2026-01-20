@@ -10,7 +10,7 @@ import {
   BsFillEyeFill,
   BsPlus,
 } from "react-icons/bs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import JobCard from "@/components/PortalComponents/portalJobCard";
 import PortalLoading from "../loading";
@@ -21,6 +21,7 @@ import jobCategories from "@/data/jobCategories.json";
 
 export default function RecruiterPostedJobs(props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   console.log(status);
 
@@ -96,6 +97,15 @@ export default function RecruiterPostedJobs(props) {
       router.push("/login"); // Redirect to login if unauthenticated
     }
   }, [status, router]);
+
+  // Sync currentPage with URL params
+  useEffect(() => {
+    const pageParam = searchParams.get('page');
+    const newPage = pageParam ? parseInt(pageParam, 10) : 1;
+    if (newPage >= 1 && newPage !== currentPage) {
+      setCurrentPage(newPage);
+    }
+  }, [searchParams, currentPage]);
 
   useEffect(() => {
     if (session?.user?.email && session?.user?.id) {
@@ -333,8 +343,11 @@ export default function RecruiterPostedJobs(props) {
     setSelectedJobId(jobId);
   };
 
-  // pagination function
-  const [currentPage, setCurrentPage] = useState(1);
+  // pagination function - Initialize from URL params
+  const [currentPage, setCurrentPage] = useState(() => {
+    const pageParam = searchParams.get('page');
+    return pageParam ? parseInt(pageParam, 10) : 1;
+  });
   const recruitersPerPage = 6;
 
   const totalPages = Math.ceil(filteredJobs.length / recruitersPerPage);
@@ -349,8 +362,25 @@ export default function RecruiterPostedJobs(props) {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
+      // Update URL to preserve page state
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', newPage.toString());
+      router.push(`?${params.toString()}`, { scroll: false });
     }
   };
+
+  // Validate current page when filters or tabs change
+  useEffect(() => {
+    const newTotalPages = Math.ceil(filteredJobs.length / recruitersPerPage);
+    if (newTotalPages > 0 && currentPage > newTotalPages) {
+      // Current page is out of bounds, go to last valid page
+      handlePageChange(newTotalPages);
+    } else if (newTotalPages === 0 && currentPage !== 1) {
+      // No results, reset to page 1
+      handlePageChange(1);
+    }
+    // Otherwise, maintain current page
+  }, [filteredJobs.length, activeTab]);
 
   if (loading) {
     return <PortalLoading />;
@@ -488,6 +518,7 @@ export default function RecruiterPostedJobs(props) {
                 <JobCard
                   key={index}
                   job={job}
+                  currentPage={currentPage}
                   onJobStatusChanged={handleJobStatusChanged}
                   onJobDeleted={handleJobDeleted}
                 />
@@ -564,6 +595,7 @@ export default function RecruiterPostedJobs(props) {
                 <JobCard
                   key={index}
                   job={job}
+                  currentPage={currentPage}
                   onJobStatusChanged={handleJobStatusChanged}
                   onJobDeleted={handleJobDeleted}
                 />

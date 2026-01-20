@@ -19,6 +19,7 @@ function JobCard(props) {
     const [isLoading, setIsLoading] = useState(false);
 
     const { _id, createdAt, jobTitle, recruiterId } = props.job;
+    const { currentPage = 1 } = props;
 
     useEffect(() => {
         const controller = new AbortController();
@@ -117,7 +118,10 @@ function JobCard(props) {
         const path = session?.user?.role === "admin"
             ? `/Portal/jobsAdmin/${_id}`
             : `/Portal/jobsRecruiter/${_id}`;
-        router.push(path);
+        // Preserve current page in URL for back navigation
+        const currentPath = window.location.pathname;
+        const returnUrl = `${currentPath}?page=${currentPage}`;
+        router.push(`${path}?returnUrl=${encodeURIComponent(returnUrl)}`);
     };
 
     const formatDate = (dateString) => {

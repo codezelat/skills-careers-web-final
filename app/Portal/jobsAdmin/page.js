@@ -5,7 +5,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { PiCheckCircle } from "react-icons/pi";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import JobCard from "@/components/PortalComponents/portalJobCard";
 import PortalLoading from "../loading";
@@ -15,6 +15,7 @@ import sriLankaDistricts from "@/data/sriLankaDistricts.json";
 
 export default function Jobs() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [activeSection, setActiveSection] = useState("jobs");
   const [jobs, setJobs] = useState([]);
@@ -30,8 +31,11 @@ export default function Jobs() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  // Pagination - Initialize from URL params
+  const [currentPage, setCurrentPage] = useState(() => {
+    const pageParam = searchParams.get('page');
+    return pageParam ? parseInt(pageParam, 10) : 1;
+  });
   const jobsPerPage = 6;
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
@@ -41,6 +45,15 @@ export default function Jobs() {
   useEffect(() => {
     if (status === "unauthenticated") router.push("/admin");
   }, [status, router]);
+
+  // Sync currentPage with URL params
+  useEffect(() => {
+    const pageParam = searchParams.get('page');
+    const newPage = pageParam ? parseInt(pageParam, 10) : 1;
+    if (newPage >= 1 && newPage !== currentPage) {
+      setCurrentPage(newPage);
+    }
+  }, [searchParams, currentPage]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,7 +103,17 @@ export default function Jobs() {
         return matchesSearch && matchesTab && matchesJobType;
       });
       setFilteredJobs(filtered);
-      setCurrentPage(1);
+      
+      // Only adjust page if current page would be out of bounds
+      const newTotalPages = Math.ceil(filtered.length / jobsPerPage);
+      if (newTotalPages > 0 && currentPage > newTotalPages) {
+        // Current page is out of bounds, go to last valid page
+        handlePageChange(newTotalPages);
+      } else if (newTotalPages === 0 && currentPage !== 1) {
+        // No results, reset to page 1
+        handlePageChange(1);
+      }
+      // Otherwise, maintain current page (don't reset on tab switch)
     };
     filterJobs();
   }, [searchQuery, activeTab, jobs, selectedJobTypes]);
@@ -98,6 +121,10 @@ export default function Jobs() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
+      // Update URL to preserve page state
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', newPage.toString());
+      router.push(`?${params.toString()}`, { scroll: false });
     }
   };
 
@@ -357,6 +384,7 @@ export default function Jobs() {
             <JobCard
               key={job._id}
               job={job}
+              currentPage={currentPage}
               onViewJob={() => handleJobSelect(job._id)}
               onJobStatusChanged={(jobId, newStatus) => {
                 setJobs((prev) =>
@@ -366,8 +394,16 @@ export default function Jobs() {
                 );
               }}
               onJobDeleted={(jobId) => {
-                setJobs((prev) => prev.filter((j) => j._id !== jobId));
-                setFilteredJobs((prev) => prev.filter((j) => j._id !== jobId));
+                const updatedJobs = jobs.filter((j) => j._id !== jobId);
+                const updatedFiltered = filteredJobs.filter((j) => j._id !== jobId);
+                setJobs(updatedJobs);
+                setFilteredJobs(updatedFiltered);
+                
+                // Adjust page if current page becomes empty after deletion
+                const newTotalPages = Math.ceil(updatedFiltered.length / jobsPerPage);
+                if (currentPage > newTotalPages && newTotalPages > 0) {
+                  handlePageChange(newTotalPages);
+                }
               }}
             />
           ))

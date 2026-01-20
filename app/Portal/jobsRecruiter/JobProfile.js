@@ -2,9 +2,9 @@
 
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { BsArrowUpRightCircleFill, BsArrowLeft } from "react-icons/bs";
 import {
   FaDribbble,
   FaFacebook,
@@ -25,6 +25,7 @@ export default function JobProfile({ slug }) {
   const [activeTab, setActiveTab] = useState("Profile");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,6 +213,18 @@ export default function JobProfile({ slug }) {
     router.push(`/Portal/recruiter/${jobDetails.recruiterId}`);
   };
 
+  const handleBack = () => {
+    const returnUrl = searchParams.get('returnUrl');
+    if (returnUrl) {
+      // Decode the return URL and navigate back
+      const decodedUrl = decodeURIComponent(returnUrl);
+      router.push(decodedUrl);
+    } else {
+      // Fallback to first page if no return URL
+      router.push('/Portal/jobsRecruiter?page=1');
+    }
+  };
+
   if (isLoading) {
     return <PortalLoading />;
   }
@@ -219,6 +232,17 @@ export default function JobProfile({ slug }) {
   return (
     <>
       <div className="bg-white rounded-3xl py-7 px-7">
+        {/* Back Button */}
+        <div className="mb-4">
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 text-[#001571] hover:text-blue-800 font-semibold transition-colors"
+          >
+            <BsArrowLeft size={20} />
+            Back to Job Posts
+          </button>
+        </div>
+        
         <h1 className="flex justify-end font-semibold text-base">
           {postedDate || "Date not available"}
         </h1>
