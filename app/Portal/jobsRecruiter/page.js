@@ -103,7 +103,7 @@ export default function RecruiterPostedJobs(props) {
     const pageParam = searchParams.get("page");
     const newPage = pageParam ? parseInt(pageParam, 10) : 1;
     const currentPageState = pageStates[activeTab];
-    
+
     if (newPage >= 1 && newPage !== currentPageState) {
       setPageStates((prev) => ({
         ...prev,
