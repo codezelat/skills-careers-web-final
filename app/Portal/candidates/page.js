@@ -51,7 +51,7 @@ export default function Candidates() {
     email,
     contactNumber,
     password,
-    confirmPassword
+    confirmPassword,
   ) {
     const response = await fetch("/api/auth/jobseekersignup", {
       method: "POST",
@@ -101,7 +101,12 @@ export default function Candidates() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, searchQuery, activeTab]);
 
-  const filterJobseekers = (jobseekers, query, tab, jobTypes = selectedJobTypes) => {
+  const filterJobseekers = (
+    jobseekers,
+    query,
+    tab,
+    jobTypes = selectedJobTypes,
+  ) => {
     const filtered = (jobseekers || []).filter((jobseeker) => {
       const matchesSearch = (jobseeker.email || "")
         .toLowerCase()
@@ -111,8 +116,8 @@ export default function Candidates() {
         jobTypes.length === 0
           ? true
           : jobTypes.some((type) =>
-            (jobseeker.preferredJobTypes || []).includes(type)
-          );
+              (jobseeker.preferredJobTypes || []).includes(type),
+            );
 
       return matchesSearch && matchesTab && matchesJobType;
     });
@@ -126,7 +131,7 @@ export default function Candidates() {
 
   const handleJobTypeToggle = (type) => {
     setSelectedJobTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
     );
   };
 
@@ -138,8 +143,8 @@ export default function Candidates() {
   const handleJobseekerUpdate = (updatedJobseeker) => {
     setJobseekers((prev) =>
       prev.map((js) =>
-        js._id === updatedJobseeker._id ? { ...js, ...updatedJobseeker } : js
-      )
+        js._id === updatedJobseeker._id ? { ...js, ...updatedJobseeker } : js,
+      ),
     );
   };
 
@@ -154,7 +159,7 @@ export default function Candidates() {
         newJobseeker.email,
         newJobseeker.contactNumber,
         newJobseeker.password,
-        newJobseeker.confirmPassword
+        newJobseeker.confirmPassword,
       );
       Swal.fire({
         icon: "success",
@@ -199,7 +204,7 @@ export default function Candidates() {
   /* Handlers */
   const handleSelectOne = (id) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -295,16 +300,16 @@ export default function Candidates() {
     try {
       await Promise.all(
         idsToDelete.map((id) =>
-          fetch(`/api/jobseekerdetails/delete?id=${id}`, { method: "DELETE" })
-        )
+          fetch(`/api/jobseekerdetails/delete?id=${id}`, { method: "DELETE" }),
+        ),
       );
 
       // Update State
       setJobseekers((prev) =>
-        prev.filter((js) => !idsToDelete.includes(js._id))
+        prev.filter((js) => !idsToDelete.includes(js._id)),
       );
       setFilteredJobseekers((prev) =>
-        prev.filter((js) => !idsToDelete.includes(js._id))
+        prev.filter((js) => !idsToDelete.includes(js._id)),
       );
       setSelectedIds([]);
 
@@ -332,7 +337,9 @@ export default function Candidates() {
     <div className="min-h-screen bg-white rounded-3xl py-5 px-7">
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
-        <h1 className="text-lg sm:text-xl font-bold text-[#001571] whitespace-nowrap">Candidates</h1>
+        <h1 className="text-lg sm:text-xl font-bold text-[#001571] whitespace-nowrap">
+          Candidates
+        </h1>
         <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           {session?.user?.role === "admin" && selectedIds.length > 0 && (
             <button
@@ -340,7 +347,9 @@ export default function Candidates() {
               onClick={handleBulkDelete}
             >
               <FaTimes size={16} className="mr-1 sm:mr-2" />
-              <span className="whitespace-nowrap">Delete Selected ({selectedIds.length})</span>
+              <span className="whitespace-nowrap">
+                Delete Selected ({selectedIds.length})
+              </span>
             </button>
           )}
           {session?.user?.role === "admin" && (
@@ -360,18 +369,20 @@ export default function Candidates() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-full lg:w-max text-xs sm:text-sm font-medium gap-1 sm:gap-0">
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
-              }`}
+            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${
+              activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+            }`}
           >
             <span>All Candidates</span>
             <PiCheckCircle size={18} className="ml-2" />
           </button>
           <button
             onClick={() => setActiveTab("restricted")}
-            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${activeTab === "restricted"
+            className={`px-4 sm:px-6 py-3 flex items-center rounded-2xl w-full sm:w-auto justify-center whitespace-nowrap ${
+              activeTab === "restricted"
                 ? "bg-[#001571] text-white"
                 : "text-[#B0B6D3]"
-              }`}
+            }`}
           >
             <span>Restricted Candidates</span>
             <PiCheckCircle size={18} className="ml-2" />
@@ -380,7 +391,10 @@ export default function Candidates() {
       )}
       {/* Search */}
       <div className="bg-[#E6E8F1] flex items-center px-4 sm:px-6 lg:px-10 mb-5 py-3 sm:py-4 rounded-2xl shadow-sm w-full">
-        <IoSearchSharp size={20} className="text-[#001571] min-w-[20px] sm:min-w-[25px] flex-shrink-0" />
+        <IoSearchSharp
+          size={20}
+          className="text-[#001571] min-w-[20px] sm:min-w-[25px] flex-shrink-0"
+        />
         <input
           type="text"
           placeholder="Search candidates..."
@@ -410,10 +424,11 @@ export default function Candidates() {
             <button
               key={type}
               onClick={() => handleJobTypeToggle(type)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${selectedJobTypes.includes(type)
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                selectedJobTypes.includes(type)
                   ? "bg-[#001571] text-white shadow-md"
                   : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
-                }`}
+              }`}
             >
               {type}
             </button>
@@ -452,7 +467,7 @@ export default function Candidates() {
         {filteredJobseekers
           .slice(
             (currentPage - 1) * candidatesPerPage,
-            currentPage * candidatesPerPage
+            currentPage * candidatesPerPage,
           )
           .map((jobseeker) => (
             <CandidateCard
@@ -472,30 +487,34 @@ export default function Candidates() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-2 sm:px-3 py-2 rounded-lg ${currentPage === 1
+            className={`px-2 sm:px-3 py-2 rounded-lg ${
+              currentPage === 1
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-gray-200 hover:bg-gray-400"
-              }`}
+            }`}
           >
             <BsChevronLeft size={15} />
           </button>
           <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-[200px] sm:max-w-none">
             {Array.from(
               {
-                length: Math.ceil(filteredJobseekers.length / candidatesPerPage),
+                length: Math.ceil(
+                  filteredJobseekers.length / candidatesPerPage,
+                ),
               },
               (_, index) => (
                 <button
                   key={index + 1}
                   onClick={() => handlePageChange(index + 1)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm whitespace-nowrap ${currentPage === index + 1
+                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
+                    currentPage === index + 1
                       ? "bg-blue-700 text-white"
                       : "bg-gray-200 hover:bg-gray-400"
-                    }`}
+                  }`}
                 >
                   {index + 1}
                 </button>
-              )
+              ),
             )}
           </div>
           <button
@@ -504,11 +523,12 @@ export default function Candidates() {
               currentPage ===
               Math.ceil(filteredJobseekers.length / candidatesPerPage)
             }
-            className={`px-2 sm:px-3 py-2 rounded-lg ${currentPage ===
-                Math.ceil(filteredJobseekers.length / candidatesPerPage)
+            className={`px-2 sm:px-3 py-2 rounded-lg ${
+              currentPage ===
+              Math.ceil(filteredJobseekers.length / candidatesPerPage)
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-gray-200 hover:bg-gray-400"
-              }`}
+            }`}
           >
             <BsChevronRight size={15} />
           </button>
@@ -616,10 +636,11 @@ export default function Candidates() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold w-full sm:w-auto ${isSubmitting
+                    className={`bg-[#001571] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold w-full sm:w-auto ${
+                      isSubmitting
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-blue-700"
-                      }`}
+                    }`}
                   >
                     {isSubmitting ? "Adding..." : "Add Recruiter"}
                   </button>
