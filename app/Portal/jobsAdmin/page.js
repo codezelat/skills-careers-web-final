@@ -37,7 +37,7 @@ export default function Jobs() {
     const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
     return {
       all: initialPage,
-      restricted: 1
+      restricted: 1,
     };
   });
   const currentPage = pageStates[activeTab];
@@ -56,9 +56,9 @@ export default function Jobs() {
     const pageParam = searchParams.get("page");
     const newPage = pageParam ? parseInt(pageParam, 10) : 1;
     if (newPage >= 1 && newPage !== pageStates[activeTab]) {
-      setPageStates(prev => ({
+      setPageStates((prev) => ({
         ...prev,
-        [activeTab]: newPage
+        [activeTab]: newPage,
       }));
     }
   }, [searchParams, activeTab]);
@@ -129,9 +129,9 @@ export default function Jobs() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       // Update the current tab's page state
-      setPageStates(prev => ({
+      setPageStates((prev) => ({
         ...prev,
-        [activeTab]: newPage
+        [activeTab]: newPage,
       }));
       // Update URL to preserve page state
       const params = new URLSearchParams(searchParams.toString());
@@ -145,7 +145,7 @@ export default function Jobs() {
     const savedPage = pageStates[activeTab];
     const params = new URLSearchParams(searchParams.toString());
     const currentUrlPage = parseInt(params.get("page") || "1", 10);
-    
+
     if (savedPage !== currentUrlPage) {
       params.set("page", savedPage.toString());
       router.push(`?${params.toString()}`, { scroll: false });
