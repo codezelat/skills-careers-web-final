@@ -63,7 +63,7 @@ export default function JobProfile({ slug }) {
           }
 
           const recruiterResponse = await fetch(
-            `/api/recruiterdetails/get?id=${jobData.recruiterId}`
+            `/api/recruiterdetails/get?id=${jobData.recruiterId}`,
           );
           if (!recruiterResponse.ok)
             throw new Error("Failed to fetch recruiter");
@@ -194,14 +194,14 @@ export default function JobProfile({ slug }) {
   };
 
   const handleBack = () => {
-    const returnUrl = searchParams.get('returnUrl');
+    const returnUrl = searchParams.get("returnUrl");
     if (returnUrl) {
       // Decode the return URL and navigate back
       const decodedUrl = decodeURIComponent(returnUrl);
       router.push(decodedUrl);
     } else {
       // Fallback to first page if no return URL
-      router.push('/Portal/jobsAdmin?page=1');
+      router.push("/Portal/jobsAdmin?page=1");
     }
   };
 
@@ -222,7 +222,7 @@ export default function JobProfile({ slug }) {
             Back to Job Posts
           </button>
         </div>
-        
+
         <h1 className="flex justify-end font-semibold text-base">
           {postedDate || "Date not available"}
         </h1>
@@ -270,8 +270,9 @@ export default function JobProfile({ slug }) {
                   editedJobDetails.jobTypes.map((type, index) => (
                     <span
                       key={index}
-                      className={`px-4 py-[6px] rounded-lg mr-2 text-white ${index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
-                        }`}
+                      className={`px-4 py-[6px] rounded-lg mr-2 text-white ${
+                        index % 2 === 0 ? "bg-[#001571]" : "bg-[#00B6B4]"
+                      }`}
                     >
                       {type}
                     </span>
@@ -280,7 +281,9 @@ export default function JobProfile({ slug }) {
             </div>
             <div className="text-base font-bold text-black">
               {recruiterDetails.recruiterName} | {editedJobDetails.location} |{" "}
-              <span className="text-[#001571]">{editedJobDetails.jobCategory}</span>
+              <span className="text-[#001571]">
+                {editedJobDetails.jobCategory}
+              </span>
             </div>
           </div>
           <button
@@ -500,10 +503,11 @@ export default function JobProfile({ slug }) {
                         <label
                           key={index}
                           className={`flex items-center px-4 py-2 rounded-lg cursor-pointer transition-all
-                                                        ${isChecked
-                              ? "bg-[#001571] text-white" // Checked state
-                              : "bg-white text-black border border-gray-400 hover:bg-gray-100"
-                            } // Unchecked state`}
+                                                        ${
+                                                          isChecked
+                                                            ? "bg-[#001571] text-white" // Checked state
+                                                            : "bg-white text-black border border-gray-400 hover:bg-gray-100"
+                                                        } // Unchecked state`}
                         >
                           <input
                             type="checkbox"
@@ -536,10 +540,11 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                  isSubmitting
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                  }`}
+                }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -593,10 +598,11 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                  isSubmitting
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                  }`}
+                }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -651,10 +657,11 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                  isSubmitting
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                  }`}
+                }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -708,10 +715,11 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                  isSubmitting
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                  }`}
+                }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -765,10 +773,11 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                  isSubmitting
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                  }`}
+                }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">
@@ -822,10 +831,11 @@ export default function JobProfile({ slug }) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${isSubmitting
+                className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
+                  isSubmitting
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-blue-700"
-                  }`}
+                }`}
               >
                 {isSubmitting ? "Saving..." : "Save"}
                 <span className="ml-2">

@@ -33,7 +33,7 @@ export default function Jobs() {
 
   // Pagination - Initialize from URL params
   const [currentPage, setCurrentPage] = useState(() => {
-    const pageParam = searchParams.get('page');
+    const pageParam = searchParams.get("page");
     return pageParam ? parseInt(pageParam, 10) : 1;
   });
   const jobsPerPage = 6;
@@ -48,7 +48,7 @@ export default function Jobs() {
 
   // Sync currentPage with URL params
   useEffect(() => {
-    const pageParam = searchParams.get('page');
+    const pageParam = searchParams.get("page");
     const newPage = pageParam ? parseInt(pageParam, 10) : 1;
     if (newPage >= 1 && newPage !== currentPage) {
       setCurrentPage(newPage);
@@ -80,7 +80,7 @@ export default function Jobs() {
 
   const handleJobTypeToggle = (type) => {
     setSelectedJobTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
     );
   };
 
@@ -103,7 +103,7 @@ export default function Jobs() {
         return matchesSearch && matchesTab && matchesJobType;
       });
       setFilteredJobs(filtered);
-      
+
       // Only adjust page if current page would be out of bounds
       const newTotalPages = Math.ceil(filtered.length / jobsPerPage);
       if (newTotalPages > 0 && currentPage > newTotalPages) {
@@ -123,7 +123,7 @@ export default function Jobs() {
       setCurrentPage(newPage);
       // Update URL to preserve page state
       const params = new URLSearchParams(searchParams.toString());
-      params.set('page', newPage.toString());
+      params.set("page", newPage.toString());
       router.push(`?${params.toString()}`, { scroll: false });
     }
   };
@@ -302,18 +302,20 @@ export default function Jobs() {
       <div className="flex flex-col sm:flex-row items-center justify-center p-1 mb-5 bg-[#E6E8F1] rounded-2xl w-full sm:w-max text-sm font-medium mx-auto sm:mx-0">
         <button
           onClick={() => setActiveTab("all")}
-          className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
-            }`}
+          className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${
+            activeTab === "all" ? "bg-[#001571] text-white" : "text-[#B0B6D3]"
+          }`}
         >
           All Job Posts
           <PiCheckCircle size={20} className="ml-2" />
         </button>
         <button
           onClick={() => setActiveTab("restricted")}
-          className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${activeTab === "restricted"
+          className={`px-6 py-3 flex rounded-2xl w-full sm:w-auto justify-center ${
+            activeTab === "restricted"
               ? "bg-[#001571] text-white"
               : "text-[#B0B6D3]"
-            }`}
+          }`}
         >
           Restricted Job Posts
           <PiCheckCircle size={20} className="ml-2" />
@@ -352,10 +354,11 @@ export default function Jobs() {
             <button
               key={type}
               onClick={() => handleJobTypeToggle(type)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${selectedJobTypes.includes(type)
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                selectedJobTypes.includes(type)
                   ? "bg-[#001571] text-white shadow-md"
                   : "bg-[#E6E8F1] text-[#8A93BE] hover:bg-[#d8dae8]"
-                }`}
+              }`}
             >
               {type}
             </button>
@@ -389,18 +392,22 @@ export default function Jobs() {
               onJobStatusChanged={(jobId, newStatus) => {
                 setJobs((prev) =>
                   prev.map((j) =>
-                    j._id === jobId ? { ...j, isPublished: newStatus } : j
-                  )
+                    j._id === jobId ? { ...j, isPublished: newStatus } : j,
+                  ),
                 );
               }}
               onJobDeleted={(jobId) => {
                 const updatedJobs = jobs.filter((j) => j._id !== jobId);
-                const updatedFiltered = filteredJobs.filter((j) => j._id !== jobId);
+                const updatedFiltered = filteredJobs.filter(
+                  (j) => j._id !== jobId,
+                );
                 setJobs(updatedJobs);
                 setFilteredJobs(updatedFiltered);
-                
+
                 // Adjust page if current page becomes empty after deletion
-                const newTotalPages = Math.ceil(updatedFiltered.length / jobsPerPage);
+                const newTotalPages = Math.ceil(
+                  updatedFiltered.length / jobsPerPage,
+                );
                 if (currentPage > newTotalPages && newTotalPages > 0) {
                   handlePageChange(newTotalPages);
                 }
@@ -420,10 +427,11 @@ export default function Jobs() {
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${currentPage === 1
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === 1
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-              }`}
+            }`}
           >
             <BsChevronLeft size={15} />
           </button>
@@ -431,10 +439,11 @@ export default function Jobs() {
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${currentPage === index + 1
+              className={`px-4 py-2 rounded-lg ${
+                currentPage === index + 1
                   ? "bg-blue-700 text-white"
                   : "bg-gray-200 hover:bg-gray-400"
-                }`}
+              }`}
             >
               {index + 1}
             </button>
@@ -442,10 +451,11 @@ export default function Jobs() {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${currentPage === totalPages
+            className={`px-[10px] py-2 rounded-lg ${
+              currentPage === totalPages
                 ? "bg-gray-300"
                 : "bg-gray-200 hover:bg-gray-400"
-              }`}
+            }`}
           >
             <BsChevronRight size={15} />
           </button>
@@ -482,10 +492,11 @@ export default function Jobs() {
                     name="jobTitle"
                     value={formData.jobTitle}
                     onChange={handleInputChange}
-                    className={`mt-2 block w-full border ${formErrors.jobTitle
+                    className={`mt-2 block w-full border ${
+                      formErrors.jobTitle
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
-                      } rounded-xl shadow-sm px-4 py-3`}
+                    } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.jobTitle && (
                     <p className="text-red-500 text-sm mt-1">
@@ -503,10 +514,11 @@ export default function Jobs() {
                     name="recruiterId"
                     value={selectedRecruiter}
                     onChange={handleRecruiterChange}
-                    className={`mt-2 w-full border ${formErrors.recruiterId
+                    className={`mt-2 w-full border ${
+                      formErrors.recruiterId
                         ? "border-red-500"
                         : "border-gray-400"
-                      } rounded-lg px-4 py-3 text-sm`}
+                    } rounded-lg px-4 py-3 text-sm`}
                     disabled={isSubmitting}
                   >
                     <option value="">Select Recruiter</option>
@@ -532,10 +544,11 @@ export default function Jobs() {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    className={`mt-2 block w-full border ${formErrors.location
+                    className={`mt-2 block w-full border ${
+                      formErrors.location
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
-                      } rounded-xl shadow-sm px-4 py-3`}
+                    } rounded-xl shadow-sm px-4 py-3`}
                   >
                     <option value="">Select a location</option>
                     {sriLankaDistricts.map((district) => (
@@ -557,10 +570,11 @@ export default function Jobs() {
                         placeholder="Please specify location"
                         value={formData.customLocation}
                         onChange={handleInputChange}
-                        className={`block w-full border ${formErrors.customLocation
+                        className={`block w-full border ${
+                          formErrors.customLocation
                             ? "border-red-500"
                             : "border-[#B0B6D3]"
-                          } rounded-xl shadow-sm px-4 py-3`}
+                        } rounded-xl shadow-sm px-4 py-3`}
                       />
                       {formErrors.customLocation && (
                         <p className="text-red-500 text-base mt-1">
@@ -581,10 +595,11 @@ export default function Jobs() {
                       <label
                         key={type}
                         className={`flex items-center py-3 px-5 rounded-lg border-2 transition-all duration-300 ease-in-out
-        ${formData.jobTypes.includes(type)
-                            ? "bg-[#001571] text-white border-[#001571]"
-                            : "bg-white text-black border-gray-300"
-                          }
+        ${
+          formData.jobTypes.includes(type)
+            ? "bg-[#001571] text-white border-[#001571]"
+            : "bg-white text-black border-gray-300"
+        }
       `}
                       >
                         <input
@@ -615,10 +630,11 @@ export default function Jobs() {
                     value={formData.jobDescription}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${formErrors.jobDescription
+                    className={`mt-2 block w-full border ${
+                      formErrors.jobDescription
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
-                      } rounded-xl shadow-sm px-4 py-3`}
+                    } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.jobDescription && (
                     <p className="text-red-500 text-sm mt-1">
@@ -637,10 +653,11 @@ export default function Jobs() {
                     value={formData.keyResponsibilities}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${formErrors.keyResponsibilities
+                    className={`mt-2 block w-full border ${
+                      formErrors.keyResponsibilities
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
-                      } rounded-xl shadow-sm px-4 py-3`}
+                    } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.keyResponsibilities && (
                     <p className="text-red-500 text-sm mt-1">
@@ -659,10 +676,11 @@ export default function Jobs() {
                     value={formData.shortDescription}
                     onChange={handleShortDescriptionChange}
                     rows="2"
-                    className={`mt-2 block w-full border ${formErrors.shortDescription
+                    className={`mt-2 block w-full border ${
+                      formErrors.shortDescription
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
-                      } rounded-xl shadow-sm px-4 py-3`}
+                    } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.shortDescription && (
                     <p className="text-red-500 text-sm mt-1">
@@ -681,10 +699,11 @@ export default function Jobs() {
                     value={formData.requiredQualifications}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${formErrors.requiredQualifications
+                    className={`mt-2 block w-full border ${
+                      formErrors.requiredQualifications
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
-                      } rounded-xl shadow-sm px-4 py-3`}
+                    } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.requiredQualifications && (
                     <p className="text-red-500 text-sm mt-1">
@@ -703,10 +722,11 @@ export default function Jobs() {
                     value={formData.perksAndBenefits}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`mt-2 block w-full border ${formErrors.perksAndBenefits
+                    className={`mt-2 block w-full border ${
+                      formErrors.perksAndBenefits
                         ? "border-red-500"
                         : "border-[#B0B6D3]"
-                      } rounded-xl shadow-sm px-4 py-3`}
+                    } rounded-xl shadow-sm px-4 py-3`}
                   />
                   {formErrors.perksAndBenefits && (
                     <p className="text-red-500 text-sm mt-1">
@@ -720,10 +740,11 @@ export default function Jobs() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${isSubmitting
+                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${
+                      isSubmitting
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-blue-700"
-                      }`}
+                    }`}
                   >
                     {isSubmitting ? "Creating..." : "Create Job Post"}
                     <PiCheckCircle className="ml-2" size={20} />
