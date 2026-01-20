@@ -15,6 +15,7 @@ import PortalLoading from "@/app/Portal/loading";
 import { FaTimes } from "react-icons/fa";
 import PortalTicketsCard from "@/components/PortalComponents/portalTicketsCard";
 import Swal from "sweetalert2";
+import TimeInput from "@/components/TimeInput";
 
 export default function RecruitersTicketsPage(props) {
   const router = useRouter();
@@ -524,13 +525,12 @@ export default function RecruitersTicketsPage(props) {
                   <label className="block text-base font-semibold text-[#001571]">
                     Start Time
                   </label>
-                  <input
-                    type="time"
+                  <TimeInput
                     name="startTime"
                     value={formData.startTime}
                     onChange={handleInputChange}
-                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                     required
+                    className="mt-2"
                   />
                 </div>
 
@@ -538,13 +538,12 @@ export default function RecruitersTicketsPage(props) {
                   <label className="block text-base font-semibold text-[#001571]">
                     End Time
                   </label>
-                  <input
-                    type="time"
+                  <TimeInput
                     name="endTime"
                     value={formData.endTime}
                     onChange={handleInputChange}
-                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                     required
+                    className="mt-2"
                   />
                 </div>
 
@@ -697,13 +696,12 @@ export default function RecruitersTicketsPage(props) {
                   <label className="block text-base font-semibold text-[#001571]">
                     Start Time
                   </label>
-                  <input
-                    type="time"
+                  <TimeInput
                     name="startTime"
                     value={editFormData.startTime}
                     onChange={handleEditInputChange}
-                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                     required
+                    className="mt-2"
                   />
                 </div>
 
@@ -711,13 +709,12 @@ export default function RecruitersTicketsPage(props) {
                   <label className="block text-base font-semibold text-[#001571]">
                     End Time
                   </label>
-                  <input
-                    type="time"
+                  <TimeInput
                     name="endTime"
                     value={editFormData.endTime}
                     onChange={handleEditInputChange}
-                    className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3"
                     required
+                    className="mt-2"
                   />
                 </div>
 

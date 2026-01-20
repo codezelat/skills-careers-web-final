@@ -1,176 +1,115 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import React from "react";
 
-export default function TimeInput({ value, onChange, name, required = false }) {
-  const [hour, setHour] = useState("");
-  const [minute, setMinute] = useState("");
-  const [period, setPeriod] = useState("AM");
-  
-  const hourRef = useRef(null);
-  const minuteRef = useRef(null);
+/**
+ * Custom time input component that displays AM/PM format consistently across all environments
+ * @param {string} value - Time value in 24-hour format (HH:mm)
+ * @param {function} onChange - Callback function when time changes
+ * @param {string} name - Input name attribute
+ * @param {boolean} required - Whether the input is required
+ * @param {string} className - Additional CSS classes
+ */
+export default function TimeInput({ value, onChange, name, required = false, className = "" }) {
+  // Parse 24-hour format to hour, minute, and period
+  const parseTime = (time24) => {
+    if (!time24) return { hour: "", minute: "", period: "AM" };
+    
+    const [hours, minutes] = time24.split(":");
+    let hour = parseInt(hours, 10);
+    const period = hour >= 12 ? "PM" : "AM";
+    
+    if (hour === 0) hour = 12;
+    else if (hour > 12) hour -= 12;
+    
+    return {
+      hour: hour.toString(),
+      minute: minutes || "",
+      period
+    };
+  };
 
-  // Parse incoming value
-  useEffect(() => {
-    if (value) {
-      const [timePart, periodPart] = value.split(" ");
-      const [h, m] = timePart.split(":");
-      
-      if (periodPart) {
-        // Already in 12-hour format
-        setHour(h);
-        setMinute(m);
-        setPeriod(periodPart);
-      } else {
-        // Convert from 24-hour format
-        let hour24 = parseInt(h, 10);
-        const newPeriod = hour24 >= 12 ? "PM" : "AM";
-        hour24 = hour24 % 12 || 12;
-        setHour(hour24.toString());
-        setMinute(m);
-        setPeriod(newPeriod);
-      }
+  // Convert to 24-hour format for form submission
+  const convertTo24Hour = (hour, minute, period) => {
+    let hour24 = parseInt(hour, 10);
+    
+    if (period === "PM" && hour24 < 12) {
+      hour24 += 12;
+    } else if (period === "AM" && hour24 === 12) {
+      hour24 = 0;
     }
-  }, [value]);
+    
+    return `${hour24.toString().padStart(2, "0")}:${minute.padStart(2, "0")}`;
+  };
 
-  // Memoized function to update parent component
-  const updateTime = useCallback((newHour, newMinute, newPeriod) => {
+  const { hour, minute, period } = parseTime(value);
+
+  const handleChange = (field, newValue) => {
+    let newHour = hour;
+    let newMinute = minute;
+    let newPeriod = period;
+    
+    if (field === "hour") newHour = newValue;
+    if (field === "minute") newMinute = newValue;
+    if (field === "period") newPeriod = newValue;
+    
+    // Only trigger onChange if we have valid hour and minute
     if (newHour && newMinute) {
-      // Convert to 24-hour format for storage
-      let hour24 = parseInt(newHour, 10);
-      if (newPeriod === "PM" && hour24 !== 12) {
-        hour24 += 12;
-      } else if (newPeriod === "AM" && hour24 === 12) {
-        hour24 = 0;
-      }
+      const time24 = convertTo24Hour(newHour, newMinute, newPeriod);
       
-      const time24 = `${hour24.toString().padStart(2, "0")}:${newMinute}`;
-      onChange({ target: { name, value: time24 } });
-    }
-  }, [name, onChange]);
-
-  const handleHourChange = (e) => {
-    let val = e.target.value.replace(/\D/g, "");
-    
-    // Limit to 2 digits
-    if (val.length > 2) val = val.slice(0, 2);
-    
-    // Validate range
-    if (val) {
-      const numVal = parseInt(val, 10);
-      if (numVal > 12) val = "12";
-      if (numVal < 1 && val.length === 2) val = "01";
-    }
-    
-    setHour(val);
-    
-    // Auto-advance to minutes when 2 digits entered or value >= 2
-    if (val.length === 2 || (val.length === 1 && parseInt(val, 10) >= 2)) {
-      minuteRef.current?.focus();
-    }
-    
-    // Update parent if we have all values
-    if (val && minute) {
-      updateTime(val, minute, period);
-    }
-  };
-
-  const handleHourBlur = () => {
-    // Pad single digit hours and validate
-    if (hour) {
-      const numHour = parseInt(hour, 10);
-      if (numHour >= 1 && numHour <= 12) {
-        const paddedHour = numHour.toString();
-        setHour(paddedHour);
-        if (minute) {
-          updateTime(paddedHour, minute, period);
+      onChange({
+        target: {
+          name,
+          value: time24,
+          type: "time"
         }
-      } else {
-        setHour("");
-      }
+      });
     }
   };
 
-  const handleMinuteChange = (e) => {
-    let val = e.target.value.replace(/\D/g, "");
-    
-    // Limit to 2 digits
-    if (val.length > 2) val = val.slice(0, 2);
-    
-    // Validate range
-    if (val) {
-      const numVal = parseInt(val, 10);
-      if (numVal > 59) val = "59";
-    }
-    
-    setMinute(val);
-    
-    // Update parent if we have all values
-    if (hour && val.length === 2) {
-      const paddedVal = val.padStart(2, "0");
-      setMinute(paddedVal);
-      updateTime(hour, paddedVal, period);
-    }
-  };
+  // Generate hour options (1-12)
+  const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
 
-  const handleMinuteBlur = () => {
-    // Pad and validate minutes
-    if (minute) {
-      const numMinute = parseInt(minute, 10);
-      if (numMinute >= 0 && numMinute <= 59) {
-        const paddedMinute = numMinute.toString().padStart(2, "0");
-        setMinute(paddedMinute);
-        if (hour) {
-          updateTime(hour, paddedMinute, period);
-        }
-      } else {
-        setMinute("");
-      }
-    }
-  };
-
-  const handlePeriodChange = (e) => {
-    const newPeriod = e.target.value;
-    setPeriod(newPeriod);
-    if (hour && minute) {
-      updateTime(hour, minute, newPeriod);
-    }
-  };
+  // Generate minute options (00-59)
+  const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, "0"));
 
   return (
-    <div className="flex items-center gap-2">
-      <input
-        ref={hourRef}
-        type="text"
-        inputMode="numeric"
+    <div className={`flex gap-2 ${className}`}>
+      {/* Hour */}
+      <select
         value={hour}
-        onChange={handleHourChange}
-        onBlur={handleHourBlur}
-        placeholder="HH"
-        maxLength="2"
+        onChange={(e) => handleChange("hour", e.target.value)}
+        className="block w-1/3 border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3 focus:ring-2 focus:ring-[#001571] focus:border-transparent"
         required={required}
-        aria-label="Hour"
-        className="w-16 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-      />
-      <span className="text-gray-500 font-semibold">:</span>
-      <input
-        ref={minuteRef}
-        type="text"
-        inputMode="numeric"
+      >
+        <option value="">Hour</option>
+        {hours.map((h) => (
+          <option key={h} value={h}>
+            {h}
+          </option>
+        ))}
+      </select>
+
+      {/* Minute */}
+      <select
         value={minute}
-        onChange={handleMinuteChange}
-        onBlur={handleMinuteBlur}
-        placeholder="MM"
-        maxLength="2"
+        onChange={(e) => handleChange("minute", e.target.value)}
+        className="block w-1/3 border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3 focus:ring-2 focus:ring-[#001571] focus:border-transparent"
         required={required}
-        aria-label="Minute"
-        className="w-16 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-      />
+      >
+        <option value="">Min</option>
+        {minutes.map((m) => (
+          <option key={m} value={m}>
+            {m}
+          </option>
+        ))}
+      </select>
+
+      {/* AM/PM */}
       <select
         value={period}
-        onChange={handlePeriodChange}
+        onChange={(e) => handleChange("period", e.target.value)}
+        className="block w-1/3 border border-[#B0B6D3] rounded-xl shadow-sm px-4 py-3 focus:ring-2 focus:ring-[#001571] focus:border-transparent"
         required={required}
-        aria-label="Period"
-        className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
       >
         <option value="AM">AM</option>
         <option value="PM">PM</option>

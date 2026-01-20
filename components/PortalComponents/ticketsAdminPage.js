@@ -275,10 +275,6 @@ export default function AdminsTicketsPage(props) {
     setIsSubmitting(true);
 
     try {
-      // Convert times to 12-hour format before sending
-      const startTime12Hour = convertTo12HourFormat(editFormData.startTime);
-      const endTime12Hour = convertTo12HourFormat(editFormData.endTime);
-
       // Create FormData object
       const formDataToSend = new FormData();
       formDataToSend.append("_id", editFormData._id);
@@ -286,8 +282,8 @@ export default function AdminsTicketsPage(props) {
       formDataToSend.append("description", editFormData.description);
       formDataToSend.append("location", editFormData.location);
       formDataToSend.append("date", editFormData.date);
-      formDataToSend.append("startTime", startTime12Hour);
-      formDataToSend.append("endTime", endTime12Hour);
+      formDataToSend.append("startTime", editFormData.startTime);
+      formDataToSend.append("endTime", editFormData.endTime);
       formDataToSend.append("capacity", editFormData.capacity);
       formDataToSend.append("closingDate", editFormData.closingDate);
       formDataToSend.append("recruiterId", editFormData.recruiterId);
@@ -559,28 +555,26 @@ export default function AdminsTicketsPage(props) {
                   <label className="block text-base font-semibold text-[#001571]">
                     Start Time
                   </label>
-                  <div className="mt-2">
-                    <TimeInput
-                      name="startTime"
-                      value={formData.startTime}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+                  <TimeInput
+                    name="startTime"
+                    value={formData.startTime}
+                    onChange={handleInputChange}
+                    required
+                    className="mt-2"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-base font-semibold text-[#001571]">
                     End Time
                   </label>
-                  <div className="mt-2">
-                    <TimeInput
-                      name="endTime"
-                      value={formData.endTime}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+                  <TimeInput
+                    name="endTime"
+                    value={formData.endTime}
+                    onChange={handleInputChange}
+                    required
+                    className="mt-2"
+                  />
                 </div>
 
                 <div>
@@ -743,28 +737,26 @@ export default function AdminsTicketsPage(props) {
                   <label className="block text-base font-semibold text-[#001571]">
                     Start Time
                   </label>
-                  <div className="mt-2">
-                    <TimeInput
-                      name="startTime"
-                      value={editFormData.startTime}
-                      onChange={handleEditInputChange}
-                      required
-                    />
-                  </div>
+                  <TimeInput
+                    name="startTime"
+                    value={editFormData.startTime}
+                    onChange={handleEditInputChange}
+                    required
+                    className="mt-2"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-base font-semibold text-[#001571]">
                     End Time
                   </label>
-                  <div className="mt-2">
-                    <TimeInput
-                      name="endTime"
-                      value={editFormData.endTime}
-                      onChange={handleEditInputChange}
-                      required
-                    />
-                  </div>
+                  <TimeInput
+                    name="endTime"
+                    value={editFormData.endTime}
+                    onChange={handleEditInputChange}
+                    required
+                    className="mt-2"
+                  />
                 </div>
 
                 <div>
