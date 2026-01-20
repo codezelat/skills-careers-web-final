@@ -108,7 +108,7 @@ export default function RecruiterPostedJobs(props) {
         [activeTab]: newPage,
       }));
     }
-  }, [searchParams, activeTab]);
+  }, [searchParams, activeTab, pageStates]);
 
   useEffect(() => {
     if (session?.user?.email && session?.user?.id) {
@@ -391,7 +391,7 @@ export default function RecruiterPostedJobs(props) {
       params.set("page", savedPage.toString());
       router.push(`?${params.toString()}`, { scroll: false });
     }
-  }, [activeTab]);
+  }, [activeTab, pageStates, router, searchParams]);
 
   // Validate current page when filters or tabs change
   useEffect(() => {
@@ -404,7 +404,8 @@ export default function RecruiterPostedJobs(props) {
       handlePageChange(1);
     }
     // Otherwise, maintain current page
-  }, [filteredJobs.length, activeTab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredJobs.length, activeTab, recruitersPerPage]);
 
   // Smart pagination: generates array of page numbers with ellipsis
   const getPageNumbers = () => {

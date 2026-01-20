@@ -98,6 +98,7 @@ export default function Candidates() {
     };
 
     if (session?.user?.email) fetchJobseekers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, searchQuery, activeTab]);
 
   const filterJobseekers = (jobseekers, query, tab, jobTypes = selectedJobTypes) => {
@@ -120,6 +121,7 @@ export default function Candidates() {
 
   useEffect(() => {
     filterJobseekers(jobseekers, searchQuery, activeTab, selectedJobTypes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, activeTab, jobseekers, selectedJobTypes]);
 
   const handleJobTypeToggle = (type) => {

@@ -61,7 +61,7 @@ export default function Jobs() {
         [activeTab]: newPage,
       }));
     }
-  }, [searchParams, activeTab]);
+  }, [searchParams, activeTab, pageStates]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -124,7 +124,8 @@ export default function Jobs() {
       // Otherwise, maintain current page (don't reset on tab switch)
     };
     filterJobs();
-  }, [searchQuery, activeTab, jobs, selectedJobTypes]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, activeTab, jobs, selectedJobTypes, jobsPerPage]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -150,7 +151,7 @@ export default function Jobs() {
       params.set("page", savedPage.toString());
       router.push(`?${params.toString()}`, { scroll: false });
     }
-  }, [activeTab]);
+  }, [activeTab, pageStates, router, searchParams]);
 
   // Smart pagination: generates array of page numbers with ellipsis
   const getPageNumbers = () => {

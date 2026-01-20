@@ -5,22 +5,9 @@ import { usePathname } from "next/navigation";
 
 export default function SideMenuSection() {
   const [activeButton, setActiveButton] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session, status } = useSession();
   const pathname = usePathname();
-
-  // Don't render sidebar until session is loaded
-  if (status === "loading") {
-    return (
-      <div className="w-3/4 sm:w-1/2 lg:w-1/5 h-[calc(100vh-48px)] bg-white rounded-3xl flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#001571]"></div>
-      </div>
-    );
-  }
-
-  // Don't render if not authenticated
-  if (status === "unauthenticated" || !session?.user?.role) {
-    return null;
-  }
 
   useEffect(() => {
     if (pathname.includes("/dashboard")) setActiveButton("Dashboard");
@@ -44,7 +31,19 @@ export default function SideMenuSection() {
     else if (pathname.includes("/settings")) setActiveButton("Settings");
   }, [pathname]);
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Don't render sidebar until session is loaded
+  if (status === "loading") {
+    return (
+      <div className="w-3/4 sm:w-1/2 lg:w-1/5 h-[calc(100vh-48px)] bg-white rounded-3xl flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#001571]"></div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (status === "unauthenticated" || !session?.user?.role) {
+    return null;
+  }
 
   return (
     <>
