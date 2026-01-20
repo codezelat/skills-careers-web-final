@@ -22,7 +22,7 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "dotenv": "^16.4.7",
-    "jspdf": "^3.0.0",
+    "jspdf": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "mongodb": "^6.12.0",
