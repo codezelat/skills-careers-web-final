@@ -98,14 +98,17 @@ export default function RecruiterPostedJobs(props) {
     }
   }, [status, router]);
 
-  // Sync currentPage with URL params
+  // Sync current tab's page with URL params
   useEffect(() => {
     const pageParam = searchParams.get("page");
     const newPage = pageParam ? parseInt(pageParam, 10) : 1;
-    if (newPage >= 1 && newPage !== currentPage) {
-      setCurrentPage(newPage);
+    if (newPage >= 1 && newPage !== pageStates[activeTab]) {
+      setPageStates(prev => ({
+        ...prev,
+        [activeTab]: newPage
+      }));
     }
-  }, [searchParams, currentPage]);
+  }, [searchParams, activeTab]);
 
   useEffect(() => {
     if (session?.user?.email && session?.user?.id) {
@@ -343,11 +346,16 @@ export default function RecruiterPostedJobs(props) {
     setSelectedJobId(jobId);
   };
 
-  // pagination function - Initialize from URL params
-  const [currentPage, setCurrentPage] = useState(() => {
+  // pagination function - Separate state for each tab
+  const [pageStates, setPageStates] = useState(() => {
     const pageParam = searchParams.get("page");
-    return pageParam ? parseInt(pageParam, 10) : 1;
+    const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
+    return {
+      all: initialPage,
+      restricted: 1
+    };
   });
+  const currentPage = pageStates[activeTab];
   const recruitersPerPage = 6;
 
   const totalPages = Math.ceil(filteredJobs.length / recruitersPerPage);
@@ -361,13 +369,29 @@ export default function RecruiterPostedJobs(props) {
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
+      // Update the current tab's page state
+      setPageStates(prev => ({
+        ...prev,
+        [activeTab]: newPage
+      }));
       // Update URL to preserve page state
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", newPage.toString());
       router.push(`?${params.toString()}`, { scroll: false });
     }
   };
+
+  // Restore tab's saved page when switching tabs
+  useEffect(() => {
+    const savedPage = pageStates[activeTab];
+    const params = new URLSearchParams(searchParams.toString());
+    const currentUrlPage = parseInt(params.get("page") || "1", 10);
+    
+    if (savedPage !== currentUrlPage) {
+      params.set("page", savedPage.toString());
+      router.push(`?${params.toString()}`, { scroll: false });
+    }
+  }, [activeTab]);
 
   // Validate current page when filters or tabs change
   useEffect(() => {

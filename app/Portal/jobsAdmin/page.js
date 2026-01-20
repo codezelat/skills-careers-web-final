@@ -31,11 +31,16 @@ export default function Jobs() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
-  // Pagination - Initialize from URL params
-  const [currentPage, setCurrentPage] = useState(() => {
+  // Pagination - Separate state for each tab
+  const [pageStates, setPageStates] = useState(() => {
     const pageParam = searchParams.get("page");
-    return pageParam ? parseInt(pageParam, 10) : 1;
+    const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
+    return {
+      all: initialPage,
+      restricted: 1
+    };
   });
+  const currentPage = pageStates[activeTab];
   const jobsPerPage = 6;
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
@@ -46,14 +51,17 @@ export default function Jobs() {
     if (status === "unauthenticated") router.push("/admin");
   }, [status, router]);
 
-  // Sync currentPage with URL params
+  // Sync current tab's page with URL params
   useEffect(() => {
     const pageParam = searchParams.get("page");
     const newPage = pageParam ? parseInt(pageParam, 10) : 1;
-    if (newPage >= 1 && newPage !== currentPage) {
-      setCurrentPage(newPage);
+    if (newPage >= 1 && newPage !== pageStates[activeTab]) {
+      setPageStates(prev => ({
+        ...prev,
+        [activeTab]: newPage
+      }));
     }
-  }, [searchParams, currentPage]);
+  }, [searchParams, activeTab]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,13 +128,29 @@ export default function Jobs() {
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
+      // Update the current tab's page state
+      setPageStates(prev => ({
+        ...prev,
+        [activeTab]: newPage
+      }));
       // Update URL to preserve page state
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", newPage.toString());
       router.push(`?${params.toString()}`, { scroll: false });
     }
   };
+
+  // Restore tab's saved page when switching tabs
+  useEffect(() => {
+    const savedPage = pageStates[activeTab];
+    const params = new URLSearchParams(searchParams.toString());
+    const currentUrlPage = parseInt(params.get("page") || "1", 10);
+    
+    if (savedPage !== currentUrlPage) {
+      params.set("page", savedPage.toString());
+      router.push(`?${params.toString()}`, { scroll: false });
+    }
+  }, [activeTab]);
 
   const JOB_TYPE_OPTIONS = [
     "On Site",
