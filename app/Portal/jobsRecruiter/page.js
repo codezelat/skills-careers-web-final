@@ -110,6 +110,7 @@ export default function RecruiterPostedJobs(props) {
         [activeTab]: newPage,
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, activeTab]);
 
   useEffect(() => {

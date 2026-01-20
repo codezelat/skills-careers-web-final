@@ -63,6 +63,7 @@ export default function Jobs() {
         [activeTab]: newPage,
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, activeTab]);
 
   useEffect(() => {
