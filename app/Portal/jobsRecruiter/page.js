@@ -102,13 +102,15 @@ export default function RecruiterPostedJobs(props) {
   useEffect(() => {
     const pageParam = searchParams.get("page");
     const newPage = pageParam ? parseInt(pageParam, 10) : 1;
-    if (newPage >= 1 && newPage !== pageStates[activeTab]) {
+    const currentPageState = pageStates[activeTab];
+    
+    if (newPage >= 1 && newPage !== currentPageState) {
       setPageStates((prev) => ({
         ...prev,
         [activeTab]: newPage,
       }));
     }
-  }, [searchParams, activeTab, pageStates]);
+  }, [searchParams, activeTab]);
 
   useEffect(() => {
     if (session?.user?.email && session?.user?.id) {
@@ -384,14 +386,15 @@ export default function RecruiterPostedJobs(props) {
   // Restore tab's saved page when switching tabs
   useEffect(() => {
     const savedPage = pageStates[activeTab];
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     const currentUrlPage = parseInt(params.get("page") || "1", 10);
 
     if (savedPage !== currentUrlPage) {
       params.set("page", savedPage.toString());
       router.push(`?${params.toString()}`, { scroll: false });
     }
-  }, [activeTab, pageStates, router, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   // Validate current page when filters or tabs change
   useEffect(() => {
