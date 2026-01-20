@@ -11,7 +11,7 @@ export async function DELETE(req) {
     if (!ObjectId.isValid(recruiterId)) {
       return NextResponse.json(
         { message: "Invalid Recruiter ID" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -27,7 +27,7 @@ export async function DELETE(req) {
     if (!recruiter) {
       return NextResponse.json(
         { message: "Recruiter not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -43,7 +43,7 @@ export async function DELETE(req) {
           recruiterName: "Deleted Account",
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     // 2. Mark all job applications from this recruiter's jobs
@@ -54,16 +54,19 @@ export async function DELETE(req) {
           recruiterDeleted: true,
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     // 3. Delete all tickets (events) created by this recruiter and their enrollments
-    const recruiterTickets = await db.collection("tickets").find({
-      recruiterId: new ObjectId(recruiterId),
-    }).toArray();
+    const recruiterTickets = await db
+      .collection("tickets")
+      .find({
+        recruiterId: new ObjectId(recruiterId),
+      })
+      .toArray();
 
-    const ticketIds = recruiterTickets.map(ticket => ticket._id);
-    
+    const ticketIds = recruiterTickets.map((ticket) => ticket._id);
+
     if (ticketIds.length > 0) {
       // Delete all enrollments for these tickets
       await db.collection("ticketenrollments").deleteMany({
@@ -91,7 +94,7 @@ export async function DELETE(req) {
     if (recruiterResult.deletedCount === 0) {
       return NextResponse.json(
         { message: "Recruiter deletion failed" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -104,13 +107,13 @@ export async function DELETE(req) {
           tickets: ticketIds.length,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Recruiter deletion error:", error);
     return NextResponse.json(
       { message: "Something went wrong.", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   } finally {
     if (client) {
