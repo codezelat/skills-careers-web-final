@@ -12,6 +12,11 @@ function PortalTicketsCard({ ticket, onEdit, onDelete }) {
 
     const { _id, createdAt, name, location, date } = ticket;
 
+    // Sync local state with prop changes
+    useEffect(() => {
+        setIsPublished(ticket.isPublished || false);
+    }, [ticket.isPublished]);
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
