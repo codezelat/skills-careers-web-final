@@ -152,6 +152,55 @@ export default function Jobs() {
     }
   }, [activeTab]);
 
+  // Smart pagination: generates array of page numbers with ellipsis
+  const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      // Show all pages if 7 or fewer
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages = [];
+    const showEllipsisStart = currentPage > 3;
+    const showEllipsisEnd = currentPage < totalPages - 2;
+
+    // Always show first page
+    pages.push(1);
+
+    if (showEllipsisStart) {
+      pages.push('...');
+    } else {
+      // Show pages 2, 3 if we're near the start
+      if (totalPages >= 2) pages.push(2);
+      if (totalPages >= 3 && currentPage <= 3) pages.push(3);
+    }
+
+    // Show current page and neighbors
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+    
+    for (let i = start; i <= end; i++) {
+      if (!pages.includes(i) && i !== 1 && i !== totalPages) {
+        pages.push(i);
+      }
+    }
+
+    if (showEllipsisEnd) {
+      pages.push('...');
+    } else {
+      // Show second-to-last page if we're near the end
+      if (totalPages >= 3 && currentPage >= totalPages - 2 && !pages.includes(totalPages - 1)) {
+        pages.push(totalPages - 1);
+      }
+    }
+
+    // Always show last page
+    if (totalPages > 1 && !pages.includes(totalPages)) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
   const JOB_TYPE_OPTIONS = [
     "On Site",
     "Hybrid",
@@ -446,45 +495,56 @@ export default function Jobs() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-4">
-        <nav className="flex gap-2">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === 1
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
-          >
-            <BsChevronLeft size={15} />
-          </button>
-          {Array.from({ length: totalPages }, (_, index) => (
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-4">
+          <nav className="flex gap-2 items-center">
             <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1
-                  ? "bg-blue-700 text-white"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-[10px] py-2 rounded-lg ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
                   : "bg-gray-200 hover:bg-gray-400"
               }`}
             >
-              {index + 1}
+              <BsChevronLeft size={15} />
             </button>
-          ))}
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={`px-[10px] py-2 rounded-lg ${
-              currentPage === totalPages
-                ? "bg-gray-300"
-                : "bg-gray-200 hover:bg-gray-400"
-            }`}
-          >
-            <BsChevronRight size={15} />
-          </button>
-        </nav>
-      </div>
+            {getPageNumbers().map((pageNum, index) => (
+              pageNum === '...' ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 py-2 text-gray-500"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  className={`px-4 py-2 rounded-lg ${
+                    currentPage === pageNum
+                      ? "bg-blue-700 text-white"
+                      : "bg-gray-200 hover:bg-gray-400"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              )
+            ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-[10px] py-2 rounded-lg ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-gray-200 hover:bg-gray-400"
+              }`}
+            >
+              <BsChevronRight size={15} />
+            </button>
+          </nav>
+        </div>
+      )}
 
       {/* Create job form */}
       {isFormVisible && (
