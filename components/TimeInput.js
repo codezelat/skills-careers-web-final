@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 /**
  * Custom time input component that displays AM/PM format consistently across all environments
@@ -28,31 +28,51 @@ export default function TimeInput({ value, onChange, name, required = false, cla
     };
   };
 
+  const initialTime = parseTime(value);
+  const [hour, setHour] = useState(initialTime.hour);
+  const [minute, setMinute] = useState(initialTime.minute);
+  const [period, setPeriod] = useState(initialTime.period);
+
+  // Sync with external value changes
+  useEffect(() => {
+    const parsed = parseTime(value);
+    setHour(parsed.hour);
+    setMinute(parsed.minute);
+    setPeriod(parsed.period);
+  }, [value]);
+
   // Convert to 24-hour format for form submission
-  const convertTo24Hour = (hour, minute, period) => {
-    let hour24 = parseInt(hour, 10);
+  const convertTo24Hour = (h, m, p) => {
+    if (!h || !m) return "";
     
-    if (period === "PM" && hour24 < 12) {
+    let hour24 = parseInt(h, 10);
+    
+    if (p === "PM" && hour24 < 12) {
       hour24 += 12;
-    } else if (period === "AM" && hour24 === 12) {
+    } else if (p === "AM" && hour24 === 12) {
       hour24 = 0;
     }
     
-    return `${hour24.toString().padStart(2, "0")}:${minute.padStart(2, "0")}`;
+    return `${hour24.toString().padStart(2, "0")}:${m.padStart(2, "0")}`;
   };
-
-  const { hour, minute, period } = parseTime(value);
 
   const handleChange = (field, newValue) => {
     let newHour = hour;
     let newMinute = minute;
     let newPeriod = period;
     
-    if (field === "hour") newHour = newValue;
-    if (field === "minute") newMinute = newValue;
-    if (field === "period") newPeriod = newValue;
+    if (field === "hour") {
+      newHour = newValue;
+      setHour(newValue);
+    } else if (field === "minute") {
+      newMinute = newValue;
+      setMinute(newValue);
+    } else if (field === "period") {
+      newPeriod = newValue;
+      setPeriod(newValue);
+    }
     
-    // Only trigger onChange if we have valid hour and minute
+    // Trigger onChange if we have valid hour and minute
     if (newHour && newMinute) {
       const time24 = convertTo24Hour(newHour, newMinute, newPeriod);
       
