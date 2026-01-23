@@ -19,7 +19,8 @@ export async function GET(req) {
     const db = client.db();
 
     // Create regex for case-insensitive partial match
-    const searchRegex = new RegExp(query, "i");
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const searchRegex = new RegExp(escapedQuery, "i");
 
     // Perform the search using MongoDB
     const tickets = await db
@@ -59,4 +60,3 @@ export async function GET(req) {
     }
   }
 }
-
