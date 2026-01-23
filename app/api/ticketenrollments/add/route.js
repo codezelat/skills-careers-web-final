@@ -53,7 +53,10 @@ export async function POST(req) {
     }
 
     // Check capacity
-    const currentEnrollment = parseInt(ticket.enrolledCount);
+    const parsedEnrollment = Number.parseInt(ticket.enrolledCount, 10);
+    const currentEnrollment = Number.isFinite(parsedEnrollment)
+      ? parsedEnrollment
+      : 0;
     // Only check capacity if it's not null (unlimited)
     if (ticket.capacity !== null && currentEnrollment >= ticket.capacity) {
       return NextResponse.json(
