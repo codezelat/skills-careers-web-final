@@ -18,8 +18,8 @@ export async function GET(req) {
       console.log("Invalid ID format:", { _id, userId });
       return NextResponse.json(
         { message: "Invalid or missing ID format" },
-        { status: 400 },
         {
+          status: 400,
           headers: {
             "Cache-Control":
               "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
@@ -52,8 +52,8 @@ export async function GET(req) {
       console.log("Recruiter final status: Not Found");
       return NextResponse.json(
         { message: "Recruiter not found" },
-        { status: 404 },
         {
+          status: 404,
           headers: {
             "Cache-Control":
               "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
@@ -115,8 +115,8 @@ export async function GET(req) {
     console.error("Recruiter fetch error:", error);
     return NextResponse.json(
       { message: "Failed to fetch Recruiter details", error: error.message },
-      { status: 500 },
       {
+        status: 500,
         headers: {
           "Cache-Control":
             "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
