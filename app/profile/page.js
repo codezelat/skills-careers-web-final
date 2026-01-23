@@ -57,7 +57,7 @@ function Profile() {
           );
           if (response.ok) {
             const data = await response.json();
-            setJobSeekerDetails(data);
+            setJobSeekerDetails(data.jobseeker || {});
           } else {
             console.error("Failed to fetch job seeker details");
           }
@@ -71,11 +71,11 @@ function Profile() {
   }, [session]);
 
   useEffect(() => {
-    if (session?.user?.id) {
+    if (jobSeekerDetails?._id) {
       const fetchAppliedJobs = async () => {
         try {
           const response = await fetch(
-            `/api/job/appliedjobs?id=${session.user.id}`
+            `/api/job/appliedjobs?id=${jobSeekerDetails._id}`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch applied jobs.");
@@ -89,7 +89,7 @@ function Profile() {
       };
       fetchAppliedJobs();
     }
-  }, [session]);
+  }, [jobSeekerDetails?._id]);
 
   // In your Profile component
   const handleImageChange = async (e) => {

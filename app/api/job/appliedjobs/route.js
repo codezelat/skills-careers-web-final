@@ -13,6 +13,12 @@ export async function GET(req) {
         { status: 400 }
       );
     }
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { message: "Invalid jobseeker ID format" },
+        { status: 400 }
+      );
+    }
 
     const client = await connectToDatabase();
     const db = client.db();
