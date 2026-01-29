@@ -54,6 +54,7 @@ function AuthForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isOtherCategory, setIsOtherCategory] = useState(false);
+  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
   const [contactNumber, setContactNumber] = useState("");
 
   const recruiterNameInputRef = useRef();
@@ -133,6 +134,11 @@ function AuthForm() {
   async function submitHandler(event) {
     event.preventDefault();
     setIsSubmitting(true);
+
+    if (!isPrivacyChecked) {
+      setIsSubmitting(false);
+      return;
+    }
 
     if (!validateForm()) {
       setIsSubmitting(false);
@@ -405,8 +411,30 @@ function AuthForm() {
           <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
         )}
       </label>
+      {/* Privacy Notice Checkbox */}
+      <div className="flex items-start mt-4 mb-4">
+        <input
+          type="checkbox"
+          id="privacy-policy-recruiter"
+          checked={isPrivacyChecked}
+          onChange={(e) => setIsPrivacyChecked(e.target.checked)}
+          className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        />
+        <label htmlFor="privacy-policy-recruiter" className="ml-2 text-sm text-gray-700">
+          I indicate that I have read and agree to the{" "}
+          <Link href="/privacypolicy" className="text-blue-900 font-bold hover:underline">
+            Privacy Notice
+          </Link>{" "}
+          and{" "}
+          <Link href="/termsofuse" className="text-blue-900 font-bold hover:underline">
+            Terms and Conditions
+          </Link>
+          .
+        </label>
+      </div>
+
       <Button
-        disabled={isSubmitting}
+        disabled={isSubmitting || !isPrivacyChecked}
         className="w-full py-3 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <span className="flex items-center justify-center">

@@ -108,13 +108,13 @@ export default function PrivacyPolicy() {
             </li>
           </ul>
 
-          <p className="mb-2">
+          <div className="mb-2">
             <p className="my-2">
               For non-essential cookies (analytics, marketing), we request your
               consent in line with GDPR/ePrivacy. You may manage preferences via
               our Cookie Settings tool.
             </p>
-          </p>
+          </div>
         </div>
 
         <div className="text-base text-[#353e5e] mb-8">

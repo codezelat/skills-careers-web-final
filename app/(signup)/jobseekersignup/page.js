@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import Button from "@/components/Button";
 import PhoneNumberInput from "@/components/PhoneInput";
@@ -38,6 +39,7 @@ function AuthForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -114,6 +116,7 @@ function AuthForm() {
 
   async function submitHandler(event) {
     event.preventDefault();
+    if (!isPrivacyChecked) return;
     if (!validateForm()) return;
     setIsSubmitting(true);
 
@@ -174,9 +177,8 @@ function AuthForm() {
               onChange={(e) =>
                 setFormData({ ...formData, [field]: e.target.value })
               }
-              className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-                errors[field] ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors[field] ? "border-red-500" : "border-gray-300"
+                }`}
               placeholder={field === "firstName" ? "First Name" : "Last Name"}
             />
             {errors[field] && (
@@ -192,9 +194,8 @@ function AuthForm() {
           type="text"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-            errors.email ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.email ? "border-red-500" : "border-gray-300"
+            }`}
           placeholder="Email"
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
@@ -218,9 +219,8 @@ function AuthForm() {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.password ? "border-red-500" : "border-gray-300"
+              }`}
             placeholder="Enter Password"
           />
           <button
@@ -281,9 +281,8 @@ function AuthForm() {
             onChange={(e) =>
               setFormData({ ...formData, confirmPassword: e.target.value })
             }
-            className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${
-              errors.confirmPassword ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full p-3 border rounded-lg mt-1 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-medium ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+              }`}
             placeholder="Confirm Password"
           />
           <button
@@ -335,9 +334,31 @@ function AuthForm() {
         )}
       </label>
 
+      {/* Privacy Notice Checkbox */}
+      <div className="flex items-start mt-4">
+        <input
+          type="checkbox"
+          id="privacy-policy"
+          checked={isPrivacyChecked}
+          onChange={(e) => setIsPrivacyChecked(e.target.checked)}
+          className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        />
+        <label htmlFor="privacy-policy" className="ml-2 text-sm text-gray-700">
+          I indicate that I have read and agree to the{" "}
+          <Link href="/privacypolicy" className="text-blue-900 font-bold hover:underline">
+            Privacy Notice
+          </Link>{" "}
+          and{" "}
+          <Link href="/termsofuse" className="text-blue-900 font-bold hover:underline">
+            Terms and Conditions
+          </Link>
+          .
+        </label>
+      </div>
+
       {/* Register Button */}
       <Button
-        disabled={isSubmitting}
+        disabled={isSubmitting || !isPrivacyChecked}
         className="w-full py-3 mt-8 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         {isSubmitting ? "Please Wait..." : "Register"}
