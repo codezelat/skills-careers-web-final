@@ -1,4 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
+import { escapeRegex } from "@/lib/escapeRegex";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
@@ -19,7 +20,7 @@ export async function GET(req) {
     const db = client.db();
 
     // Create regex for case-insensitive partial match
-    const searchRegex = new RegExp(query, "i");
+    const searchRegex = new RegExp(escapeRegex(query), "i");
 
     // Perform the search using MongoDB
     const tickets = await db
@@ -59,4 +60,3 @@ export async function GET(req) {
     }
   }
 }
-
