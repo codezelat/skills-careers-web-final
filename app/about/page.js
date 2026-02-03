@@ -228,10 +228,10 @@ function aboutPage() {
 
             <p className="text-gray-800 text-sm md:text-base font-sans">
               We strive to simplify and elevate the recruitement experience for
-              bth job seekers and employers. By leveraging innovative technology
-              and personalized support, we connect the right talent with the
-              right opportunities, foresting growth , success, and a stronger
-              workforce for the future.
+              both job seekers and employers. By leveraging innovative
+              technology and personalized support, we connect the right talent
+              with the right opportunities, foresting growth , success, and a
+              stronger workforce for the future.
             </p>
           </div>
         </div>
