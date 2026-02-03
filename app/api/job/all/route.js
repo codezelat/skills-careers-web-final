@@ -17,11 +17,23 @@ export async function GET(req) {
 
     // Add ID filter if provided
     if (id) {
+      if (!ObjectId.isValid(id)) {
+        return NextResponse.json(
+          { message: "Invalid job ID format" },
+          { status: 400 }
+        );
+      }
       filter._id = new ObjectId(id);
     }
 
     // Add recruiter filter if provided
     if (recruiterId) {
+      if (!ObjectId.isValid(recruiterId)) {
+        return NextResponse.json(
+          { message: "Invalid recruiter ID format" },
+          { status: 400 }
+        );
+      }
       filter.recruiterId = new ObjectId(recruiterId);
     }
 
