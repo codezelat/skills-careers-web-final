@@ -37,7 +37,7 @@ function JobseekerProfile({ slug }) {
           const response = await fetch(`/api/jobseekerdetails/get?id=${slug}`);
           if (response.ok) {
             const data = await response.json();
-            setJobSeekerDetails(data);
+            setJobSeekerDetails(data.jobseeker || {});
           } else if (response.status === 404) {
             const errorData = await response.json();
             if (errorData.isDeleted) {
