@@ -36,7 +36,7 @@ export default function TicketsCard({ ticket, fetchTickets }) {
       router.push(`/login?callbackUrl=${callbackUrl}`);
       return;
     }
-    
+
     // User is authenticated, show booking form
     setShowBookingForm(true);
   };
@@ -54,7 +54,7 @@ export default function TicketsCard({ ticket, fetchTickets }) {
     try {
       // Fetch jobseeker details using session.user.id
       const jobseekerResponse = await fetch(
-        `/api/jobseekerdetails/get?userId=${session.user.id}`
+        `/api/jobseekerdetails/get?userId=${session.user.id}`,
       );
       const jobseekerData = await jobseekerResponse.json();
 
@@ -107,10 +107,8 @@ export default function TicketsCard({ ticket, fetchTickets }) {
   };
 
   return (
-
     <div className="mb-6 group">
       <div className="flex flex-col md:flex-row w-full border border-gray-100 rounded-2xl bg-white hover:bg-[#F8F9FC] p-5 md:p-6 shadow-sm hover:shadow-lg transition-all duration-300">
-
         {/* Image Container */}
         <div className="flex-shrink-0 w-full md:w-auto mb-6 md:mb-0 md:mr-8 flex justify-center items-center bg-gray-50 rounded-xl p-4 md:p-2">
           <Image
@@ -138,7 +136,8 @@ export default function TicketsCard({ ticket, fetchTickets }) {
 
               <div className="flex items-center justify-center md:justify-end w-full md:w-auto bg-gray-50 md:bg-transparent py-2 md:py-0 rounded-lg md:rounded-none">
                 {(() => {
-                  const availableSeats = ticket.capacity - (ticket.enrolledCount || 0);
+                  const availableSeats =
+                    ticket.capacity - (ticket.enrolledCount || 0);
 
                   if (availableSeats <= 0) {
                     return (
@@ -151,14 +150,16 @@ export default function TicketsCard({ ticket, fetchTickets }) {
                   if (availableSeats <= 10) {
                     return (
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 border border-red-100">
-                        {availableSeats} {availableSeats === 1 ? 'seat' : 'seats'} left
+                        {availableSeats}{" "}
+                        {availableSeats === 1 ? "seat" : "seats"} left
                       </span>
                     );
                   }
 
                   return (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#001571]/5 text-[#001571] border border-[#001571]/10">
-                      {availableSeats} {availableSeats === 1 ? 'seat' : 'seats'} available
+                      {availableSeats} {availableSeats === 1 ? "seat" : "seats"}{" "}
+                      available
                     </span>
                   );
                 })()}
@@ -171,7 +172,9 @@ export default function TicketsCard({ ticket, fetchTickets }) {
                 <div className="p-2 bg-[#001571]/5 rounded-lg text-[#001571]">
                   <FaLocationDot size={16} />
                 </div>
-                <p className="font-medium text-sm sm:text-base truncate">{ticket.location}</p>
+                <p className="font-medium text-sm sm:text-base truncate">
+                  {ticket.location}
+                </p>
               </div>
               <div className="flex items-center gap-3 text-gray-700">
                 <div className="p-2 bg-[#001571]/5 rounded-lg text-[#001571]">
@@ -190,7 +193,9 @@ export default function TicketsCard({ ticket, fetchTickets }) {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-500">
-              <span className="font-semibold text-[#001571]">Closing Date:</span>
+              <span className="font-semibold text-[#001571]">
+                Closing Date:
+              </span>
               <span>{ticket.closingDate}</span>
             </div>
 
