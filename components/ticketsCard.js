@@ -6,10 +6,12 @@ import { MdDateRange } from "react-icons/md";
 import { GiDuration } from "react-icons/gi";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 export default function TicketsCard({ ticket, fetchTickets }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -26,6 +28,19 @@ export default function TicketsCard({ ticket, fetchTickets }) {
     day: "numeric",
   });
 
+  const handleBookNowClick = () => {
+    // Check if user is authenticated
+    if (status === "unauthenticated" || !session) {
+      // Redirect to login with callback URL to return to tickets page
+      const callbackUrl = encodeURIComponent(window.location.pathname);
+      router.push(`/login?callbackUrl=${callbackUrl}`);
+      return;
+    }
+    
+    // User is authenticated, show booking form
+    setShowBookingForm(true);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -36,12 +51,6 @@ export default function TicketsCard({ ticket, fetchTickets }) {
     setError("");
     setIsSubmitting(true);
 
-    if (!session) {
-      setError("You must be logged in to book an event.");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
       // Fetch jobseeker details using session.user.id
       const jobseekerResponse = await fetch(
@@ -50,11 +59,7 @@ export default function TicketsCard({ ticket, fetchTickets }) {
       const jobseekerData = await jobseekerResponse.json();
 
       if (!jobseekerResponse.ok || !jobseekerData.jobseeker) {
-        throw new Error("Only job seekers can apply.");
-      }
-
-      if (!jobseekerResponse.ok || !jobseekerData.jobseeker) {
-        throw new Error("Failed to fetch jobseeker details.");
+        throw new Error("Only job seekers can book events.");
       }
 
       const jobseekerId = jobseekerData.jobseeker._id;
@@ -198,7 +203,7 @@ export default function TicketsCard({ ticket, fetchTickets }) {
           <div className="flex justify-center md:justify-end mt-6 pt-4 border-t border-gray-100 md:border-0 md:pt-0">
             {ticket.capacity - (ticket.enrolledCount || 0) > 0 ? (
               <button
-                onClick={() => setShowBookingForm(true)}
+                onClick={handleBookNowClick}
                 className="w-full md:w-auto group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-bold text-white transition-all duration-300 bg-[#001571] rounded-xl hover:bg-[#001c96] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#001571] focus:ring-offset-2"
               >
                 <span className="mr-2">Book Now</span>
