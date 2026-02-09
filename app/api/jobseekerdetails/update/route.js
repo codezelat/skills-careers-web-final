@@ -18,6 +18,12 @@ export async function PUT(req) {
     // Validate date of birth - cannot be in the future
     if (updatedDetails.dob) {
       const dob = new Date(updatedDetails.dob);
+      if (Number.isNaN(dob.getTime())) {
+        return NextResponse.json(
+          { message: "Date of birth must be a valid date." },
+          { status: 400 },
+        );
+      }
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
 
