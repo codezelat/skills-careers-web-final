@@ -427,7 +427,7 @@ export default function JobApplicationForm({ onClose, jobid }) {
       <div className="relative w-full max-h-[85vh] bg-white rounded-t-lg shadow-lg overflow-y-auto p-8">
         {/* Close icon */}
         <button
-          onClick={onClose}
+          onClick={handleCloseForm}
           className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
         >
           <FaTimes size={24} />
@@ -481,35 +481,28 @@ export default function JobApplicationForm({ onClose, jobid }) {
                     </div>
                     <div className="text-sm text-blue-900">
                       <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md font-medium text-blue-900 hover:text-indigo-500"
+                        htmlFor="cv"
+                        className="cursor-pointer rounded-md font-medium text-blue-900 hover:text-indigo-500"
                       >
-                        <span>
-                          Click or drag file to this area to upload your Resume
-                        </span>
-                        <input
-                          type="file"
-                          id="cv"
-                          className="hidden"
-                          onChange={handleFileChange}
-                          accept=".pdf,.doc,.docx"
-                        />
-                        {/* Hidden input needs label association or trigger */}
-                        <label
-                          htmlFor="cv"
-                          className="absolute inset-0 cursor-pointer"
-                        ></label>
-                        {fileError && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {fileError}
-                          </p>
-                        )}
-                        {selectedFile && (
-                          <p className="text-green-500 text-sm mt-1">
-                            Selected file: {selectedFile.name}
-                          </p>
-                        )}
+                        Click or drag file to this area to upload your Resume
                       </label>
+                      <input
+                        type="file"
+                        id="cv"
+                        className="hidden"
+                        onChange={handleFileChange}
+                        accept=".pdf,.doc,.docx"
+                      />
+                      {fileError && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {fileError}
+                        </p>
+                      )}
+                      {selectedFile && (
+                        <p className="text-green-500 text-sm mt-1">
+                          Selected file: {selectedFile.name}
+                        </p>
+                      )}
                     </div>
                     <p className="text-xs text-blue-900">
                       Please make sure to upload a PDF
@@ -593,7 +586,7 @@ export default function JobApplicationForm({ onClose, jobid }) {
                 </button>
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleCloseForm}
                   disabled={isSubmitting}
                   className="bg-gray-200 text-blue-900 px-4 py-2 rounded-md font-medium hover:bg-gray-300 border-blue-900 border-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
