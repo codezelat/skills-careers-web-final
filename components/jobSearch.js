@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { IoSearchSharp } from "react-icons/io5";
-import JobCard from "@/components/jobCard";
 import { useSearchParams } from "next/navigation";
 
 export default function JobSearch({ onSearchResults }) {
@@ -16,9 +14,7 @@ export default function JobSearch({ onSearchResults }) {
 
   // Initialize search query from URL parameter
   useEffect(() => {
-    if (urlSearchQuery) {
-      setSearchQuery(urlSearchQuery);
-    }
+    setSearchQuery(urlSearchQuery ?? "");
   }, [urlSearchQuery]);
 
   const fetchJobsWithRecruiters = async (searchTerm) => {
@@ -61,16 +57,27 @@ export default function JobSearch({ onSearchResults }) {
           }
         }
 
-        // Map jobs with recruiter details
-        const jobsWithRecruiters = jobsData.jobs.map((job) => {
-          const recruiterData = recruiterMap[job.recruiterId] || {};
-          return {
-            ...job,
-            industry: recruiterData.industry || "Unknown",
-            recruiterName: recruiterData.recruiterName || "Unknown",
-            logo: recruiterData.logo || "/images/default-image.jpg",
-          };
-        });
+        // Map jobs with recruiter details and filter out restricted recruiters
+        const jobsWithRecruiters = jobsData.jobs
+          .map((job) => {
+            const recruiterData = recruiterMap[job.recruiterId] || {};
+            return {
+              ...job,
+              industry:
+                job.jobCategory ||
+                recruiterData.industry ||
+                recruiterData.category ||
+                "Unknown",
+              recruiterName: recruiterData.recruiterName || "Unknown",
+              logo: recruiterData.logo || "/images/default-image.jpg",
+              isRestricted: recruiterData.isRestricted || false,
+            };
+          })
+          .filter((job) => !job.isRestricted);
+
+        jobsWithRecruiters.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
 
         setJobResults(jobsWithRecruiters);
         // Pass the results up to the parent component
