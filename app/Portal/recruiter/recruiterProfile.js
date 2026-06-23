@@ -15,6 +15,7 @@ import Image from "next/image";
 import { PiCheckCircle } from "react-icons/pi";
 import RecruiterEdit from "./recruiterEdit";
 import CredentialsForm from "./credentialsEditForm";
+import PhoneNumberInput from "@/components/PhoneInput";
 import Swal from "sweetalert2";
 
 // Helper function to format address
@@ -715,17 +716,33 @@ export default function RecruiterProfile({ slug }) {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-[#001571]">
-                      Contact Number
-                    </label>
-                    <input
-                      type="text"
-                      name="phone"
-                      disabled
-                      value={userDetails.contactNumber}
-                      className="mt-3 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm font-medium px-4 py-3"
+                    <PhoneNumberInput
+                      value={userDetails.contactNumber || ""}
+                      onChange={(phone) =>
+                        handleCredInputChange({
+                          target: { name: "contactNumber", value: phone },
+                        })
+                      }
+                      label="Contact Number"
+                      placeholder="Enter phone number"
                     />
                   </div>
+                </div>
+                <div className="flex justify-end mt-6">
+                  <button
+                    onClick={credSubmitHandler}
+                    disabled={isSubmitting}
+                    className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${
+                      isSubmitting
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-blue-700"
+                    }`}
+                  >
+                    {isSubmitting ? "Saving..." : "Save Changes"}
+                    <span className="ml-2">
+                      <PiCheckCircle size={20} />
+                    </span>
+                  </button>
                 </div>
               </div>
             </form>

@@ -8,6 +8,8 @@ import PortalLoading from "@/app/Portal/loading";
 import AdminEditForm from "@/app/Portal/profile/adminEditForm";
 import PasswordReset from "./passwordReset";
 import Swal from "sweetalert2";
+import PhoneNumberInput from "@/components/PhoneInput";
+import { PiCheckCircle } from "react-icons/pi";
 
 export default function AdminProfile() {
   const { data: session, status } = useSession();
@@ -302,14 +304,34 @@ export default function AdminProfile() {
             />
           </div>
           <div className="w-1/2 flex flex-col gap-3">
-            <h1 className="text-[#001571]">Contact Number</h1>
-            <input
-              type="text"
+            <PhoneNumberInput
               value={userDetails.contactNumber || ""}
-              disabled
-              className="px-4 py-2 w-full border-solid border-[1px] border-[#B0B6D3] rounded-xl font-semibold"
+              onChange={(phone) =>
+                handleCredInputChange({
+                  target: { name: "contactNumber", value: phone },
+                })
+              }
+              label="Contact Number"
+              placeholder="Enter phone number"
             />
           </div>
+        </div>
+
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={credSubmitHandler}
+            disabled={isSubmitting}
+            className={`bg-[#001571] text-white px-6 py-3 rounded-xl shadow-sm text-sm font-semibold flex items-center ${
+              isSubmitting
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-700"
+            }`}
+          >
+            {isSubmitting ? "Saving..." : "Save Changes"}
+            <span className="ml-2">
+              <PiCheckCircle size={20} />
+            </span>
+          </button>
         </div>
 
         <div className="w-full h-auto flex flex-row gap-5 text-base font-bold mt-8">
