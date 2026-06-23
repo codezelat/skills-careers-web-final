@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import { PiCheckCircle } from "react-icons/pi";
 import AddAnnouncement from "./AddAnnouncement";
 import { handleCloseForm, handleOpenForm } from "@/lib/handlers";
+import usePersistedPage from "@/lib/usePersistedPage";
 
 export default function Annoucements() {
   const router = useRouter();
@@ -133,7 +134,7 @@ export default function Annoucements() {
   };
 
   // pagination function
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const annoucementsPerPage = 6;
 
   const totalPages = Math.ceil(

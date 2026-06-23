@@ -11,6 +11,7 @@ import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
 
 import Swal from "sweetalert2";
+import usePersistedPage from "@/lib/usePersistedPage";
 
 export default function Candidates() {
   const [activeTab, setActiveTab] = useState("all");
@@ -21,7 +22,7 @@ export default function Candidates() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedJobTypes, setSelectedJobTypes] = useState([]);
 

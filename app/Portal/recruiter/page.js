@@ -4,6 +4,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { PiCheckCircle } from "react-icons/pi";
 import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import usePersistedPage from "@/lib/usePersistedPage";
 import { useSession } from "next-auth/react";
 import PortalLoading from "../loading";
 import AddRecruiterForm from "./addRecruiterForm";
@@ -20,7 +21,7 @@ export default function Recruiters() {
   const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const recruitersPerPage = 6;
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

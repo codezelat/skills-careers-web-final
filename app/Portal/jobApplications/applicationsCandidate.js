@@ -2,6 +2,7 @@ import PortalApplicationCard from "@/components/PortalComponents/portalApplicati
 import { useState, useEffect } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
+import usePersistedPage from "@/lib/usePersistedPage";
 
 export default function JobApplicationsCandidate() {
   const { data: session, status } = useSession({ required: true });
@@ -9,7 +10,7 @@ export default function JobApplicationsCandidate() {
   const [applications, setApplications] = useState([]);
   const [recruiterdetails, setRecruiterdetails] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const [isLoading, setIsLoading] = useState(true);
   const rowsPerPage = 10;
 
@@ -67,6 +68,7 @@ export default function JobApplicationsCandidate() {
     );
     setFilteredApplications(filtered);
     setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, applications]);
 
   // Pagination calculations

@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import PortalApplicationCard from "@/components/PortalComponents/portalApplicationCard";
+import usePersistedPage from "@/lib/usePersistedPage";
 
 export default function JobApplicationsRecruiter() {
   const { data: session, status } = useSession({ required: true });
   const [searchQuery, setSearchQuery] = useState("");
   const [applications, setApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const [isLoading, setIsLoading] = useState(true);
   const [showFavourite, setShowFavourite] = useState(false);
   const [showApproved, setShowApproved] = useState(false);
@@ -83,6 +84,7 @@ export default function JobApplicationsRecruiter() {
 
     setFilteredApplications(filtered);
     setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, applications, showFavourite, showApproved, showDeclined]);
 
   // Pagination calculations

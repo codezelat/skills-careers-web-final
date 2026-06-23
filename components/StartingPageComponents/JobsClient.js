@@ -5,13 +5,14 @@ import JobCard from "@/components/jobCard";
 import Image from "next/image";
 import DropdownButton from "@/components/dropDownButton";
 import JobLoading from "./jobLoading";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import JobSearch from "@/components/jobSearch";
 import JobApplicationForm from "@/app/jobs/[jobid]/apply/JobApplicationForm";
 import jobCategories from "@/data/jobCategories.json";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 function JobsClient() {
+  const router = useRouter();
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,11 +24,11 @@ function JobsClient() {
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
 
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
+  // Pagination State - initialize from URL
   const jobsPerPage = 12;
-
   const searchParams = useSearchParams();
+  const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
   const industryQueryParam = searchParams.get("industry");
   const searchQueryParam = searchParams.get("search");
   const jobTypeQueryParam = searchParams.get("jobType");
@@ -304,9 +305,21 @@ function JobsClient() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Scroll to top of results
     window.scrollTo({ top: 300, behavior: "smooth" });
   };
+
+  // Sync page number to URL whenever it changes
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (currentPage > 1) {
+      params.set("page", currentPage.toString());
+    } else {
+      params.delete("page");
+    }
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    router.replace(newUrl, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   return (
     <>

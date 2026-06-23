@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { IoAdd, IoSearchSharp } from "react-icons/io5";
 import { PiCheckCircle } from "react-icons/pi";
 import { RiDeleteBinFill } from "react-icons/ri";
+import usePersistedPage from "@/lib/usePersistedPage";
 import {
   BsChevronLeft,
   BsChevronRight,
@@ -104,7 +105,7 @@ export default function BookingAdminPage(props) {
   }, [fetchTicketEnrollments]);
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const ticketsPerPage = 6;
   const totalPages = Math.ceil(ticketEnrollments.length / ticketsPerPage);
   const indexOfLastTicket = currentPage * ticketsPerPage;

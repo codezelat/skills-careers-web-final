@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import RecruiterSearch from "@/components/RecruiterSearch";
 import DropdownButton from "@/components/dropDownButton";
@@ -9,6 +10,8 @@ import jobCategories from "@/data/jobCategories.json";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 export default function RecruitersContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [recruiters, setRecruiters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
@@ -17,9 +20,10 @@ export default function RecruitersContent() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
 
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
+  // Pagination State - initialize from URL
   const recruitersPerPage = 10;
+  const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
 
   useEffect(() => {
     async function fetchRecruiters() {
@@ -120,6 +124,19 @@ export default function RecruitersContent() {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 300, behavior: "smooth" });
   };
+
+  // Sync page number to URL whenever it changes
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (currentPage > 1) {
+      params.set("page", currentPage.toString());
+    } else {
+      params.delete("page");
+    }
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    router.replace(newUrl, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   return (
     <div className="bg-[#F5F5F5] w-full flex justify-center z-0">

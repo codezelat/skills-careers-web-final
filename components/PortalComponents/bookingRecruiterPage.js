@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { IoAdd, IoSearchSharp } from "react-icons/io5";
 import { PiCheckCircle } from "react-icons/pi";
 import { RiDeleteBinFill } from "react-icons/ri";
+import usePersistedPage from "@/lib/usePersistedPage";
 import {
   BsChevronLeft,
   BsChevronRight,
@@ -84,7 +85,7 @@ export default function BookingRecruiterPage(props) {
   }, []);
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const ticketsPerPage = 6;
   const safeTicketEnrollments = Array.isArray(ticketEnrollments)
     ? ticketEnrollments

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
 import { IoSearchSharp } from "react-icons/io5";
+import usePersistedPage from "@/lib/usePersistedPage";
 import PortalLoading from "../loading";
 import AddPressrelease from "./AddPressrelease";
 import PressReleaseCard from "@/components/PortalComponents/pressReleaseCard";
@@ -23,7 +24,7 @@ export default function PressReleaseList() {
   const [filteredPressreleases, setFilteredPressreleases] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPressrelease, setSelectedPressrelease] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const [loading, setLoading] = useState(true);
   const pressPerPage = 16;
 

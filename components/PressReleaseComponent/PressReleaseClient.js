@@ -4,6 +4,7 @@ import Image from "next/image";
 import PressReleaseCard from "@/components/PressReleaseCard";
 import { IoSearchSharp } from "react-icons/io5";
 import JobLoading from "./jobLoading";
+import usePersistedPage from "@/lib/usePersistedPage";
 
 function PressReleaseClient({ initialPressreleases = [] }) {
   const [pressReleases, setPressReleases] = useState([]);
@@ -13,7 +14,7 @@ function PressReleaseClient({ initialPressreleases = [] }) {
   const [filteredPressreleases, setFilteredPressreleases] =
     useState(initialPressreleases);
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const pressPerPage = 16;
 
   useEffect(() => {

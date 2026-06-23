@@ -3,9 +3,10 @@ import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import PortalApplicationCard from "./portalApplicationCard";
+import usePersistedPage from "@/lib/usePersistedPage";
 
 export default function AllApplications({ applications = [] }) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = usePersistedPage(1);
   const rowsPerPage = 10;
   const totalPages = Math.ceil(applications.length / rowsPerPage);
 
