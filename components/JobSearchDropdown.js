@@ -19,7 +19,6 @@ export default function JobSearchDropdown() {
         );
         if (!jobsResponse.ok) throw new Error("Job search failed");
         const jobsData = await jobsResponse.json();
-        console.log("searched job data --- ", jobsData);
 
         // Get unique recruiter IDs
         const recruiterIds = [
@@ -57,7 +56,6 @@ export default function JobSearchDropdown() {
         });
 
         setJobSuggestions(jobsWithRecruiters);
-        console.log("Jobs with recruiter details:", jobsWithRecruiters);
       } catch (error) {
         console.error("Error fetching data:", error);
         setJobSuggestions([]);

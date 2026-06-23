@@ -100,7 +100,6 @@ export default function AdminsTicketsPage(props) {
       const recruiterData = await recruiterResponse.json();
 
       setRecruiters(recruiterData.recruiters);
-      console.log("all recruiters : ", recruiterData.recruiters);
     } catch (err) {
       setError(err.message);
       console.error("Error fetching recruiters:", err);

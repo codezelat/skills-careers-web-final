@@ -1,7 +1,72 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function ContactSection() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    contactNumber: "",
+    subject: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/inquiry/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: formData.name,
+          userRole: "guest",
+          inquiryTitle: formData.subject,
+          inquiryDescription: `Email: ${formData.email}\nContact: ${formData.contactNumber}\n\n${formData.message}`,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to submit inquiry.");
+      }
+
+      setFormData({
+        name: "",
+        email: "",
+        contactNumber: "",
+        subject: "",
+        message: "",
+      });
+
+      Swal.fire({
+        title: "Success!",
+        text: "Your message has been sent. We will get back to you soon.",
+        icon: "success",
+        confirmButtonColor: "#001571",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.message || "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#001571",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="w-full max-w-[1280px] mx-auto px-[20px] xl:px-[0px] flex flex-col md:flex-row justify-between my-24">
@@ -10,10 +75,14 @@ export default function ContactSection() {
           <h3 className="text-blue-900 text-lg md:text-xl font-semibold mb-3">
             STILL YOU ARE IN TROUBLE? LET'S REACH US.
           </h3>
-          <form>
+          <form onSubmit={handleSubmit}>
             <label className="block">
               <input
                 type="text"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
                 className="w-full p-3 border rounded-lg mt-4 md:mt-6 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-semibold"
                 placeholder="Name"
               />
@@ -21,6 +90,10 @@ export default function ContactSection() {
             <label className="block">
               <input
                 type="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full p-3 border rounded-lg mt-4 md:mt-6 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-semibold"
                 placeholder="Email"
               />
@@ -28,6 +101,9 @@ export default function ContactSection() {
             <label className="block">
               <input
                 type="text"
+                name="contactNumber"
+                value={formData.contactNumber}
+                onChange={handleChange}
                 className="w-full p-3 border rounded-lg mt-4 md:mt-6 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-semibold"
                 placeholder="Contact Number"
               />
@@ -35,23 +111,35 @@ export default function ContactSection() {
             <label className="block">
               <input
                 type="text"
+                name="subject"
+                required
+                value={formData.subject}
+                onChange={handleChange}
                 className="w-full p-3 border rounded-lg mt-4 md:mt-6 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-semibold"
                 placeholder="Subject"
               />
             </label>
             <label className="block mb-6 md:mb-10">
               <textarea
+                name="message"
+                required
+                value={formData.message}
+                onChange={handleChange}
                 className="w-full p-3 border rounded-lg mt-4 md:mt-6 outline-none focus:ring-2 focus:ring-blue-500 placeholder-blue-900 font-semibold"
                 placeholder="Message"
                 rows={7}
               />
             </label>
-            <button className="bg-blue-900 text-gray-100 px-20 py-3 rounded-md">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-blue-900 text-gray-100 px-20 py-3 rounded-md disabled:opacity-50"
+            >
               <span className="flex items-start justify-center">
-                <Link href="/contact-us">Submit</Link>
+                {isSubmitting ? "Sending..." : "Submit"}
                 <img
                   src="/images/arrow.png"
-                  alt="Login"
+                  alt="Submit"
                   className="h-5 w-5 ml-5"
                 />
               </span>

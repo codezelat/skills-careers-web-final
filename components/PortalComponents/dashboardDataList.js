@@ -67,7 +67,6 @@ export default function DashboardDataList() {
           }
           const data = await response.json();
           setJobs(data.jobs);
-          console.log("jobs", data)
         } catch (err) {
           setError(err.message);
           console.error("Error fetching jobs:", err);
@@ -94,7 +93,6 @@ export default function DashboardDataList() {
         const applicationResponse = await fetch(applicationUrl);
         if (!applicationResponse.ok) throw new Error('Failed to fetch');
         const applicationdata = await applicationResponse.json();
-        console.log("application : ", applicationdata);
 
         if (applicationdata.success) {
           const formatted = applicationdata.applications.map(app => ({

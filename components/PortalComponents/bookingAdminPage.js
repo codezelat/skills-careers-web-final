@@ -42,7 +42,6 @@ export default function BookingAdminPage(props) {
         throw new Error("Failed to fetch ticket enrollments");
       }
       const enrollmentsData = await enrollmentsResponse.json();
-      console.log("Enrolled data : ", enrollmentsData);
       setTicketEnrollments(enrollmentsData.data);
     } catch (err) {
       setError(err.message);

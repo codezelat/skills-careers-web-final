@@ -149,11 +149,6 @@ export default function TicketsPage() {
                   className="bg-transparent text-[#001571] font-semibold text-base focus:outline-none w-full md:w-auto cursor-pointer"
                 />
               </div>
-
-              {/* Search Button */}
-              <button className="bg-[#001571] text-white px-8 py-3 rounded-lg font-bold text-sm hover:bg-[#001571]/90 transition-colors w-full md:w-auto shadow-md">
-                Search
-              </button>
             </div>
           </div>
 

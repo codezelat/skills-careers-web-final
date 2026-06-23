@@ -1,6 +1,10 @@
-import Footer from "@/components/Footer";
-import NavBar from "@/components/navBar";
 import Image from "next/image";
+
+export const metadata = {
+  title: "About Us - Skill Careers",
+  description:
+    "Learn about Skill Careers, our mission to connect job seekers with recruiters, and our commitment to empowering careers across Sri Lanka.",
+};
 
 function aboutPage() {
   const features = [
@@ -211,7 +215,7 @@ function aboutPage() {
             <p className="text-gray-800 text-sm md:text-base font-sans">
               To be the premier platform that transforms the future of job
               searching and recruitment by creating meaningful connections,
-              empowering individuals, and driving business success globaly.{" "}
+              empowering individuals, and driving business success globally.{" "}
             </p>
           </div>
 
@@ -227,10 +231,10 @@ function aboutPage() {
             <h4 className="text-2xl font-bold  p-2 mb-5 font-sans">Mission</h4>
 
             <p className="text-gray-800 text-sm md:text-base font-sans">
-              We strive to simplify and elevate the recruitement experience for
+              We strive to simplify and elevate the recruitment experience for
               both job seekers and employers. By leveraging innovative
               technology and personalized support, we connect the right talent
-              with the right opportunities, foresting growth , success, and a
+              with the right opportunities, fostering growth, success, and a
               stronger workforce for the future.
             </p>
           </div>
@@ -255,7 +259,7 @@ function aboutPage() {
               your career or a recruiter seeking top talent, Skill Careers is
               here to support you every step of the way.
             </p>
-            <button className="bg-blue-900 text-gray-100 px-6 py-3 mt-10 ">
+            <a href="/sustainabilitypolicy" className="inline-block bg-blue-900 text-gray-100 px-6 py-3 mt-10 ">
               <span className="flex items-center justify-center ">
                 Our Sustainability Policy
                 <img
@@ -264,7 +268,7 @@ function aboutPage() {
                   className="h-6 w-6 ml-3 mr-5"
                 />
               </span>
-            </button>
+            </a>
           </div>
 
           {/* Image */}

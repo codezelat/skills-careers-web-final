@@ -34,7 +34,6 @@ export default function PortalApplicationCard({ application }) {
         }
         const recruiterdata = await recruiterResponse.json();
         setRecruiterdetails(recruiterdata);
-        console.log("recruiter : ", recruiterdata);
       } catch (error) {
         console.error("Fetch error:", error);
       } finally {

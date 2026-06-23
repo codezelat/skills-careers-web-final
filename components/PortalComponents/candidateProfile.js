@@ -214,7 +214,6 @@ export default function CandidateProfile() {
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          console.log(session.user.id);
 
           let jobSeekerData = null;
 
@@ -225,7 +224,6 @@ export default function CandidateProfile() {
           if (!jobSeekerResponse.ok) {
             // If jobseeker profile doesn't exist, create one
             if (jobSeekerResponse.status === 404) {
-              console.log("Creating jobseeker profile for OAuth user...");
               const createResponse = await fetch("/api/jobseekerdetails", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -257,7 +255,6 @@ export default function CandidateProfile() {
             }
           } else {
             jobSeekerData = await jobSeekerResponse.json();
-            console.log("test", jobSeekerData.jobseeker);
             setJobseekerDetails(jobSeekerData.jobseeker);
           }
 
@@ -398,7 +395,6 @@ export default function CandidateProfile() {
       formData.append("image", file);
       formData.append("email", jobSeekerDetails.email);
 
-      console.log("Starting image upload...");
       const response = await fetch("/api/jobseekerdetails/uploadimage", {
         method: "POST",
         body: formData,
@@ -410,7 +406,6 @@ export default function CandidateProfile() {
         throw new Error(data.error || "Failed to upload image");
       }
 
-      console.log("Upload successful:", data);
       setJobseekerDetails((prev) => ({
         ...prev,
         profileImage: data.imageUrl,
@@ -479,7 +474,6 @@ export default function CandidateProfile() {
       formData.append("image", file);
       formData.append("email", jobSeekerDetails.email);
 
-      console.log("Starting image upload...");
       const response = await fetch("/api/jobseekerdetails/uploadCoverImage", {
         method: "POST",
         body: formData,
@@ -491,7 +485,6 @@ export default function CandidateProfile() {
         throw new Error(data.error || "Failed to upload image");
       }
 
-      console.log("Upload successful:", data);
       setJobseekerDetails((prev) => ({
         ...prev,
         coverImage: data.imageUrl,

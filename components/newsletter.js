@@ -9,7 +9,7 @@ async function signupNewsletter(email) {
       email,
     }),
     headers: {
-      "Content-Type": "application/JSON",
+      "Content-Type": "application/json",
     },
   });
 
@@ -32,10 +32,8 @@ function NewsLetter() {
 
     try {
       const result = await signupNewsletter(enteredEmail);
-      console.log(result);
       alert(result.message);
     } catch (error) {
-      console.log(error.message);
       alert(error.message);
     }
   }

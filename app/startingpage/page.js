@@ -40,48 +40,6 @@ const StartingPage = () => {
                   Skill Careers.
                 </p>
 
-                {/*<div className="relative w-full sm:w-2/3 md:w-1/2 lg:w-2/6 mb-5">
-            <div
-              onClick={() => setIsOpen(!isOpen)}
-              className="border-2 border-[#B0B6D3] text-[#5462A0] py-4 px-3 mt-6 font-semibold rounded-md cursor-pointer sm:text-sm"
-            >
-              {selectedCountry ? (
-                <div className="flex items-center">
-                  {selectedCountry.label}
-                  <img
-                    src={selectedCountry.flag}
-                    className="w-5 h-5 ml-3"
-                    alt=""
-                  />
-                </div>
-              ) : (
-                "Select the Country"
-              )}
-              <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#5462A0]">
-                <IoMdArrowDropdown />
-              </span>
-            </div>
-
-            {isOpen && (
-              <div className="absolute z-10 bg-white border border-[#B0B6D3] rounded-md mt-1 w-full max-h-60 overflow-y-auto">
-                {countries.map((country) => (
-                  <div
-                    key={country.code}
-                    onClick={() => handleSelect(country)}
-                    className="flex items-center px-2 py-4 hover:bg-gray-200 cursor-pointer"
-                  >
-                    {country.label}
-                    <img
-                      src={country.flag}
-                      className="w-5 h-5 ml-auto justify-end"
-                      alt=""
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>*/}
-
                 <JobSearchDropdown />
               </div>
 

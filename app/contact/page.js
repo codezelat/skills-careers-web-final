@@ -2,8 +2,6 @@
 
 import ContactBanner from "@/components/ContactBanner";
 import ContactSection from "@/components/ContactPortal";
-import Footer from "@/components/Footer";
-import NavBar from "@/components/navBar";
 import dynamic from "next/dynamic";
 
 const MapWithNoSSR = dynamic(() => import("@/components/LeafletMap"), {
@@ -11,8 +9,6 @@ const MapWithNoSSR = dynamic(() => import("@/components/LeafletMap"), {
 });
 
 function contactPage() {
-
-    const position = [6.9271, 79.8612];
 
     return (
         <>
@@ -28,9 +24,9 @@ function contactPage() {
                             Get In Touch With Us.
                         </h1>
                         <h2 className="font-normal mb-4 ">
-                            We'd love to hear from you! Whether you have a question, feedback,
-                            or just want to say hello,feel free to reach out to us.Our team is
-                            hear to help you with anything you need.
+                            We&apos;d love to hear from you! Whether you have a question, feedback,
+                            or just want to say hello, feel free to reach out to us. Our team is
+                            here to help you with anything you need.
                         </h2>
                     </div>
                 </div>

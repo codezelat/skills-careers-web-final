@@ -51,7 +51,6 @@ export default function DashboardStats() {
   }, []);
 
   const fetchRecruiterDetails = useCallback(async () => {
-    console.log("Recruiter stats started fetching.......");
     try {
       const recruiterResponse = await fetch(
         `/api/recruiterdetails/get?userId=${session?.user?.id}`
@@ -89,8 +88,6 @@ export default function DashboardStats() {
   }, [session?.user?.id]);
 
   const fetchJobseekerDetails = useCallback(async () => {
-    console.log("Jobseeker stats started fetching.......");
-
     try {
       const jobseekerResponse = await fetch(
         `/api/jobseekerdetails/get?userId=${session?.user?.id}`
@@ -103,8 +100,6 @@ export default function DashboardStats() {
         const appliedJobsResponse = await fetch(
           `/api/job/appliedjobs?id=${jobseekerData.jobseeker._id}`
         );
-
-        console.log(jobseekerData.jobseeker.id);
 
         if (!appliedJobsResponse.ok) {
           throw new Error("Failed to fetch applied jobs.");

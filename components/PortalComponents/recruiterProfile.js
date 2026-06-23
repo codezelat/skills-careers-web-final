@@ -152,7 +152,6 @@ export default function RecruiterProfile({ slug }) {
       formData.append("image", file);
       formData.append("email", recruiterDetails.email);
 
-      console.log("Starting image upload...");
       const response = await fetch("/api/recruiterdetails/uploadimage", {
         method: "POST",
         body: formData,
@@ -164,7 +163,6 @@ export default function RecruiterProfile({ slug }) {
         throw new Error(data.error || "Failed to upload image");
       }
 
-      console.log("Upload successful:", data);
       setRecruiterDetails((prev) => ({
         ...prev,
         logo: data.imageUrl,
@@ -224,7 +222,6 @@ export default function RecruiterProfile({ slug }) {
       formData.append("image", file);
       formData.append("email", recruiterDetails.email);
 
-      console.log("Starting image upload...");
       const response = await fetch("/api/recruiterdetails/uploadCoverImage", {
         method: "POST",
         body: formData,
@@ -236,7 +233,6 @@ export default function RecruiterProfile({ slug }) {
         throw new Error(data.error || "Failed to upload image");
       }
 
-      console.log("Upload successful:", data);
       setRecruiterDetails((prev) => ({
         ...prev,
         coverImage: data.imageUrl,

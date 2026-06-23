@@ -22,7 +22,6 @@ export default function PressReleaseSection() {
           throw new Error("Failed to fetch press releases");
         }
         const data = await response.json();
-        console.log("Fetched press releases:", data);
         setPressreleases(data.pressreleases || []);
       } catch (error) {
         console.error("Error fetching press releases:", error);

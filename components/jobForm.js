@@ -92,8 +92,6 @@ function CreateJobPost({ onClose, recruiterId }) {
         jobDescription,
         keyResponsibilities
       );
-      console.log(result);
-      alert(result.message);
 
       setJobTitle("");
       setLocation("");
@@ -102,9 +100,7 @@ function CreateJobPost({ onClose, recruiterId }) {
       setKeyResponsibilities("");
       setJobTypes([]);
       onClose();
-      window.location.reload();
     } catch (error) {
-      console.log(error.message);
       alert(error.message);
     }
   }

@@ -1,4 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
+import { escapeRegex } from "@/lib/escapeRegex";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
@@ -16,8 +17,9 @@ export async function GET(req) {
     client = await connectToDatabase();
     const db = client.db();
 
-    // Create regex for case-insensitive partial match
-    const searchRegex = new RegExp(query, "i");
+    // Escape special regex characters to prevent ReDoS, then create case-insensitive match
+    const sanitizedQuery = escapeRegex(query);
+    const searchRegex = new RegExp(sanitizedQuery, "i");
 
     // First search for matching recruiters (exclude restricted recruiters)
     const matchingRecruiters = await db
