@@ -1,17 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import NavBar from "@/components/navBar";
-import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
 import RecruiterSearch from "@/components/RecruiterSearch";
 import DropdownButton from "@/components/dropDownButton";
 import RecruiterCard from "../recruiterCard";
 import RecruiterLoading from "@/components/RecruiterLoading";
 import jobCategories from "@/data/jobCategories.json";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 export default function RecruitersContent() {
-  const { data: session, status } = useSession();
   const [recruiters, setRecruiters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filteredRecruiters, setFilteredRecruiters] = useState([]);
@@ -19,6 +16,10 @@ export default function RecruitersContent() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const recruitersPerPage = 10;
 
   useEffect(() => {
     async function fetchRecruiters() {
@@ -87,6 +88,7 @@ export default function RecruitersContent() {
     }
 
     setFilteredRecruiters(filtered);
+    setCurrentPage(1); // Reset to page 1 on filter change
   }, [selectedCategory, selectedLocation, recruiters, searchResults]);
 
   // Extract unique locations - include districts, provinces, and countries
@@ -105,6 +107,18 @@ export default function RecruitersContent() {
 
   const handleSearchResults = (results) => {
     setSearchResults(results);
+    setCurrentPage(1);
+  };
+
+  // Pagination Logic
+  const indexOfLastRecruiter = currentPage * recruitersPerPage;
+  const indexOfFirstRecruiter = indexOfLastRecruiter - recruitersPerPage;
+  const currentRecruiters = filteredRecruiters.slice(indexOfFirstRecruiter, indexOfLastRecruiter);
+  const totalPages = Math.ceil(filteredRecruiters.length / recruitersPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
   return (
@@ -317,10 +331,89 @@ export default function RecruitersContent() {
 
           {isLoading ? (
             <RecruiterLoading />
-          ) : filteredRecruiters.length > 0 ? (
-            filteredRecruiters.map((recruiter, index) => (
-              <RecruiterCard key={index} recruiter={recruiter} />
-            ))
+          ) : currentRecruiters.length > 0 ? (
+            <>
+              {currentRecruiters.map((recruiter, index) => (
+                <RecruiterCard key={recruiter._id || index} recruiter={recruiter} />
+              ))}
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-12">
+                  <div className="flex gap-2 items-center">
+                    <button
+                      type="button"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`p-3 rounded-lg transition-all duration-200 ${
+                        currentPage === 1
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-[#001571] hover:bg-[#001571] hover:text-white shadow-md border border-gray-100"
+                      }`}
+                    >
+                      <BsChevronLeft size={20} />
+                    </button>
+
+                    <div className="flex gap-2 overflow-x-auto px-2 no-scrollbar">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (number) => {
+                          if (
+                            totalPages > 7 &&
+                            number !== 1 &&
+                            number !== totalPages &&
+                            (number < currentPage - 1 ||
+                              number > currentPage + 1)
+                          ) {
+                            if (
+                              number === currentPage - 2 ||
+                              number === currentPage + 2
+                            ) {
+                              return (
+                                <span
+                                  key={number}
+                                  className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0"
+                                >
+                                  ...
+                                </span>
+                              );
+                            }
+                            return null;
+                          }
+
+                          return (
+                            <button
+                              key={number}
+                              type="button"
+                              onClick={() => handlePageChange(number)}
+                              className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 shrink-0 ${
+                                currentPage === number
+                                  ? "bg-[#001571] text-white shadow-md transform scale-105"
+                                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
+                              }`}
+                            >
+                              {number}
+                            </button>
+                          );
+                        }
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`p-3 rounded-lg transition-all duration-200 ${
+                        currentPage === totalPages
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-[#001571] hover:bg-[#001571] hover:text-white shadow-md border border-gray-100"
+                      }`}
+                    >
+                      <BsChevronRight size={20} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <p className="text-lg text-center font-bold py-20">
               No recruiters found.

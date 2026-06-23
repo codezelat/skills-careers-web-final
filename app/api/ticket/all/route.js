@@ -56,19 +56,20 @@ export async function GET(req) {
       .aggregate(pipeline)
       .toArray();
     const count = tickets.length;
+
+    // Public published tickets can be cached; admin/recruiter views should not
+    const isPublicView = published === "true" && !recruiterId;
+    const cacheControl = isPublicView
+      ? "public, s-maxage=30, stale-while-revalidate=15"
+      : "no-store, no-cache, must-revalidate";
+
     return NextResponse.json(
       { tickets, count },
       {
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-          "CDN-Cache-Control": "no-store",
-          "Surrogate-Control": "no-store",
-          Pragma: "no-cache",
-          Expires: "0",
-          "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+          "Cache-Control": cacheControl,
         },
       }
     );

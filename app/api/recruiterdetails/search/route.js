@@ -8,10 +8,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
 
-    // For debugging - log the search query
-    console.log("Search query:", query);
-
-    if (!query || query.length < 3) {
+    if (!query || query.length < 2) {
       return NextResponse.json({ recruiters: [] });
     }
 
@@ -22,11 +19,11 @@ export async function GET(req) {
     // Create regex for case-insensitive partial match
     const searchRegex = new RegExp(escapeRegex(query), "i");
 
-    // Perform the search using MongoDB
-    // Search by name, email, location, district, province, or country
+    // Perform the search using MongoDB, excluding restricted recruiters
     const recruiters = await db
       .collection("recruiters")
       .find({
+        isRestricted: { $ne: true },
         $or: [
           { recruiterName: { $regex: searchRegex } },
           { email: { $regex: searchRegex } },
@@ -39,16 +36,16 @@ export async function GET(req) {
       })
       .toArray();
 
-    // No specific transform was needed in original code other than _source spread,
-    // but here we just return the docs directly.
-    // If client needs specific fields we can map them, but Mongo returns full doc by default.
-
-    // For debugging - log the results
-    console.log(`Found ${recruiters.length} recruiters matching "${query}"`);
-
-    return NextResponse.json({ recruiters });
+    return NextResponse.json(
+      { recruiters },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=15",
+        },
+      }
+    );
   } catch (error) {
-    console.error("Search error:", error);
+    console.error("Recruiter search error:", error);
 
     return NextResponse.json(
       {

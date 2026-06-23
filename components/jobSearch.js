@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { IoSearchSharp } from "react-icons/io5";
-import JobCard from "@/components/jobCard";
 import { useSearchParams } from "next/navigation";
 
 export default function JobSearch({ onSearchResults }) {
@@ -11,112 +9,132 @@ export default function JobSearch({ onSearchResults }) {
   const urlSearchQuery = searchParams.get("search");
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [jobResults, setJobResults] = useState([]);
   const [jobLoading, setJobLoading] = useState(false);
+  const debounceRef = useRef(null);
+  const requestIdRef = useRef(0);
 
-  // Initialize search query from URL parameter
   useEffect(() => {
     if (urlSearchQuery) {
       setSearchQuery(urlSearchQuery);
     }
   }, [urlSearchQuery]);
 
-  const fetchJobsWithRecruiters = async (searchTerm) => {
-    if (searchTerm.length >= 2) {
-      setJobLoading(true);
-      try {
-        // First fetch jobs
-        const jobsResponse = await fetch(
-          `/api/job/search?query=${encodeURIComponent(searchTerm)}`
-        );
-        if (!jobsResponse.ok) throw new Error("Job search failed");
-        const jobsData = await jobsResponse.json();
+  const fetchJobsWithRecruiters = useCallback(async (searchTerm) => {
+    if (searchTerm.length < 2) {
+      onSearchResults(null);
+      setJobLoading(false);
+      return;
+    }
 
-        // Get unique recruiter IDs
-        const recruiterIds = [
-          ...new Set(
-            jobsData.jobs.map((job) => job.recruiterId).filter(Boolean)
-          ),
-        ];
+    const currentId = ++requestIdRef.current;
+    setJobLoading(true);
 
-        // Batch fetch all recruiter details in one request
-        const recruiterMap = {};
-        if (recruiterIds.length > 0) {
-          try {
-            const recruiterResponse = await fetch(
-              "/api/recruiterdetails/batch",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ids: recruiterIds }),
-              }
-            );
+    try {
+      const jobsResponse = await fetch(
+        `/api/job/search?query=${encodeURIComponent(searchTerm)}`
+      );
+      if (!jobsResponse.ok) throw new Error("Job search failed");
+      const jobsData = await jobsResponse.json();
 
-            if (recruiterResponse.ok) {
-              const { recruiters } = await recruiterResponse.json();
-              Object.assign(recruiterMap, recruiters);
+      if (currentId !== requestIdRef.current) return;
+
+      const recruiterIds = [
+        ...new Set(
+          jobsData.jobs.map((job) => job.recruiterId).filter(Boolean)
+        ),
+      ];
+
+      const recruiterMap = {};
+      if (recruiterIds.length > 0) {
+        try {
+          const recruiterResponse = await fetch(
+            "/api/recruiterdetails/batch",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ids: recruiterIds }),
             }
-          } catch (err) {
-            console.error("Error fetching recruiters:", err);
+          );
+
+          if (recruiterResponse.ok) {
+            const { recruiters } = await recruiterResponse.json();
+            Object.assign(recruiterMap, recruiters);
           }
+        } catch (err) {
+          // Continue without recruiter data
         }
+      }
 
-        // Map jobs with recruiter details
-        const jobsWithRecruiters = jobsData.jobs.map((job) => {
-          const recruiterData = recruiterMap[job.recruiterId] || {};
-          return {
-            ...job,
-            industry: recruiterData.industry || "Unknown",
-            recruiterName: recruiterData.recruiterName || "Unknown",
-            logo: recruiterData.logo || "/images/default-image.jpg",
-          };
-        });
+      if (currentId !== requestIdRef.current) return;
 
-        setJobResults(jobsWithRecruiters);
-        // Pass the results up to the parent component
-        onSearchResults(jobsWithRecruiters);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setJobResults([]);
+      const jobsWithRecruiters = jobsData.jobs.map((job) => {
+        const recruiterData = recruiterMap[job.recruiterId] || {};
+        return {
+          ...job,
+          industry: recruiterData.industry || "Unknown",
+          recruiterName: recruiterData.recruiterName || "Unknown",
+          logo: recruiterData.logo || "/images/default-image.jpg",
+        };
+      });
+
+      onSearchResults(jobsWithRecruiters);
+    } catch (error) {
+      if (currentId === requestIdRef.current) {
         onSearchResults([]);
-      } finally {
+      }
+    } finally {
+      if (currentId === requestIdRef.current) {
         setJobLoading(false);
       }
-    } else if (searchTerm.length === 0) {
-      setJobResults([]);
-      onSearchResults(null); // Reset to show all jobs when search is cleared
     }
-  };
+  }, [onSearchResults]);
 
   const handleJobChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
-    fetchJobsWithRecruiters(value);
+
+    if (value.length === 0) {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      onSearchResults(null);
+      setJobLoading(false);
+      return;
+    }
+
+    setJobLoading(true);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      fetchJobsWithRecruiters(value);
+    }, 300);
   };
 
   const handleSearch = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     fetchJobsWithRecruiters(searchQuery);
   };
 
   return (
     <div className="flex flex-col relative">
       <div className="bg-gray-200 rounded-md">
-        <div className="flex flex-row sm:flex-nowrap sm:flex-row justify-between items-center gap-4 rounded-md py-1 md:py-2 px-1 md:px-4">
+        <div className="flex flex-row items-center gap-4 rounded-md py-1 md:py-2 px-1 md:px-4">
           <input
             type="text"
             placeholder="Search by job title, keywords, or company."
             value={searchQuery}
             onChange={handleJobChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
             className="bg-gray-200 w-full text-base lg:text-lg md:text-lg sm:text-lg py-3 pl-3 focus:outline-none rounded-md font-semibold placeholder-[#5462A0]"
           />
           <button
             onClick={handleSearch}
-            className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5 bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold"
+            disabled={jobLoading}
+            className="flex w-auto justify-center items-center lg:w-1/5 md:w-1/5 sm:w-1/5 bg-[#001571] text-[14px] md:text-[16px] text-white px-3 py-2 md:px-6 md:py-3 rounded-md font-semibold disabled:opacity-60 transition-opacity"
           >
             <span className="mt-1 mr-2 md:mr-4">
               <IoSearchSharp size={20} />
             </span>
-            Search
+            {jobLoading ? "Searching..." : "Search"}
           </button>
         </div>
       </div>

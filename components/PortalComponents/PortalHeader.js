@@ -16,6 +16,7 @@ export default function HeaderSection() {
   const [selectedJobType, setSelectedJobType] = useState("All");
   const searchRef = useRef(null);
   const debounceTimerRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -49,12 +50,15 @@ export default function HeaderSection() {
       return;
     }
 
+    const currentId = ++requestIdRef.current;
     setIsLoadingSuggestions(true);
     try {
       const response = await fetch(
         `/api/job/search?query=${encodeURIComponent(query)}`,
       );
       if (!response.ok) throw new Error("Search failed");
+
+      if (currentId !== requestIdRef.current) return;
 
       const data = await response.json();
       let jobs = data.jobs || [];
@@ -103,6 +107,8 @@ export default function HeaderSection() {
       }
 
       // Map jobs with recruiter details
+      if (currentId !== requestIdRef.current) return;
+
       const jobsWithDetails = topJobs.map((job) => {
         const recruiterData = recruiterMap[job.recruiterId] || {};
         return {
@@ -115,10 +121,13 @@ export default function HeaderSection() {
       setSuggestions(jobsWithDetails);
       setShowSuggestions(jobsWithDetails.length > 0);
     } catch (error) {
-      console.error("Error fetching suggestions:", error);
-      setSuggestions([]);
+      if (currentId === requestIdRef.current) {
+        setSuggestions([]);
+      }
     } finally {
-      setIsLoadingSuggestions(false);
+      if (currentId === requestIdRef.current) {
+        setIsLoadingSuggestions(false);
+      }
     }
   }, []);
 

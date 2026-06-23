@@ -89,7 +89,14 @@ export async function GET(req) {
       jobId: job._id.toString(),
     }));
 
-    return NextResponse.json({ jobs: formattedJobs });
+    return NextResponse.json(
+      { jobs: formattedJobs },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=15",
+        },
+      }
+    );
   } catch (error) {
     console.error("Search error:", error);
 
