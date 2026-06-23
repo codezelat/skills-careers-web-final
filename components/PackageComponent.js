@@ -23,29 +23,16 @@ function PackageCard({
       <h3 className={`text-2xl font-bold ${textColor} mb-6 text-center`}>
         {title}
       </h3>
-      {isFree ? (
-        <div className="mb-8">
-          <div className={`text-5xl font-bold ${textColor} text-center`}>
-            Free
-          </div>
+      <div className="mb-8">
+        <div className={`text-5xl font-bold ${textColor} text-center`}>
+          {comingSoon ? "Coming Soon" : "Free"}
+        </div>
+        {!comingSoon && (
           <p className={`text-sm text-center ${textColor} mt-2 opacity-70`}>
             No credit card required
           </p>
-        </div>
-      ) : (
-        <>
-          <div className={`text-5xl font-bold ${textColor} text-center`}>
-            <span className="text-sm ml-1 relative top-[-0.5em]">LKR</span>
-            {priceMonth}
-            <span className="text-sm ml-1 relative top-[-0.5em]">/per month</span>
-          </div>
-          <div className="mb-8">
-            <p className={`text-xl font-semibold text-center ${textColor}`}>
-              {priceYear} /per year
-            </p>
-          </div>
-        </>
-      )}
+        )}
+      </div>
       <hr className="my-4 border-t border-gray-300" />
       <ul className="list-none p-0 mb-10 text-lg font-semibold">
         {features.map((feature, index) => (
@@ -67,7 +54,7 @@ function PackageCard({
           disabled={comingSoon}
           aria-label={`Choose the ${title}`}
         >
-          {comingSoon ? "Coming Soon" : isFree ? "Get Started Free" : "Choose This Package"}
+          {comingSoon ? "Notify Me" : "Get Started Free"}
         </button>
       </div>
     </div>
