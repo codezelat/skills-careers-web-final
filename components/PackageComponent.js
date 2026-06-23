@@ -6,24 +6,46 @@ function PackageCard({
   gradient,
   textColor,
   btnColor,
+  isFree,
+  comingSoon,
 }) {
   return (
     <div
-      className={`bg-gradient-to-b ${gradient} rounded-md p-8 shadow-md items-center`}
+      className={`relative bg-gradient-to-b ${gradient} rounded-md p-8 shadow-md items-center ${
+        comingSoon ? "opacity-90" : ""
+      }`}
     >
+      {comingSoon && (
+        <div className="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg uppercase tracking-wider">
+          Coming Soon
+        </div>
+      )}
       <h3 className={`text-2xl font-bold ${textColor} mb-6 text-center`}>
         {title}
       </h3>
-      <div className={`text-5xl font-bold ${textColor} text-center`}>
-        <span className="text-sm ml-1 relative top-[-0.5em]">LKR</span>
-        {priceMonth}
-        <span className="text-sm ml-1 relative top-[-0.5em]">/per month</span>
-      </div>
-      <div className="mb-8">
-        <p className={`text-xl font-semibold text-center ${textColor}`}>
-          {priceYear} /per year
-        </p>
-      </div>
+      {isFree ? (
+        <div className="mb-8">
+          <div className={`text-5xl font-bold ${textColor} text-center`}>
+            Free
+          </div>
+          <p className={`text-sm text-center ${textColor} mt-2 opacity-70`}>
+            No credit card required
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className={`text-5xl font-bold ${textColor} text-center`}>
+            <span className="text-sm ml-1 relative top-[-0.5em]">LKR</span>
+            {priceMonth}
+            <span className="text-sm ml-1 relative top-[-0.5em]">/per month</span>
+          </div>
+          <div className="mb-8">
+            <p className={`text-xl font-semibold text-center ${textColor}`}>
+              {priceYear} /per year
+            </p>
+          </div>
+        </>
+      )}
       <hr className="my-4 border-t border-gray-300" />
       <ul className="list-none p-0 mb-10 text-lg font-semibold">
         {features.map((feature, index) => (
@@ -37,10 +59,15 @@ function PackageCard({
       </ul>
       <div className="flex justify-center">
         <button
-          className={`font-bold py-2 px-4 rounded mt-4 transition ${btnColor}`}
+          className={`font-bold py-2 px-4 rounded mt-4 transition ${
+            comingSoon
+              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+              : btnColor
+          }`}
+          disabled={comingSoon}
           aria-label={`Choose the ${title}`}
         >
-          Choose This Package
+          {comingSoon ? "Coming Soon" : isFree ? "Get Started Free" : "Choose This Package"}
         </button>
       </div>
     </div>
@@ -53,6 +80,8 @@ export default function PackageComponent() {
       title: "Basic - Essential Hiring Tools",
       priceMonth: "6,000",
       priceYear: "60,000",
+      isFree: true,
+      comingSoon: false,
       features: [
         "Advertise unlimited jobs",
         "Recruiter profile + dashboard (recruitment details)",
@@ -73,6 +102,8 @@ export default function PackageComponent() {
       title: "Professional - Smart Matching ATS",
       priceMonth: "16,000",
       priceYear: "160,000",
+      isFree: false,
+      comingSoon: true,
       features: [
         "Everything in Basic",
         "Intelligent Matching ATS",
@@ -88,6 +119,8 @@ export default function PackageComponent() {
       title: "Enterprise - Full Talent Suite",
       priceMonth: "24,000",
       priceYear: "240,000",
+      isFree: false,
+      comingSoon: true,
       features: [
         "Everything in Professional",
         "Expanded CV Access by Rating: - All Bronze, - Up to 03 Silver, - Up to 05 Gold, - Up to 08 Platinum",
@@ -124,6 +157,8 @@ export default function PackageComponent() {
               gradient={pkg.gradient}
               textColor={pkg.textColor}
               btnColor={pkg.btnColor}
+              isFree={pkg.isFree}
+              comingSoon={pkg.comingSoon}
             />
           ))}
         </div>
