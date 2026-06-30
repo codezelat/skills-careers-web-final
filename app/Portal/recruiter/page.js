@@ -5,6 +5,7 @@ import { PiCheckCircle } from "react-icons/pi";
 import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import usePersistedPage from "@/lib/usePersistedPage";
+import getVisiblePages from "@/lib/getVisiblePages";
 import { useSession } from "next-auth/react";
 import PortalLoading from "../loading";
 import AddRecruiterForm from "./addRecruiterForm";
@@ -297,21 +298,28 @@ export default function Recruiters() {
           >
             <BsChevronLeft size={15} />
           </button>
-          {Array.from(
-            {
-              length: Math.ceil(filteredRecruiters.length / recruitersPerPage),
-            },
-            (_, index) => (
+          {getVisiblePages(
+            currentPage,
+            Math.ceil(filteredRecruiters.length / recruitersPerPage)
+          ).map((page, index) =>
+            page === "..." ? (
+              <span
+                key={`ellipsis-${index}`}
+                className="px-2 py-2 text-gray-400"
+              >
+                ...
+              </span>
+            ) : (
               <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
+                key={page}
+                onClick={() => handlePageChange(page)}
                 className={`px-4 py-2 rounded-lg ${
-                  currentPage === index + 1
+                  currentPage === page
                     ? "bg-blue-700 text-white"
                     : "bg-gray-200 hover:bg-gray-400"
                 }`}
               >
-                {index + 1}
+                {page}
               </button>
             )
           )}

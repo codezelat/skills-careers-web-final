@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { BsChevronLeft, BsChevronRight, BsPlus } from "react-icons/bs";
 import { IoSearchSharp } from "react-icons/io5";
 import usePersistedPage from "@/lib/usePersistedPage";
+import getVisiblePages from "@/lib/getVisiblePages";
 import PortalLoading from "../loading";
 import AddPressrelease from "./AddPressrelease";
 import PressReleaseCard from "@/components/PortalComponents/pressReleaseCard";
@@ -219,18 +220,28 @@ export default function PressReleaseList() {
           >
             <BsChevronLeft size={15} />
           </button>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-lg ${currentPage === index + 1
-                ? "bg-blue-700 text-white"
-                : "bg-gray-200 hover:bg-gray-400"
+          {getVisiblePages(currentPage, totalPages).map((page, index) =>
+            page === "..." ? (
+              <span
+                key={`ellipsis-${index}`}
+                className="px-2 py-2 text-gray-400"
+              >
+                ...
+              </span>
+            ) : (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === page
+                    ? "bg-blue-700 text-white"
+                    : "bg-gray-200 hover:bg-gray-400"
                 }`}
-            >
-              {index + 1}
-            </button>
-          ))}
+              >
+                {page}
+              </button>
+            )
+          )}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}

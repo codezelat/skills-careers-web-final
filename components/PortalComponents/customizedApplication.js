@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
+import getVisiblePages from "@/lib/getVisiblePages";
 
 export default function CustomizedApplications() {
   const [showViewLatestApplication, setShowViewLatestApplication] = useState(false);
@@ -36,21 +37,6 @@ export default function CustomizedApplications() {
 
   const handlePrevious = () => {
     setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
-  };
-
-  // Determine the range of visible pages
-  const getVisiblePages = () => {
-    const visiblePages = 4;
-    const halfRange = Math.floor(visiblePages / 2);
-    let start = Math.max(currentPage - halfRange, 1);
-    let end = start + visiblePages - 1;
-
-    if (end > totalPages) {
-      end = totalPages;
-      start = Math.max(end - visiblePages + 1, 1);
-    }
-
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
   return (
@@ -112,17 +98,26 @@ export default function CustomizedApplications() {
         >
           &laquo;
         </button>
-        {getVisiblePages().map((page) => (
-          <button
-            key={page}
-            className={`px-3 py-1 rounded-lg ${
-              currentPage === page ? " text-[#001571]" : " text-gray-600"
-            }`}
-            onClick={() => handlePageClick(page)}
-          >
-            {page}
-          </button>
-        ))}
+        {getVisiblePages(currentPage, totalPages).map((page, index) =>
+          page === "..." ? (
+            <span
+              key={`ellipsis-${index}`}
+              className="px-2 py-1 text-gray-400"
+            >
+              ...
+            </span>
+          ) : (
+            <button
+              key={page}
+              className={`px-3 py-1 rounded-lg ${
+                currentPage === page ? " text-[#001571]" : " text-gray-600"
+              }`}
+              onClick={() => handlePageClick(page)}
+            >
+              {page}
+            </button>
+          )
+        )}
         <button
           className="px-3 py-1 rounded-lg  text-gray-600"
           onClick={handleNext}

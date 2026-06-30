@@ -12,6 +12,7 @@ import {
 } from "react-icons/bs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import getVisiblePages from "@/lib/getVisiblePages";
 import JobCard from "@/components/PortalComponents/portalJobCard";
 import PortalLoading from "../loading";
 import { FaTimes } from "react-icons/fa";
@@ -410,59 +411,6 @@ export default function RecruiterPostedJobs(props) {
     // Otherwise, maintain current page
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredJobs.length, activeTab, recruitersPerPage]);
-
-  // Smart pagination: generates array of page numbers with ellipsis
-  const getPageNumbers = () => {
-    if (totalPages <= 7) {
-      // Show all pages if 7 or fewer
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-
-    const pages = [];
-    const showEllipsisStart = currentPage > 3;
-    const showEllipsisEnd = currentPage < totalPages - 2;
-
-    // Always show first page
-    pages.push(1);
-
-    if (showEllipsisStart) {
-      pages.push("...");
-    } else {
-      // Show pages 2, 3 if we're near the start
-      if (totalPages >= 2) pages.push(2);
-      if (totalPages >= 3 && currentPage <= 3) pages.push(3);
-    }
-
-    // Show current page and neighbors
-    const start = Math.max(2, currentPage - 1);
-    const end = Math.min(totalPages - 1, currentPage + 1);
-
-    for (let i = start; i <= end; i++) {
-      if (!pages.includes(i) && i !== 1 && i !== totalPages) {
-        pages.push(i);
-      }
-    }
-
-    if (showEllipsisEnd) {
-      pages.push("...");
-    } else {
-      // Show second-to-last page if we're near the end
-      if (
-        totalPages >= 3 &&
-        currentPage >= totalPages - 2 &&
-        !pages.includes(totalPages - 1)
-      ) {
-        pages.push(totalPages - 1);
-      }
-    }
-
-    // Always show last page
-    if (totalPages > 1 && !pages.includes(totalPages)) {
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
 
   if (loading) {
     return <PortalLoading />;
@@ -1024,7 +972,7 @@ export default function RecruiterPostedJobs(props) {
             >
               <BsChevronLeft size={15} />
             </button>
-            {getPageNumbers().map((pageNum, index) =>
+            {getVisiblePages(currentPage, totalPages).map((pageNum, index) =>
               pageNum === "..." ? (
                 <span
                   key={`ellipsis-${index}`}

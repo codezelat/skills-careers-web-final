@@ -10,6 +10,7 @@ import JobSearch from "@/components/jobSearch";
 import JobApplicationForm from "@/app/jobs/[jobid]/apply/JobApplicationForm";
 import jobCategories from "@/data/jobCategories.json";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import getVisiblePages from "@/lib/getVisiblePages";
 
 function JobsClient() {
   const router = useRouter();
@@ -616,51 +617,29 @@ function JobsClient() {
                     </button>
 
                     <div className="flex gap-2 overflow-x-auto px-2 no-scrollbar">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (number) => {
-                          // Logic to show limited page numbers with ellipsis if needed
-                          // For simplicity, showing all or a range could be implemented.
-                          // For now showing all as per original snippet style
-                          // If distinct from candidates page style, can be adjusted.
-                          // Let's keep it simple and responsive
-                          if (
-                            totalPages > 7 &&
-                            number !== 1 &&
-                            number !== totalPages &&
-                            (number < currentPage - 1 ||
-                              number > currentPage + 1)
-                          ) {
-                            if (
-                              number === currentPage - 2 ||
-                              number === currentPage + 2
-                            ) {
-                              return (
-                                <span
-                                  key={number}
-                                  className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0"
-                                >
-                                  ...
-                                </span>
-                              );
-                            }
-                            return null;
-                          }
-
-                          return (
+                      {getVisiblePages(currentPage, totalPages).map(
+                        (page, index) =>
+                          page === "..." ? (
+                            <span
+                              key={`ellipsis-${index}`}
+                              className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0"
+                            >
+                              ...
+                            </span>
+                          ) : (
                             <button
-                              key={number}
+                              key={page}
                               type="button"
-                              onClick={() => handlePageChange(number)}
+                              onClick={() => handlePageChange(page)}
                               className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 shrink-0 ${
-                                currentPage === number
+                                currentPage === page
                                   ? "bg-[#001571] text-white shadow-md transform scale-105"
                                   : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
                               }`}
                             >
-                              {number}
+                              {page}
                             </button>
-                          );
-                        }
+                          )
                       )}
                     </div>
 

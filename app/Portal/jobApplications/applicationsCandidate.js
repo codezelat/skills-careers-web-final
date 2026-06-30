@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import usePersistedPage from "@/lib/usePersistedPage";
+import getVisiblePages from "@/lib/getVisiblePages";
 
 export default function JobApplicationsCandidate() {
   const { data: session, status } = useSession({ required: true });
@@ -83,19 +84,6 @@ export default function JobApplicationsCandidate() {
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
-  const getVisiblePages = () => {
-    const visiblePages = 5;
-    const halfRange = Math.floor(visiblePages / 2);
-    let start = Math.max(currentPage - halfRange, 1);
-    let end = Math.min(start + visiblePages - 1, totalPages);
-
-    if (end - start + 1 < visiblePages) {
-      start = Math.max(end - visiblePages + 1, 1);
-    }
-
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  };
 
   if (status === "loading") {
     return (
@@ -179,19 +167,28 @@ export default function JobApplicationsCandidate() {
               &laquo;
             </button>
 
-            {getVisiblePages().map((page) => (
-              <button
-                key={page}
-                className={`px-3 py-1 rounded-lg ${
-                  currentPage === page
-                    ? "text-[#001571] font-bold"
-                    : "text-gray-600"
-                }`}
-                onClick={() => handlePageClick(page)}
-              >
-                {page}
-              </button>
-            ))}
+            {getVisiblePages(currentPage, totalPages).map((page, index) =>
+              page === "..." ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 py-1 text-gray-400"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  className={`px-3 py-1 rounded-lg ${
+                    currentPage === page
+                      ? "text-[#001571] font-bold"
+                      : "text-gray-600"
+                  }`}
+                  onClick={() => handlePageClick(page)}
+                >
+                  {page}
+                </button>
+              )
+            )}
 
             <button
               className="px-3 py-1 rounded-lg text-gray-600 hover:text-[#001571]"

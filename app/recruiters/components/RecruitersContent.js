@@ -8,6 +8,7 @@ import RecruiterCard from "../recruiterCard";
 import RecruiterLoading from "@/components/RecruiterLoading";
 import jobCategories from "@/data/jobCategories.json";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import getVisiblePages from "@/lib/getVisiblePages";
 
 export default function RecruitersContent() {
   const router = useRouter();
@@ -372,46 +373,29 @@ export default function RecruitersContent() {
                     </button>
 
                     <div className="flex gap-2 overflow-x-auto px-2 no-scrollbar">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (number) => {
-                          if (
-                            totalPages > 7 &&
-                            number !== 1 &&
-                            number !== totalPages &&
-                            (number < currentPage - 1 ||
-                              number > currentPage + 1)
-                          ) {
-                            if (
-                              number === currentPage - 2 ||
-                              number === currentPage + 2
-                            ) {
-                              return (
-                                <span
-                                  key={number}
-                                  className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0"
-                                >
-                                  ...
-                                </span>
-                              );
-                            }
-                            return null;
-                          }
-
-                          return (
+                      {getVisiblePages(currentPage, totalPages).map(
+                        (page, index) =>
+                          page === "..." ? (
+                            <span
+                              key={`ellipsis-${index}`}
+                              className="w-10 h-10 flex items-center justify-center text-gray-400 shrink-0"
+                            >
+                              ...
+                            </span>
+                          ) : (
                             <button
-                              key={number}
+                              key={page}
                               type="button"
-                              onClick={() => handlePageChange(number)}
+                              onClick={() => handlePageChange(page)}
                               className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 shrink-0 ${
-                                currentPage === number
+                                currentPage === page
                                   ? "bg-[#001571] text-white shadow-md transform scale-105"
                                   : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100"
                               }`}
                             >
-                              {number}
+                              {page}
                             </button>
-                          );
-                        }
+                          )
                       )}
                     </div>
 

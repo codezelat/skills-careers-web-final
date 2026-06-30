@@ -12,6 +12,7 @@ import { FaTimes } from "react-icons/fa";
 
 import Swal from "sweetalert2";
 import usePersistedPage from "@/lib/usePersistedPage";
+import getVisiblePages from "@/lib/getVisiblePages";
 
 export default function Candidates() {
   const [activeTab, setActiveTab] = useState("all");
@@ -497,25 +498,30 @@ export default function Candidates() {
             <BsChevronLeft size={15} />
           </button>
           <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-[200px] sm:max-w-none">
-            {Array.from(
-              {
-                length: Math.ceil(
-                  filteredJobseekers.length / candidatesPerPage,
-                ),
-              },
-              (_, index) => (
+            {getVisiblePages(
+              currentPage,
+              Math.ceil(filteredJobseekers.length / candidatesPerPage)
+            ).map((page, index) =>
+              page === "..." ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 py-2 text-gray-400 shrink-0"
+                >
+                  ...
+                </span>
+              ) : (
                 <button
-                  key={index + 1}
-                  onClick={() => handlePageChange(index + 1)}
+                  key={page}
+                  onClick={() => handlePageChange(page)}
                   className={`px-3 sm:px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
-                    currentPage === index + 1
+                    currentPage === page
                       ? "bg-blue-700 text-white"
                       : "bg-gray-200 hover:bg-gray-400"
                   }`}
                 >
-                  {index + 1}
+                  {page}
                 </button>
-              ),
+              )
             )}
           </div>
           <button
