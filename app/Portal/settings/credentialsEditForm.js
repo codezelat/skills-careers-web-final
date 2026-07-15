@@ -1,6 +1,7 @@
 "use client";
 import { FaTimes } from "react-icons/fa";
 import { PiCheckCircle } from "react-icons/pi";
+import PhoneNumberInput from "@/components/PhoneInput";
 
 export default function CredentialsForm({
   userDetails,
@@ -25,7 +26,7 @@ export default function CredentialsForm({
 
         {/* Scrollable Form Content */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
-          <form onSubmit={onSubmit} className="space-y-6">
+          <div className="space-y-6">
             <div className="grid grid-cols-2 grid-rows-1 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-[#001571]">
@@ -62,30 +63,27 @@ export default function CredentialsForm({
                   name="email"
                   disabled
                   value={userDetails.email || ""}
-                  onChange={onInputChange}
                   className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#001571]">
-                  Phone
-                </label>
-                <input
-                  type="text"
-                  name="contactNumber"
-                  value={userDetails.contactNumber || ""}
-                  onChange={onInputChange}
-                  className="mt-2 block w-full border border-[#B0B6D3] rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-4 py-3"
-                />
-              </div>
+              <PhoneNumberInput
+                value={userDetails.contactNumber || ""}
+                onChange={(phone) =>
+                  onInputChange({
+                    target: { name: "contactNumber", value: phone },
+                  })
+                }
+                label="Phone"
+                placeholder="Enter phone number"
+              />
             </div>
-          </form>
+          </div>
         </div>
 
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 flex justify-end">
           <button
-            type="submit"
+            type="button"
             onClick={onSubmit}
             disabled={isSubmitting}
             className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${

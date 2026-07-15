@@ -84,7 +84,7 @@ export default function CredentialsForm({
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 flex justify-end">
           <button
-            type="submit"
+            type="button"
             onClick={onSubmit}
             disabled={isSubmitting}
             className={`w-auto bg-[#001571] text-white px-4 py-3 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-semibold flex items-center justify-center ${
