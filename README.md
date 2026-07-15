@@ -1327,31 +1327,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🗺️ Roadmap
-
-### Current Version (v1.0.0)
-
-- ✅ Core authentication system
-- ✅ Job posting and management
-- ✅ Application tracking
-- ✅ Admin dashboard
-- ✅ CV generation
-
-### Upcoming Features (v1.1.0)
-
-- 🔄 Real-time notifications
-- 🔄 Advanced analytics
-- 🔄 AI-powered job recommendations
-
-### Future Enhancements
-
-- 📅 Calendar integration
-- 📅 Skills assessment tests
-- 📅 Company reviews
-- 📅 Dark mode
-
----
-
 <div align="center">
 
 **Made with ❤️ by the Skills Careers Team**
