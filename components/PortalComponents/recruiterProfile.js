@@ -108,7 +108,7 @@ export default function RecruiterProfile({ slug }) {
             throw new Error(userData.message || "Failed to fetch user details");
           }
 
-          setUserDetails(userData);
+          setUserDetails(userData.user || userData);
         } catch (err) {
           setError(err.message);
         } finally {

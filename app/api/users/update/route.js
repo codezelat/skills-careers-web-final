@@ -5,7 +5,7 @@ export async function PUT(req) {
   let client;
   try {
     const body = await req.json();
-    const { _id, email, createdAt, ...updatedDetails } = body;
+    const { _id, email, createdAt, role, ...updatedDetails } = body;
 
     if (!email || !email.includes("@")) {
       return NextResponse.json(
@@ -17,19 +17,41 @@ export async function PUT(req) {
     client = await connectToDatabase();
     const db = client.db();
 
+    // Fetch existing user to determine role and preserve profileImage
+    const existingUser = await db.collection("users").findOne({ email });
+
+    if (!existingUser) {
+      return NextResponse.json(
+        { message: "User not found." },
+        { status: 404 }
+      );
+    }
+
+    const userRole = role || existingUser.role;
+
     // Ensure profileImage is preserved if it's not being updated
     let updateData = { ...updatedDetails };
 
-    if (!updatedDetails.profileImage) {
-      const existingUser = await db.collection("users").findOne({ email });
-      if (existingUser?.profileImage) {
-        updateData.profileImage = existingUser.profileImage;
-      }
+    if (!updatedDetails.profileImage && existingUser?.profileImage) {
+      updateData.profileImage = existingUser.profileImage;
     }
 
+    // Update the users collection
     const result = await db
       .collection("users")
       .updateOne({ email }, { $set: updateData }, { upsert: false });
+
+    // If the user is an admin and contactNumber is being updated,
+    // also update the admins collection (where admin contactNumber is stored)
+    if (userRole === "admin" && updatedDetails.contactNumber !== undefined) {
+      await db
+        .collection("admins")
+        .updateOne(
+          { email },
+          { $set: { contactNumber: updatedDetails.contactNumber } },
+          { upsert: false }
+        );
+    }
 
     if (result.modifiedCount > 0) {
       return NextResponse.json(

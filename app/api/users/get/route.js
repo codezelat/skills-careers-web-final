@@ -7,6 +7,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const email = searchParams.get("email");
     const id = searchParams.get("id");
+    const collection = searchParams.get("collection");
 
     if (!email && !id) {
       return NextResponse.json(
@@ -19,8 +20,11 @@ export async function GET(req) {
     const db = client.db();
     let user = null;
 
+    // Determine which collection to query
+    const targetCollection = collection || "users";
+
     if (email) {
-      user = await db.collection("users").findOne({ email });
+      user = await db.collection(targetCollection).findOne({ email });
     } else if (id) {
       if (!ObjectId.isValid(id)) {
         return NextResponse.json(
@@ -29,7 +33,7 @@ export async function GET(req) {
         );
       }
       user = await db
-        .collection("users")
+        .collection(targetCollection)
         .findOne({ _id: new ObjectId(id) });
     }
 
@@ -45,7 +49,7 @@ export async function GET(req) {
             "Surrogate-Control": "no-store",
             Pragma: "no-cache",
             Expires: "0",
-            "x-netlify-cache": "miss", // Explicitly tell Netlify to bypass cache
+            "x-netlify-cache": "miss",
           },
         });
     } else {

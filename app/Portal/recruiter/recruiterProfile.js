@@ -99,16 +99,17 @@ export default function RecruiterProfile({ slug }) {
 
           setRecruiterDetails(recruiterData);
 
-          const userResponse = await fetch(
-            `/api/users/get?id=${recruiterData.userId}`
-          );
-          const userData = await userResponse.json();
+          // Only fetch user details if recruiter has a linked userId
+          if (recruiterData.userId) {
+            const userResponse = await fetch(
+              `/api/users/get?id=${recruiterData.userId}`
+            );
+            const userData = await userResponse.json();
 
-          if (!userResponse.ok) {
-            throw new Error(userData.message || "Failed to fetch user details");
+            if (userResponse.ok && userData.user) {
+              setUserDetails(userData.user);
+            }
           }
-
-          setUserDetails(userData.user);
         } catch (err) {
           setError(err.message);
         } finally {

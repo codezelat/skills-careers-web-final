@@ -41,7 +41,25 @@ export default function AdminProfile() {
             throw new Error(userData.message || "Failed to fetch user details");
           }
 
-          setUserDetails(userData.user);
+          const user = userData.user;
+
+          // Admin contactNumber is stored in the admins collection, not users
+          // Fetch admin details to get the contactNumber
+          try {
+            const adminResponse = await fetch(
+              `/api/users/get?email=${session.user.email}&collection=admins`
+            );
+            if (adminResponse.ok) {
+              const adminData = await adminResponse.json();
+              if (adminData.user?.contactNumber) {
+                user.contactNumber = adminData.user.contactNumber;
+              }
+            }
+          } catch {
+            // If admin fetch fails, continue with user data (contactNumber may be empty)
+          }
+
+          setUserDetails(user);
         } catch (err) {
           setError(err.message);
         } finally {
