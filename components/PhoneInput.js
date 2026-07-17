@@ -1,7 +1,30 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+
+/**
+ * Normalize phone number for react-phone-input-2
+ * Converts local format (0771234567) to international (94771234567)
+ * so the library can parse and display it correctly
+ */
+function normalizePhoneForInput(value, defaultCountryCode = "94") {
+  if (!value) return "";
+  let cleaned = value.toString().trim();
+  // Already has country code (e.g. +94771234567 or 94771234567)
+  if (cleaned.startsWith("+")) {
+    return cleaned.substring(1); // react-phone-input-2 wants digits without +
+  }
+  // Starts with 0 → local Sri Lankan format, replace leading 0 with country code
+  if (cleaned.startsWith("0") && cleaned.length >= 9) {
+    return defaultCountryCode + cleaned.substring(1);
+  }
+  // Already digits with country code
+  if (cleaned.startsWith(defaultCountryCode)) {
+    return cleaned;
+  }
+  return cleaned;
+}
 
 /**
  * Reusable Phone Input Component with country code selection and flags
@@ -28,6 +51,8 @@ export default function PhoneNumberInput({
   containerClass = "",
   inputClass = "",
 }) {
+  const normalizedValue = useMemo(() => normalizePhoneForInput(value), [value]);
+
   return (
     <div className={`${containerClass}`}>
       {label && (
@@ -38,7 +63,7 @@ export default function PhoneNumberInput({
       )}
       <PhoneInput
         country={"lk"} // Default to Sri Lanka
-        value={value}
+        value={normalizedValue}
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
