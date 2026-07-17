@@ -9,6 +9,7 @@ export default function CredentialsForm({
   onClose,
   onSubmit,
   onInputChange,
+  onPhoneChange,
 }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
@@ -69,11 +70,7 @@ export default function CredentialsForm({
               </div>
               <PhoneNumberInput
                 value={userDetails.contactNumber || ""}
-                onChange={(phone) =>
-                  onInputChange({
-                    target: { name: "contactNumber", value: phone },
-                  })
-                }
+                onChange={onPhoneChange}
                 label="Phone"
                 placeholder="Enter phone number"
               />

@@ -266,6 +266,10 @@ export default function RecruiterProfile({ slug }) {
     setRecruiterDetails((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleRecruiterPhoneChange = (phone) => {
+    setRecruiterDetails((prev) => ({ ...prev, contactNumber: phone }));
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -574,6 +578,7 @@ export default function RecruiterProfile({ slug }) {
               onClose={() => setShowApplicationForm(false)}
               onSubmit={submitHandler}
               onInputChange={handleInputChange}
+              onPhoneChange={handleRecruiterPhoneChange}
               isSubmitting={isSubmitting}
             />
           )}

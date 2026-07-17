@@ -315,6 +315,9 @@ export default function RecruiterSettings() {
               onClose={() => setShowCredentialsForm(false)}
               onSubmit={credSubmitHandler}
               onInputChange={handleCredInputChange}
+              onPhoneChange={(phone) =>
+                setUserDetails((prev) => ({ ...prev, contactNumber: phone }))
+              }
             />
           )}
 

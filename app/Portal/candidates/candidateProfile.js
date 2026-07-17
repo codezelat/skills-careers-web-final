@@ -87,6 +87,12 @@ export default function CandidateProfile({ slug }) {
       [name]: value,
     }));
   };
+  const handleUserPhoneChange = (phone) => {
+    setUserDetails((prev) => ({
+      ...prev,
+      contactNumber: phone,
+    }));
+  };
   const jobseekerUpdateSubmitHandler = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -912,6 +918,7 @@ export default function CandidateProfile({ slug }) {
             jobSeekerDetails={jobSeekerDetails}
             handleInputChange={handleInputChange}
             handleUserInputChange={handleUserInputChange}
+            handleUserPhoneChange={handleUserPhoneChange}
             jobseekerUpdateSubmitHandler={jobseekerUpdateSubmitHandler}
             isSubmitting={isSubmitting}
             onClose={() => setProfileEditForm(false)}

@@ -10,6 +10,7 @@ export default function NameEditForm({
   jobSeekerDetails,
   handleInputChange,
   handleUserInputChange,
+  handleUserPhoneChange,
   jobseekerUpdateSubmitHandler,
   isSubmitting,
   onClose,
@@ -120,11 +121,7 @@ export default function NameEditForm({
               </div>
               <PhoneNumberInput
                 value={userDetails.contactNumber || ""}
-                onChange={(phone) =>
-                  handleUserInputChange({
-                    target: { name: "contactNumber", value: phone },
-                  })
-                }
+                onChange={handleUserPhoneChange}
                 label="Phone Number"
                 placeholder="Enter phone number"
                 disabled={false}

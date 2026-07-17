@@ -55,6 +55,7 @@ export default function RecruiterEdit({
   onClose,
   onSubmit,
   onInputChange,
+  onPhoneChange,
   isSubmitting,
 }) {
   const [isOther, setIsOther] = useState(
@@ -331,11 +332,7 @@ export default function RecruiterEdit({
               </div>
               <PhoneNumberInput
                 value={recruiterDetails.contactNumber || ""}
-                onChange={(phone) =>
-                  onInputChange({
-                    target: { name: "contactNumber", value: phone },
-                  })
-                }
+                onChange={onPhoneChange}
                 label="Phone"
                 placeholder="Enter phone number"
               />

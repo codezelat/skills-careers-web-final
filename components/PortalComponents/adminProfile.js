@@ -325,9 +325,7 @@ export default function AdminProfile() {
             <PhoneNumberInput
               value={userDetails.contactNumber || ""}
               onChange={(phone) =>
-                handleCredInputChange({
-                  target: { name: "contactNumber", value: phone },
-                })
+                setUserDetails((prev) => ({ ...prev, contactNumber: phone }))
               }
               label="Contact Number"
               placeholder="Enter phone number"
@@ -381,6 +379,9 @@ export default function AdminProfile() {
           onClose={() => setShowCredentialsForm(false)}
           onSubmit={credSubmitHandler}
           onInputChange={handleCredInputChange}
+          onPhoneChange={(phone) =>
+            setUserDetails((prev) => ({ ...prev, contactNumber: phone }))
+          }
         />
       )}
 
